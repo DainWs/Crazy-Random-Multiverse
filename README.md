@@ -23,9 +23,12 @@ The objective of the game, is to kill the leaders of the rest of the enemy playe
  - Physical damage
  - Magic damage
  - Heal per turn
- - Life
+ - Health
 
-## Card placement
+## Card placementble, it will have a 1 turn cooldown before it can be used.
+ - All cards can only hit once per turn unless the card specifies otherwise.
+ - You can have unlimited cards in your hand, but only 6 cards on the board plus the leader.
+ - Once equipment spells have be
 Your leader may be protected by the cards that you obtain throughout the game.
 
 Your area of ​​the board is based on 3 rows, with the 3rd row being closest to the center of the board and 
@@ -54,10 +57,7 @@ from 6th round onwards: 1 spell
  - When the player's lead card dies, the player loses.
  - Only when the leader is unprotected can he attack.
  - When a member of a team wins, automatically all their allies, whether alive or dead, also win.
- - When you put a card on the table, it will have a 1 turn cooldown before it can be used.
- - All cards can only hit once per turn unless the card specifies otherwise.
- - You can have unlimited cards in your hand, but only 6 cards on the board plus the leader.
- - Once equipment spells have been applied, when separated from their owner they will disappear.
+ - When you put a card on the taen applied, when separated from their owner they will disappear.
  - If the physical armor breaks the excess damage disappears.
  - If a spell card has an R in its description, that spell is cast automatically.
  - Leftover damage from legendary cards to physical armor of any card type affects health.
