@@ -1,0 +1,204 @@
+@startuml
+title Domain design
+
+Class Game {
+ -round: int
+ -dealer: Dealer
+ -players: List<Players>
+ +Game(Dealer, List<Players>)
+ -start(): void
+ -playRound(): void
+ -playTurn(Player): void
+}
+
+Class Player {
+ -id: Long
+ -name: String
+ -birthDate: LocalDate
+ -cardsInHand: List<Card>
+ -cardsInBoard: List<Card>
+}
+
+Class PlayerHand {
+ -cards: List<Card>
+ +PlayerHand()
+ +addCardToHand(Card): void
+ +removeCardFromHand(Card): void
+ +hasCardInHand(Card): boolean
+ +getCardIndexInHand(Card): int
+ +getCardInHand(cardIndex: int): Card
+ +getCardsInHand(): List<Card>
+}
+
+Class Board {
+ -playersZones: Map<playerID, BoardZone>
+ +Board(List<Player>)
+ +addZone(BoardZone): void
+ +removeZone(playerID: int): void
+ +hasZone(playerID: int): void
+ +getPlayerIDOfZone(BoardZone): int
+ +getZoneOfPlayer(playerID: int): BoardZone
+}
+
+Class BoardZone {
+ -rows: Map<rowIndex, BoardRow>
+ +BoardZone(numRows: int)
+ +addRow(BoardRow): void
+ +removeRow(BoardRow): void
+ +hasRowWithIndex(rowIndex: int): boolean
+ +getRowByIndex(rowIndex: int): BoardRow
+}
+
+Class BoardRow {
+ -cards: List<Card>
+ +BoardRow(Player)
+ +addCard(Card): void
+ +removeCard(Card): void
+ +hasCard(Card): boolean
+ +getCardIndex(Card): int
+ +getCard(index): boolean
+}
+
+
+Game *-- Player
+Game --> Board
+Game --> Dealer
+
+Player *-- PlayerHand
+
+Board *-- BoardZone
+BoardZone *-- BoardRow
+
+'============================================= Deal
+
+Class Dealer {
+ -deck: Deck
+ -dealStrategy: DealStrategy
+ +Dealer(Deck)
+ +Dealer(Deck, DealStrategy)
+ +deal(round: int): List<Card>
+ +deal(DealRequest[]): List<Card>
+}
+
+Interface DealStrategy {
+ +executeStrategy(Deck, round: int): List<Card>
+ +executeStrategy(Deck, DealRequest[]): List<Card> 
+}
+
+Class BasicDealStrategy {
+ -rounds: Map<round: int, DealRequest[]>
+ -BasicDealStrategy()
+ +{static} create(): BasicDealStrategy
+}
+
+Interface Deck {
+ +addCard(Card): void
+ +deal(CardType, CardRarity): Card
+}
+
+Dealer *-- Deck
+Dealer *-- DealStrategy
+DealStrategy <|.. BasicDealStrategy
+
+Deck o-- Card
+
+'============================================= Card
+
+Abstract Class Card {
+ -name: String
+ -description: String
+ -type: CardType
+ #Card(name, description, type)
+ +getName(): String
+ +getDescription(): String
+ +getType(): CardType
+ +equals(obj): boolean
+ +hashCode(): int
+}
+
+Enum CardType {
+ +{static} EQUIPMENT
+ +{static} LEADER
+ +{static} SPELL
+ +{static} WARRIOR
+}
+
+Enum CardRarity {
+ +{static} POP
+ +{static} COMMON
+ +{static} RARE
+ +{static} EPIC
+ +{static} LEGENDARY
+}
+
+Class EquipmentCard<Implements\nStatisticCard\nSpecialAbilityCard> {}
+Class LeaderCard<Implements\nStatisticCard> {}
+Class SpellCard<Implements\nSpecialAbilityCard> {}
+Class WarriorCard<Implements\nStatisticCard\nSpecialAbilityCard> {}
+
+Card <|---- LeaderCard
+Card <|---- SpellCard
+Card <|---- EquipmentCard
+Card <|---- WarriorCard
+Card *-- CardType
+
+WarriorCard *-- CardRarity
+
+Card .. SpecialAbilityCard
+Card .. StatisticCard
+
+'============================================= SpecialAbility
+
+Interface SpecialAbility {
+ +use(): void
+}
+
+Interface SpecialAbilityCard {
+ +getSpecialAbility(): Optional<SpecialAbility>
+ +hasSpecialAbility(): boolean
+}
+
+SpecialAbilityCard o-- SpecialAbility
+
+'============================================= Statistic
+
+Class Statistic {
+ -type: StatisticType
+ -value: Double
+ +Statistic(StatisticType, Double)
+ +isInfinite(): boolean
+ +getType(): StatisticType
+ +isType(StatisticType): boolean
+ +isSameTypeAs(Statistic): boolean
+ +getValue(): Double
+ +setValue(Double): void
+ +equals(Object): boolean
+ +hashCode(): int
+}
+
+Enum BasicStatisticTypes {
+ +{static} HEALTH
+ +{static} HEAL_PER_TURN
+ +{static} MAGIC_ARMOR
+ +{static} MAGIC_DAMAGE
+ +{static} PHYSICAL_ARMOR
+ +{static} PHYSICAL_DAMAGE
+}
+
+Interface StatisticCard {
+ +getStatistic(StatisticType): Optional<Statistic>
+ +hasStatistic(StatisticType): boolean
+ +removeStatistic(StatisticType): void
+ +setStatistic(Statistic): void
+}
+
+Interface StatisticType {
+ +getValue(): String
+}
+
+StatisticCard o-- Statistic
+Statistic *-- StatisticType
+StatisticType <|.. BasicStatisticTypes
+
+
+@enduml
