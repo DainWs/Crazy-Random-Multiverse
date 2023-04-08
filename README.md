@@ -1,3 +1,9 @@
+## Questions
+- Todas las cartas van a tener un tipo de rareza, aunque va a ser normal para reducir complejidad.
+- Las cartas de la baraja se van a poder repetir? es decir, en un turno te puede tocar la misma carta 2 veces? 
+y en diferente turno se repite?
+- En que plataforma lo vais a querer?
+
 ## Description
 Each player will get a random leader type card, this will be immediately shown to the rest 
 of the players by putting it face up on the table.
