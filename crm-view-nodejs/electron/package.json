@@ -1,0 +1,28 @@
+{
+  "name": "crm-view-nodejs",
+  "version": "1.0.0",
+  "description": "CRM Game gui made with Electron",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc && copyfiles -u 1 public/**/*.html dist/public",
+    "clean": "rimraf dist/",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "start": "npm run build && electron ./dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "CRM"
+  ],
+  "author": "DainWs",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "copyfiles": "^2.4.1",
+    "electron": "^24.1.2",
+    "eslint": "^8.38.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.4"
+  }
+}
