@@ -1,18 +1,24 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "target": "ES2022",
+        "module": "Node16",
         "noImplicitAny": true,
         "sourceMap": true,
-        "outDir": "dist",
+        "outDir": "./dist",
         "baseUrl": ".",
         "paths": {
             "*": [
                 "node_modules/*"
             ]
-        }
+        },
+        "removeComments": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true
     },
     "include": [
-        "src/**/*"
+        "electron/**/*"
     ],
     "exclude": []
 }
