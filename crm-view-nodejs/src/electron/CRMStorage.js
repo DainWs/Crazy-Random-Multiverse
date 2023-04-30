@@ -1,4 +1,4 @@
-import ElectronStore from 'electron-store';
+const ElectronStore = require('electron-store')
 
 const appConfig = new ElectronStore({
     name: 'crm-app-config',
@@ -47,10 +47,10 @@ const appConfig = new ElectronStore({
     },
 });
 
-export function loadWindowConfiguration(): any {
+exports.loadWindowConfiguration = function() {
     return appConfig.get('setting.window');
 }
 
-export function saveWindowConfiguration(config: any): void {
+exports.saveWindowConfiguration = function(config) {
     appConfig.set('setting.window', config);
 }

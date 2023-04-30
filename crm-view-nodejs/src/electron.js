@@ -1,19 +1,21 @@
 'use strict'
+const electron = require('electron');
+const devToolsInstaller = require('electron-devtools-installer');
+const crmStorage = require('./electron/CRMStorage.js')
+const crmUpdater = require('./electron/CRMUpdater.js')
 
-import { app, BrowserWindow, protocol } from 'electron'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import { loadWindowConfiguration } from './electron/CRMStorage'
-import { checkForUpdates } from './electron/CRMUpdater'
-const isDevelopment: boolean = process.env.NODE_ENV !== 'production'
-const nodeIntegration: boolean = !isDevelopment
+var app = electron.app;
 
-protocol.registerSchemesAsPrivileged([
+const isDevelopment = process.env.NODE_ENV !== 'production'
+const nodeIntegration = !isDevelopment
+
+electron.protocol.registerSchemesAsPrivileged([
     { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
 async function createWindow() {
-    const windowConfiguration: any = loadWindowConfiguration();
-    const browserWindow = new BrowserWindow({
+    const windowConfiguration = crmStorage.loadWindowConfiguration();
+    const browserWindow = new electron.BrowserWindow({
         width: windowConfiguration.resolution.width,
         height: windowConfiguration.resolution.height,
         fullscreen: windowConfiguration.screenMode.isMaximized,
@@ -26,7 +28,7 @@ async function createWindow() {
         fullscreenable: true,
         show: false,
         title: 'Crazy Random Multiverses',
-        icon: './icon.png',
+        icon: 'favicon.ico',
         backgroundColor: '#000000',
         titleBarStyle: 'hidden',
         titleBarOverlay: {
@@ -35,7 +37,7 @@ async function createWindow() {
             height: 20
         },
         webPreferences: {
-            preload: `${__dirname}/preload.js`,
+            //preload: `${__dirname}/electron/CRMPorts.js`,
             devTools: isDevelopment,
             nodeIntegration: nodeIntegration,
             contextIsolation: !nodeIntegration
@@ -47,7 +49,7 @@ async function createWindow() {
         if (!process.env.IS_TEST) browserWindow.webContents.openDevTools()
     }
     else {
-        checkForUpdates();
+        crmUpdater.checkForUpdates();
         browserWindow.loadURL('app://./index.html')
     }
 
@@ -61,7 +63,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
+    if (electron.BrowserWindow.getAllWindows().length === 0) {
         createWindow()
     }
 })
@@ -70,8 +72,8 @@ app.whenReady()
     .then(async () => {
         if (isDevelopment && !process.env.IS_TEST) {
             try {
-                await installExtension(VUEJS_DEVTOOLS)
-            } catch (e: any) {
+                await devToolsInstaller.installExtension(devToolsInstaller.VUEJS_DEVTOOLS)
+            } catch (e) {
                 console.error('Vue Devtools failed to install:', e.toString())
             }
         }

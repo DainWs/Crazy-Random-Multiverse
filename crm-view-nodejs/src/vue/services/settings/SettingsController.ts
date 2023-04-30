@@ -3,8 +3,12 @@ import { AppSettings, GeneralSettings } from "./models/AppSettings"
 class SettingsController {
     private appSettings: AppSettings
 
-    constructor(settingsStorage) {
-
+    constructor() {
+        this.appSettings = {
+            general: {
+                window: settings.loadWindowConfiguration() 
+            }
+        }
     }
 
     public getGeneralConfiguration(): GeneralSettings {
@@ -14,5 +18,5 @@ class SettingsController {
 
 console.log(settings);
 console.log(window);
-const INSTANCE: SettingsController = new SettingsController(settings)
+const INSTANCE: SettingsController = new SettingsController()
 export { INSTANCE as settingsController }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { RouterView } from 'vue-router.vue'
+import { RouterView } from 'vue-router'
 
 export default {
   name: 'App',

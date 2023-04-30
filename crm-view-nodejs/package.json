@@ -1,52 +1,71 @@
 {
   "name": "crm-view-nodejs",
+  "version": "1.0.0",
   "description": "CRM Game gui made with Electron",
   "author": "DainWs",
-  "version": "1.0.0",
-  "license": "ISC",
-  "keywords": [
-    "CRM",
-    "Games",
-    "Cards"
-  ],
-  "main": "electron.ts",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "electron:serve && cd vue && vite",
+    "build": "vue-cli-service build && npm run electron:build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
+    "electron:build": "cd ./src && copyfiles ./electron.js ./preload.js ./electron/* ../dist/ && cd ..",
+    "electron:serve": "npm run electron:build && electron ./dist/electron.js",
+    "package": "npm run build && electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-
-    "dev": "electron:serve && cd vue && vite",
-    "package": "npm run build && electron-builder",
-    "build2": "npm run build:vue && npm run build:electron",
-    "build:vue": "cd vue && npm run build && cd ..",
-    "build:electron": "tsc && cd ..",
     "start": "rimraf dist && rimraf dist-electron && npm run build && electron --trace-warnings ./dist/main.js"
   },
+  "main": "electron.ts",
   "dependencies": {
+    "bootstrap": "^5.2.3",
+    "core-js": "^3.8.3",
     "electron-log": "^5.0.0-beta.23",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
-    "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "copyfiles": "^2.4.1",
     "electron": "^24.1.2",
     "electron-builder": "^24.2.1",
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
-    "rimraf": "^5.0.0",
-    "typescript": "^5.0.4"
+    "prettier": "^2.8.4",
+    "rimraf": "^5.0.0"
   },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended",
+      "@vue/typescript"
+    ],
+    "parserOptions": {
+      "parser": "@typescript-eslint/parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
   "build": {
     "appId": "com.dainws.monkeys-with-minigun.crm-view-nodejs",
     "productName": "Crazy Random Multiverses",
@@ -56,29 +75,21 @@
       "allowToChangeInstallationDirectory": false,
       "deleteAppDataOnUninstall": true
     },
+    "files": [
+      "dist/**/*"
+    ],
+    "extraResources": [
+      "defaults/**/*"
+    ],
     "directories": {
       "buildResources": "assets",
       "output": "dist_electron"
     }
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+  "keywords": [
+    "CRM",
+    "Games",
+    "Cards"
+  ],
+  "license": "ISC"
 }

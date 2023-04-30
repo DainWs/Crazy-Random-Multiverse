@@ -1,8 +1,11 @@
-import { dialog, app } from 'electron';
-import { autoUpdater, UpdateInfo } from 'electron-updater';
+const electron = require('electron')
+const electron_updater = require('electron-updater')
 
-function onUpdateDownloaded(info: UpdateInfo) {
-    dialog.showMessageBox({
+var app = electron.app
+var autoUpdater = electron_updater.autoUpdater
+
+function onUpdateDownloaded(info) {
+    electron.dialog.showMessageBox({
         title: `Version ${info.version} is now here!`,
         type: 'info',
         message: `We'll close you app and update it now`,
@@ -13,10 +16,10 @@ function onUpdateDownloaded(info: UpdateInfo) {
 
 if (app.isPackaged) {
     autoUpdater.autoInstallOnAppQuit = true;
-    autoUpdater.addListener('update-downloaded', (info: UpdateInfo) => onUpdateDownloaded(info));
+    autoUpdater.addListener('update-downloaded', (info) => onUpdateDownloaded(info));
 }
 
-export function checkForUpdates(): void {
+exports.checkForUpdates = function() {
     if (app.isPackaged) {
         autoUpdater.checkForUpdates();
     }
