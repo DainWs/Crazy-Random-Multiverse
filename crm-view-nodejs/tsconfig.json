@@ -1,31 +1,46 @@
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "Node16",
-        "baseUrl": "./",
-        "outDir": "./dist",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "removeComments": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "skipLibCheck": true,
-        "paths": {
-            "*": [
-                "node_modules/*"
-            ]
-        },
-        "lib": [
-            "esnext",
-            "dom",
-            "dom.iterable",
-            "scripthost"
-        ]
-    },
-    "include": [
-        "src/**/*"
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": [
+      "webpack-env"
     ],
-    "exclude": []
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx", "main.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "src/electron/CRMUpdater.js",
+    "src/electron/CRMStorage.js",
+    "src/electron/CRMPorts.js",
+    "src/electron.js"
+  ]
 }
