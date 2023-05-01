@@ -47,10 +47,9 @@ const appConfig = new ElectronStore({
     },
 });
 
-exports.loadWindowConfiguration = function() {
-    return appConfig.get('setting.window');
+const SettingsStorage = {
+    loadWindowConfiguration: () => appConfig.get('setting.window'),
+    saveWindowConfiguration: (config) => appConfig.set('setting.window', config)
 }
 
-exports.saveWindowConfiguration = function(config) {
-    appConfig.set('setting.window', config);
-}
+module.exports = SettingsStorage

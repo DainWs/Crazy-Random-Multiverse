@@ -1,8 +1,10 @@
 'use strict'
 const electron = require('electron');
 const devToolsInstaller = require('electron-devtools-installer');
-const crmStorage = require('./electron/CRMStorage.js')
-const crmUpdater = require('./electron/CRMUpdater.js')
+const CRMStorage = require('./electron/CRMStorage.js')
+const CRMUpdater = require('./electron/CRMUpdater.js')
+
+require('./electron/CRMEventHandler')
 
 var app = electron.app;
 
@@ -14,7 +16,7 @@ electron.protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow() {
-    const windowConfiguration = crmStorage.loadWindowConfiguration();
+    const windowConfiguration = CRMStorage.loadWindowConfiguration();
     const browserWindow = new electron.BrowserWindow({
         width: windowConfiguration.resolution.width,
         height: windowConfiguration.resolution.height,
@@ -37,7 +39,7 @@ async function createWindow() {
             height: 20
         },
         webPreferences: {
-            //preload: `${__dirname}/electron/CRMPorts.js`,
+            preload: `${__dirname}/electron/CRMPorts.js`,
             devTools: isDevelopment,
             nodeIntegration: nodeIntegration,
             contextIsolation: !nodeIntegration
@@ -49,7 +51,7 @@ async function createWindow() {
         if (!process.env.IS_TEST) browserWindow.webContents.openDevTools()
     }
     else {
-        crmUpdater.checkForUpdates();
+        CRMUpdater.checkForUpdates();
         browserWindow.loadURL('app://./index.html')
     }
 

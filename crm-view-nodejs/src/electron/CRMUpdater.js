@@ -1,8 +1,5 @@
-const electron = require('electron')
-const electron_updater = require('electron-updater')
-
-var app = electron.app
-var autoUpdater = electron_updater.autoUpdater
+const { app } = require('electron')
+const { autoUpdater } = require('electron-updater')
 
 function onUpdateDownloaded(info) {
     electron.dialog.showMessageBox({
@@ -19,7 +16,7 @@ if (app.isPackaged) {
     autoUpdater.addListener('update-downloaded', (info) => onUpdateDownloaded(info));
 }
 
-exports.checkForUpdates = function() {
+exports.checkForUpdates = function () {
     if (app.isPackaged) {
         autoUpdater.checkForUpdates();
     }

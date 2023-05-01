@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "CRM Game gui made with Electron",
   "author": "DainWs",
+  "main": "electron.ts",
   "scripts": {
-    "serve": "electron:serve && cd vue && vite",
+    "serve": "npm run vue:serve && npm run electron:serve",
     "build": "vue-cli-service build && npm run electron:build",
     "lint": "vue-cli-service lint",
+    "vue:build": "vue-cli-service build",
+    "vue:serve": "vue-cli-service serve",
     "electron:build": "cd ./src && copyfiles ./electron.js ./preload.js ./electron/* ../dist/ && cd ..",
     "electron:serve": "npm run electron:build && electron ./dist/electron.js",
     "package": "npm run build && electron-builder",
@@ -14,7 +17,6 @@
     "postuninstall": "electron-builder install-app-deps",
     "start": "rimraf dist && rimraf dist-electron && npm run build && electron --trace-warnings ./dist/main.js"
   },
-  "main": "electron.ts",
   "dependencies": {
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",

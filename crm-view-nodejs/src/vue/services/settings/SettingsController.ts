@@ -6,7 +6,7 @@ class SettingsController {
     constructor() {
         this.appSettings = {
             general: {
-                window: settings.loadWindowConfiguration() 
+                window: settings.getWindowConfiguration() 
             }
         }
     }
