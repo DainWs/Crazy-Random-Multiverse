@@ -49,10 +49,6 @@
   }
 }
 
-main {
-  background-image: url(@/assets/images/background.png);
-}
-
 .logo {
   width: 10%;
   height: 10%;

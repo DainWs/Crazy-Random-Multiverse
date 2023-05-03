@@ -1,10 +1,10 @@
 const { ipcMain } = require('electron')
 const SettingsStorage = require('./CRMStorage')
 
-ipcMain.on('set/window-settings', async (event, newSettings) => {
+ipcMain.on('set/general-settings', async (event, newSettings) => {
     SettingsStorage.saveWindowConfiguration(newSettings)
 })
 
-ipcMain.handle('get/window-settings', async (event, args) => {
+ipcMain.handle('get/general-settings', async (event, args) => {
     return SettingsStorage.loadWindowConfiguration()
 })

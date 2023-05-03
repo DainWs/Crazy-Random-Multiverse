@@ -1,22 +1,15 @@
-import { AppSettings, GeneralSettings } from "./models/AppSettings"
+import { GeneralSettings, WindowSettings } from "./models/AppSettings"
+import { settingsApi } from "./SettingsApi";
 
 class SettingsController {
-    private appSettings: AppSettings
-
-    constructor() {
-        this.appSettings = {
-            general: {
-                window: settings.getWindowConfiguration() 
-            }
-        }
+    public setGeneralConfiguration(newSettings: WindowSettings): void {
+        settingsApi.setWindowConfiguration(newSettings)
     }
 
-    public getGeneralConfiguration(): GeneralSettings {
-        return this.appSettings.general;
+    public async getGeneralConfiguration(): Promise<GeneralSettings> {
+        return { window: await settingsApi.getWindowConfiguration() }
     }
 }
 
-console.log(settings);
-console.log(window);
 const INSTANCE: SettingsController = new SettingsController()
 export { INSTANCE as settingsController }

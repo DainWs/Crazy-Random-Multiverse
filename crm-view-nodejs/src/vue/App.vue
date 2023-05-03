@@ -18,4 +18,8 @@ html, body, #app, main {
   width: 100%;
   height: 100%;
 }
+
+main {
+  background-image: url(@/assets/images/background.png);
+}
 </style>

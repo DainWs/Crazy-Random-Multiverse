@@ -1,8 +1,8 @@
 const { contextBridge, ipcMain, ipcRenderer } = require('electron')
 
 const SettingsAPI = {
-  setWindowConfiguration: (newSettings) => ipcRenderer.send('set/window-settings'),
-  getWindowConfiguration: () => ipcRenderer.invoke('get/window-settings')
+  setGeneralConfiguration: (newSettings) => ipcRenderer.send('set/general-settings'),
+  getGeneralConfiguration: () => ipcRenderer.invoke('get/general-settings')
 }
 
 const VersionAPI = {
@@ -13,4 +13,4 @@ const VersionAPI = {
 }
 
 contextBridge.exposeInMainWorld('settings', SettingsAPI)
-contextBridge.exposeInMainWorld("versions", VersionAPI)
+contextBridge.exposeInMainWorld('versions', VersionAPI)
