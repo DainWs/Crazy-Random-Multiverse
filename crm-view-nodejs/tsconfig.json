@@ -37,10 +37,6 @@
     "tests/**/*.tsx", "main.ts",
   ],
   "exclude": [
-    "node_modules",
-    "src/electron/CRMUpdater.js",
-    "src/electron/CRMStorage.js",
-    "src/electron/CRMPorts.js",
-    "src/electron.js"
+    "node_modules"
   ]
 }

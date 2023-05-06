@@ -3,29 +3,19 @@
   "version": "1.0.0",
   "description": "CRM Game gui made with Electron",
   "author": "DainWs",
-  "main": "electron.ts",
+  "main": "dist/electron.js",
   "scripts": {
-    "serve": "npm run vue:serve && npm run electron:serve",
-    "build": "vue-cli-service build && npm run electron:build",
-    "lint": "vue-cli-service lint",
+    "vue:lint": "vue-cli-service lint",
     "vue:build": "vue-cli-service build",
     "vue:serve": "vue-cli-service serve",
-    "electron:build": "cd ./src && copyfiles ./electron.js ./preload.js ./electron/* ../dist/ && cd ..",
-    "electron:serve": "npm run electron:build && electron ./dist/electron.js",
-    "package": "npm run build && electron-builder",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
-    "start": "rimraf dist && rimraf dist-electron && npm run build && electron --trace-warnings ./dist/main.js"
+    "sass": "sass --watch src/assets/styles:dist"
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
-    "electron-log": "^5.0.0-beta.23",
-    "electron-store": "^8.1.0",
-    "electron-updater": "^5.3.0",
     "vue": "^3.2.13",
-    "vue-class-component": "^8.0.0-0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -39,13 +29,12 @@
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^9.1.0",
     "copyfiles": "^2.4.1",
-    "electron": "^24.1.2",
-    "electron-builder": "^24.2.1",
-    "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.8.4",
-    "rimraf": "^5.0.0"
+    "rimraf": "^5.0.0",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2"
   },
   "eslintConfig": {
     "root": true,

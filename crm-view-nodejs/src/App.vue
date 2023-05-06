@@ -10,10 +10,12 @@ export default {
 </script>
 
 <template>
-  <RouterView />
+  <RouterView/>
 </template>
 
-<style> 
+<style>
+@import url('@/assets/styles/normalize.scss');
+
 html, body, #app, main {
   width: 100%;
   height: 100%;
