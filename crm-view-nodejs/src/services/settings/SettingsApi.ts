@@ -1,6 +1,7 @@
-import { AppSettings, WindowSettings } from "./models/AppSettings"
 import { defaultResolution } from "./models/window/WindowResolution"
 import { defaultScreenMode } from "./models/window/WindowScreenMode"
+import { storage } from "@neutralinojs/lib"
+import { defaultWindowSettings, parseToWindowSettings, stringifyFromWindowSettings, WindowSettings } from "./models/window/Window"
 
 interface SettingsAPI {
     setWindowConfiguration(newSettings: WindowSettings): void
@@ -28,30 +29,21 @@ class SimulateSettingsAPI implements SettingsAPI {
 }
 
 class RealSettingsAPI implements SettingsAPI {
-    private checkAccess(): void {
-        if (typeof settings === 'undefined') {
-            throw new Error('Settings is undefined')
-        }
-    }
-
     public setWindowConfiguration(newSettings: WindowSettings): void {
-        this.checkAccess()
-        settings.setWindowConfiguration(newSettings)
+        storage.setData('window', stringifyFromWindowSettings(newSettings))
     }
 
     public async getWindowConfiguration(): Promise<WindowSettings> {
-        this.checkAccess()
-
-        return await settings.getWindowConfiguration()
+        return parseToWindowSettings(await storage.getData('window'))
     }
 }
 
-function getSettingsApi(): SettingsAPI {    
-    if (typeof settings === 'undefined') {
-        console.warn('Settings API simulation was enabled')
+function getSettingsApi(): SettingsAPI {
+    try {
+        return new RealSettingsAPI()
+    } catch (e) {
         return new SimulateSettingsAPI()
     }
-    return new RealSettingsAPI()
 }
 
 const INSTANCE: SettingsAPI = getSettingsApi()

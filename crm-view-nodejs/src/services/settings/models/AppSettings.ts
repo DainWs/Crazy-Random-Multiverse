@@ -1,11 +1,4 @@
-import { WindowResolution } from "./window/WindowResolution"
-import { ScreenMode } from "./window/WindowScreenMode"
-
-export interface WindowSettings {
-    resolution: WindowResolution
-    screenMode: ScreenMode
-    darkTheme: boolean
-}
+import { WindowSettings } from "./window/Window"
 
 export interface GeneralSettings {
     window: WindowSettings

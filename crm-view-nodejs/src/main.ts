@@ -5,7 +5,7 @@ import router from './router'
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import { initialize } from './neutralino/NeutralinoImpl'
 
-const app = createApp(App)
-app.use(router)
-app.mount('#app')
+initialize()
+createApp(App).use(router).mount('#app');

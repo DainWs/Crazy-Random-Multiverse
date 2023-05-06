@@ -6,32 +6,32 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/vue/views/HomeView.vue')
+      component: () => import('@/views/HomeView.vue')
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@/vue/views/SettingView.vue')
+      component: () => import('@/views/SettingView.vue')
     },
     {
       path: '/credits',
       name: 'credits',
-      component: () => import('@/vue/views/CreditsView.vue')
+      component: () => import('@/views/CreditsView.vue')
     },
     {
       path: '/create-game',
       name: 'create-game',
-      component: () => import('@/vue/views/GameView.vue')
+      component: () => import('@/views/GameView.vue')
     },
     {
       path: '/join-game',
       name: 'join-game',
-      component: () => import('@/vue/views/GameView.vue')
+      component: () => import('@/views/GameView.vue')
     },
     {
       path: '/game',
       name: 'game',
-      component: () => import('@/vue/views/GameView.vue')
+      component: () => import('@/views/GameView.vue')
     }
   ]
 })

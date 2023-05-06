@@ -1,21 +1,26 @@
 {
   "name": "crm-view-nodejs",
   "version": "1.0.0",
-  "description": "CRM Game gui made with Electron",
+  "description": "CRM Game gui made with NeutralinoJs",
   "author": "DainWs",
-  "main": "dist/electron.js",
+  "main": "src/main.ts",
   "scripts": {
+    "start": "npm run vue:serve && npm run neu:serve",
+    "build": "npm run vue:build && npm run neu:build",
     "vue:lint": "vue-cli-service lint",
     "vue:build": "vue-cli-service build",
     "vue:serve": "vue-cli-service serve",
-    "sass": "sass --watch src/assets/styles:dist"
+    "neu:build": "neu build",
+    "neu:serve": "neu run",
+    "sass": "sass --watch src/assets/styles:data"
   },
   "dependencies": {
+    "@neutralinojs/lib": "^3.9.0",
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
-    "vue-router": "^4.1.6",
-    "vue-class-component": "^8.0.0-0"
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -57,26 +62,6 @@
     "not dead",
     "not ie 11"
   ],
-  "build": {
-    "appId": "com.dainws.monkeys-with-minigun.crm-view-nodejs",
-    "productName": "Crazy Random Multiverses",
-    "copyright": "Copyright © 2022 ${author}",
-    "nsis": {
-      "oneClick": true,
-      "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": true
-    },
-    "files": [
-      "dist/**/*"
-    ],
-    "extraResources": [
-      "defaults/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets",
-      "output": "dist_electron"
-    }
-  },
   "keywords": [
     "CRM",
     "Games",

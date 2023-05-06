@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GeneralSettingsComponent from '@/vue/components/settings/GeneralSettingsComponent.vue'
+import GeneralSettingsComponent from '@/components/settings/GeneralSettingsComponent.vue'
 </script>
 
 <template>

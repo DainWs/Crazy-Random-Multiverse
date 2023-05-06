@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { WindowSettings } from '@/vue/services/settings/models/AppSettings'
-import { Resolutions } from '@/vue/services/settings/models/window/WindowResolution'
-import { settingsController } from '@/vue/services/settings/SettingsController'
+import { WindowSettings } from '@/services/settings/models/window/Window';
+import { Resolutions } from '@/services/settings/models/window/WindowResolution'
+import { settingsController } from '@/services/settings/SettingsController'
 
 let generalConfiguration = await settingsController.getGeneralConfiguration()
 var windowSettings: WindowSettings = generalConfiguration.window

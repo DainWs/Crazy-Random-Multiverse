@@ -1,4 +1,5 @@
-import { GeneralSettings, WindowSettings } from "./models/AppSettings"
+import { GeneralSettings } from "./models/AppSettings"
+import { WindowSettings } from "./models/window/Window";
 import { settingsApi } from "./SettingsApi";
 
 class SettingsController {
