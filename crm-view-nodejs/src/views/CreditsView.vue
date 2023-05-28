@@ -8,7 +8,7 @@ const Sections = [
 </script>
 
 <template>
-  <main>
+  <div>
     <div class="overflow-auto d-flex justify-content-center align-items-center h-100">
       <div class="credits">
         <h1 class="text-white text-center">Credits</h1>
@@ -31,7 +31,7 @@ const Sections = [
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
 import { init, app, window, debug, filesystem, storage } from "@neutralinojs/lib"
-import { defaultWindowSettings, stringifyFromWindowSettings, WindowSettings } from "@/services/settings/models/window/Window"
+import { defaultWindowSettings, WindowSettings } from "@/services/settings/models/WindowSettings"
 import { settingsApi } from "@/services/settings/SettingsApi"
 
 async function checkDirectory(directory: string): Promise<void> {
@@ -21,14 +21,18 @@ async function checkStorage() {
 async function checkWindow() {
     const windowSettings: WindowSettings = await settingsApi.getWindowConfiguration()
 
-    if (windowSettings.screenMode.isMaximized) await window.maximize()
+    if (windowSettings.displayMode.isFullScreen) await window.setFullScreen()
 }
 
 
 export async function initialize(): Promise<void> {
-    await init()
-    await checkDirectory('.storage')
-    await checkStorage()
-    await window.show()
-    await checkWindow()
+    try {
+        await init()
+        await checkDirectory('.storage')
+        await checkStorage()
+        await checkWindow()
+        await window.show()
+    } catch(e) {
+        console.log()
+    }
 }

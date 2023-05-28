@@ -1,22 +1,23 @@
-import { defaultResolution } from "./models/window/WindowResolution"
-import { defaultScreenMode } from "./models/window/WindowScreenMode"
 import { storage } from "@neutralinojs/lib"
-import { defaultWindowSettings, parseToWindowSettings, stringifyFromWindowSettings, WindowSettings } from "./models/window/Window"
+import { ProfileSettings } from "./models/AppSettings"
+import { defaultProfileSettings, profileSettingsParser } from "./models/ProfileSettings"
+import { WindowSettings, defaultWindowSettings, windowSettingsParser } from "./models/WindowSettings"
 
 interface SettingsAPI {
     setWindowConfiguration(newSettings: WindowSettings): void
     getWindowConfiguration(): Promise<WindowSettings>
+
+    setProfileConfiguration(newSettings: ProfileSettings): void
+    getProfileConfiguration(): Promise<ProfileSettings>
 }
 
 class SimulateSettingsAPI implements SettingsAPI {
     private windowSettings: WindowSettings
+    private profileSettings: ProfileSettings
 
     public constructor() {
-        this.windowSettings = {
-            resolution: defaultResolution,
-            screenMode: defaultScreenMode,
-            darkTheme: false
-        }
+        this.windowSettings = defaultWindowSettings
+        this.profileSettings = defaultProfileSettings
     }
 
     public setWindowConfiguration(newSettings: WindowSettings): void {
@@ -26,15 +27,31 @@ class SimulateSettingsAPI implements SettingsAPI {
     public async getWindowConfiguration(): Promise<WindowSettings> {
         return this.windowSettings
     }
+
+    public setProfileConfiguration(newSettings: ProfileSettings): void {
+        this.profileSettings = newSettings
+    }
+
+    public async getProfileConfiguration(): Promise<ProfileSettings> {
+        return this.profileSettings
+    }
 }
 
 class RealSettingsAPI implements SettingsAPI {
     public setWindowConfiguration(newSettings: WindowSettings): void {
-        storage.setData('window', stringifyFromWindowSettings(newSettings))
+        storage.setData('window', windowSettingsParser.parseToJson(newSettings))
     }
 
     public async getWindowConfiguration(): Promise<WindowSettings> {
-        return parseToWindowSettings(await storage.getData('window'))
+        return windowSettingsParser.parseToObject(await storage.getData('window'))
+    }
+
+    public setProfileConfiguration(newSettings: ProfileSettings): void {
+        storage.setData('profile', profileSettingsParser.parseToJson(newSettings))
+    }
+
+    public async getProfileConfiguration(): Promise<ProfileSettings> {
+        return profileSettingsParser.parseToObject(await storage.getData('profile'))
     }
 }
 

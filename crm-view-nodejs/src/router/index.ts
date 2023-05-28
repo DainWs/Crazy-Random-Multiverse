@@ -1,37 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import HomeView from '@/views/HomeView.vue'
+import SettingsView from '@/views/SettingView.vue'
+import CreditsView from '@/views/CreditsView.vue'
+import GameView from '@/views/GameView.vue'
+
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHistory(),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: () => import('@/views/HomeView.vue')
+      path: '',
+      component: HomeView
     },
     {
       path: '/settings',
-      name: 'settings',
-      component: () => import('@/views/SettingView.vue')
+      component: SettingsView
     },
     {
       path: '/credits',
-      name: 'credits',
-      component: () => import('@/views/CreditsView.vue')
+      component: CreditsView
     },
     {
       path: '/create-game',
-      name: 'create-game',
-      component: () => import('@/views/GameView.vue')
+      component: GameView
     },
     {
       path: '/join-game',
-      name: 'join-game',
-      component: () => import('@/views/GameView.vue')
+      component: GameView
     },
     {
       path: '/game',
-      name: 'game',
-      component: () => import('@/views/GameView.vue')
+      component: GameView
     }
   ]
 })

@@ -1,6 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  
   "applicationId": "com.dainws.monkeys-with-minigun.crm-view-nodejs",
   "version": "1.0.0",
   "defaultMode": "window",
@@ -39,21 +37,15 @@
   "modes": {
     "window": {
       "title": "Crazy Random Multiverses",
-      
       "width": 1280,
       "height": 720,
-      "maxWidth": 1280,
-      "minWidth": 1280,
-      "maxHeight": 720,
-      "minHeight": 720,
-
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/data/logo.png",
       "enableInspector": true,
       "borderless": false,
       "maximize": false,
-      "hidden": false,
+      "hidden": true,
       "resizable": false,
       "exitProcessOnClose": true
     },

@@ -9,3 +9,4 @@ import { initialize } from './neutralino/NeutralinoImpl'
 
 initialize()
 createApp(App).use(router).mount('#app');
+

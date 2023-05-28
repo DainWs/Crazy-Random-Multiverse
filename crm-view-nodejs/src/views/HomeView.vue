@@ -3,13 +3,13 @@
 </script>
 
 <template>
-  <main>
+  <div class="w-100 h-100 position-relative">
     <img alt="Monos con Minigun logo" class="logo rounded-circle position-absolute bottom-0 end-0 mb-4 me-4"
       src="@/assets/images/logo.png" />
 
     <nav class="d-flex justify-content-center align-items-center">
       <div class="d-inline-flex flex-column">
-        <div class="title">
+        <div class="main-title">
           <h1>Crazy Random Multiverses</h1>
         </div>
         <div class="d-inline-flex justify-content-between flex-column link-menu">
@@ -31,10 +31,10 @@
         </div>
       </div>
     </nav>
-  </main>
+  </div>
 </template>
 
-<style>
+<style lang="scss">
 @keyframes logoAnimation {
   0% {
     box-shadow: 0 0 0 3px #c2c2c2;
@@ -60,43 +60,42 @@
   animation-iteration-count: infinite;
 }
 
-.title {
+.main-title {
   margin-bottom: 3rem;
   padding: 1rem;
   background-color: white;
   position: relative;
-}
 
-.title h1 {
-  cursor: default;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 0.1rem;
-  text-transform: uppercase;
-  user-select: none;
-  margin: 0 !important;
-  text-align: center;
-  white-space: nowrap;
-}
+  h1 {
+    cursor: default;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    user-select: none;
+    margin: 0 !important;
+    text-align: center;
+    white-space: nowrap;
 
-.title h1:before {
-  background-color: #c50000;
-  content: '';
-  display: block;
-  height: 0.25rem;
-  width: 55%;
-  margin-right: auto;
-  margin-bottom: 1rem;
-}
+    &:before,
+    &:after {
+      background-color: #c50000;
+      content: '';
+      display: block;
+      height: 0.25rem;
+      width: 55%;
+    }
 
-.title h1:after {
-  background-color: #c50000;
-  content: '';
-  display: block;
-  height: 0.25rem;
-  width: 55%;
-  margin-left: auto;
-  margin-top: 1rem;
+    &:before {
+      margin-right: auto;
+      margin-bottom: 1rem;
+    }
+
+    &:after {
+      margin-left: auto;
+      margin-top: 1rem;
+    }
+  }
 }
 
 nav {
