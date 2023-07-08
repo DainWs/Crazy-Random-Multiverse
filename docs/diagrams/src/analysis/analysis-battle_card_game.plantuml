@@ -1,0 +1,87 @@
+@startuml
+title "Analysis - Battle card game"
+!theme plain
+
+BasicBattleCardGame *--> Turn
+BasicBattleCardGame *--> Round
+BasicBattleCardGame *--> "2..N" Player
+BasicBattleCardGame *--> Dealer
+
+Turn --> Player
+Round --> DealStrategy
+DealStrategy --> Deck
+
+Player *--> Zone
+Zone *--> "2" Row
+Row *--> "3" Square
+Square o--> "0..1" Warrior
+
+Player *--> Hand
+Hand o--> "0..N" Card
+
+Dealer o--> DealStrategy
+Dealer *--> Deck
+Deck *--> "1..N" Card
+
+Card <|-- Spell
+Card <|-- Warrior
+Card <|-- Equipment
+
+Spell --> Effect : Causes
+Effect .u.> BasicBattleCardGame : Affect
+
+Warrior o--> "0..1" Equipment
+
+Player o--> "0..N" Action
+Action <|-- Surrender
+Action <|-- CardAction
+CardAction ..> Card : Selected
+CardAction <|-- UseSpell
+CardAction <|-- UseEquipment
+CardAction <|-- WarriorAction
+
+UseSpell .U.> Hand : From
+UseEquipment .-.> Square : Target
+WarriorAction .-.> Square : Target
+WarriorAction <|-- Put
+WarriorAction <|-- Move
+WarriorAction <|-- Attack
+
+Move ..> Square : From
+Attack ..> Player : TargetPlayer
+
+/'
+Class Game {}
+
+Class Board {}
+Class Deck {}
+Class Player {}
+
+Game *--> Dealer
+Game *---> Turn
+Game *----> "2..N" Player
+
+Dealer *---> Deck
+Dealer --> Turn : know
+Deck *--> "2..N" Card
+
+Turn --> "2..N" Player
+
+Player *--> Hand
+Hand o--> "0..N" Card
+
+Player *--> Board
+Board *--> "1..N" Square
+Square *--> Position
+Square o--> "0..1" Card
+
+Player ..> Action : perform 
+
+Action ..> Card : selected
+Action ..> Square : target
+Action <|-- Put
+Action <|-- Attack
+
+Attack ..> Card : with
+'/
+@enduml

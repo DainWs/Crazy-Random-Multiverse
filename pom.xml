@@ -1,56 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.dainws.monkeys-with-minigun</groupId>
-	<artifactId>crm-game</artifactId>
+	<groupId>com.dainws.games</groupId>
+	<artifactId>card-battle-game</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Crazy Random Multiverses</name>
+
+	<name>Card Battle Game</name>
 	<description>Pending</description>
 
 	<properties>
-		<spring.boot.version>3.0.5</spring.boot.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.source>17</maven.compiler.source>
 	</properties>
 
 	<modules>
-		<module>crm-domain</module>
-		<module>crm-classic</module>
-
-		<module>crm-resources</module>
+		<module>cbg-domain</module>
 	</modules>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<version>${spring.boot.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-			<version>${spring.boot.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<version>${spring.boot.version}</version>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>${spring.boot.version}</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.9.3</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -61,20 +34,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.dainws.monkeys-with-minigun</groupId>
-				<artifactId>crm-game-domain</artifactId>
-				<version>1.0-SNAPSHOT</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.dainws.monkeys-with-minigun</groupId>
-				<artifactId>crm-game-classic</artifactId>
-				<version>1.0-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>

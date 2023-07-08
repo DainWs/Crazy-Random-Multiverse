@@ -1,6 +1,7 @@
 import { init, app, window, debug, filesystem, storage } from "@neutralinojs/lib"
 import { defaultWindowSettings, WindowSettings } from "@/services/settings/models/WindowSettings"
 import { settingsApi } from "@/services/settings/SettingsApi"
+import { defaultProfileSettings } from "@/services/settings/models/ProfileSettings"
 
 async function checkDirectory(directory: string): Promise<void> {
     try { await filesystem.readDirectory(directory) }
@@ -15,6 +16,10 @@ async function checkStorage() {
 
     if (!keyList.includes('window')) {
         settingsApi.setWindowConfiguration(defaultWindowSettings)
+    }
+
+    if (!keyList.includes('profile')) {
+        settingsApi.setProfileConfiguration(defaultProfileSettings)
     }
 }
 

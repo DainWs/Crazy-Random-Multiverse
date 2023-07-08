@@ -1,7 +1,7 @@
 import { ProfileSettings } from "./AppSettings";
 
 export const defaultProfileSettings: ProfileSettings = {
-    username: 'user'
+    username: `user_${new Date().getTime()}`
 }
 
 class ProfileSettingsParser {

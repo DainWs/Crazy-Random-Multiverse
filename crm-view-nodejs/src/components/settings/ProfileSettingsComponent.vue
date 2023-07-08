@@ -13,7 +13,7 @@ async function changeUserName(event: any) {
     }
 }
 
-async function persistUserName(event: any) {
+async function persistUserName() {
     debug.log(`Saving changes`)
     settingsController.setProfileConfiguration(settings)
 }
@@ -34,7 +34,7 @@ async function persistUserName(event: any) {
                         <h2 class="text-white flex-grow-1 m-0">Name</h2>
                     </div>
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
-                        <input class="text-black" type="text" value="user" @change="changeUserName($event)" @focusout="persistUserName($event)"/>
+                        <input class="text-black" type="text" value="user" @change="changeUserName($event)" @focusout="persistUserName()"/>
                     </div>
                 </div>
 
