@@ -1,6 +1,102 @@
 @startuml
-title Domain design
+title "Design - Domain Players"
+!theme plain
 
+Interface Combatant {
+ +receiveDamageFrom(Combatant): void
+ +causeDamageTo(Combatant): void
+ +isAlive(): boolean
+ +getDamage(): Double
+ +setDamage(Double): void
+ +getHealthPoints(): Double
+ +setHealthPoints(Double): void
+ +getMaxHealthPoints(): Double
+ +setMaxHealthPoints(Double): void
+ +getEquipment(): Equipment
+ +setEquipment(Equipment): void
+}
+
+Abstract Class CardBattleGame {
+ +start(): void
+ +checkForWinner(): void
+ | muchos posibles metodos
+ | sujeto a cambios
+}
+
+Class Turn {
+ +Turn(List<Player>)
+ +next(): void
+ +prev(): void
+ +getActivePlayerId(): Long 
+}
+
+Class Player {
+ +getId(): String
+ +getName(): String
+}
+
+Class Leader implements Combatant {
+ +getName(): String
+ +getDescription(): String
+}
+
+Class Hand {
+ +addCards(List<Card>): void
+ +getCard(id): Card
+ +getSpell(id): Spell
+ +getWarrior(id): Warrior
+ +getEquipment(id): Equipment
+ +getCards(): List<Card>
+ +removeCard(Card): void
+}
+
+Class Zone {
+ +getRow(RowPosition): Row
+ +getAllRows(): List<Row>
+}
+
+Class Row {
+ +isPosition(RowPosition): boolean
+ +getPosition(): RowPosition
+ +getSquare(SquarePosition): Square
+ +getAllSquares(): List<Square>
+}
+
+Class Square {
+ +isPosition(SquarePosition): boolean
+ +getPosition(): SquarePosition
+ +containsCard(): boolean
+ +putCard(Card): void
+ +getCard(): Card
+ +removeCard(): void
+}  
+
+CardBattleGame *--> Turn
+CardBattleGame *--> "2..N" Player
+
+Player *--> Leader
+Player *---> Hand
+Player *--> Zone
+
+Zone *--> "2" Row
+Zone --> RowPosition
+
+Row *--> RowPosition
+Row *--> "3" Square
+Row --> SquarePosition
+
+Square *--> SquarePosition
+Square o--> "0..1" Warrior
+Combatant <|.... Warrior
+
+RowPosition <|-- Front
+RowPosition <|-- Back
+
+SquarePosition <|-- Left
+SquarePosition <|-- Center
+SquarePosition <|-- Right
+
+/'
 Class Game {
  -round: int
  -dealer: Dealer
@@ -200,5 +296,5 @@ StatisticCard o-- Statistic
 Statistic *-- StatisticType
 StatisticType <|.. BasicStatisticTypes
 
-
+'/
 @enduml

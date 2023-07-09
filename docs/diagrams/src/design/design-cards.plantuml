@@ -1,0 +1,86 @@
+@startuml
+title "Design - Battle card game"
+!theme plain
+
+Interface Combatant {
+ +receiveDamageFrom(Combatant): void
+ +causeDamageTo(Combatant): void
+ +isAlive(): boolean
+ +getDamage(): Damage
+ +getHealth(): Health
+ +getArmor(): Armor
+ +getEquipment(): Equipment
+ +setEquipment(Equipment): void
+}
+
+Interface Deck {
+ +getCommonWarrior(): Warrior
+ +getUncommonWarrior(): Warrior
+ +getRareWarrior(): Warrior
+ +getEpicWarrior(): Warrior
+ +getLegendaryWarrior(): Warrior
+ +getMithicWarrior(): Warrior
+ +getEquipment(): Equipment
+ +getSpell(): Spell
+}
+
+Class Card {
+ +getId(): String
+ +getType(): Type
+ +getName(): String
+ +getDescription(): String
+}
+
+Class Spell extends Card {
+ +getEffectId(): ActionId
+}
+
+Class Warrior extends Card implements Combatant {
+ +getRarity(): Rarity
+ +isRarity(Rarity): boolean
+}
+
+Class Equipment extends Card {
+ +getDamageFor(Combatant): Double
+ +getMaxHealthFor(Combatant): Double
+ +getMaxArmorFor(Combatant): Double
+}
+
+Abstract class Stat {
+ +getCurrentValue(): Double
+ +increaseValue(amount): void
+ +decreaseValue(amount): void
+}
+
+Class Health extends Stat {
+ +getMaxValue(): Double
+ +setMaxValue(amount): void
+}
+
+Class Damage extends Stat {}
+Class Armor extends Stat {
+ +getMaxValue(): Double
+ +setMaxValue(amount): void
+}
+
+Warrior *--> Stat
+Warrior o--> "0..1" Equipment
+
+Damage *--> Type
+Armor *--> Type
+Type <|-- Phisical
+Type <|-- Magical
+
+Deck --> Card
+
+Warrior *--> Rarity
+Rarity <|-- Common
+Rarity <|-- Uncommon
+Rarity <|-- Rare
+Rarity <|-- Epic
+Rarity <|-- Legendary
+Rarity <|-- Mithic
+
+
+
+@enduml
