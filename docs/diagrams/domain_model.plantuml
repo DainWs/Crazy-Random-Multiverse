@@ -1,5 +1,5 @@
 @startuml
-title "Analysis - Battle card game"
+title "Domain model"
 !theme plain
 
 CardBattleGame *--> Turn
@@ -7,22 +7,22 @@ CardBattleGame *--> Round
 CardBattleGame *--> "2..N" Player
 CardBattleGame *--> Dealer
 
-Turn --> Player
-DealStrategy --> Deck
+Turn --> Player : Over
+
+Round --> DealStrategy : Define
+Dealer ..> DealStrategy
+Dealer *--> Deck
+DealStrategy ..> Card : Deal
+Deck *--> " 1..N" Card
 
 Player *--> Leader
 Player *--> Zone
+Player *--> Hand
+
 Zone *---> "2" Row
 Row *--> "3" Square
 Square o--> "0..1" Warrior
-
-Player *--> Hand
-Hand o--> "0..N" Card
-
-Dealer o--> DealStrategy
-Dealer *--> Deck
-DealStrategy --> Round
-Deck *--> "1..N" Card
+Hand o---> "0..N  " Card
 
 Card <|-- Spell
 Card <|-- Warrior
@@ -37,13 +37,16 @@ WarriorType <|--- Legendary
 WarriorType <|--- Mithic
 
 Spell --> Effect : Causes
-Effect .u.> CardBattleGame : Affect
+Spell *--> TriggerCondition
+TriggerCondition <|-- RoundCondition
+TriggerCondition <|-- UseSpellCondition
+TriggerCondition <|-- AdquireCardCondition
 
 Warrior o--> "0..1" Equipment
 
 Player o--> "0..N" Action
-Action <|-- Surrender
 Action <|-- CardAction
+Action <|-- Surrender
 CardAction ..> Card : Selected
 CardAction <|-- UseSpell
 CardAction <|-- UseEquipment
@@ -56,4 +59,9 @@ WarriorAction <|-- Move
 WarriorAction <|-- Attack
 
 Move ..> Square : From
+
+Class UseSpell {
+ Must have a 
+ Spell card type
+}
 @enduml

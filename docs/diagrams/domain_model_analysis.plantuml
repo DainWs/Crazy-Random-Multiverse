@@ -1,0 +1,81 @@
+@startuml
+title "Domain model - analysis"
+!theme plain
+
+CardBattleGame *--> Turn
+CardBattleGame *--> Round
+CardBattleGame *--> "2..N" Player
+CardBattleGame *--> Dealer
+
+Round --> DealStrategy
+Dealer o--> DealStrategy
+Dealer *--> Deck
+Deck *----> " 1..N" Card
+
+Player *--> Leader
+Player *--> Zone
+Player *--> Hand
+
+Zone *---> "2" Row
+Row *--> "3" Square
+Square o--> "0..1" Warrior
+Hand o----> "0..N  " Card
+
+Card <|--- Spell
+Card <|--- Warrior
+Card <|---- Equipment
+
+Warrior *--> WarriorType
+WarriorType <|--- Common
+WarriorType <|--- Uncommon
+WarriorType <|--- Rare
+WarriorType <|--- Epic
+WarriorType <|--- Legendary
+WarriorType <|--- Mithic
+
+Spell --> Effect : Causes
+Spell *--> TriggerCondition
+TriggerCondition <|-- RoundCondition
+TriggerCondition <|-- UseSpellCondition
+TriggerCondition <|-- AdquireCardCondition
+
+Warrior o--> "0..1" Equipment
+Warrior *--> Stats
+Equipment *--> Stats
+
+Stats --> "0..2" Armor
+Armor <|-- PhysicalArmor
+Armor <|-- MagicArmor
+Stats --> "0..2" Damage
+Damage <|-- PhysicalDamage
+Damage <|-- MagicDamage
+
+Player o--> "0..N" Action
+Action <|-- CardAction
+Action <|-- Surrender
+CardAction ---> Card : Over Selected
+CardAction <|-- UseSpell
+CardAction <|-- UseEquipment
+CardAction <|-- WarriorAction
+
+UseEquipment ---> Square : Target
+WarriorAction ---> Square : Target
+WarriorAction <|-- Put
+WarriorAction <|-- Move
+WarriorAction <|-- Attack
+
+Move --> Square : From
+
+Class Stats {
+ Health
+}
+
+Class UseSpell {
+ Must have a 
+ Spell card type
+}
+
+Class Surrender {
+ Makes player lost
+}
+@enduml
