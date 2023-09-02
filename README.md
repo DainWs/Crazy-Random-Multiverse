@@ -1,19 +1,13 @@
-## Questions
-- Todas las cartas van a tener un tipo de rareza, aunque va a ser normal para reducir complejidad.
-- Las cartas de la baraja se van a poder repetir? es decir, en un turno te puede tocar la misma carta 2 veces? 
-y en diferente turno se repite?
-- En que plataforma lo vais a querer?
-
 ## Description
 Each player will get a random leader type card, this will be immediately shown to the rest 
-of the players by putting it face up on the table.
+of the players by putting it face up on the player zone of the table.
 
 The objective of the game, is to kill the leaders of the rest of the enemy players, before they kill yours.
 
 ## Cards
 **Cards Types**:
  - Leader: If it dies you lose, each player has One.
- - Equipment: It can be equipped to a Warrior-type card to improve it
+ - Equipment: It can be equipped to a Warrior-type/Leader-type card to improve it
  - Spell: It's a spell, it can be good or bad, it can even change the rules of the board
  - Warrior: They are those cards that will protect the leader
 	- Pop
@@ -23,15 +17,11 @@ The objective of the game, is to kill the leaders of the rest of the enemy playe
 	- Legendary
 
 **Card statistics**:
- - Special ability
- - Physical armor
- - Magic armor
- - Physical damage
- - Magic damage
- - Heal per turn
- - Health
+ - Physical/Magic armor
+ - Physical/Magic/True/Infinite damage
+ - Health (Infinite or finite)
 
-## Card placementble, it will have a 1 turn cooldown before it can be used.
+## Card placement, it will have a 1 turn cooldown before it can be used.
  - All cards can only hit once per turn unless the card specifies otherwise.
  - You can have unlimited cards in your hand, but only 6 cards on the board plus the leader.
  - Once equipment spells have be

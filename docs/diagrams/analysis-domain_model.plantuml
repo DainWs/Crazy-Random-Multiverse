@@ -1,5 +1,5 @@
 @startuml 
-title "Domain model"
+title "Analysis - Domain model"
 !theme plain
 
 class Player
@@ -33,6 +33,53 @@ ____
  Move
  Attack
 }
+
+note bottom of FirstRow
+ Has 3 WarriorSquare
+ Requires SecondRow 
+ to be full
+end note
+
+note bottom of SecondRow
+ Has 3 WarriorSquare
+ Requires FirstRow 
+ empty to be attacked
+ Requires ThirdRow 
+ to be full
+end note
+
+note bottom of ThirdRow
+ Has 1 LeaderSquare
+ Requires SecondRow 
+ empty to be attacked
+end note
+
+note left of Leader
+ If player leader die, 
+ then player lose.
+end note
+
+note bottom of Damage
+ Can be Infinite or Finite.
+ Can be one of these types:
+  \tPhysical
+  \tMagic
+  \tTrue
+ In case of Infinite damage,
+ this will be True type damage.
+end note
+
+note bottom of Health
+ Can be Infinite or Finite.
+ Only Infinite Damage can win
+ against Infinite Health 
+end note
+
+note bottom of Armor
+ Can be one of these types:
+  \tPhysical
+  \tMagic
+end note
 
 CardBattleGame *--> Turn
 CardBattleGame *--> Round
@@ -81,7 +128,7 @@ Statistic <|-- Damage
 Statistic <|-- Health
 Statistic <|-- Armor
 
-Spell --> Effect : Cause
+Spell --> Effect : Causes
 Spell *--> TriggerCondition
 TriggerCondition <|-- RoundCondition
 TriggerCondition <|-- UseSpellCondition
