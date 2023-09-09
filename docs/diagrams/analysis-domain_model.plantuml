@@ -129,7 +129,7 @@ Statistic <|-- Health
 Statistic <|-- Armor
 
 Spell --> Effect : Causes
-Spell *--> TriggerCondition
+Effect *--> Id
 TriggerCondition <|-- RoundCondition
 TriggerCondition <|-- UseSpellCondition
 TriggerCondition <|-- AdquireCardCondition
