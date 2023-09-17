@@ -18,7 +18,7 @@ public class MoveAction implements Action {
 	}
 
 	@Override
-	public void execute() throws PlayerActionException {
+	public void perform() throws PlayerActionException {
 		Zone zone = this.player.getZone();
 		if (zone.hasCombatant(this.toPosition)) {
 			throw new PlayerActionException("La zona destinataria ya esta ocupada.");

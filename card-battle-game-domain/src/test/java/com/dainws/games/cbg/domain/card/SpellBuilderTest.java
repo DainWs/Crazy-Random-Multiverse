@@ -13,22 +13,28 @@ class SpellBuilderTest {
 	@BeforeEach
 	void beforeEach() {
 		this.builder = Spell.builder()
-				.withCode(1L)
-				.withEffect(1L)
+				.withCode(1)
+				.withEffect(1)
 				.withName("test-spell")
 				.withDescription("test-spell_description");
 	}
 
 	@Test
 	void testGivenNoneCode_whenBuild_thenThrowNullPointerException() {
-		this.builder.withCode(null);
+		this.builder = Spell.builder()
+				.withEffect(1)
+				.withName("test-spell")
+				.withDescription("test-spell_description");
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}
 
 	@Test
 	void testGivenNoneEffect_whenBuild_thenThrowNullPointerException() {
-		this.builder.withEffect((Long) null);
+		this.builder = Spell.builder()
+				.withCode(1)
+				.withName("test-spell")
+				.withDescription("test-spell_description");
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}

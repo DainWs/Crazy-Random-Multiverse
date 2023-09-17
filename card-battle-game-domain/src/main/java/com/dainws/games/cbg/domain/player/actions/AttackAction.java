@@ -13,8 +13,7 @@ public class AttackAction implements Action {
 	private Player targetPlayer;
 	private Position targetPosition;
 
-	public AttackAction(Player sourcePlayer, Position sourcePosition, Player targetPlayer,
-			Position targetPosition) {
+	public AttackAction(Player sourcePlayer, Position sourcePosition, Player targetPlayer, Position targetPosition) {
 		this.sourcePlayer = sourcePlayer;
 		this.sourcePosition = sourcePosition;
 		this.targetPlayer = targetPlayer;
@@ -22,10 +21,10 @@ public class AttackAction implements Action {
 	}
 
 	@Override
-	public void execute() {
+	public void perform() {
 		Zone sourceZone = this.sourcePlayer.getZone();
 		Combatant sourceCombatant = sourceZone.getCombatant(this.sourcePosition);
-		
+
 		Zone targetZone = this.targetPlayer.getZone();
 		Combatant targetCombatant = targetZone.getCombatant(this.targetPosition);
 

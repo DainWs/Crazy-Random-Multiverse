@@ -23,7 +23,7 @@ public class PutAction implements Action {
 	}
 
 	@Override
-	public void execute() throws PlayerActionException {
+	public void perform() throws PlayerActionException {
 		Hand playerHand = this.sourcePlayer.getHand();
 		Card card = playerHand.getCard(this.selectedCardCode);
 

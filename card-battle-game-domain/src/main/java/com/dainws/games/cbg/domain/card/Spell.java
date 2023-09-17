@@ -35,7 +35,7 @@ public class Spell extends Card {
 		private Builder() {
 		}
 
-		public Builder withCode(Long id) {
+		public Builder withCode(long id) {
 			this.id = id;
 			return this;
 		}
@@ -50,7 +50,7 @@ public class Spell extends Card {
 			return this;
 		}
 
-		public Builder withEffect(Long effectId) {
+		public Builder withEffect(long effectId) {
 			this.effectId = new EffectId(effectId);
 			return this;
 		}

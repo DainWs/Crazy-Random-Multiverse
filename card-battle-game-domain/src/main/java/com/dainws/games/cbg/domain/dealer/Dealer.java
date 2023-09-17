@@ -14,13 +14,21 @@ public final class Dealer {
 		this.deck = deck;
 	}
 	
-	public void setStrategy(DealStrategy strategy) {
-		this.strategy = strategy;
-	}
-	
 	public void dealTo(Player player) {
 		List<Card> cards = this.strategy.dealFrom(this.deck);
 		Hand hand = player.getHand();
 		hand.addCards(cards);
+	}
+	
+	public void setStrategy(DealStrategy strategy) {
+		this.strategy = strategy;
+	}
+	
+	public DealStrategy getStrategy() {
+		return strategy;
+	}
+	
+	public Deck getDeck() {
+		return deck;
 	}
 }

@@ -11,7 +11,7 @@ class CombatantCardTest {
 	@Test
 	void testGivenCombatantCardWith0Health_whenIsAlive_thenReturnFalse() {
 		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
+				.withCode(0)
 				.withName("test-combatantCard")
 				.withDescription("test-combatantCard_description")
 				.withNoneDamage()

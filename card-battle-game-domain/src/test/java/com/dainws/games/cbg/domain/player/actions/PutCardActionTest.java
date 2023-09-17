@@ -33,7 +33,7 @@ class PutCardActionTest {
 		Position targetPosition = new Position(LinePosition.BACK, SquarePosition.LEFT);
 		PutAction action = new PutAction(this.player, warrior.getCode(), targetPosition);
 		
-		action.execute();
+		action.perform();
 		
 		Zone zone = this.player.getZone();
 		Combatant combatant = zone.getCombatant(targetPosition);

@@ -71,7 +71,7 @@ public class Warrior extends Combatant {
 			this.rarity = rarity;
 		}
 
-		public Builder withCode(Long id) {
+		public Builder withCode(long id) {
 			this.id = id;
 			return this;
 		}

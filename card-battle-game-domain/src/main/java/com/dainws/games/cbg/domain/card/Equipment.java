@@ -46,7 +46,7 @@ public class Equipment extends Card {
 		private Builder() {
 		}
 
-		public Builder withCode(Long id) {
+		public Builder withCode(long id) {
 			this.id = id;
 			return this;
 		}

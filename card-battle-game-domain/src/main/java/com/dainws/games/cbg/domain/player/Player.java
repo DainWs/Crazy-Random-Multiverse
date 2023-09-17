@@ -8,7 +8,7 @@ public class Player {
 	private String name;
 	private Hand hand;
 	private Zone zone;
-
+	
 	private Player(Builder builder) {
 		this.playerCode = builder.playerCode;
 		this.name = builder.name;
@@ -42,6 +42,10 @@ public class Player {
 
 	public void setZone(Zone zone) {
 		this.zone = zone;
+	}
+	
+	public boolean isAlive() {
+		return this.zone.hasCombatant(Position.LEADER_POSITION);
 	}
 
 	@Override

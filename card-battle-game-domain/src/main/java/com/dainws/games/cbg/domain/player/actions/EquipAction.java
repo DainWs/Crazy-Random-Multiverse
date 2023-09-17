@@ -23,7 +23,7 @@ public class EquipAction implements Action {
 	}
 
 	@Override
-	public void execute() throws PlayerActionException {
+	public void perform() throws PlayerActionException {
 		Hand playerHand = this.player.getHand();
 		Card card = playerHand.getCard(this.equipmentCardCode);
 		
