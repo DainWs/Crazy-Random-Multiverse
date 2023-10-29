@@ -2,14 +2,14 @@ package com.dainws.games.cbg.domain.player.actions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.card.Warrior;
 import com.dainws.games.cbg.domain.card.WarriorFactory;
+import com.dainws.games.cbg.domain.exception.EmptySquareException;
+import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.LinePosition;
 import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.cbg.domain.player.PlayerFactory;
@@ -27,7 +27,7 @@ class PutCardActionTest {
 	}
 	
 	@Test
-	void testGivenPlayerWithWarriorAndTargetPosition_whenExecute_thenPutWarriorInTargetPosition() {
+	void testGivenPlayerWithWarriorAndTargetPosition_whenExecute_thenPutWarriorInTargetPosition() throws PlayerActionException, EmptySquareException {
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 		this.player.getHand().addCard(warrior);
 		Position targetPosition = new Position(LinePosition.BACK, SquarePosition.LEFT);

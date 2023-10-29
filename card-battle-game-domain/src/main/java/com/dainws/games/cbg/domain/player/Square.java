@@ -3,8 +3,8 @@ package com.dainws.games.cbg.domain.player;
 import java.util.Objects;
 
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.player.exception.NoSuchCardException;
-import com.dainws.games.cbg.domain.player.exception.SquareAlreadyFilledException;
+import com.dainws.games.cbg.domain.exception.EmptySquareException;
+import com.dainws.games.cbg.domain.exception.OccupiedSquareException;
 
 public class Square {
 
@@ -23,9 +23,9 @@ public class Square {
 		return this.combatant != null;
 	}
 
-	public void putCombatant(Combatant combatant) throws SquareAlreadyFilledException {
+	public void putCombatant(Combatant combatant) throws OccupiedSquareException {
 		if (this.hasCombatant()) {
-			throw new SquareAlreadyFilledException();
+			throw new OccupiedSquareException();
 		}
 
 		this.combatant = combatant;
@@ -35,12 +35,12 @@ public class Square {
 		this.combatant = null;
 	}
 
-	public Combatant getCombatant() throws NoSuchCardException {
+	public Combatant getCombatant() throws EmptySquareException {
 		if (this.hasCombatant()) {
 			return this.combatant;
 		}
 
-		throw new NoSuchCardException("No warrior in this square.");
+		throw new EmptySquareException();
 	}
 
 	public Position getPosition() {

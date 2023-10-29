@@ -20,7 +20,9 @@ class EquipmentBuilderTest {
 
 	@Test
 	void testGivenNoneCode_whenBuild_thenThrowNullPointerException() {
-		this.builder.withCode(null);
+		this.builder = Equipment.builder()
+				.withName("test-equipment")
+				.withDescription("test-equipment_description");
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}

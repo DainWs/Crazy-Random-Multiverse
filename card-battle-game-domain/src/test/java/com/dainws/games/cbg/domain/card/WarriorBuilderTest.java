@@ -23,7 +23,12 @@ class WarriorBuilderTest {
 
 	@Test
 	void testGivenNoneCode_whenBuild_thenThrowNullPointerException() {
-		this.builder.withCode(null);
+		this.builder = Warrior.commonWarriorBuilder()
+				.withName("test-warrior")
+				.withDescription("test-warrior_description")
+				.withNoneDamage()
+				.withNoneArmor()
+				.withHealth(100);
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}

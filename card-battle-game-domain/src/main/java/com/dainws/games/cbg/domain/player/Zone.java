@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.dainws.games.cbg.domain.card.Combatant;
+import com.dainws.games.cbg.domain.exception.EmptySquareException;
+import com.dainws.games.cbg.domain.exception.OccupiedSquareException;
 
 public class Zone {
 	private Square leaderSquare;
@@ -46,12 +48,12 @@ public class Zone {
 		return this.lines.get(linePosition).isEmpty();
 	}
 
-	public Combatant getCombatant(Position position) {
+	public Combatant getCombatant(Position position) throws EmptySquareException {
 		Square square = this.getSquareFrom(position);
 		return square.getCombatant();
 	}
 	
-	public void putCombatant(Combatant combatant, Position position) {
+	public void putCombatant(Combatant combatant, Position position) throws OccupiedSquareException {
 		Square square = this.getSquareFrom(position);
 		square.putCombatant(combatant);
 	}

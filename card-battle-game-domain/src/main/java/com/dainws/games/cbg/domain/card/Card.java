@@ -2,26 +2,28 @@ package com.dainws.games.cbg.domain.card;
 
 import java.util.Objects;
 
+import com.dainws.games.cbg.domain.text.Text;
+
 public abstract class Card {
 	private CardCode code;
-	private String name;
-	private String description;
+	private Text name;
+	private Text description;
 
 	protected Card(long code, String name, String description) {
 		this.code = new CardCode(code, this.getType());
-		this.name = name;
-		this.description = description;
+		this.name = new Text("CARD_NAME", name);
+		this.description = new Text("CARD_DESCRIPTION", name);
 	}
 	
 	public final CardCode getCode() {
 		return code;
 	}
 
-	public final String getName() {
+	public final Text getName() {
 		return name;
 	}
 
-	public final String getDescription() {
+	public final Text getDescription() {
 		return description;
 	}
 

@@ -1,6 +1,8 @@
 package com.dainws.games.cbg.domain.player.actions;
 
 import com.dainws.games.cbg.domain.card.Combatant;
+import com.dainws.games.cbg.domain.exception.GameException;
+import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.cbg.domain.player.Zone;
@@ -21,17 +23,21 @@ public class AttackAction implements Action {
 	}
 
 	@Override
-	public void perform() {
-		Zone sourceZone = this.sourcePlayer.getZone();
-		Combatant sourceCombatant = sourceZone.getCombatant(this.sourcePosition);
-
-		Zone targetZone = this.targetPlayer.getZone();
-		Combatant targetCombatant = targetZone.getCombatant(this.targetPosition);
-
-		targetCombatant.receiveDamageFrom(sourceCombatant);
-
-		if (!targetCombatant.isAlive()) {
-			targetZone.removeCombatant(this.targetPosition);
+	public void perform() throws PlayerActionException {
+		try {
+			Zone sourceZone = this.sourcePlayer.getZone();
+			Combatant sourceCombatant = sourceZone.getCombatant(this.sourcePosition);
+	
+			Zone targetZone = this.targetPlayer.getZone();
+			Combatant targetCombatant = targetZone.getCombatant(this.targetPosition);
+	
+			targetCombatant.receiveDamageFrom(sourceCombatant);
+	
+			if (!targetCombatant.isAlive()) {
+				targetZone.removeCombatant(this.targetPosition);
+			}
+		} catch (GameException gameException) {
+			throw new PlayerActionException(gameException);
 		}
 	}
 }

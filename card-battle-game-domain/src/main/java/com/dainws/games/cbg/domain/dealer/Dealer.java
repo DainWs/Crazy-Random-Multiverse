@@ -15,9 +15,13 @@ public final class Dealer {
 	}
 	
 	public void dealTo(Player player) {
-		List<Card> cards = this.strategy.dealFrom(this.deck);
+		List<Card> cards = this.getCards();
 		Hand hand = player.getHand();
 		hand.addCards(cards);
+	}
+	
+	public List<Card> getCards() {
+		return this.strategy.dealFrom(this.deck);
 	}
 	
 	public void setStrategy(DealStrategy strategy) {

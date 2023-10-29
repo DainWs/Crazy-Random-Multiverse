@@ -6,7 +6,8 @@ import java.util.Optional;
 
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardCode;
-import com.dainws.games.cbg.domain.player.exception.NoSuchCardException;
+import com.dainws.games.cbg.domain.card.CardType;
+import com.dainws.games.cbg.domain.exception.CardNotFoundException;
 
 public class Hand {
 
@@ -32,22 +33,30 @@ public class Hand {
 		return this.cards.stream().anyMatch(card -> card.getCode().equals(code));
 	}
 
+	public boolean contains(CardType type) {
+		return this.cards.stream().anyMatch(card -> card.isType(type));
+	}
+
 	public void remove(Card card) {
 		this.cards.remove(card);
 	}
 
-	public void remove(CardCode code) throws NoSuchCardException {
+	public void remove(CardCode code) throws CardNotFoundException {
 		Card card = this.getCard(code);
 		this.cards.remove(card);
 	}
 
-	public Card grab(CardCode code) throws NoSuchCardException {
+	public void removeAllOf(CardType type) {
+		this.cards.removeIf(card -> card.isType(type));
+	}
+
+	public Card grab(CardCode code) throws CardNotFoundException {
 		Card card = this.getCard(code);
 		this.cards.remove(card);
 		return card;
 	}
 
-	public Card getCard(CardCode code) throws NoSuchCardException {
+	public Card getCard(CardCode code) throws CardNotFoundException {
 		Optional<Card> optionalCard = Optional.empty();
 
 		for (Card card : this.cards) {
@@ -57,10 +66,23 @@ public class Hand {
 		}
 
 		if (optionalCard.isEmpty()) {
-			throw new NoSuchCardException("There is none card with that CardCode: " + code);
+			throw new CardNotFoundException("CARD_NOT_FOUND_IN_HAND",
+					"No se ha encontrado la carta " + code + " en la mano del jugador");
 		}
 
 		return optionalCard.get();
+	}
+
+	public List<Card> getCardsOf(CardType type) {
+		List<Card> searchedCards = new ArrayList<>();
+
+		for (Card card : this.cards) {
+			if (card.isType(type)) {
+				searchedCards.add(card);
+			}
+		}
+
+		return searchedCards;
 	}
 
 	public List<Card> getCards() {
