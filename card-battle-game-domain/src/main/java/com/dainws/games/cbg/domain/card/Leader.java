@@ -1,9 +1,9 @@
 package com.dainws.games.cbg.domain.card;
 
-import com.dainws.games.cbg.domain.statistics.Armor;
-import com.dainws.games.cbg.domain.statistics.Damage;
-import com.dainws.games.cbg.domain.statistics.DamageType;
-import com.dainws.games.cbg.domain.statistics.Health;
+import com.dainws.games.cbg.domain.card.statistics.Armor;
+import com.dainws.games.cbg.domain.card.statistics.Damage;
+import com.dainws.games.cbg.domain.card.statistics.DamageType;
+import com.dainws.games.cbg.domain.card.statistics.Health;
 
 public class Leader extends Combatant {
 

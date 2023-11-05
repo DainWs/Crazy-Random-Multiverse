@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.statistics;
+package com.dainws.games.cbg.domain.card.statistics;
 
 public class Armor extends Statistic {
 	public static final Armor NONE = new Armor(0, ArmorType.PHYSICAL);

@@ -2,9 +2,9 @@ package com.dainws.games.cbg.domain.dealer;
 
 import java.util.List;
 
+import com.dainws.games.cbg.domain.Hand;
+import com.dainws.games.cbg.domain.Player;
 import com.dainws.games.cbg.domain.card.Card;
-import com.dainws.games.cbg.domain.player.Hand;
-import com.dainws.games.cbg.domain.player.Player;
 
 public final class Dealer {
 	private Deck deck;

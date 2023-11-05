@@ -1,52 +1,56 @@
-package com.dainws.games.cbg.domain.player.actions;
+package com.dainws.games.cbg.domain.actions;
 
+import com.dainws.games.cbg.domain.Hand;
+import com.dainws.games.cbg.domain.Player;
+import com.dainws.games.cbg.domain.PlayerCode;
+import com.dainws.games.cbg.domain.Position;
+import com.dainws.games.cbg.domain.Zone;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.exception.GameException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
-import com.dainws.games.cbg.domain.player.Hand;
-import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
-import com.dainws.games.cbg.domain.player.Zone;
 
 public class PutAction implements Action {
 
-	private Player sourcePlayer;
+	private PlayerCode sourcePlayerCode;
 	private CardCode selectedCardCode;
 	private Position targetPosition;
 
-	public PutAction(Player sourcePlayer, CardCode selectedCardCode, Position targetPosition) {
-		this.sourcePlayer = sourcePlayer;
+	public PutAction(PlayerCode sourcePlayerCode, CardCode selectedCardCode, Position targetPosition) {
+		this.sourcePlayerCode = sourcePlayerCode;
 		this.selectedCardCode = selectedCardCode;
 		this.targetPosition = targetPosition;
 	}
 
 	@Override
-	public void perform() throws PlayerActionException {
+	public void perform(ActionContext context) throws PlayerActionException {
 		try {
-			Hand playerHand = this.sourcePlayer.getHand();
-			Card card = playerHand.getCard(this.selectedCardCode);
+			Player sourcePlayer = context.getSourcePlayer();
+			Position targetPosition = context.getTargetPosition();
+			
+			Hand playerHand = sourcePlayer.getHand();
+			Card card = playerHand.getCard(context.getSourceCardCode());
 	
 			if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
 				throw new PlayerActionException("SELECTED_CARD_IS_NOT_A_COMBATANT");
 			}
 			
-			Zone playerZone = this.sourcePlayer.getZone();
-			if (playerZone.hasCombatant(this.targetPosition)) {
+			Zone playerZone = sourcePlayer.getZone();
+			if (playerZone.hasCombatant(targetPosition)) {
 				throw new PlayerActionException("TARGET_POSITION_IS_OCCUPIED");
 			}
 			
-			playerZone.putCombatant((Combatant) card, this.targetPosition);
+			playerZone.putCombatant((Combatant) card, targetPosition);
 			playerHand.remove(card);
 		} catch (GameException gameException) {
 			throw new PlayerActionException(gameException);
 		}
 	}
 
-	public Player getSourcePlayer() {
-		return sourcePlayer;
+	public PlayerCode getSourcePlayer() {
+		return sourcePlayerCode;
 	}
 
 	public CardCode getSelectedCardCode() {

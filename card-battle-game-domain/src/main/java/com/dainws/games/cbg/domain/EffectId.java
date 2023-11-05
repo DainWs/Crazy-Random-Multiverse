@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.effect;
+package com.dainws.games.cbg.domain;
 
 import java.util.Objects;
 

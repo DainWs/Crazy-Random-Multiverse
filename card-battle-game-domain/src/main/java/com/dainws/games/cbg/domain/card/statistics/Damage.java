@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.statistics;
+package com.dainws.games.cbg.domain.card.statistics;
 
 public class Damage extends Statistic {
 	private static final double INFINITE_DAMAGE_VALUE = Double.POSITIVE_INFINITY;

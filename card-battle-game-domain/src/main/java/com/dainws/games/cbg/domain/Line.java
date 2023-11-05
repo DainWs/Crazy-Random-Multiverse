@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.player;
+package com.dainws.games.cbg.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -9,8 +9,6 @@ import com.dainws.games.cbg.domain.dealer.DealStrategyFactory;
 import com.dainws.games.cbg.domain.dealer.Dealer;
 import com.dainws.games.cbg.domain.dealer.Deck;
 import com.dainws.games.cbg.domain.exception.NoSuchPlayerException;
-import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.PlayerCode;
 
 public class Game {
 	private GameCode gameCode;
@@ -70,7 +68,7 @@ public class Game {
 		return alivePlayersCount == 1;
 	}
 
-	public GameCode getGameCode() {
+	public GameCode getCode() {
 		return gameCode;
 	}
 
