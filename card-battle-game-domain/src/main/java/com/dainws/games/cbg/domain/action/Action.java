@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.actions;
+package com.dainws.games.cbg.domain.action;
 
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 

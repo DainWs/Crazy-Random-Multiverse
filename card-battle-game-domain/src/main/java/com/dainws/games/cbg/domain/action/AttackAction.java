@@ -1,14 +1,14 @@
-package com.dainws.games.cbg.domain.actions;
+package com.dainws.games.cbg.domain.action;
 
-import com.dainws.games.cbg.domain.Zone;
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.exception.GameException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
+import com.dainws.games.cbg.domain.player.Zone;
 
-public class AttackAction implements Action {
+public class AttackAction extends PlayerTurnAction {
 
 	@Override
-	public void perform(ActionContext context) throws PlayerActionException {
+	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
 		try {
 			Zone sourceZone = context.getSourcePlayer().getZone();
 			Combatant sourceCombatant = sourceZone.getCombatant(context.getSourcePosition());
