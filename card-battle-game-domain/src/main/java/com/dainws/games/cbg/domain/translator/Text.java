@@ -60,4 +60,9 @@ public class Text implements Translatable {
 	public int hashCode() {
 		return Objects.hash(this.key);
 	}
+	
+	@Override
+	public String toString() {
+		return this.value;
+	}
 }
