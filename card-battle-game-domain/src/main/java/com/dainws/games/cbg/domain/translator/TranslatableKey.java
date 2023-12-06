@@ -1,11 +1,11 @@
-package com.dainws.games.cbg.domain.text;
+package com.dainws.games.cbg.domain.translator;
 
 import java.util.Objects;
 
-public class TextKey {
+public class TranslatableKey {
 	private String value;
 
-	public TextKey(String value) {
+	public TranslatableKey(String value) {
 		this.value = value;
 	}
 
@@ -23,7 +23,7 @@ public class TextKey {
 			return false;
 		}
 
-		TextKey that = (TextKey) obj;
+		TranslatableKey that = (TranslatableKey) obj;
 		return Objects.equals(this.value, that.value);
 	}
 

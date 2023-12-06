@@ -1,36 +1,36 @@
-package com.dainws.games.cbg.domain.text;
+package com.dainws.games.cbg.domain.translator;
 
 import java.util.Objects;
 
 public class Text implements Translatable {
-	private TextKey key;
+	private TranslatableKey key;
 	private String value;
-	private TextLanguage language;
+	private Language language;
 
 	public Text(String key) {
-		this.key = new TextKey(key);
-		this.language = TextLanguage.UNKNOWN_LANGUAGE;
+		this.key = new TranslatableKey(key);
+		this.language = Language.UNKNOWN_LANGUAGE;
 	}
 	
-	public Text(TextKey key) {
+	public Text(TranslatableKey key) {
 		this.key = key;
-		this.language = TextLanguage.UNKNOWN_LANGUAGE;
+		this.language = Language.UNKNOWN_LANGUAGE;
 	}
 	
-	public Text(String key, String value, TextLanguage language) {
-		this.key = new TextKey(key);
+	public Text(String key, String value, Language language) {
+		this.key = new TranslatableKey(key);
 		this.value = value;
 		this.language = language;
 	}
 	
-	public Text(TextKey key, String value, TextLanguage language) {
+	public Text(TranslatableKey key, String value, Language language) {
 		this.key = key;
 		this.value = value;
 		this.language = language;
 	}
 
 	@Override
-	public TextKey getKey() {
+	public TranslatableKey getKey() {
 		return key;
 	}
 	
@@ -38,7 +38,7 @@ public class Text implements Translatable {
 		return value;
 	}
 	
-	public TextLanguage getLanguage() {
+	public Language getLanguage() {
 		return language;
 	}
 

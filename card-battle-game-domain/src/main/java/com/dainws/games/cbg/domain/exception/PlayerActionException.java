@@ -1,6 +1,6 @@
 package com.dainws.games.cbg.domain.exception;
 
-import com.dainws.games.cbg.domain.text.TextKey;
+import com.dainws.games.cbg.domain.translator.TranslatableKey;
 
 public class PlayerActionException extends GameException {
 
@@ -11,10 +11,10 @@ public class PlayerActionException extends GameException {
 	}
 	
 	public PlayerActionException(String messageKey) {
-		super(new TextKey(messageKey));
+		super(new TranslatableKey(messageKey));
 	}
 	
 	public PlayerActionException(String messageKey, Throwable throwable) {
-		super(new TextKey(messageKey), throwable);
+		super(new TranslatableKey(messageKey), throwable);
 	}
 }

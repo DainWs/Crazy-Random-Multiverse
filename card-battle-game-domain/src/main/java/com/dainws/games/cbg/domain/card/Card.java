@@ -2,8 +2,8 @@ package com.dainws.games.cbg.domain.card;
 
 import java.util.Objects;
 
-import com.dainws.games.cbg.domain.text.Text;
-import com.dainws.games.cbg.domain.text.TextLanguage;
+import com.dainws.games.cbg.domain.translator.Language;
+import com.dainws.games.cbg.domain.translator.Text;
 
 public abstract class Card {
 	private CardCode code;
@@ -12,8 +12,8 @@ public abstract class Card {
 
 	protected Card(long code, String name, String description) {
 		this.code = new CardCode(code, this.getType());
-		this.name = new Text("CARD_NAME", name, TextLanguage.UNKNOWN_LANGUAGE);
-		this.description = new Text("CARD_DESCRIPTION", name, TextLanguage.UNKNOWN_LANGUAGE);
+		this.name = new Text("CARD_NAME", name, Language.UNKNOWN_LANGUAGE);
+		this.description = new Text("CARD_DESCRIPTION", name, Language.UNKNOWN_LANGUAGE);
 	}
 	
 	public final CardCode getCode() {

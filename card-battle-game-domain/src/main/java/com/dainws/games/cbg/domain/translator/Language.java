@@ -1,14 +1,14 @@
-package com.dainws.games.cbg.domain.text;
+package com.dainws.games.cbg.domain.translator;
 
 import java.util.Objects;
 
-public class TextLanguage {
+public class Language {
 	
-	public static final TextLanguage UNKNOWN_LANGUAGE = new TextLanguage("??");
+	public static final Language UNKNOWN_LANGUAGE = new Language("??");
 
 	private String isoAlphaTwo;
 	
-	private TextLanguage(String isoAlphaTwo) {
+	private Language(String isoAlphaTwo) {
 		this.isoAlphaTwo = isoAlphaTwo;
 	}
 	
@@ -26,7 +26,7 @@ public class TextLanguage {
 			return false;
 		}
 		
-		TextLanguage that = (TextLanguage) obj;
+		Language that = (Language) obj;
 		return Objects.equals(this, that);
 	}
 	
@@ -40,11 +40,11 @@ public class TextLanguage {
 		return "[%s]".formatted(this.isoAlphaTwo);
 	}
 	
-	public static TextLanguage from(String isoAlphaTwo) {
+	public static Language from(String isoAlphaTwo) {
 		if (isoAlphaTwo.length() != 2) {
 			throw new IllegalArgumentException("Invalid ISO of type 3166-1 alpha-2");
 		}
 		
-		return new TextLanguage(isoAlphaTwo);
+		return new Language(isoAlphaTwo);
 	}
 }
