@@ -1,5 +1,6 @@
 package com.dainws.games.cbg.domain.text;
 
 public interface Translatable {
-	String getKey();
+	TextKey getKey();
+	TextLanguage getLanguage();
 }

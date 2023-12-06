@@ -3,21 +3,43 @@ package com.dainws.games.cbg.domain.text;
 import java.util.Objects;
 
 public class Text implements Translatable {
-	private String key;
+	private TextKey key;
 	private String value;
+	private TextLanguage language;
 
-	public Text(String key, String value) {
+	public Text(String key) {
+		this.key = new TextKey(key);
+		this.language = TextLanguage.UNKNOWN_LANGUAGE;
+	}
+	
+	public Text(TextKey key) {
+		this.key = key;
+		this.language = TextLanguage.UNKNOWN_LANGUAGE;
+	}
+	
+	public Text(String key, String value, TextLanguage language) {
+		this.key = new TextKey(key);
+		this.value = value;
+		this.language = language;
+	}
+	
+	public Text(TextKey key, String value, TextLanguage language) {
 		this.key = key;
 		this.value = value;
+		this.language = language;
 	}
 
 	@Override
-	public String getKey() {
+	public TextKey getKey() {
 		return key;
 	}
 	
 	public String getValue() {
 		return value;
+	}
+	
+	public TextLanguage getLanguage() {
+		return language;
 	}
 
 	@Override

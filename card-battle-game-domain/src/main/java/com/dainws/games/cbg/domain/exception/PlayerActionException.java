@@ -1,5 +1,7 @@
 package com.dainws.games.cbg.domain.exception;
 
+import com.dainws.games.cbg.domain.text.TextKey;
+
 public class PlayerActionException extends GameException {
 
 	private static final long serialVersionUID = -1029563058707798026L;
@@ -9,10 +11,10 @@ public class PlayerActionException extends GameException {
 	}
 	
 	public PlayerActionException(String messageKey) {
-		super(messageKey);
+		super(new TextKey(messageKey));
 	}
 	
 	public PlayerActionException(String messageKey, Throwable throwable) {
-		super(messageKey, throwable);
+		super(new TextKey(messageKey), throwable);
 	}
 }
