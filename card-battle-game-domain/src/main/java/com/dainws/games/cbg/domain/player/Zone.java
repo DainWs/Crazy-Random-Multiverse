@@ -1,14 +1,12 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.exception.EmptySquareException;
-import com.dainws.games.cbg.domain.exception.OccupiedSquareException;
+import com.dainws.games.cbg.domain.exception.EmptyPositionException;
+import com.dainws.games.cbg.domain.exception.NotEmptyPositionException;
 
 public class Zone {
 	private Square leaderSquare;
@@ -48,32 +46,48 @@ public class Zone {
 		return this.lines.get(linePosition).isEmpty();
 	}
 
-	public Combatant getCombatant(Position position) throws EmptySquareException {
+	public Combatant getCombatant(Position position) throws EmptyPositionException {
 		Square square = this.getSquareFrom(position);
-		return square.getCombatant();
+		if (square.hasCombatant()) {
+			return square.getCombatant();
+		}
+		
+		throw new EmptyPositionException();
 	}
-	
-	public void putCombatant(Combatant combatant, Position position) throws OccupiedSquareException {
+
+	public void putCombatant(Combatant combatant, Position position) throws NotEmptyPositionException {
 		Square square = this.getSquareFrom(position);
+		if (square.hasCombatant()) {
+			throw new NotEmptyPositionException();
+		}
+		
 		square.putCombatant(combatant);
 	}
-	
+
 	public void removeCombatant(Position position) {
 		Square square = this.getSquareFrom(position);
 		square.removeCombatant();
 	}
-	
+
 	private Square getSquareFrom(Position position) {
 		if (position.isFrom(LinePosition.LEADER)) {
 			return this.leaderSquare;
 		}
-		
+
 		Line line = this.lines.get(position.getLinePosition());
 		return line.getSquareFrom(position);
 	}
 
-	public List<Line> getLines() {
-		List<Line> linesList = new ArrayList<>(this.lines.values());
-		return Collections.unmodifiableList(linesList);
+	public Map<Position, Combatant> getPositions() {
+		Map<Position, Combatant> positions = new HashMap<>();
+		positions.put(Position.LEADER_POSITION, this.leaderSquare.getCombatant());
+
+		for (Line line : this.lines.values()) {
+			for (Square square : line.getSquares()) {
+				positions.put(square.getPosition(), square.getCombatant());
+			}
+		}
+
+		return positions;
 	}
 }

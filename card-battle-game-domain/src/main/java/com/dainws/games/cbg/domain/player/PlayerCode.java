@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
 import java.util.Objects;
 
@@ -33,7 +33,7 @@ public final class PlayerCode {
 		return "player#%s".formatted(this.code);
 	}
 	
-	public static PlayerCode newInstance(String code) {
+	public static PlayerCode from(String code) {
 		Objects.requireNonNull(code);
 		return new PlayerCode(code);
 	}

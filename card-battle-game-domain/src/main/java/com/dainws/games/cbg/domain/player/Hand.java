@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +66,7 @@ public class Hand {
 		}
 
 		if (optionalCard.isEmpty()) {
-			throw new CardNotFoundException("CARD_NOT_FOUND_IN_HAND",
-					"No se ha encontrado la carta " + code + " en la mano del jugador");
+			throw new CardNotFoundException();
 		}
 
 		return optionalCard.get();

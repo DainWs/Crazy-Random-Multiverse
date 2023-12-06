@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
 import java.util.Objects;
 
@@ -47,6 +47,10 @@ public class Player {
 	public boolean isAlive() {
 		return this.zone.hasCombatant(Position.LEADER_POSITION);
 	}
+	
+	public boolean isSpectator() {
+		return !this.isAlive();
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -75,7 +79,7 @@ public class Player {
 		private Builder() {}
 
 		public Builder withPlayerCode(String code) {
-			this.playerCode = PlayerCode.newInstance(code);
+			this.playerCode = PlayerCode.from(code);
 			return this;
 		}
 

@@ -1,13 +1,10 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
 import java.util.Objects;
 
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.exception.EmptySquareException;
-import com.dainws.games.cbg.domain.exception.OccupiedSquareException;
 
-public class Square {
-
+class Square {
 	private Position position;
 	private Combatant combatant;
 
@@ -23,11 +20,7 @@ public class Square {
 		return this.combatant != null;
 	}
 
-	public void putCombatant(Combatant combatant) throws OccupiedSquareException {
-		if (this.hasCombatant()) {
-			throw new OccupiedSquareException();
-		}
-
+	public void putCombatant(Combatant combatant) {
 		this.combatant = combatant;
 	}
 
@@ -35,18 +28,14 @@ public class Square {
 		this.combatant = null;
 	}
 
-	public Combatant getCombatant() throws EmptySquareException {
-		if (this.hasCombatant()) {
-			return this.combatant;
-		}
-
-		throw new EmptySquareException();
+	public Combatant getCombatant() {
+		return this.combatant;
 	}
 
 	public Position getPosition() {
 		return position;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || obj.getClass() != this.getClass())
@@ -60,7 +49,7 @@ public class Square {
 	public int hashCode() {
 		return Objects.hash(this.position);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[Position=%s,Warrior=%s]".formatted(this.position, this.combatant);

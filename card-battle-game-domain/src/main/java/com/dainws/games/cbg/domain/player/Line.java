@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class Line {
+class Line {
 	private LinePosition linePosition;
 	private Map<SquarePosition, Square> squares;
 
