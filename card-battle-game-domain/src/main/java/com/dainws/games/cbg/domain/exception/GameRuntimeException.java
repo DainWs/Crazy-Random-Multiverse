@@ -1,6 +1,8 @@
 package com.dainws.games.cbg.domain.exception;
 
+import com.dainws.games.cbg.domain.event.Error;
 import com.dainws.games.cbg.domain.translator.Language;
+import com.dainws.games.cbg.domain.translator.Text;
 import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.cbg.domain.translator.TranslatableKey;
 
@@ -28,7 +30,7 @@ public class GameRuntimeException extends RuntimeException implements Translatab
 		super(message, throwable);
 		this.messageKey = messageKey;
 	}
-
+	
 	@Override
 	public TranslatableKey getKey() {
 		return this.messageKey;
@@ -37,5 +39,9 @@ public class GameRuntimeException extends RuntimeException implements Translatab
 	@Override
 	public Language getLanguage() {
 		return Language.UNKNOWN_LANGUAGE;
+	}
+	
+	public Error toError() {
+		return new Error(new Text(this.messageKey));
 	}
 }
