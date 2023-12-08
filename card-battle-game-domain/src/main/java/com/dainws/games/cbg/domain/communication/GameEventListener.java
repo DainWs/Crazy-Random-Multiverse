@@ -50,6 +50,8 @@ public class GameEventListener {
 		
 		Event event = new Event(EventCode.PLAYER_LOSE, details);
 		this.notifyEventToPlayers(game.getPlayers(), event);
+		
+		 // TODO do here if a winner exists
 	}
 	
 	private void notifyEventToPlayers(List<Player> players, Event event) {

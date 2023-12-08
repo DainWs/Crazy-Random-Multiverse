@@ -1,14 +1,17 @@
 package com.dainws.games.cbg.domain.action;
 
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.exception.GameException;
+import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
+import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.cbg.domain.player.Zone;
 
 public class MoveAction extends PlayerTurnAction {
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
+		assert (this.playerEventListener != null);
+
 		this.validate(context);
 
 		try {
@@ -20,18 +23,22 @@ public class MoveAction extends PlayerTurnAction {
 			Combatant combatant = sourceZone.getCombatant(fromPosition);
 			sourceZone.removeCombatant(fromPosition);
 			targetZone.putCombatant(combatant, toPosition);
-		} catch (GameException gameException) {
-			throw new PlayerActionException(gameException);
+		} catch (GameRuntimeException e) {
+			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
+
+		this.playerEventListener.onPlayerMoveCardAction(context);
 	}
 	
 	private void validate(ActionContext context) throws PlayerActionException {
+		Player sourcePlayer = context.getSourcePlayer();
+
 		if (!context.getSourceZone().hasCombatant(context.getSourcePosition())) {
-			throw new PlayerActionException("NONE_COMBATANT_IN_TARGET_POSITION");
+			throw new PlayerActionException(sourcePlayer, "EXCEPTION_NONE_COMBATANT_IN_TARGET_POSITION");
 		}
 
 		if (context.getTargetZone().hasCombatant(context.getTargetPosition())) {
-			throw new PlayerActionException("TARGET_POSITION_IS_OCCUPIED");
+			throw new PlayerActionException(sourcePlayer, "EXCEPTION_TARGET_POSITION_IS_OCCUPIED");
 		}
 	}
 }

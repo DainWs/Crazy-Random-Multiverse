@@ -11,7 +11,19 @@ public class GameException extends Exception implements Translatable {
 	private static final long serialVersionUID = -2063427620165885793L;
 
 	private TranslatableKey messageKey;
+	private Language language;
 
+	public GameException(Translatable translatable) {
+		this.messageKey = translatable.getKey();
+		this.language = translatable.getLanguage();
+	}
+	
+	public GameException(Translatable translatable, Throwable throwable) {
+		super(throwable);
+		this.messageKey = translatable.getKey();
+		this.language = translatable.getLanguage();
+	}
+	
 	public GameException(TranslatableKey messageKey) {
 		this.messageKey = messageKey;
 	}
@@ -35,9 +47,18 @@ public class GameException extends Exception implements Translatable {
 	public TranslatableKey getKey() {
 		return this.messageKey;
 	}
+	
+	@Override
+	public String getValue() {
+		return this.getMessage();
+	}
 
 	@Override
 	public Language getLanguage() {
+		if (this.language != null) {
+			return this.language;
+		}
+
 		return Language.UNKNOWN_LANGUAGE;
 	}
 

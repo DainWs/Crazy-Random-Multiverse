@@ -33,11 +33,13 @@ public class Text implements Translatable {
 	public TranslatableKey getKey() {
 		return key;
 	}
-	
+
+	@Override
 	public String getValue() {
 		return value;
 	}
-	
+
+	@Override
 	public Language getLanguage() {
 		return language;
 	}

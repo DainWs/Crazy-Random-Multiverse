@@ -8,7 +8,7 @@ public abstract class UseCardAction extends PlayerTurnAction {
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
 		Card card = context.getSourceCard();
 		if (!this.canUse(card)) {
-			throw new PlayerActionException("CANT_USE_THAT_CARD");
+			throw new PlayerActionException(context.getSourcePlayer(), "EXCEPTION_CARD_CANT_BE_USED");
 		}
 		
 		this.performCardAction(card, context);
