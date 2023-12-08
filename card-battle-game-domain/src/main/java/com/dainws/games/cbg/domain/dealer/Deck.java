@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
+import com.dainws.games.cbg.domain.card.Card;
+import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Equipment;
 import com.dainws.games.cbg.domain.card.Leader;
 import com.dainws.games.cbg.domain.card.Spell;
@@ -42,7 +45,7 @@ public final class Deck {
 		int randomCardIndex = this.getRandomCardIndex(this.equipments.size());
 		return this.equipments.get(randomCardIndex);
 	}
-	
+
 	public Leader getLeader() {
 		int randomCardIndex = this.getRandomCardIndex(this.leaders.size());
 		return this.leaders.get(randomCardIndex);
@@ -52,9 +55,13 @@ public final class Deck {
 		int randomCardIndex = this.getRandomCardIndex(this.spells.size());
 		return this.spells.get(randomCardIndex);
 	}
-	
+
 	private int getRandomCardIndex(int maxIndex) {
 		return new Random().nextInt(maxIndex);
+	}
+
+	public static Deck withCards(Set<Card> cards) throws EmptyDeckException {
+		return new Builder().addCards(cards).build();
 	}
 
 	public static Builder builder() {
@@ -67,7 +74,34 @@ public final class Deck {
 		public Builder() {
 			this.deck = new Deck();
 		}
-		
+
+		public Builder addCards(Set<Card> cards) {
+			for (Card card : cards) {
+				this.addCard(card);
+			}
+			return this;
+		}
+
+		public Builder addCard(Card card) {
+			CardType cardType = card.getType();
+			if (cardType.equals(CardType.SPELL)) {
+				this.addCard((Spell) card);
+			}
+
+			if (cardType.equals(CardType.WARRIOR)) {
+				this.addCard((Warrior) card);
+			}
+
+			if (cardType.equals(CardType.EQUIPMENT)) {
+				this.addCard((Equipment) card);
+			}
+
+			if (cardType.equals(CardType.LEADER)) {
+				this.addCard((Leader) card);
+			}
+			return this;
+		}
+
 		public Builder addCard(Warrior warrior) throws DuplicatedCardException {
 			List<Warrior> warriorsWithSameRarity = this.deck.warriors.get(warrior.getRarity());
 			if (warriorsWithSameRarity.contains(warrior)) {
@@ -86,12 +120,12 @@ public final class Deck {
 			this.deck.equipments.add(equipment);
 			return this;
 		}
-		
+
 		public Builder addCard(Leader leader) throws DuplicatedCardException {
 			if (this.deck.leaders.contains(leader)) {
 				throw new DuplicatedCardException(leader);
 			}
-			
+
 			this.deck.leaders.add(leader);
 			return this;
 		}
@@ -109,10 +143,10 @@ public final class Deck {
 			if (this.isDeckEmpty()) {
 				throw new EmptyDeckException();
 			}
-			
+
 			return this.deck;
 		}
-		
+
 		private boolean isDeckEmpty() {
 			boolean hasNoneSpells = this.deck.spells.isEmpty();
 			boolean hasNoneEquipments = this.deck.equipments.isEmpty();

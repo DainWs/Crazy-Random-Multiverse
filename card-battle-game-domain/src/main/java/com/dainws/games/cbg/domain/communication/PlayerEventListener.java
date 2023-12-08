@@ -15,6 +15,10 @@ public class PlayerEventListener {
 	public PlayerEventListener() {
 		this.channel = new ConsoleChannel();
 	}
+	
+	public PlayerEventListener(Channel channel) {
+		this.channel = channel;
+	}
 
 	public void onPlayerGetTurn(Game game, Player player) {
 		EventDetails details = new EventDetails();

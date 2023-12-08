@@ -9,7 +9,7 @@ public class ConsoleChannel implements Channel {
 		this.errorMessage = "Cliente %s recibe el error %s";
 		this.eventMessage = "Cliente %s recibe el evento %s";
 	}
-
+	
 	@Override
 	public void send(Destination destination, Error error) {
 		System.out.println(this.errorMessage.formatted(destination, error.getText()));

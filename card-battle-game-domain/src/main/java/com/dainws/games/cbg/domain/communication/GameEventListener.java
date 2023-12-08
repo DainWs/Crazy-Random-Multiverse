@@ -11,6 +11,10 @@ public class GameEventListener {
 	public GameEventListener() {
 		this.channel = new ConsoleChannel();
 	}
+	
+	public GameEventListener(Channel channel) {
+		this.channel = channel;
+	}
 
 	public void onGameIsCreated(Game game) {
 		EventDetails details = new EventDetails();

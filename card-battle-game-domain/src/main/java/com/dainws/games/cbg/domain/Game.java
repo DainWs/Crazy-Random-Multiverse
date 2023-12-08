@@ -3,15 +3,19 @@ package com.dainws.games.cbg.domain;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
+import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.dealer.DealStrategy;
 import com.dainws.games.cbg.domain.dealer.DealStrategyFactory;
 import com.dainws.games.cbg.domain.dealer.Dealer;
 import com.dainws.games.cbg.domain.dealer.Deck;
-import com.dainws.games.cbg.domain.exception.NoSuchPlayerException;
+import com.dainws.games.cbg.domain.exception.PlayerNotFoundException;
+import com.dainws.games.cbg.domain.player.Player;
+import com.dainws.games.cbg.domain.player.PlayerCode;
 
 public class Game {
-	private GameCode gameCode;
+	private GameCode code;
 	private int playerIndexWithTurn;
 	private int round;
 
@@ -20,7 +24,7 @@ public class Game {
 	private DealStrategyFactory dealStrategyFactory; // TODO tal vez esto haya que hacerlo dinamico
 
 	private Game(Builder builder) {
-		this.gameCode = builder.gameCode;
+		this.code = builder.code;
 		this.round = builder.round;
 		this.dealer = new Dealer(builder.deck);
 		this.players = builder.players;
@@ -69,11 +73,11 @@ public class Game {
 	}
 
 	public GameCode getCode() {
-		return gameCode;
+		return code;
 	}
 
 	public int getRound() {
-		return this.round;
+		return round;
 	}
 
 	public Dealer getDealer() {
@@ -81,14 +85,14 @@ public class Game {
 	}
 
 	public List<Player> getPlayers() {
-		return players;
+		return List.copyOf(this.players);
 	}
 
 	public Player getPlayerWithTurn() {
 		return this.players.get(this.playerIndexWithTurn);
 	}
 
-	public Player getPlayer(PlayerCode playerCode) throws NoSuchPlayerException {
+	public Player getPlayer(PlayerCode playerCode) throws PlayerNotFoundException {
 		Optional<Player> optional = Optional.empty();
 
 		for (Player player : this.players) {
@@ -98,7 +102,7 @@ public class Game {
 		}
 
 		if (optional.isEmpty()) {
-			throw new NoSuchPlayerException("No player with " + playerCode + " was found.");
+			throw new PlayerNotFoundException();
 		}
 
 		return optional.get();
@@ -109,25 +113,25 @@ public class Game {
 	}
 
 	public static class Builder {
-		private GameCode gameCode;
+		private GameCode code;
 		private int round;
 		private Deck deck;
 		private List<Player> players;
 		private Player playerWithTurn;
 
 		private Builder() {
-			this.gameCode = new GameCode();
+			this.code = new GameCode();
 			this.playerWithTurn = null;
 			this.round = 0;
 		}
 
-		public Builder setGameCode(String uuid) {
-			this.gameCode = GameCode.fromString(uuid);
+		public Builder setCode(String uuid) {
+			this.code = GameCode.fromString(uuid);
 			return this;
 		}
 
-		public Builder setGameCode(GameCode gameCode) {
-			this.gameCode = gameCode;
+		public Builder setCode(GameCode code) {
+			this.code = code;
 			return this;
 		}
 
@@ -136,6 +140,11 @@ public class Game {
 			return this;
 		}
 
+		public Builder prepareDeckWith(Set<Card> cards) {
+			this.deck = Deck.withCards(cards);
+			return this;
+		}
+		
 		public Builder setDeck(Deck deck) {
 			this.deck = deck;
 			return this;
@@ -152,7 +161,7 @@ public class Game {
 		}
 
 		public Game build() {
-			Objects.requireNonNull(this.gameCode);
+			Objects.requireNonNull(this.code);
 			Objects.requireNonNull(this.deck);
 			Objects.requireNonNull(this.players);
 

@@ -105,7 +105,7 @@ public class Equipment extends Card {
 
 		private void checkStatAmount(double amount) {
 			if (amount < 0) {
-				throw new IllegalArgumentException("amount cant be less than 0");
+				throw new IllegalArgumentException("Amount cant be less than 0");
 			}
 		}
 

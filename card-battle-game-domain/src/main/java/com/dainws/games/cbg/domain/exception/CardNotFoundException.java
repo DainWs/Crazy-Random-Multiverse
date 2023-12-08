@@ -8,6 +8,6 @@ public class CardNotFoundException extends GameRuntimeException implements Trans
 	private static final long serialVersionUID = 1392950877789673225L;
 
 	public CardNotFoundException() {
-		super(new TranslatableKey("CARD_NOT_FOUND"));
+		super(new TranslatableKey("EXCEPTION_CARD_NOT_FOUND"));
 	}
 }

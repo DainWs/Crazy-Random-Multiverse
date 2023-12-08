@@ -1,7 +1,11 @@
-package com.dainws.games.cbg.domain.card;
+package com.dainws.games.cbg.domain;
 
 import java.util.Set;
 
+import com.dainws.games.cbg.domain.card.Card;
+import com.dainws.games.cbg.domain.card.CardCode;
+import com.dainws.games.cbg.domain.card.CardType;
+import com.dainws.games.cbg.domain.card.WarriorRarity;
 import com.dainws.games.cbg.domain.exception.CardNotFoundException;
 
 public interface CardRepository {

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.exception.EmptyPositionException;
-import com.dainws.games.cbg.domain.exception.NotEmptyPositionException;
+import com.dainws.games.cbg.domain.exception.PositionEmptyException;
+import com.dainws.games.cbg.domain.exception.PositionNotEmptyException;
 
 public class Zone {
 	private Square leaderSquare;
@@ -46,19 +46,19 @@ public class Zone {
 		return this.lines.get(linePosition).isEmpty();
 	}
 
-	public Combatant getCombatant(Position position) throws EmptyPositionException {
+	public Combatant getCombatant(Position position) throws PositionEmptyException {
 		Square square = this.getSquareFrom(position);
 		if (square.hasCombatant()) {
 			return square.getCombatant();
 		}
 		
-		throw new EmptyPositionException();
+		throw new PositionEmptyException();
 	}
 
-	public void putCombatant(Combatant combatant, Position position) throws NotEmptyPositionException {
+	public void putCombatant(Combatant combatant, Position position) throws PositionNotEmptyException {
 		Square square = this.getSquareFrom(position);
 		if (square.hasCombatant()) {
-			throw new NotEmptyPositionException();
+			throw new PositionNotEmptyException();
 		}
 		
 		square.putCombatant(combatant);
