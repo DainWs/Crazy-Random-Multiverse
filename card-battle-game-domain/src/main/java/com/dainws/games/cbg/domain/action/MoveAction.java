@@ -1,5 +1,7 @@
 package com.dainws.games.cbg.domain.action;
 
+import java.lang.System.Logger.Level;
+
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
@@ -8,6 +10,7 @@ import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.cbg.domain.player.Zone;
 
 public class MoveAction extends PlayerTurnAction {
+
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
 		assert (this.playerEventListener != null);
@@ -23,13 +26,15 @@ public class MoveAction extends PlayerTurnAction {
 			Combatant combatant = sourceZone.getCombatant(fromPosition);
 			sourceZone.removeCombatant(fromPosition);
 			targetZone.putCombatant(combatant, toPosition);
+
+			this.logger.log(Level.TRACE, "%s ha sido movido desde %s a %s", combatant, fromPosition, toPosition);
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
 
 		this.playerEventListener.onPlayerMoveCardAction(context);
 	}
-	
+
 	private void validate(ActionContext context) throws PlayerActionException {
 		Player sourcePlayer = context.getSourcePlayer();
 

@@ -1,5 +1,7 @@
 package com.dainws.games.cbg.domain.action;
 
+import java.lang.System.Logger.Level;
+
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
@@ -7,6 +9,7 @@ import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Hand;
 import com.dainws.games.cbg.domain.player.Player;
+import com.dainws.games.cbg.domain.player.Position;
 
 public class PutAction extends PlayerTurnAction {
 
@@ -17,13 +20,16 @@ public class PutAction extends PlayerTurnAction {
 		this.validate(context);
 
 		try {
-			Combatant combatantCard = (Combatant) context.getSourceCard();
-			context.getSourcePlayer().getHand().remove(combatantCard);
-			context.getTargetZone().putCombatant(combatantCard, context.getTargetPosition());
+			Combatant combatant = (Combatant) context.getSourceCard();
+			Position targetPosition = context.getTargetPosition();
+			context.getSourcePlayer().getHand().remove(combatant);
+			context.getTargetZone().putCombatant(combatant, targetPosition);
+
+			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, targetPosition);
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
-		
+
 		this.playerEventListener.onPlayerPutCardAction(context);
 	}
 

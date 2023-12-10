@@ -1,5 +1,7 @@
 package com.dainws.games.cbg.domain.action;
 
+import java.lang.System.Logger.Level;
+
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
@@ -19,10 +21,12 @@ public class EquipAction extends PlayerTurnAction {
 		this.validate(context);
 
 		try {
-			Card card = context.getSourceCard();
+			Equipment equipment = (Equipment) context.getSourceCard();
 			Zone zone = context.getTargetPlayer().getZone();
 			Combatant combatant = zone.getCombatant(context.getTargetPosition());
-			combatant.equip((Equipment) card);
+			combatant.equip(equipment);
+
+			this.logger.log(Level.TRACE, "%s ha sido equipado en el combatiente %s", equipment, combatant);
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}

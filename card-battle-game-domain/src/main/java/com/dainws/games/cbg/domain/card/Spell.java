@@ -54,12 +54,12 @@ public class Spell extends Card {
 			this.effectId = new EffectId(effectId);
 			return this;
 		}
-		
+
 		public Builder withEffect(EffectId effectId) {
 			this.effectId = effectId;
 			return this;
 		}
-		
+
 		public Builder withEffect(Effect effect) {
 			this.effectId = effect.getId();
 			return this;

@@ -15,7 +15,7 @@ public abstract class Card {
 		this.name = new Text("CARD_NAME", name, Language.UNKNOWN_LANGUAGE);
 		this.description = new Text("CARD_DESCRIPTION", name, Language.UNKNOWN_LANGUAGE);
 	}
-	
+
 	public final CardCode getCode() {
 		return code;
 	}
@@ -29,7 +29,7 @@ public abstract class Card {
 	}
 
 	public abstract CardType getType();
-	
+
 	public boolean isType(CardType type) {
 		return Objects.equals(this.getType(), type);
 	}
@@ -51,5 +51,10 @@ public abstract class Card {
 	@Override
 	public final int hashCode() {
 		return Objects.hash(this.code);
+	}
+
+	@Override
+	public String toString() {
+		return "%s".formatted(this.getName());
 	}
 }

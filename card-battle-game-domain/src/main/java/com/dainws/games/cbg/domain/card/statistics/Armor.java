@@ -52,6 +52,11 @@ public class Armor extends Statistic {
 		return this.type.canProtectAgainst(damage.getType());
 	}
 
+	@Override
+	public String toString() {
+		return "%s %s".formatted(this.type, this.value);
+	}
+	
 	public static Armor newInstance(double baseValue, ArmorType type) {
 		if (baseValue <= 0) {
 			return NONE;

@@ -25,6 +25,15 @@ public class Damage extends Statistic {
 		return type;
 	}
 	
+	@Override
+	public String toString() {
+		if (this.equals(INFINITE)) {
+			return "INFINITE";
+		}
+
+		return "%s %s".formatted(this.type, this.value);
+	}
+	
 	public static Damage newInstance(double baseValue, DamageType type) {
 		if (baseValue <= 0) {
 			return NONE;

@@ -1,5 +1,7 @@
 package com.dainws.games.cbg.domain.action;
 
+import java.lang.System.Logger;
+
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.communication.GameEventListener;
 import com.dainws.games.cbg.domain.communication.PlayerEventListener;
@@ -10,6 +12,11 @@ public abstract class PlayerTurnAction implements Action {
 	
 	protected GameEventListener gameEventListener;
 	protected PlayerEventListener playerEventListener;
+	protected Logger logger;
+
+	public PlayerTurnAction() {
+		this.logger = System.getLogger(LOGGER_NAME);
+	}
 	
 	@Override
 	public final void perform(ActionContext context) throws PlayerActionException {

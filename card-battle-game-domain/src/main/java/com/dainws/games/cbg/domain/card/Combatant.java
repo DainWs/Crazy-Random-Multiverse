@@ -78,4 +78,10 @@ public abstract class Combatant extends Card {
 	public Armor getArmor() {
 		return this.armor;
 	}
+
+	@Override
+	public String toString() {
+		return "%s[DMG=%s,ARM=%s,HP=%s,EQUIPMENT=%s]"
+				.formatted(this.getName(), this.damage, this.armor, this.health, this.equipment.getName());
+	}
 }

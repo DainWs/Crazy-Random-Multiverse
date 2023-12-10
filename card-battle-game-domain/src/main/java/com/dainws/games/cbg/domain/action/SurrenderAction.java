@@ -25,7 +25,7 @@ public class SurrenderAction implements Action {
 		for (Entry<Position, Combatant> entry : zone.getPositions().entrySet()) {
 			zone.removeCombatant(entry.getKey());
 		}
-		
+
 		this.playerEventListener.onPlayerSurrenderAction(context);
 		this.gameEventListener.onPlayerLoseGame(context.getGame(), sourcePlayer);
 	}

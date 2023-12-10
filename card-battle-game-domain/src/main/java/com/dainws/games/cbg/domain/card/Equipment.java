@@ -31,6 +31,11 @@ public class Equipment extends Card {
 		return health;
 	}
 
+	@Override
+	public String toString() {
+		return "%s[DMG=%s,ARM=%s,HP=%s]".formatted(this.getName(), this.damage, this.armor, this.health);
+	}
+
 	public static Builder builder() {
 		return new Builder();
 	}
