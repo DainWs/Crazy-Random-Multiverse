@@ -1,7 +1,6 @@
 package com.dainws.games.cbg.domain.exception;
 
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.PlayerCode;
 import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.cbg.domain.translator.TranslatableKey;
 

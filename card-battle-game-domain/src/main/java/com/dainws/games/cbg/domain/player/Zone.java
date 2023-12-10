@@ -78,7 +78,7 @@ public class Zone {
 		return line.getSquareFrom(position);
 	}
 
-	public Map<Position, Combatant> getPositions() {
+	public Map<Position, Combatant> getPositions() { // TODO esto tal vez no deberia ser un mapa
 		Map<Position, Combatant> positions = new HashMap<>();
 		positions.put(Position.LEADER_POSITION, this.leaderSquare.getCombatant());
 

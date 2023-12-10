@@ -51,14 +51,14 @@ public class Game {
 		this.updateDealStrategy();
 	}
 
-	public void updateDealStrategy() {
-		DealStrategy dealStrategy = this.dealStrategyFactory.createStrategy(this.round);
-		this.dealer.setStrategy(dealStrategy);
-	}
-	
 	public void resetRoundAndTurn() {
 		this.playerIndexWithTurn = 0;
 		this.round = 0;
+	}
+
+	public void updateDealStrategy() {
+		DealStrategy dealStrategy = this.dealStrategyFactory.createStrategy(this.round);
+		this.dealer.setStrategy(dealStrategy);
 	}
 	
 	public boolean hasWinner() {
