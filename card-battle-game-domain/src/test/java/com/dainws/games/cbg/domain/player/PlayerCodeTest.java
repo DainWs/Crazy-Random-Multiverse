@@ -15,12 +15,12 @@ class PlayerCodeTest {
 	@BeforeEach
 	void beforeEach() {
 		String code = "Th1s1s4Un1qu3C0d3";
-		this.playerCode = PlayerCode.newInstance(code);
+		this.playerCode = PlayerCode.from(code);
 	}
 	
 	@Test
 	void testGivenPlayerCodeWithDifferentCode_whenEquals_thenReturnFalse() {
-		PlayerCode otherPlayerCode = PlayerCode.newInstance("ThisIsOtherUniqueCode");
+		PlayerCode otherPlayerCode = PlayerCode.from("ThisIsOtherUniqueCode");
 		
 		boolean result = this.playerCode.equals(otherPlayerCode);
 		
@@ -40,13 +40,13 @@ class PlayerCodeTest {
 	void testGivenNullCode_whenNewInstance_thenThrowNullPointerException() {
 		String nullCode = null;
 		
-		assertThrows(NullPointerException.class, () -> PlayerCode.newInstance(nullCode));
+		assertThrows(NullPointerException.class, () -> PlayerCode.from(nullCode));
 	}
 	
 	@Test
 	void testGivenCode_whenNewInstance_thenDoNotThrowException() {
 		String code = "ThisIsOneCode";
 		
-		assertDoesNotThrow(() -> PlayerCode.newInstance(code));
+		assertDoesNotThrow(() -> PlayerCode.from(code));
 	}
 }

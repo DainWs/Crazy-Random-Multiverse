@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.cbg.domain.card.statistics.Armor;
+import com.dainws.games.cbg.domain.card.statistics.ArmorType;
+import com.dainws.games.cbg.domain.card.statistics.Damage;
+import com.dainws.games.cbg.domain.card.statistics.DamageType;
+
 class ArmorTest {
 	@Test
 	void testGivenArmorAndDamageOfSameType_whenCanProtectAgainst_thenReturnTrue() {

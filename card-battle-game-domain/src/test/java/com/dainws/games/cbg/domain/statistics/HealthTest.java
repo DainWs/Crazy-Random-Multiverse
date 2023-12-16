@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.cbg.domain.card.statistics.Damage;
+import com.dainws.games.cbg.domain.card.statistics.DamageType;
+import com.dainws.games.cbg.domain.card.statistics.Health;
+
 class HealthTest {
 
 	@Test

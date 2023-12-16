@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.cbg.domain.card.Warrior;
 import com.dainws.games.cbg.domain.card.WarriorFactory;
 import com.dainws.games.cbg.domain.exception.CardNotFoundException;
-import com.dainws.games.cbg.domain.exception.OccupiedSquareException;
+import com.dainws.games.cbg.domain.exception.PositionNotEmptyException;
 
 class SquareTest {
 
@@ -27,7 +27,7 @@ class SquareTest {
 	}
 
 	@Test
-	void testGivenSquareWithWarrior_whenHasWarrior_thenReturnTrue() throws OccupiedSquareException {
+	void testGivenSquareWithWarrior_whenHasWarrior_thenReturnTrue() throws PositionNotEmptyException {
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 		this.square.putCombatant(warrior);
 
@@ -64,7 +64,7 @@ class SquareTest {
 	}
 
 	@Test
-	void testGivenWarriorAndEmptySquare_whenPutCombatant_thenSquareHasWarrior() throws OccupiedSquareException {
+	void testGivenWarriorAndEmptySquare_whenPutCombatant_thenSquareHasWarrior() throws PositionNotEmptyException {
 		this.square.removeCombatant();
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 
@@ -82,17 +82,17 @@ class SquareTest {
 	}
 
 	@Test
-	void testGivenWarriorAndFilledSquare_whenPutCombatant_thenThrowSquareAlreadyFilledException() throws OccupiedSquareException {
+	void testGivenWarriorAndFilledSquare_whenPutCombatant_thenThrowSquareAlreadyFilledException() throws PositionNotEmptyException {
 		WarriorFactory warriorFactory = new WarriorFactory();
 		Warrior warrior = warriorFactory.createBasicWarrior();
 		this.square.removeCombatant();
 		this.square.putCombatant(warriorFactory.createBasicWarrior());
 
-		assertThrows(OccupiedSquareException.class, () -> this.square.putCombatant(warrior));
+		assertThrows(PositionNotEmptyException.class, () -> this.square.putCombatant(warrior));
 	}
 
 	@Test
-	void testGivenFilledSquare_whenRemoveWarrior_thenSquareIsNotFilled() throws OccupiedSquareException {
+	void testGivenFilledSquare_whenRemoveWarrior_thenSquareIsNotFilled() throws PositionNotEmptyException {
 		this.square.putCombatant(new WarriorFactory().createBasicWarrior());
 
 		this.square.removeCombatant();
@@ -101,7 +101,7 @@ class SquareTest {
 	}
 	
 	@Test
-	void testGivenSquareWithWarrior_whenGetWarrior_thenDoesNotThrowException() throws OccupiedSquareException {
+	void testGivenSquareWithWarrior_whenGetWarrior_thenDoesNotThrowException() throws PositionNotEmptyException {
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 		this.square.putCombatant(warrior);
 
