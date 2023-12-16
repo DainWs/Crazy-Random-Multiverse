@@ -1,0 +1,74 @@
+<html lang="es">
+<head>
+
+	<script type="importmap">
+  {
+    "imports": {
+      "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+    }
+  }
+	</script>
+
+	<script async
+		src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js"
+		crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<section>
+		<button id="connect-btn">Connect</button>
+		<button id="disconnect-btn">Disconnect</button>
+		<div>
+			<label for="destination"> Destination: <select
+				id="destination" style="width: 100%; height: 2rem">
+					<option value="" selected>None</option>
+					<optgroup label="User">
+						<option value="/user/info">Info</option>
+						<option value="/user/update">Update</option>
+					</optgroup>
+					<optgroup label="Party">
+						<option value="/party/create">Create</option>
+						<option value="/party/join">Join</option>
+						<option value="/party/leave">Leave</option>
+					</optgroup>
+			</select>
+			</label>
+		</div>
+		<div>
+			<textarea id="json-body" rows="5" cols="" style="width: 100%"></textarea>
+		</div>
+		<button id="send-btn">Send</button>
+	</section>
+	<hr />
+	<section id="ws-console" style="width: 100%; max-height: 300px; overflow: auto"></section>
+</body>
+<!--
+<script src="js/websocket.js" type="module"></script>
+ -->
+<script type="module">
+	import { StompService } from './js/websocket.js';	
+
+	function connect() {
+		StompService.connect()
+	}
+
+	function disconnect() {
+		StompService.disconnect()
+	}
+
+	function send() {
+		let destination = document.getElementById('destination').value
+		let jsonBody = document.getElementById('json-body').value
+	
+		console.log(destination)
+		console.log(jsonBody)
+	
+		StompService.sendMessage(`/application/${destination}`, jsonBody)
+	}
+
+
+	document.getElementById('send-btn').onclick = send;
+	document.getElementById('connect-btn').onclick = connect;
+	document.getElementById('disconnect-btn').onclick = disconnect;
+</script>
+</html>

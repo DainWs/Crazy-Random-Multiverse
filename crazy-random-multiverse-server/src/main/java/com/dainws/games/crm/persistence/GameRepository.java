@@ -1,6 +1,8 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.crm.persistence;
 
-import com.dainws.games.cbg.domain.exception.GameNotFoundException;
+import com.dainws.games.cbg.domain.Game;
+import com.dainws.games.cbg.domain.GameCode;
+import com.dainws.games.crm.persistence.exceptions.GameNotFoundException;
 
 public interface GameRepository {
 	void save(Game game);

@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.crm.persistence;
 
 import java.util.Set;
 

@@ -1,5 +1,6 @@
-package com.dainws.games.cbg.domain.exception;
+package com.dainws.games.crm.persistence.exceptions;
 
+import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.translator.TranslatableKey;
 
 public class GameNotFoundException extends GameRuntimeException {
