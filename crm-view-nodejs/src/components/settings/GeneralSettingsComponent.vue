@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { WindowSettings } from '@/services/settings/models/WindowSettings'
-import { Resolutions } from '@/services/settings/models/window/WindowResolution'
-import { DisplayModes } from '@/services/settings/models/window/WindowDisplayMode'
-import { settingsController } from '@/services/settings/SettingsController'
 import { debug } from '@neutralinojs/lib';
+import SettingsController from '@/services/settings/SettingsController'
+import GeneralSettings from '@/services/settings/models/GeneralSettings'
+import {findByName as findResolutionByName, values as windowResolutions}  from '@/services/settings/models/WindowResolution'
+import {findByName as findDisplayModeByName, values as windowDisplayModes} from '@/services/settings/models/WindowDisplayMode'
 
-let generalConfiguration = await settingsController.getGeneralConfiguration()
-var windowSettings: WindowSettings = generalConfiguration.window
+let generalSettings: GeneralSettings = await SettingsController.getGeneral()
 
 async function onSelectResolution(event: any) {
-    let selectedResolution = Resolutions.get(event.target.value)
+    let selectedResolution = findResolutionByName(event.target.value)
     if (selectedResolution != undefined) {
         debug.log(`Resolution option was change to ${selectedResolution}`)
-        windowSettings.resolution = selectedResolution
-        generalConfiguration.window = windowSettings
-        settingsController.setGeneralConfiguration(generalConfiguration)
+        generalSettings.resolution = selectedResolution
+        SettingsController.setGeneral(generalSettings)
     }
 }
 
 async function onSelectDisplayMode(event: any) {
-    let selectedDisplayMode = DisplayModes.get(event.target.value)
+    let selectedDisplayMode = findDisplayModeByName(event.target.value)
     if (selectedDisplayMode != undefined) {
         debug.log(`Display mode option was change to ${selectedDisplayMode}`)
-        windowSettings.displayMode = selectedDisplayMode
-        generalConfiguration.window = windowSettings
-        settingsController.setGeneralConfiguration(generalConfiguration)
+        generalSettings.displayMode = selectedDisplayMode
+        SettingsController.setGeneral(generalSettings)
     }
 }
 
@@ -44,8 +41,8 @@ async function onSelectDisplayMode(event: any) {
                     </div>
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
                         <select class="form-select text-black" aria-label="Resolution" @change="onSelectResolution($event)">
-                            <option v-for="[key, value] in Resolutions" :key="key" :value="key"
-                                :selected="key == windowSettings.resolution.name" class="text-black">{{ value.name }}</option>
+                            <option v-for="[key, value] in windowResolutions()" :key="key" :value="key"
+                                :selected="key == generalSettings.resolution.name" class="text-black">{{ value.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -57,8 +54,8 @@ async function onSelectDisplayMode(event: any) {
 
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
                         <select class="form-select text-black" aria-label="Display mode" @change="onSelectDisplayMode($event)">
-                            <option v-for="[key, value] in DisplayModes" :key="key" :value="key"
-                                :selected="key == windowSettings.displayMode.name" class="text-black">{{ value.name }}</option>
+                            <option v-for="[key, value] in windowDisplayModes()" :key="key" :value="key"
+                                :selected="key == generalSettings.displayMode.name" class="text-black">{{ value.name }}</option>
                         </select>
                     </div>
                 </div>

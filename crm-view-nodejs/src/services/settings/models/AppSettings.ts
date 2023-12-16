@@ -1,14 +1,6 @@
-import { WindowSettings } from "./WindowSettings"
+import GeneralSettings from "./GeneralSettings"
 
-export interface GeneralSettings {
-    window: WindowSettings
-}
-
-export interface ProfileSettings {
-    username: String
-}
-
-export interface AppSettings {
+export default interface AppSettings {
+    username: string
     general: GeneralSettings
-    profile: ProfileSettings
 }

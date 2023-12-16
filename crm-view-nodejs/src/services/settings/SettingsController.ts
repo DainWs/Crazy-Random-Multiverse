@@ -1,24 +1,37 @@
-import { GeneralSettings, ProfileSettings } from "./models/AppSettings"
-import { WindowSettings } from "./models/WindowSettings";
-import { settingsApi } from "./SettingsApi";
+import AppSettings from "./models/AppSettings"
+import GeneralSettings from "./models/GeneralSettings"
+import SettingsApiProxy from "./SettingsApiProxy"
 
-class SettingsController {
-    public setGeneralConfiguration(newSettings: GeneralSettings): void {
-        settingsApi.setWindowConfiguration(newSettings.window)
-    }
-
-    public async getGeneralConfiguration(): Promise<GeneralSettings> {
-        return { window: await settingsApi.getWindowConfiguration() }
-    }
-
-    public setProfileConfiguration(newSettings: ProfileSettings): void {
-        settingsApi.setProfileConfiguration(newSettings)
-    }
-
-    public async getProfileConfiguration(): Promise<ProfileSettings> {
-        return await settingsApi.getProfileConfiguration()
-    }
+async function getSettings(): Promise<AppSettings> {
+    return SettingsApiProxy.getSettings()
 }
 
-const INSTANCE: SettingsController = new SettingsController()
-export { INSTANCE as settingsController }
+async function setUsername(username: string): Promise<void> {
+    const appSettings: AppSettings = await SettingsApiProxy.getSettings()
+    appSettings.username = username
+
+    SettingsApiProxy.updateSettings(appSettings)
+}
+
+async function getUsername(): Promise<string> {
+    return (await getSettings()).username
+}
+
+async function setGeneral(newGeneralSettings: GeneralSettings): Promise<void> {
+    const appSettings: AppSettings = await SettingsApiProxy.getSettings()
+    appSettings.general = newGeneralSettings
+
+    SettingsApiProxy.updateSettings(appSettings)
+}
+
+async function getGeneral(): Promise<GeneralSettings> {
+    return (await getSettings()).general
+}
+
+export default {
+    getSettings,
+    setUsername,
+    getUsername,
+    setGeneral,
+    getGeneral
+}

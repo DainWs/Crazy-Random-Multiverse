@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { ProfileSettings } from '@/services/settings/models/AppSettings';
-import { settingsController } from '@/services/settings/SettingsController'
 import { debug } from '@neutralinojs/lib';
+import SettingsController from '@/services/settings/SettingsController'
 
-var settings: ProfileSettings =  await settingsController.getProfileConfiguration()
+let username: string =  await SettingsController.getUsername()
 
 async function changeUserName(event: any) {
     let newUsername = event.target.value
     if (newUsername != undefined) {
         debug.log(`User name was change to ${newUsername}`)
-        settings.username = newUsername
+        username = newUsername
     }
 }
 
 async function persistUserName() {
     debug.log(`Saving changes`)
-    settingsController.setProfileConfiguration(settings)
+    SettingsController.setUsername(username)
 }
 
 
