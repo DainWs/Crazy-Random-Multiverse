@@ -13,7 +13,7 @@ import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.crm.console.domain.models.Party;
 import com.dainws.games.crm.console.domain.models.User;
 
-public class ClassicGameFactory implements GameAbstractFactory {
+class ClassicGameFactory implements AbstractGameFactory {
 
 	@Override
 	public Game create(Party party) {

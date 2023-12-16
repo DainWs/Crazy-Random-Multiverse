@@ -1,0 +1,13 @@
+@startuml 
+
+Client -> Server : Connect
+Client <-- Server
+
+Client -> Server : Subscriptions
+Client <-- Server
+
+Client -> Server : /user/info
+Client <-- Server : Key y User info
+
+
+@enduml 

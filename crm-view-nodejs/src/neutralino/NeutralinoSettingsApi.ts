@@ -1,6 +1,5 @@
 import AppSettingsParser from "@/services/settings/models/AppSettingsParser"
 import AppSettings from "@/services/settings/models/AppSettings"
-import SettingsApi from "@/services/settings/SettingsApi"
 import { storage } from "@neutralinojs/lib"
 
 function updateSettings(settings: AppSettings): void {

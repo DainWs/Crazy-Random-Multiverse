@@ -21,7 +21,7 @@ public class MemoryGameRepository implements GameRepository {
 	
 	@Override
 	public void saveGame(Game game) throws GameAlreadyExistException {
-		GameCode gameCode = game.getGameCode();
+		GameCode gameCode = game.getCode();
 		
 		if (this.hasGame(gameCode)) {
 			throw new GameAlreadyExistException(gameCode);

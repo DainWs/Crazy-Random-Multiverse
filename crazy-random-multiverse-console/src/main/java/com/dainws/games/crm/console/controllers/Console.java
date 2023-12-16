@@ -6,6 +6,11 @@ import java.util.Scanner;
 
 import org.springframework.stereotype.Component;
 
+import com.dainws.games.cbg.domain.player.Hand;
+import com.dainws.games.cbg.domain.player.Zone;
+import com.dainws.games.crm.console.controllers.dto.HandDto;
+import com.dainws.games.crm.console.controllers.dto.ZoneDto;
+
 @Component
 public class Console implements Closeable {
 	
@@ -17,6 +22,22 @@ public class Console implements Closeable {
 
 	public void show(String text) {
 		System.out.println(text);
+	}
+	
+	public void show(Hand hand) {
+		HandDto handDto = new HandMapper().map(hand);
+		this.show("");
+		this.show("");
+		this.show("");
+		this.show(handDto.toString());
+	}
+	
+	public void show(Zone zone) {
+		ZoneDto zoneDto = new ZoneMapper().map(zone);
+		this.show("");
+		this.show("");
+		this.show("");
+		this.show(zoneDto.toString());
 	}
 
 	public String ask(String question) {

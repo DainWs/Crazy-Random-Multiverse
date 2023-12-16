@@ -1,37 +1,42 @@
 package com.dainws.games.crm.console.services;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.crm.console.domain.models.GameMode;
 import com.dainws.games.crm.console.domain.models.Party;
-import com.dainws.games.crm.console.factories.game.ClassicGameFactory;
-import com.dainws.games.crm.console.factories.game.GameAbstractFactory;
+import com.dainws.games.crm.console.factories.game.GameFactory;
 
 @Service
-public class GameService {
+public class GameServiceFacade {
 
-	private Map<GameMode, Supplier<GameAbstractFactory>> factories;
-	
-	public GameService() {
-		this.factories = new EnumMap<>(GameMode.class);
-		this.factories.put(GameMode.CLASSIC, ClassicGameFactory::new);
+	private List<AbstractGameService> gameServices;
+	private ApplicationEventPublisher eventPublisher;
+
+	public GameServiceFacade(List<AbstractGameService> gameServices, ApplicationEventPublisher eventPublisher) {
+		this.gameServices = gameServices;
+		this.eventPublisher = eventPublisher;
 	}
 	
 	public Game createGame(Party party) {
-		GameAbstractFactory factory = this.getGameModeFactory(party.getGameMode());
-		return factory.create(party);
+		return new GameFactory().createGame(party);
 	}
 	
-	public void endGame(Game cardBattleGame) {
-		
+	public void startGame(Game game) {
+		this.findGameServiceBy(GameMode.CLASSIC).startGame(game);
 	}
 	
-	private GameAbstractFactory getGameModeFactory(GameMode gameMode) {
-		return this.factories.get(gameMode).get();
+	public void endGame(Game game) {
+		this.findGameServiceBy(GameMode.CLASSIC).endGame(game);
+	}
+	
+	private AbstractGameService findGameServiceBy(GameMode supportedGameMode) {
+		return this.gameServices.stream()
+				.filter(service -> service.supports(GameMode.CLASSIC)) // TODO to dinamic mode
+				.findFirst()
+				.orElseThrow();
 	}
 }

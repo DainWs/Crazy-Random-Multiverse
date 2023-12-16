@@ -13,8 +13,7 @@ import com.dainws.games.crm.console.domain.models.Party;
 import com.dainws.games.crm.console.domain.models.PartyCode;
 import com.dainws.games.crm.console.domain.models.User;
 import com.dainws.games.crm.console.domain.models.exceptions.PartyException;
-import com.dainws.games.crm.console.services.GameService;
-import com.dainws.games.crm.console.services.GameStateService;
+import com.dainws.games.crm.console.services.GameServiceFacade;
 import com.dainws.games.crm.console.services.PartyService;
 
 @SpringBootApplication
@@ -28,10 +27,7 @@ public class CrazyRandomMultiverseConsole implements CommandLineRunner {
 	private PartyService partyService;
 	
 	@Autowired
-	private GameService gameService;
-	
-	@Autowired
-	private GameStateService gameStateService;
+	private GameServiceFacade gameService;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -54,7 +50,7 @@ public class CrazyRandomMultiverseConsole implements CommandLineRunner {
 		Party party = this.partyService.getParty(partyCode);
 		
 		Game game = this.gameService.createGame(party);
-		this.gameStateService.startGame(game);
+		this.gameService.startGame(game);
 	}
 
 	public static void main(String[] args) {
