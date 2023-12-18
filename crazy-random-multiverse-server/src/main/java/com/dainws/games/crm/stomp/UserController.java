@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
@@ -26,14 +26,17 @@ import com.dainws.games.crm.stomp.dto.ModelMapper;
 import com.dainws.games.crm.stomp.dto.UserInfoResponse;
 import com.dainws.games.crm.stomp.dto.UserJoinPartyRequest;
 import com.dainws.games.crm.stomp.dto.UserUpdateRequest;
+import com.dainws.games.crm.stomp.dto.models.PartyDto;
 import com.dainws.games.crm.stomp.dto.models.PartyListDto;
 
 @Controller
 public class UserController {
 	private UserService userService;
+	private SimpMessagingTemplate messagingTemplate;
 
-	public UserController(UserService userService) {
+	public UserController(UserService userService, SimpMessagingTemplate messagingTemplate) {
 		this.userService = userService;
+		this.messagingTemplate = messagingTemplate;
 	}
 
 	@EventListener
@@ -70,43 +73,46 @@ public class UserController {
 		return response;
 	}
 
-	// TODO adaptar al path /user
-	@MessageMapping("/party/create")
-	@SendTo("/topic/party/list")
-	public PartyListDto createParty(@Header("simpSessionId") String sessionId)
-			throws UserNotFoundException, PartyException {
-		User user = this.getUser(sessionId);
-		this.userService.createParty(user);
-
+	@MessageMapping("/party/refresh")
+	@SendToUser("/topic/party/list")
+	public PartyListDto refreshPartyList(@Header("simpSessionId") String sessionId) {
 		List<Party> parties = this.userService.getAllParties();
-		return new ModelMapper().mapToPartyList(parties);
+		return new ModelMapper().mapPartiesToPartyList(parties);
 	}
 
+	// TODO en vez de devolver la info de la party, deberia generar un evento que envie la información de la party a todos
+	// los participantes?
+	// TODO adaptar al path /user
+	@MessageMapping("/party/create")
+	@SendToUser("/topic/party/info")
+	public PartyDto createParty(@Header("simpSessionId") String sessionId)
+			throws UserNotFoundException, PartyException {
+		User user = this.getUser(sessionId);
+		Party newParty = this.userService.createParty(user);
+		return new ModelMapper().mapPartyToPartyDto(newParty);
+	}
+
+	// TODO en vez de devolver la info de la party, deberia generar un evento que envie la información de la party a todos
+	// los participantes?
 	// TODO adaptar al path /user
 	@MessageMapping("/party/join")
-	@SendTo("/topic/party/list")
-	public PartyListDto joinParty(@Payload UserJoinPartyRequest request, @Header("simpSessionId") String sessionId)
+	@SendToUser("/topic/party/info")
+	public PartyDto joinParty(@Payload UserJoinPartyRequest request, @Header("simpSessionId") String sessionId)
 			throws PartyNotFoundException, UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		PartyCode partyCode = PartyCode.fromString(request.getPartyCode());
-		this.userService.joinParty(partyCode, user);
-
-		List<Party> parties = this.userService.getAllParties();
-		return new ModelMapper().mapToPartyList(parties);
+		Party party = this.userService.joinParty(partyCode, user);
+		return new ModelMapper().mapPartyToPartyDto(party);
 	}
 
 	// TODO adaptar al path /user
 	@MessageMapping("/party/leave")
-	@SendTo("/topic/party/list")
-	public PartyListDto leaveParty(@Header("simpSessionId") String sessionId)
+	public void leaveParty(@Header("simpSessionId") String sessionId)
 			throws PartyNotFoundException, UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		this.userService.leaveParty(user);
-
-		List<Party> parties = this.userService.getAllParties();
-		return new ModelMapper().mapToPartyList(parties);
 	}
-
+	
 	private User getUser(String sessionId) throws UserNotFoundException {
 		return this.userService.findUser(UserCode.fromString(sessionId));
 	}

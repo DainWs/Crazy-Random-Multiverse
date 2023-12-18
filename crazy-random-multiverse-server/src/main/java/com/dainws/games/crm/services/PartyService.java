@@ -19,13 +19,14 @@ public class PartyService {
 		this.partyRepository = partyRepository;
 	}
 
-	public void createParty(User partyOwner) throws PartyException {
+	public Party createParty(User partyOwner) throws PartyException {
 		if (this.isUserInParty(partyOwner)) {
 			throw new PartyException("USER_ALREADY_IN_PARTY");
 		}
 
 		Party party = new Party(partyOwner);
 		this.partyRepository.save(party);
+		return party;
 	}
 
 	public void joinParty(PartyCode partyCode, User user) throws PartyException {

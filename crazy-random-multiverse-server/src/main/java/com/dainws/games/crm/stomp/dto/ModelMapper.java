@@ -17,6 +17,7 @@ import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.cbg.domain.player.Zone;
 import com.dainws.games.crm.persistence.entity.Party;
+import com.dainws.games.crm.persistence.entity.User;
 import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
 import com.dainws.games.crm.stomp.dto.models.CardDto;
 import com.dainws.games.crm.stomp.dto.models.GameDto;
@@ -28,19 +29,32 @@ import com.dainws.games.crm.stomp.dto.models.ZoneDto;
 
 public class ModelMapper {
 
-	public PartyListDto mapToPartyList(List<Party> parties) {
+	public PartyListDto mapPartiesToPartyList(List<Party> parties) {
 		List<PartyDto> partyDtos = new ArrayList<>();
 		for (Party party : parties) {
-			PartyDto partyDto = new PartyDto();
-			partyDto.setCode(party.getCode().getValue());
-			partyDto.setName(party.getOwner().getName());
-			partyDto.setUserCount(party.getUsers().size());
+			PartyDto partyDto = this.mapPartyToPartyDto(party);
+			partyDto.setUsers(new ArrayList<>());
 			partyDtos.add(partyDto);
 		}
 
 		PartyListDto partyList = new PartyListDto();
 		partyList.setParties(partyDtos);
 		return partyList;
+	}
+	
+	public PartyDto mapPartyToPartyDto(Party party) {
+		PartyDto partyDto = new PartyDto();
+		partyDto.setCode(party.getCode().getValue());
+		partyDto.setName(party.getOwner().getName());
+		partyDto.setUserCount(party.getUsers().size());
+		
+		List<String> users = new ArrayList<>();
+		for (User user : party.getUsers()) {
+			users.add(user.getName());
+		}
+		partyDto.setUsers(users);
+
+		return partyDto;
 	}
 
 	public GameDto mapGameToDto(Game game) {

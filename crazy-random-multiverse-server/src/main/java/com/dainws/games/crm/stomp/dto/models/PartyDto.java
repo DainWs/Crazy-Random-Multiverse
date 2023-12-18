@@ -1,10 +1,13 @@
 package com.dainws.games.crm.stomp.dto.models;
 
+import java.util.List;
+
 public class PartyDto {
 	private String code;
 	private String name;
 	private int userCount;
 	private int maxUsers;
+	private List<String> users;
 	
 	public PartyDto() {
 		this.maxUsers = 4;
@@ -40,5 +43,13 @@ public class PartyDto {
 	
 	public int getMaxUsers() {
 		return maxUsers;
+	}
+	
+	public void setUsers(List<String> users) {
+		this.users = users;
+	}
+	
+	public List<String> getUsers() {
+		return users;
 	}
 }
