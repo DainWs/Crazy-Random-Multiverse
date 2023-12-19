@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@neutralinojs/lib": "^3.9.0",
+    "@stomp/stompjs": "^7.0.0",
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",

@@ -1,0 +1,39 @@
+{
+  "name": "crm-view-web",
+  "version": "1.0.0",
+  "description": "CRM Game gui made with NeutralinoJs",
+  "author": "DainWs",
+  "main": "src/main.ts",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --mode development",
+    "build": "vue-cli-service build",
+    "sass": "sass --watch src/assets/styles:data"
+  },
+  "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
+    "bootstrap": "^5.2.3",
+    "core-js": "^3.8.3",
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.3"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "copyfiles": "^2.4.1",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "keywords": [
+    "CRM",
+    "Games",
+    "Cards"
+  ],
+  "license": "ISC"
+}
