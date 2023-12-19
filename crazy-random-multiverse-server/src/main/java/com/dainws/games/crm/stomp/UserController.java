@@ -7,11 +7,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dainws.games.crm.persistence.entity.Party;
@@ -32,19 +31,21 @@ import com.dainws.games.crm.stomp.dto.models.PartyListDto;
 @Controller
 public class UserController {
 	private UserService userService;
-	private SimpMessagingTemplate messagingTemplate;
 
-	public UserController(UserService userService, SimpMessagingTemplate messagingTemplate) {
+	public UserController(UserService userService) {
 		this.userService = userService;
-		this.messagingTemplate = messagingTemplate;
 	}
 
 	@EventListener
-	public void createUser(SessionConnectedEvent connectedEvent) {
-		StompHeaderAccessor headers = StompHeaderAccessor.wrap(connectedEvent.getMessage());
+	public void onUserConnect(SessionConnectEvent connectEvent) {
+		StompHeaderAccessor headers = StompHeaderAccessor.wrap(connectEvent.getMessage());
 
 		String sessionId = headers.getSessionId();
 		String username = "User-" + sessionId.substring(0, 5).toUpperCase();
+		if (headers.containsNativeHeader("username")) {
+			username = headers.getFirstNativeHeader("username");
+		}
+
 		User user = new User(sessionId, username);
 		this.userService.create(user);
 	}
