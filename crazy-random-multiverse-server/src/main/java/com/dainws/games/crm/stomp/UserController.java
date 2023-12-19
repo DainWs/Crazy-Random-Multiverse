@@ -81,29 +81,30 @@ public class UserController {
 		return new ModelMapper().mapPartiesToPartyList(parties);
 	}
 
-	// TODO en vez de devolver la info de la party, deberia generar un evento que envie la información de la party a todos
-	// los participantes?
-	// TODO adaptar al path /user
-	@MessageMapping("/party/create")
+	@MessageMapping("/party/info")
 	@SendToUser("/topic/party/info")
-	public PartyDto createParty(@Header("simpSessionId") String sessionId)
-			throws UserNotFoundException, PartyException {
+	public PartyDto joinParty(@Header("simpSessionId") String sessionId) throws UserNotFoundException {
 		User user = this.getUser(sessionId);
-		Party newParty = this.userService.createParty(user);
-		return new ModelMapper().mapPartyToPartyDto(newParty);
+		Party party = this.userService.getPartyOfUser(user);
+		return new ModelMapper().mapPartyToPartyDto(party);
 	}
 
-	// TODO en vez de devolver la info de la party, deberia generar un evento que envie la información de la party a todos
-	// los participantes?
+	// TODO adaptar al path /user
+	@MessageMapping("/party/create")
+	public void createParty(@Header("simpSessionId") String sessionId)
+			throws UserNotFoundException, PartyException {
+		User user = this.getUser(sessionId);
+		this.userService.createParty(user);
+	}
+
 	// TODO adaptar al path /user
 	@MessageMapping("/party/join")
 	@SendToUser("/topic/party/info")
-	public PartyDto joinParty(@Payload UserJoinPartyRequest request, @Header("simpSessionId") String sessionId)
+	public void joinParty(@Payload UserJoinPartyRequest request, @Header("simpSessionId") String sessionId)
 			throws PartyNotFoundException, UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		PartyCode partyCode = PartyCode.fromString(request.getPartyCode());
-		Party party = this.userService.joinParty(partyCode, user);
-		return new ModelMapper().mapPartyToPartyDto(party);
+		this.userService.joinParty(partyCode, user);
 	}
 
 	// TODO adaptar al path /user
@@ -113,7 +114,7 @@ public class UserController {
 		User user = this.getUser(sessionId);
 		this.userService.leaveParty(user);
 	}
-	
+
 	private User getUser(String sessionId) throws UserNotFoundException {
 		return this.userService.findUser(UserCode.fromString(sessionId));
 	}

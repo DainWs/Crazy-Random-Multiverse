@@ -43,10 +43,13 @@ public class ModelMapper {
 	}
 	
 	public PartyDto mapPartyToPartyDto(Party party) {
+		String ownerName = party.getOwner().getName();
+		
 		PartyDto partyDto = new PartyDto();
 		partyDto.setCode(party.getCode().getValue());
-		partyDto.setName(party.getOwner().getName());
+		partyDto.setName("Party of " + ownerName);
 		partyDto.setUserCount(party.getUsers().size());
+		partyDto.setOwner(ownerName);
 		
 		List<String> users = new ArrayList<>();
 		for (User user : party.getUsers()) {

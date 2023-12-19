@@ -43,16 +43,14 @@ public class UserService {
 		return this.userRepository.find(userCode);
 	}
 
-	public Party createParty(User partyOwner) throws PartyException {
-		Party party = this.partyService.createParty(partyOwner);
+	public void createParty(User partyOwner) throws PartyException {
+		this.partyService.createParty(partyOwner);
 		this.logger.debug("El usuario {}, ha creado una fiesta", partyOwner.getName());
-		return party;
 	}
 
-	public Party joinParty(PartyCode partyCode, User user) throws PartyException, PartyNotFoundException {
+	public void joinParty(PartyCode partyCode, User user) throws PartyException, PartyNotFoundException {
 		this.partyService.joinParty(partyCode, user);
 		this.logger.debug("El usuario {}, se ha unido a la fiesta {}", user.getName(), partyCode);
-		return this.partyService.getParty(partyCode);
 	}
 
 	public void leaveParty(User user) throws PartyException, PartyNotFoundException {
@@ -61,6 +59,10 @@ public class UserService {
 		this.logger.debug("El usuario {}, ha salido de la fiesta {}", user.getName(), party.getCode());
 	}
 
+	public Party getPartyOfUser(User user) {
+		return this.partyService.getPartyWhereUserIsPlayer(user);
+	}
+	
 	public List<Party> getAllParties() {
 		return this.partyService.getAllParties();
 	}

@@ -7,6 +7,7 @@ public class PartyDto {
 	private String name;
 	private int userCount;
 	private int maxUsers;
+	private String owner;
 	private List<String> users;
 	
 	public PartyDto() {
@@ -43,6 +44,14 @@ public class PartyDto {
 	
 	public int getMaxUsers() {
 		return maxUsers;
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public String getOwner() {
+		return owner;
 	}
 	
 	public void setUsers(List<String> users) {
