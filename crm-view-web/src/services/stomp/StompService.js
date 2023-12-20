@@ -1,17 +1,4 @@
-import StompMessageHandler from './StompMessageHandler';
-
-const Destinations = {
-	USER_INFO: "/application/user/info",
-	USER_UPDATE: "/application/user/update",
-	PARTY_REFRESH: "/application/party/refresh",
-	PARTY_INFO: "/application/party/info",
-	PARTY_CREATE: "/application/party/create",
-	PARTY_JOIN: "/application/party/join",
-	PARTY_LEAVE: "/application/party/leave",
-	GAME_START: "/application/game/create",
-	GAME_READY: "/application/game/ready",
-	
-}
+import StompMessageHandler from '@/services/stomp/StompMessageHandler';
 
 let isConnected = false;
 let stompClient = undefined;
@@ -24,6 +11,15 @@ function setClient(client) {
 }
 
 async function send(destination, message = undefined) {
+	let body = message
+	if (message !== undefined) {
+		body = JSON.stringify(message)
+	}
+
+	await stompClient.publish({ destination, body })
+}
+
+function sendSync(destination, message = undefined) {
 	let body = message
 	if (message !== undefined) {
 		body = JSON.stringify(message)
@@ -59,7 +55,7 @@ function log(message) {
 }
 
 export default {
-	Destinations,
 	setClient,
-	send
+	send,
+	sendSync
 }

@@ -5,8 +5,12 @@ import SettingsApiProxy from "@/services/settings/SettingsApiProxy";
 import LocalStorageSettingsApi from "@/services/settings/LocalStorageSettingsApi";
 
 function configureEnviroment() {
-    process.env.plataform = 'browser'
-    console.log(process.env)
+    
+    global.env = {
+        plataform: process.env.VUE_APP_PLATAFORM 
+    }
+    //process.env.plataform = 'browser'
+    console.log(env.plataform)
 }
 
 function configureSettings() {

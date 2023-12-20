@@ -13,7 +13,7 @@ function changeSection(newSection) {
     <div class="settings-row">
       <div class="settings-nav col-12 col-md-3">
         <div class="settings-nav__item back">
-          <router-link to="/" class="link text-decoration-none"><i class="arrow left white"></i> Back</router-link>
+          <RouterLink to="/" class="link text-decoration-none"><i class="arrow left white"></i> Back</RouterLink>
         </div>
         <div class="settings-nav__item" @click="() => changeSection('general')">
           <button class="link text-decoration-none">General</button>

@@ -1,10 +1,4 @@
-const Topics = {
-	USER_INFO: "userInfo",
-	PARTY_INFO: "partyInfo",
-	PARTY_LIST: "partyList",
-	GAME_EVENT: "gameEvent",
-	GAME_ERROR: "gameError"
-}
+import Topics from '@/services/stomp/StompTopics'
 
 const topicSubscribers = new Map()
 topicSubscribers.set(Topics.USER_INFO, new Map())
@@ -26,10 +20,13 @@ function onUserInfo(message) {
 }
 
 function onPartyInfo(message) {
+	console.log(message)
 	notifyMessageToTopicSubscribers(Topics.PARTY_INFO, message)
 }
 
 function onPartyList(message) {
+	console.log(message)
+	// TODO no se estan usando los datos recibidos desde party list
 	notifyMessageToTopicSubscribers(Topics.PARTY_LIST, message)
 }
 
@@ -44,7 +41,7 @@ function onGameError(message) {
 
 function notifyMessageToTopicSubscribers(topic, message) {
 	let subscribers = topicSubscribers.get(topic)
-	subscribers.forEach((callback, _) => callback(message))
+	subscribers.forEach((callback, _) => callback(JSON.parse(message.body)))
 }
 
 export default {

@@ -1,13 +1,19 @@
 <script setup>
+import Destinations from '@/services/stomp/StompDestinations';
 import StompService from '@/services/stomp/StompService';
 import { useRouter } from 'vue-router';
 
-const plataform = process.env.VUE_APP_PLATAFORM
+const plataform = env.plataform;
 const router = useRouter()
 
 function createParty() {
-  StompService.send(StompService.Destinations.PARTY_CREATE)
+  StompService.send(Destinations.PARTY_CREATE)
   router.push("/party")
+}
+
+function joinParty() {
+  StompService.sendSync(Destinations.PARTY_LIST)
+  router.push("/party-list")
 }
 </script>
 
@@ -23,10 +29,10 @@ function createParty() {
         </div>
         <div class="d-inline-flex justify-content-between flex-column link-menu">
           <div class="link-menu--item">
-            <a class="text-decoration-none link-hover from-left" @click="createParty">Create Game</a>
+            <a class="text-decoration-none link-hover from-left" @click="createParty">Create Party</a>
           </div>
           <div class="link-menu--item">
-            <RouterLink to="/party-list" class="text-decoration-none link-hover from-left">Join Game</RouterLink>
+            <a class="text-decoration-none link-hover from-left" @click="joinParty">Join Party</a>
           </div>
           <div class="link-menu--item">
             <RouterLink to="/settings" class="text-decoration-none link-hover from-left">Settings</RouterLink>

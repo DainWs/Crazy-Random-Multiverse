@@ -8,14 +8,14 @@ const username = ref('');
 SettingsService.getUsername()
   .then(value => username.value = value)
 
-async function changeUserName(event) {
+async function changeUsername(event) {
     let newUsername = event.target.value
     if (newUsername != undefined) {
         username.value = newUsername
     }
 }
 
-async function persistUserName() {
+async function persistUsername() {
     SettingsService.setUsername(username.value)
     StompService.send(StompService.Destinations.USER_UPDATE, {username: username.value})
 }
@@ -35,7 +35,7 @@ async function persistUserName() {
                         <h2 class="text-white flex-grow-1 m-0">Name</h2>
                     </div>
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
-                        <input class="text-black" type="text" v-bind:value="username" @change="changeUserName($event)" @focusout="persistUserName()"/>
+                        <input class="text-black" type="text" v-bind:value="username" @change="changeUsername($event)" @focusout="persistUsername()"/>
                     </div>
                 </div>
 

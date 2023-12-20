@@ -1,40 +1,20 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import SettingsService from '@/services/settings/SettingsService';
-import StompMessageHandler from '@/services/stomp/StompMessageHandler';
-import StompService from '@/services/stomp/StompService';
+import { useRouter } from 'vue-router'
+import Destinations from '@/services/stomp/StompDestinations'
+import StompService from '@/services/stomp/StompService'
+import DataManager from '@/services/DataManager'
 
 const router = useRouter()
-
-StompMessageHandler.subscribe('PartyView', StompMessageHandler.Topics.PARTY_INFO, onPartyInfoReceived)
-StompService.send(StompService.Destinations.PARTY_INFO)
-
-const username = ref('');
-
-SettingsService.getUsername()
-  .then(value => username.value = value)
-
-const party = ref({
-  code: undefined,
-  name: undefined,
-  userCount: 0,
-  maxUsers: 4,
-  owner: undefined,
-  users: []
-})
-
-function onPartyInfoReceived(data) {
-  party.value = JSON.parse(data.body)
-}
+const userInfo = DataManager.getUserInfo()
+const partyInfo = DataManager.getPartyInfo()
 
 function leave() {
-  StompService.send(StompService.Destinations.PARTY_LEAVE)
-  router.back()
+  StompService.send(Destinations.PARTY_LEAVE)
+  router.push("/")
 }
 
 function start() {
-  StompService.send(StompService.Destinations.GAME_START)
+  StompService.send(Destinations.GAME_START)
   router.push("/game")
 }
 
@@ -45,15 +25,15 @@ function start() {
     <div class="bg-dark text-light">
       <div class="header">
         <h1 class="title">Sala de espera</h1>
-        <span class="room-name">({{ party.name }})</span>
+        <span class="room-name">({{ partyInfo.name }})</span>
         <div class="content-splitter"></div>
-        <span class="members-count">Jugadores: {{ party.userCount }}/{{ party.maxUsers }}</span>
+        <span class="members-count">Jugadores: {{ partyInfo.userCount }}/{{ partyInfo.maxUsers }}</span>
       </div>
       <ul class="users-list">
-        <li v-for="user in party.users">
+        <li v-for="user in partyInfo.users">
           {{ user }}
-          <span class="tag" v-show="username === user">You</span>
-          <span class="tag" v-show="user === party.owner">Owner</span>
+          <span class="tag" v-show="userInfo.username === user">You</span>
+          <span class="tag" v-show="user === partyInfo.owner">Owner</span>
         </li>
       </ul>
       <div class="footer link-menu link-menu--horizontal">
@@ -61,7 +41,7 @@ function start() {
           <a class="text-decoration-none link-hover from-left" @click="leave">Salir</a>
         </div>
 
-        <div class="link-menu--item" v-show="username === party.owner">
+        <div class="link-menu--item" v-show="userInfo.username === partyInfo.owner">
           <a class="text-decoration-none link-hover from-left" @click="start">Start</a>
         </div>
       </div>

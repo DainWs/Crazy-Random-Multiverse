@@ -9,5 +9,7 @@ import "bootstrap"
 import AppConfigurator from '@/configuration/AppConfigurer'
 AppConfigurator.configure();
 
+global.Message = "gola"
+
 createApp(App).use(router).mount('#app');
 
