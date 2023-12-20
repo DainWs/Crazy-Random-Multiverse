@@ -7,8 +7,8 @@ import java.util.Set;
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.crm.persistence.entity.Party;
-import com.dainws.games.crm.persistence.entity.User;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
 
 public class ClassicGameFactory {
 	public Game create(Party party, Set<Card> gameCards) {

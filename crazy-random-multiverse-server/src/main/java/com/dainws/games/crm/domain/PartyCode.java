@@ -1,4 +1,4 @@
-package com.dainws.games.crm.persistence.entity;
+package com.dainws.games.crm.domain;
 
 import java.util.Objects;
 import java.util.UUID;

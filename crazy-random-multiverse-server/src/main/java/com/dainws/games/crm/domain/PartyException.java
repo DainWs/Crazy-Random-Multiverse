@@ -1,10 +1,10 @@
-package com.dainws.games.crm.persistence.exceptions;
+package com.dainws.games.crm.domain;
 
 import com.dainws.games.cbg.domain.translator.Language;
 import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.cbg.domain.translator.TranslatableKey;
 
-public class PartyException extends Exception implements Translatable {
+public class PartyException extends RuntimeException implements Translatable {
 
 	private static final long serialVersionUID = -5952425827950206049L;
 

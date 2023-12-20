@@ -11,7 +11,7 @@ import com.dainws.games.cbg.domain.action.MoveAction;
 import com.dainws.games.cbg.domain.action.PassTurnAction;
 import com.dainws.games.cbg.domain.action.PutAction;
 import com.dainws.games.cbg.domain.action.SurrenderAction;
-import com.dainws.games.cbg.domain.communication.Channel;
+import com.dainws.games.cbg.domain.communication.GameChannel;
 import com.dainws.games.cbg.domain.communication.GameEventListener;
 import com.dainws.games.cbg.domain.communication.PlayerEventListener;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
@@ -23,12 +23,12 @@ import com.dainws.games.crm.persistence.GameRepository;
 public class PlayerFacade {
 
 	private ActionContextFactory contextFactory;
-	private Channel channel;
+	private GameChannel gameChannel;
 	private Logger logger;
 
-	public PlayerFacade(GameRepository gameRepository, CardRepository cardRepository, Channel channel) {
+	public PlayerFacade(GameRepository gameRepository, CardRepository cardRepository, GameChannel gameChannel) {
 		this.contextFactory = new ActionContextFactory(gameRepository, cardRepository);
-		this.channel = channel;
+		this.gameChannel = gameChannel;
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -130,12 +130,12 @@ public class PlayerFacade {
 	}
 	
 	private void prepareAction(Action action) {
-		action.setGameEventListener(new GameEventListener(this.channel));
-		action.setPlayerEventListener(new PlayerEventListener(this.channel));
+		action.setGameEventListener(new GameEventListener(this.gameChannel));
+		action.setPlayerEventListener(new PlayerEventListener(this.gameChannel));
 	}
 	
 	private void processPlayerActionException(PlayerActionException exception) {
-		ErrorAdapter adapter = new ErrorAdapter(this.channel);
+		ErrorAdapter adapter = new ErrorAdapter(this.gameChannel);
 		adapter.sendErrorToPlayer(exception.getSource(), exception.toError());
 	}
 }

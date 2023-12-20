@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.GameCode;
-import com.dainws.games.cbg.domain.communication.Channel;
+import com.dainws.games.cbg.domain.communication.GameChannel;
 import com.dainws.games.cbg.domain.communication.GameEventListener;
-import com.dainws.games.crm.persistence.entity.Party;
-import com.dainws.games.crm.persistence.entity.User;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.persistence.exceptions.GameNotFoundException;
 import com.dainws.games.crm.persistence.exceptions.PartyNotFoundException;
 
@@ -25,10 +25,10 @@ public class GameFacade {
 	private Map<GameCode, Set<User>> preparedPlayers;
 	private Logger logger;
 
-	public GameFacade(GameService gameService, PartyService partyService, Channel channel) {
+	public GameFacade(GameService gameService, PartyService partyService, GameChannel gameChannel) {
 		this.gameService = gameService;
 		this.partyService = partyService;
-		this.gameEventListener = new GameEventListener(channel);
+		this.gameEventListener = new GameEventListener(gameChannel);
 		this.preparedPlayers = new HashMap<>();
 		this.logger = LoggerFactory.getLogger(getClass());
 	}

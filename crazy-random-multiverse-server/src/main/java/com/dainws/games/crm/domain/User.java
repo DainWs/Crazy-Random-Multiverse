@@ -1,4 +1,4 @@
-package com.dainws.games.crm.persistence.entity;
+package com.dainws.games.crm.domain;
 
 import java.security.Principal;
 import java.util.Objects;

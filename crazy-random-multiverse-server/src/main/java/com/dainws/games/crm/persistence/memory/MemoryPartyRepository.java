@@ -7,9 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.persistence.PartyRepository;
-import com.dainws.games.crm.persistence.entity.Party;
-import com.dainws.games.crm.persistence.entity.PartyCode;
 import com.dainws.games.crm.persistence.exceptions.PartyNotFoundException;
 
 public class MemoryPartyRepository implements PartyRepository {

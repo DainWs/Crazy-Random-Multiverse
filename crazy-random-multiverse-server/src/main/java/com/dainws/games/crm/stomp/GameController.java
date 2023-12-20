@@ -4,8 +4,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
-import com.dainws.games.crm.persistence.entity.User;
-import com.dainws.games.crm.persistence.entity.UserCode;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.persistence.exceptions.PartyNotFoundException;
 import com.dainws.games.crm.persistence.exceptions.UserNotFoundException;
 import com.dainws.games.crm.services.GameFacade;

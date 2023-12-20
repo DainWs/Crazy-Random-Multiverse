@@ -4,19 +4,23 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.dainws.games.cbg.domain.communication.Destination;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.PartyCode;
+import com.dainws.games.crm.domain.PartyException;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.persistence.PartyRepository;
-import com.dainws.games.crm.persistence.entity.Party;
-import com.dainws.games.crm.persistence.entity.PartyCode;
-import com.dainws.games.crm.persistence.entity.User;
-import com.dainws.games.crm.persistence.exceptions.PartyException;
 import com.dainws.games.crm.persistence.exceptions.PartyNotFoundException;
 
 @Service
 public class PartyService {
 	private PartyRepository partyRepository;
+	private PartyChannel partyChannel;
 
-	public PartyService(PartyRepository partyRepository) {
+	public PartyService(PartyRepository partyRepository, PartyChannel partyChannel) {
 		this.partyRepository = partyRepository;
+		this.partyChannel = partyChannel;
 	}
 
 	public void createParty(User partyOwner) throws PartyException {
@@ -26,6 +30,8 @@ public class PartyService {
 
 		Party party = new Party(partyOwner);
 		this.partyRepository.save(party);
+		
+		this.sendPartyInfoTo(partyOwner.getCode(), party);
 	}
 
 	public void joinParty(PartyCode partyCode, User user) throws PartyException {
@@ -33,15 +39,25 @@ public class PartyService {
 			throw new PartyException("USER_ALREADY_IN_PARTY");
 		}
 
-		this.getParty(partyCode).add(user);
+		Party party = this.getParty(partyCode);
+		party.add(user);
+
+		this.sendPartyInfoTo(party.getUsers(), party);
 	}
 
-	public void leaveParty(PartyCode partyCode, User user) throws PartyException {
+	public void leaveParty(User user) throws PartyException {
 		if (!this.isUserInParty(user)) {
 			throw new PartyException("USER_IS_NOT_AT_A_PARTY");
 		}
 
-		this.getParty(partyCode).remove(user);
+		Party party = this.getPartyWhereUserIsPlayer(user);
+		party.remove(user);
+		
+		this.sendPartyInfoTo(party.getUsers(), party);
+		
+		if (party.isEmpty()) {
+			this.partyRepository.delete(party.getCode());
+		}
 	}
 
 	public void lockParty(PartyCode partyCode) {
@@ -86,7 +102,17 @@ public class PartyService {
 		return this.partyRepository.findAll();
 	}
 
-	private boolean isUserInParty(User user) {
+	public boolean isUserInParty(User user) {
 		return this.getAllParties().stream().anyMatch(party -> party.has(user));
+	}
+	
+	private void sendPartyInfoTo(List<User> users, Party party) {
+		for (User user : users) {
+			this.sendPartyInfoTo(user.getCode(), party);			
+		}
+	}
+	
+	private void sendPartyInfoTo(UserCode userCode, Party party) {
+		this.partyChannel.sendPartyInfo(Destination.from(userCode.getValue()), party);
 	}
 }

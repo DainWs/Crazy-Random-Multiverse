@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.GameCode;
 import com.dainws.games.cbg.domain.card.Card;
+import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.game.ClassicGameFactory;
 import com.dainws.games.crm.persistence.CardRepository;
 import com.dainws.games.crm.persistence.GameRepository;
-import com.dainws.games.crm.persistence.entity.Party;
 import com.dainws.games.crm.persistence.exceptions.GameNotFoundException;
 
 @Service
