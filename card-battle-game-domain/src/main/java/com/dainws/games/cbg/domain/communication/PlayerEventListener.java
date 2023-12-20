@@ -10,14 +10,14 @@ import com.dainws.games.cbg.domain.player.Player;
 
 public class PlayerEventListener {
 
-	private Channel channel;
+	private GameChannel gameChannel;
 
 	public PlayerEventListener() {
-		this.channel = new ConsoleChannel();
+		this.gameChannel = new ConsoleChannel();
 	}
 	
-	public PlayerEventListener(Channel channel) {
-		this.channel = channel;
+	public PlayerEventListener(GameChannel gameChannel) {
+		this.gameChannel = gameChannel;
 	}
 
 	public void onPlayerGetTurn(Game game, Player player) {
@@ -88,7 +88,7 @@ public class PlayerEventListener {
 	}
 
 	private void notifyEventToPlayer(Player player, Event event) {
-		this.channel.send(Destination.of(player), event);
+		this.gameChannel.send(Destination.of(player), event);
 	}
 	
 	private Event createEventFrom(EventCode code, ActionContext context) {
@@ -102,7 +102,7 @@ public class PlayerEventListener {
 		return new Event(code, eventDetails);
 	}
 
-	public void setCommunicationChannel(Channel channel) {
-		this.channel = channel;
+	public void setCommunicationChannel(GameChannel gameChannel) {
+		this.gameChannel = gameChannel;
 	}
 }

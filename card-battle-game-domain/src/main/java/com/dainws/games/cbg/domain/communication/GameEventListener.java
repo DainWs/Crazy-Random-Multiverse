@@ -6,14 +6,14 @@ import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.player.Player;
 
 public class GameEventListener {
-	private Channel channel;
+	private GameChannel gameChannel;
 
 	public GameEventListener() {
-		this.channel = new ConsoleChannel();
+		this.gameChannel = new ConsoleChannel();
 	}
 	
-	public GameEventListener(Channel channel) {
-		this.channel = channel;
+	public GameEventListener(GameChannel gameChannel) {
+		this.gameChannel = gameChannel;
 	}
 
 	public void onGameIsCreated(Game game) {
@@ -61,10 +61,10 @@ public class GameEventListener {
 	}
 
 	private void notifyEventToPlayer(Player player, Event event) {
-		this.channel.send(Destination.of(player), event);
+		this.gameChannel.send(Destination.of(player), event);
 	}
 
-	public void setCommunicationChannel(Channel channel) {
-		this.channel = channel;
+	public void setCommunicationChannel(GameChannel gameChannel) {
+		this.gameChannel = gameChannel;
 	}
 }

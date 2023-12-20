@@ -1,6 +1,6 @@
 package com.dainws.games.cbg.domain.communication;
 
-public class ConsoleChannel implements Channel {
+public class ConsoleChannel implements GameChannel {
 
 	private String errorMessage;
 	private String eventMessage;
