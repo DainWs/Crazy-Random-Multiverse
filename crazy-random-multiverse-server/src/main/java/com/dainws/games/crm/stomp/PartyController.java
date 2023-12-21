@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.PartyException;
@@ -43,6 +44,7 @@ public class PartyController {
 	public void createParty(@Header("simpSessionId") String sessionId) throws UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		this.partyService.createParty(user);
+		throw new PartyException("Esto_no_te_lo_esperabas");
 	}
 
 	@MessageMapping("/party/join")
@@ -62,6 +64,11 @@ public class PartyController {
 	@MessageExceptionHandler
 	@SendToUser("/topic/error")
 	public String handleException(Throwable exception) {
+		System.out.println("message " + exception.getMessage());
+		if (exception instanceof Translatable) {
+			return ((Translatable)exception).getKey().getValue();
+		}
+
 		return exception.getMessage();
 	}
 	
