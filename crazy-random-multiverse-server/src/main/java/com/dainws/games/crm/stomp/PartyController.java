@@ -64,7 +64,6 @@ public class PartyController {
 	@MessageExceptionHandler
 	@SendToUser("/topic/error")
 	public String handleException(Throwable exception) {
-		System.out.println("message " + exception.getMessage());
 		if (exception instanceof Translatable) {
 			return ((Translatable)exception).getKey().getValue();
 		}

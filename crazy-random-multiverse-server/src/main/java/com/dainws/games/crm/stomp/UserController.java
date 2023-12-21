@@ -2,6 +2,7 @@ package com.dainws.games.crm.stomp;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.persistence.exceptions.UserNotFoundException;
@@ -60,6 +62,16 @@ public class UserController {
 		response.setSessionId(sessionId);
 		response.setUsername(user.getName());
 		return response;
+	}
+	
+	@MessageExceptionHandler
+	@SendToUser("/topic/error")
+	public String handleException(Throwable exception) {
+		if (exception instanceof Translatable) {
+			return ((Translatable)exception).getKey().getValue();
+		}
+
+		return exception.getMessage();
 	}
 
 	private User getUser(String sessionId) throws UserNotFoundException {

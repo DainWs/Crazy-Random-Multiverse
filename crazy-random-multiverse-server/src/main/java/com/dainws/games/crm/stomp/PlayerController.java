@@ -2,14 +2,17 @@ package com.dainws.games.crm.stomp;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.cbg.domain.GameCode;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.player.PlayerCode;
 import com.dainws.games.cbg.domain.player.Position;
+import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.crm.game.ActionContextTemplate;
 import com.dainws.games.crm.services.PlayerFacade;
 import com.dainws.games.crm.stomp.dto.PlayerPutCardRequest;
@@ -40,6 +43,16 @@ public class PlayerController {
 		contextTemplate.setTargetPosition(this.mapPositionDto(putCardRequest.getTargetPosition()));
 
 		this.playerFacade.playerPutCard(contextTemplate);
+	}
+	
+	@MessageExceptionHandler
+	@SendToUser("/topic/error")
+	public String handleException(Throwable exception) {
+		if (exception instanceof Translatable) {
+			return ((Translatable)exception).getKey().getValue();
+		}
+
+		return exception.getMessage();
 	}
 
 	private CardCode mapCardCodeDto(CardCodeDto dto) {
