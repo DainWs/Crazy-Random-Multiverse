@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import com.dainws.games.cbg.domain.communication.GameChannel;
 import com.dainws.games.cbg.domain.communication.Destination;
 import com.dainws.games.cbg.domain.communication.Error;
 import com.dainws.games.cbg.domain.communication.Event;
+import com.dainws.games.cbg.domain.communication.GameChannel;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.services.PartyChannel;
 import com.dainws.games.crm.stomp.dto.EventMapper;
@@ -32,30 +35,41 @@ public class StompCommunicationChannel implements GameChannel, PartyChannel {
 	public void send(Destination destination, Error error) {
 		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), destination);
 
-		this.messagingTemplate.convertAndSendToUser(destination.getValue(), "/topic/error", error);
+		String sessionId = destination.getValue();
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", error, createHeaders(sessionId));
 	}
 
 	@Override
 	public void send(Destination destination, Event event) {
 		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), destination);
 
+		String sessionId = destination.getValue();
 		EventDto eventDto = new EventMapper().mapEventToDto(event);
-		this.messagingTemplate.convertAndSendToUser(destination.getValue(), "/topic/event", eventDto);
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 	}
 
 	@Override
 	public void sendPartyInfo(Destination destination, Party party) {
 		this.logger.trace("Enviando información de la fiesta, al cliente {}", destination);
 
+		String sessionId = destination.getValue();
 		PartyDto partyDto = new ModelMapper().mapPartyToPartyDto(party);
-		this.messagingTemplate.convertAndSendToUser(destination.getValue(), "/topic/party/info", partyDto);
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/info", partyDto, createHeaders(sessionId));
 	}
 
 	@Override
 	public void sendPartyList(Destination destination, List<Party> party) {
 		this.logger.trace("Enviando lista de las fiestas, al cliente {}", destination);
 
+		String sessionId = destination.getValue();
 		PartyListDto partyListDto = new ModelMapper().mapPartiesToPartyList(party);
-		this.messagingTemplate.convertAndSendToUser(destination.getValue(), "/topic/party/list", partyListDto);
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/list", partyListDto, createHeaders(sessionId));
+	}
+	
+	private MessageHeaders createHeaders(String sessionId) {
+		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+		headerAccessor.setSessionId(sessionId);
+		headerAccessor.setLeaveMutable(true);
+		return headerAccessor.getMessageHeaders();
 	}
 }

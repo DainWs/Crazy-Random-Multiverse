@@ -3,7 +3,6 @@ package com.dainws.games.crm.domain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.dainws.games.crm.game.GameMode;
 
@@ -39,8 +38,6 @@ public class Party {
 
 		this.users.remove(userCode);
 
-		System.out.println("is owner? " + this.ownerCode.equals(userCode));
-		System.out.println("is not the last one? " + (this.users.size() > 0));
 		if (this.ownerCode.equals(userCode) && this.users.size() > 0) {
 			this.ownerCode = this.users.entrySet().iterator().next().getKey();
 		}
@@ -51,10 +48,6 @@ public class Party {
 	}
 
 	public User getOwner() {
-		for (Entry<UserCode, User> entry : this.users.entrySet()) {
-			System.out.println(entry.getKey() + " " + entry.getValue());
-			
-		}
 		return this.users.get(this.ownerCode);
 	}
 

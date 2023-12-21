@@ -1,4 +1,5 @@
 <script setup>
+import { watch } from 'vue';
 import { useRouter } from 'vue-router'
 import Destinations from '@/services/stomp/StompDestinations'
 import StompService from '@/services/stomp/StompService'
@@ -17,7 +18,6 @@ function start() {
   StompService.send(Destinations.GAME_START)
   router.push("/game")
 }
-
 </script>
 
 <template>

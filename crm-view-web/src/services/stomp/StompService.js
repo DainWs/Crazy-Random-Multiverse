@@ -43,7 +43,7 @@ function onDisconnect() {
 	log('Disconnected')
 }
 
-function onStompError() {
+function onStompError(frame) {
 	log('------------------------------------------------')
 	log('WS: Broker reported error: ' + frame.headers['message'])
 	log('WS: Additional details: ' + frame.body)

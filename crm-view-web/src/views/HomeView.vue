@@ -119,61 +119,92 @@ nav {
   height: 100%;
 }
 
-.link-menu {
-  a { color: rgb(167, 90, 27); }
+.link {
+  &-menu {
+    a { color: rgb(167, 90, 27); }
 
-  &--item {
-    z-index: 1;
+    &--item {
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: rgb(255, 196, 0);
+      margin-bottom: 3%;
+
+      &.secondary {
+        border-width: .2rem;
+        border-style: solid;
+        border-color: rgb(255, 196, 0);
+
+        background-color: rgb(0, 0, 0, 0);
+
+        &.small {
+          border-width: .125rem;
+        }
+      }
+
+      > a { height: 100%; }
+    }
+
+    &--horizontal &--item {
+      margin: 0;
+    }
+  }
+
+  &-icon {
+    padding: .5rem;
+    min-width: 50px;
+    min-height: 50px;
+
     display: flex;
-    flex-direction: column;
-    background-color: rgb(255, 196, 0);
-    margin-bottom: 3%;
+    align-items: center;
+    justify-content: center;
 
-    &.secondary {
-      border-width: .2rem;
-      border-style: solid;
-      border-color: rgb(255, 196, 0);
-
-      background-color: rgb(0, 0, 0, 0);
-    }
-
-    > a { height: 100%; }
-  }
-
-  &--horizontal &--item {
-    margin: 0;
-  }
-}
-
-.link-hover {
-  position: relative;
-  padding: 2vh 3vh;
-  font-size: 1.4rem;
-  color: rgb(255, 196, 0);
-  letter-spacing: 1.1rem;
-  text-transform: uppercase;
-  transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
-  cursor: pointer;
-  user-select: none;
-
-  &:before, &:after {
-    content: '';
-    position: absolute;
-    transition: inherit;
-    z-index: -1;
-  }
-
-  &:hover {
+    font-size: 1.4rem;
+    letter-spacing: 0;
+    line-height: 1;
     color: rgb(255, 196, 0);
-    transition-delay: 0s;
+    background-color: rgb(0, 0, 0, 0);
+    transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
 
-    &:before {
-      transition-delay: 0s;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      color: rgb(0, 0, 0);
+      background-color: rgb(255, 196, 0);
+    }
+  }
+
+  &-hover {
+    position: relative;
+    padding: 2vh 3vh;
+    font-size: 1.4rem;
+    color: rgb(255, 196, 0);
+    letter-spacing: 1.1rem;
+    text-transform: uppercase;
+    transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
+    cursor: pointer;
+    user-select: none;
+
+    &:before, &:after {
+      content: '';
+      position: absolute;
+      transition: inherit;
+      z-index: -1;
     }
 
-    &:after {
-      background: rgb(167, 90, 27);
+    &:hover {
+      color: rgb(255, 196, 0);
       transition-delay: 0s;
+
+      &:before {
+        transition-delay: 0s;
+      }
+
+      &:after {
+        background: rgb(167, 90, 27);
+        transition-delay: 0s;
+      }
     }
   }
 }

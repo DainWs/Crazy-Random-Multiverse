@@ -3,6 +3,7 @@ package com.dainws.games.crm.stomp;
 import java.util.List;
 
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -33,19 +34,17 @@ public class PartyController {
 
 	@MessageMapping("/party/list")
 	@SendToUser("/topic/party/list")
-	public PartyListDto refreshPartyList(@Header("simpSessionId") String sessionId) {
+	public PartyListDto refreshPartyList() {
 		List<Party> parties = this.partyService.getAllParties();
 		return new ModelMapper().mapPartiesToPartyList(parties);
 	}
 
-	// TODO adaptar al path /user
 	@MessageMapping("/party/create")
 	public void createParty(@Header("simpSessionId") String sessionId) throws UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		this.partyService.createParty(user);
 	}
 
-	// TODO adaptar al path /user
 	@MessageMapping("/party/join")
 	public void joinParty(@Payload UserJoinPartyRequest request, @Header("simpSessionId") String sessionId)
 			throws PartyNotFoundException, UserNotFoundException, PartyException {
@@ -54,13 +53,18 @@ public class PartyController {
 		this.partyService.joinParty(partyCode, user);
 	}
 
-	// TODO adaptar al path /user
 	@MessageMapping("/party/leave")
 	public void leaveParty(@Header("simpSessionId") String sessionId) throws UserNotFoundException, PartyException {
 		User user = this.getUser(sessionId);
 		this.partyService.leaveParty(user);
 	}
-
+	
+	@MessageExceptionHandler
+	@SendToUser("/topic/error")
+	public String handleException(Throwable exception) {
+		return exception.getMessage();
+	}
+	
 	private User getUser(String sessionId) throws UserNotFoundException {
 		return this.userService.findUser(UserCode.fromString(sessionId));
 	}

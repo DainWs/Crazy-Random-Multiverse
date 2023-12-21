@@ -14,14 +14,16 @@ const partyInfo = ref({
     users: []
 })
 
-const partyList = ref([])
+const partyList = ref({
+    parties: []
+})
 
 const userInfo = ref({
     username: ''
 })
 
 StompMessageHandler.subscribe("Manager", Topics.PARTY_INFO, (data) => {partyInfo.value = data})
-StompMessageHandler.subscribe("Manager", Topics.PARTY_LIST, (data) => {partyList.value.values = data})
+StompMessageHandler.subscribe("Manager", Topics.PARTY_LIST, (data) => {partyList.value = data})
 StompMessageHandler.subscribe("Manager", Topics.USER_INFO, (data) => {userInfo.value = data})
 SettingsService.getUsername().then(username => userInfo.value.username = username)
 
@@ -38,9 +40,7 @@ function getUserInfo() {
 }
 
 async function refresh() {
-    await StompService.send(Destinations.PARTY_INFO)
     await StompService.send(Destinations.PARTY_LIST)
-    await StompService.send(Destinations.USER_INFO)
 }
 
 export default {

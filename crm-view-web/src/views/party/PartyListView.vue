@@ -1,4 +1,5 @@
 <script setup>
+import { watch } from 'vue';
 import { useRouter } from 'vue-router'
 import Destinations from '@/services/stomp/StompDestinations'
 import StompService from '@/services/stomp/StompService'
@@ -7,12 +8,17 @@ import DataManager from '@/services/DataManager'
 const router = useRouter()
 const partyList = DataManager.getPartyList()
 
-DataManager.refresh()
-
 function join(party) {
-  console.log(party)
-  StompService.send(Destinations.PARTY_LEAVE)
-  router.push("/")
+  StompService.send(Destinations.PARTY_JOIN, {partyCode: party.code})
+  router.push("/party")
+}
+
+function refresh() {
+  DataManager.refresh();
+}
+
+function back() {
+  
 }
 
 </script>
@@ -24,20 +30,20 @@ function join(party) {
         <h1 class="title">Lista de fiestas</h1>
       </div>
       <ul class="elements">
-        <li class="element" v-for="party in partyList">
+        <li class="element" v-for="party in partyList.parties">
           <span>{{ party.name }}</span>
           <div class="content-splitter"></div>
           <span class="members-count">Jugadores: {{ party.userCount }}/{{ party.maxUsers }}</span>
-          <div class="footer link-menu link-menu--horizontal" v-show="party.userCount < party.maxUsers">
-            <div class="link-menu--item secondary">
-              <a class="text-decoration-none link-hover from-left" @click="join.arguments(party)">Join</a>
-            </div>
-          </div>
+          <a class="text-decoration-none link-icon" @click="() => join(party)"
+            v-show="party.userCount < party.maxUsers">Entrar &#10095;</a>
         </li>
       </ul>
       <div class="footer link-menu link-menu--horizontal">
         <div class="link-menu--item secondary">
-          <a class="text-decoration-none link-hover from-left" @click="leave">Salir</a>
+          <a class="text-decoration-none link-hover from-left" @click="back">Salir</a>
+        </div>
+        <div class="link-menu--item">
+          <a class="text-decoration-none link-hover from-left" @click="refresh">Actualizar</a>
         </div>
       </div>
     </div>
@@ -52,7 +58,7 @@ function join(party) {
 
   display: flex;
 
-  > div {
+  >div {
     margin: auto;
     padding: 2rem;
     width: 80%;
@@ -78,9 +84,11 @@ function join(party) {
 
       .element {
         width: 100%;
+        height: 4rem;
 
         display: flex;
         flex-direction: row;
+        align-items: center;
 
         .content-splitter {
           flex-grow: 1;
