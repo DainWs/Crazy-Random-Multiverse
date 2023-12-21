@@ -1,5 +1,4 @@
 <script setup>
-import { watch } from 'vue';
 import { useRouter } from 'vue-router'
 import Destinations from '@/services/stomp/StompDestinations'
 import StompService from '@/services/stomp/StompService'
@@ -8,11 +7,6 @@ import DataManager from '@/services/DataManager'
 const router = useRouter()
 const userInfo = DataManager.getUserInfo()
 const partyInfo = DataManager.getPartyInfo()
-
-function leave() {
-  StompService.send(Destinations.PARTY_LEAVE)
-  router.push("/")
-}
 
 function start() {
   StompService.send(Destinations.GAME_START)
@@ -32,17 +26,17 @@ function start() {
       <ul class="users-list">
         <li v-for="user in partyInfo.users">
           {{ user }}
-          <span class="tag" v-show="userInfo.username === user">You</span>
-          <span class="tag" v-show="user === partyInfo.owner">Owner</span>
+          <span class="tag" v-show="userInfo.username === user">Tú</span>
+          <span class="tag" v-show="user === partyInfo.owner">Admin</span>
         </li>
       </ul>
       <div class="footer link-menu link-menu--horizontal">
         <div class="link-menu--item secondary">
-          <a class="text-decoration-none link-hover from-left" @click="leave">Salir</a>
+          <RouterLink to="/" class="text-decoration-none link-hover from-left">Salir</RouterLink>
         </div>
 
         <div class="link-menu--item" v-show="userInfo.username === partyInfo.owner">
-          <a class="text-decoration-none link-hover from-left" @click="start">Start</a>
+          <a class="text-decoration-none link-hover from-left" @click="start">Empezar</a>
         </div>
       </div>
     </div>

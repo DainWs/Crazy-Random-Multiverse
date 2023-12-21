@@ -1,5 +1,4 @@
 <script setup>
-import { watch } from 'vue';
 import { useRouter } from 'vue-router'
 import Destinations from '@/services/stomp/StompDestinations'
 import StompService from '@/services/stomp/StompService'
