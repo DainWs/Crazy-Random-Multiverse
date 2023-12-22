@@ -14,6 +14,7 @@ public class CardDto {
 	@JsonProperty("code")
 	private CardCodeDto code;
 
+	// TODO deberia traducirse name y description no?
 	@NotBlank
 	@JsonProperty("name")
 	private String nameKey;
