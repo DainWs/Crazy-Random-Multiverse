@@ -45,8 +45,6 @@ function notifyMessageToTopicSubscribers(topic, message) {
 }
 
 export default {
-	Topics,
-
 	subscribe,
 	unsubscribe,
 
