@@ -71,6 +71,7 @@ public class ModelMapper {
 			}
 		}
 
+		gameDto.setZones(playerZones);
 		return gameDto;
 	}
 
@@ -101,6 +102,8 @@ public class ModelMapper {
 		PlayerDto playerDto = new PlayerDto();
 		playerDto.setCode(player.getCode());
 		playerDto.setName(player.getName());
+		playerDto.setSpectator(player.isSpectator());
+		playerDto.setAlive(player.isAlive());
 		return playerDto;
 	}
 

@@ -1,11 +1,20 @@
 package com.dainws.games.crm.stomp.dto;
 
+import com.dainws.games.cbg.domain.communication.Error;
 import com.dainws.games.cbg.domain.communication.Event;
 import com.dainws.games.cbg.domain.communication.EventDetails;
-import com.dainws.games.crm.stomp.dto.events.EventDetailsDto;
-import com.dainws.games.crm.stomp.dto.events.EventDto;
+import com.dainws.games.cbg.domain.translator.Text;
 
-public class EventMapper {
+public class CommunicationMapper {
+	public ErrorDto mapErrorToDto(Error error) {
+		ErrorDto errorDto = new ErrorDto();
+		Text text = error.getText();
+		errorDto.setKey(text.getKey().getValue());
+		errorDto.setValue(text.getValue());
+		errorDto.setLanguage(text.getLanguage().getIsoAlphaTwo());
+		return errorDto;
+	}
+	
 	public EventDto mapEventToDto(Event event) {
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());

@@ -9,6 +9,12 @@ public class PlayerDto {
 	@JsonProperty("name")
 	private String name;
 
+	@JsonProperty("isSpectator")
+	private boolean isSpectator;
+	
+	@JsonProperty("isAlive")
+	private boolean isAlive;	
+
 	public void setCode(String code) {
 		this.code = code;
 	}
@@ -23,5 +29,21 @@ public class PlayerDto {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void setSpectator(boolean isSpectator) {
+		this.isSpectator = isSpectator;
+	}
+	
+	public boolean isSpectator() {
+		return isSpectator;
+	}
+	
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+	
+	public boolean isAlive() {
+		return isAlive;
 	}
 }

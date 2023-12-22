@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto.events;
+package com.dainws.games.crm.stomp.dto;
 
 import com.dainws.games.cbg.domain.communication.EventCode;
 

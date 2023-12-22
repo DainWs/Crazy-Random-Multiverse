@@ -15,9 +15,10 @@ import com.dainws.games.cbg.domain.communication.Event;
 import com.dainws.games.cbg.domain.communication.GameChannel;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.services.PartyChannel;
-import com.dainws.games.crm.stomp.dto.EventMapper;
+import com.dainws.games.crm.stomp.dto.EventDto;
+import com.dainws.games.crm.stomp.dto.CommunicationMapper;
+import com.dainws.games.crm.stomp.dto.ErrorDto;
 import com.dainws.games.crm.stomp.dto.ModelMapper;
-import com.dainws.games.crm.stomp.dto.events.EventDto;
 import com.dainws.games.crm.stomp.dto.models.PartyDto;
 import com.dainws.games.crm.stomp.dto.models.PartyListDto;
 
@@ -36,7 +37,8 @@ public class StompCommunicationChannel implements GameChannel, PartyChannel {
 		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), destination);
 
 		String sessionId = destination.getValue();
-		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", error, createHeaders(sessionId));
+		ErrorDto errorDto = new CommunicationMapper().mapErrorToDto(error);
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class StompCommunicationChannel implements GameChannel, PartyChannel {
 		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), destination);
 
 		String sessionId = destination.getValue();
-		EventDto eventDto = new EventMapper().mapEventToDto(event);
+		EventDto eventDto = new CommunicationMapper().mapEventToDto(event);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 	}
 
