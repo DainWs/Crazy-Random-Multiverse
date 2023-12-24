@@ -19,7 +19,9 @@ function joinParty() {
 </script>
 
 <template>
-  <CardComponent/>
+  <!--
+    <CardComponent/>
+    -->
   <div class="w-100 h-100 position-relative">
     <img alt="Monos con Minigun logo" class="logo rounded-circle position-absolute bottom-0 end-0 mb-4 me-4"
       src="@/assets/images/logo.png" />

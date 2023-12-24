@@ -9,7 +9,7 @@ const userInfo = DataManager.getUserInfo()
 const partyInfo = DataManager.getPartyInfo()
 
 function start() {
-  StompService.send(Destinations.GAME_START)
+  StompService.send(Destinations.GAME_CREATE)
   router.push("/game")
 }
 </script>
@@ -25,7 +25,7 @@ function start() {
       </div>
       <ul class="users-list">
         <li v-for="user in partyInfo.users">
-          {{ user }}
+          {{ user }} {{ userInfo.username }}
           <span class="tag" v-show="userInfo.username === user">Tú</span>
           <span class="tag" v-show="user === partyInfo.owner">Admin</span>
         </li>

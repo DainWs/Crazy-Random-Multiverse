@@ -2,6 +2,9 @@ import { ref } from "vue";
 import Topics from "@/services/stomp/StompTopics";
 import StompMessageHandler from "@/services/stomp/StompMessageHandler";
 import EventProcessorProvider from "@/services/events/EventProcessorProvider";
+import DataManager from "@/services/DataManager";
+
+const userInfo = DataManager.getUserInfo()
 
 const gameInfo = ref({
     playerWithTurn: undefined,
@@ -16,7 +19,7 @@ const playerInfo = ref({
 })
 
 const handInfo = ref({
-    cards: []
+    cards: new Array()
 })
 
 const errorInfo = ref({
@@ -31,6 +34,7 @@ StompMessageHandler.subscribe("GameController", Topics.GAME_ERROR, processGameEr
 async function processGameEvent(event) {
     try {
         const currentContext = {
+            user: userInfo.value,
             game: gameInfo.value,
             player: playerInfo.value,
             hand: handInfo.value

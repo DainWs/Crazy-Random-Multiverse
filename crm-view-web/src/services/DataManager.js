@@ -1,7 +1,6 @@
 import { ref } from "vue";
 import Topics from "@/services/stomp/StompTopics";
 import Destinations from "@/services/stomp/StompDestinations";
-import SettingsService from "@/services/settings/SettingsService";
 import StompMessageHandler from "@/services/stomp/StompMessageHandler";
 import StompService from "./stomp/StompService";
 
@@ -19,13 +18,13 @@ const partyList = ref({
 })
 
 const userInfo = ref({
+    uid: '',
     username: ''
 })
 
 StompMessageHandler.subscribe("Manager", Topics.PARTY_INFO, (data) => {partyInfo.value = data})
 StompMessageHandler.subscribe("Manager", Topics.PARTY_LIST, (data) => {partyList.value = data})
 StompMessageHandler.subscribe("Manager", Topics.USER_INFO, (data) => {userInfo.value = data})
-SettingsService.getUsername().then(username => userInfo.value.username = username)
 
 function getPartyInfo() {
     return partyInfo;

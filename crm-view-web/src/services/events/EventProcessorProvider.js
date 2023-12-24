@@ -1,11 +1,11 @@
 import EventCodes from "./EventCodes";
-import GameCreatedProcessor from "./GameCreatedProcessor";
-import GameStartedProcessor from "./GameStartedProcessor";
+import GameCreateProcessor from "./GameCreateProcessor";
+import GameStartProcessor from "./GameStartProcessor";
 import GameEndProcessor from "./GameEndProcessor";
 
 const EventProcessors = new Map()
-EventProcessors.set(EventCodes.GAME_CREATED, GameCreatedProcessor)
-EventProcessors.set(EventCodes.GAME_START, GameStartedProcessor)
+EventProcessors.set(EventCodes.GAME_CREATED, GameCreateProcessor)
+EventProcessors.set(EventCodes.GAME_START, GameStartProcessor)
 EventProcessors.set(EventCodes.GAME_END, GameEndProcessor)
 EventProcessors.set(EventCodes.PLAYER_WIN,)
 EventProcessors.set(EventCodes.PLAYER_LOSE,)

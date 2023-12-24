@@ -1,15 +1,13 @@
 import { createApp } from 'vue'
 
+import AppConfigurator from '@/configuration/AppConfigurer'
+AppConfigurator.configure();
+
 import App from './App.vue'
 import router from './router'
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
-
-import AppConfigurator from '@/configuration/AppConfigurer'
-AppConfigurator.configure();
-
-global.Message = "gola"
 
 createApp(App).use(router).mount('#app');
 

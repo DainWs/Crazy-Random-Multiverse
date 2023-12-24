@@ -20,23 +20,8 @@ import { ref } from 'vue';
     }
  */
 
-const props = defineProps({ card: { required: true } })
+const props = defineProps({ card: { required: true, default: {type: undefined} } })
 const emit = defineEmits(['onClick', 'onDrag', 'onDrop'])
-
-function show() {
-    isShowing.value = true
-    setTimeout(hide, props.hideDelayInSecods * MILISECONDS_PER_SECOND)
-    emit("onShow")
-}
-
-function hide() {
-    isShowing.value = false
-    emit("onShow")
-}
-
-if (!props.showManually) {
-    show()
-}
 
 const isEquipment = (props.card.type == 'EQUIPMENT')
 const isWarrior = (props.card.type == 'WARRIOR')
@@ -44,7 +29,7 @@ const isCombatant = (props.card.type == 'LEADER' || isWarrior)
 </script>
 
 <template><!-- TODO Colocar imagenes de fondo de los tipos de carta -->
-    <div v-bind:class="`card ${card.type} ${card.rarity}`"> <!-- TODO To lower case -->
+    <div v-bind:class="`card ${card.type?.toLowerCase()} ${card.rarity?.toLowerCase()}`"> <!-- TODO To lower case -->
         <div class="type">{{ card.type }}</div>
         <div class="name">{{ card.name }}</div>
         <div class="description">{{ card.description }}</div>

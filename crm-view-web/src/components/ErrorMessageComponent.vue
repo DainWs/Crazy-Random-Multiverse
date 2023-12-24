@@ -13,6 +13,7 @@ const emit = defineEmits(['onShow', 'onHide'])
 const isShowing = ref(false)
 
 function show() {
+    console.log(isShowing)
     isShowing.value = true
     setTimeout(hide, props.hideDelayInSecods * MILISECONDS_PER_SECOND)
     emit("onShow")

@@ -2,15 +2,15 @@ const simulatedAppSettings = {
     username: `user_${new Date().getTime()}`,
 }
 
-let realSettingsApi = null;
+const properties = { realSettingsApi: null }
 
 function setRealSettingsApi(settingsApi) {
-    realSettingsApi = settingsApi
+    properties.realSettingsApi = settingsApi
 }
 
 function updateSettings(settings) {
-    if (realSettingsApi) {
-        realSettingsApi.updateSettings(settings);
+    if (properties.realSettingsApi) {
+        properties.realSettingsApi.updateSettings(settings);
     } else {
         updateSimulatedSettings(settings);
     }
@@ -21,8 +21,8 @@ function updateSimulatedSettings(settings) {
 }
 
 async function getSettings() {
-    if (realSettingsApi) {
-        return realSettingsApi.getSettings();
+    if (properties.realSettingsApi) {
+        return properties.realSettingsApi.getSettings();
     }
 
     return simulatedAppSettings;

@@ -6,6 +6,6 @@ export default {
 	PARTY_CREATE: "/application/party/create",
 	PARTY_JOIN: "/application/party/join",
 	PARTY_LEAVE: "/application/party/leave",
-	GAME_START: "/application/game/create",
+	GAME_CREATE: "/application/game/create",
 	GAME_READY: "/application/game/ready",
 }
