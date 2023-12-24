@@ -14,7 +14,7 @@ public class CommunicationMapper {
 		errorDto.setLanguage(text.getLanguage().getIsoAlphaTwo());
 		return errorDto;
 	}
-	
+
 	public EventDto mapEventToDto(Event event) {
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());
@@ -28,8 +28,10 @@ public class CommunicationMapper {
 
 	private EventDetailsDto mapEventDetailsToDto(EventDetails details) {
 		ModelMapper modelMapper = new ModelMapper();
-		
+
 		EventDetailsDto detailsDto = new EventDetailsDto();
+		detailsDto.setGameDto(modelMapper.mapGameToDto(details.getGame()));
+
 		if (details.hasSourcePlayer()) {
 			detailsDto.setSourcePlayer(modelMapper.mapPlayerToDto(details.getSourcePlayer()));
 		}

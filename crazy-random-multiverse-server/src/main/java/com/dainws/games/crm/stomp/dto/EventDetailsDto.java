@@ -1,11 +1,15 @@
 package com.dainws.games.crm.stomp.dto;
 
 import com.dainws.games.crm.stomp.dto.models.CardDto;
+import com.dainws.games.crm.stomp.dto.models.GameDto;
 import com.dainws.games.crm.stomp.dto.models.PlayerDto;
 import com.dainws.games.crm.stomp.dto.models.PositionDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EventDetailsDto {
+	@JsonProperty(value = "game", required = true)
+	private GameDto gameDto;
+	
 	@JsonProperty("sourcePlayer")
 	private PlayerDto sourcePlayer;
 
@@ -24,6 +28,14 @@ public class EventDetailsDto {
 	@JsonProperty("targetPosition")
 	private PositionDto targetPosition;
 
+	public GameDto getGameDto() {
+		return gameDto;
+	}
+	
+	public void setGameDto(GameDto gameDto) {
+		this.gameDto = gameDto;
+	}
+	
 	public PlayerDto getSourcePlayer() {
 		return sourcePlayer;
 	}
