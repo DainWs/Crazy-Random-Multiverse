@@ -1,0 +1,74 @@
+@startuml
+title "Domain Model - Statistics"
+
+class Statistic
+class Damage {
+ Damage cant be negative
+}
+
+class TrueDamage as "True" {
+ Ignore armor types:
+---
+ Physical
+ Magical
+}
+
+class PhysicalDamage as "Physical" {
+ Ignore armor types:
+---
+ Magical
+}
+
+class MagicalDamage as "Magical" {
+ Ignore armor types:
+---
+ Physical
+}
+
+class InfiniteDamage as "InfiniteValue" {
+ Ignore infinite Health
+}
+
+class Health
+class InfiniteHealth as "InfiniteValue"
+
+class Armor
+class PhysicalArmor as "Physical"
+class MagicalArmor as "Magical"
+
+Statistic *--> Value
+Statistic <|-- Damage
+Statistic <|-- Health
+Statistic <|-- Armor
+
+Damage <|-- TrueDamage
+Damage <|-- PhysicalDamage
+Damage <|-- MagicalDamage
+
+TrueDamage o--> "0..1" InfiniteDamage
+
+Health *--> MaxValue
+Health o--> "0..1" InfiniteHealth
+
+Armor <|-- PhysicalArmor
+Armor <|-- MagicalArmor
+
+note left of Armor
+	It will defend against an **attack** 
+	**of the same type**, but its value 
+	will be **permanently reduced** by 
+	the value of the **defended attack**
+end note
+
+note as HealthNote
+	When Health reaches 0 or less, 
+	then combatant die
+
+	It can only be reduced 
+	by damage when **armor**
+	**reaches a value of 0**,
+	or with **True damage** 
+end note
+Health .. HealthNote
+
+@enduml

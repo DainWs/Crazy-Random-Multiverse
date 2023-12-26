@@ -1,0 +1,42 @@
+@startuml
+title "Domain Model - Board"
+
+class OthersZone {
+ NoLeaderZone
+ ...
+} 
+
+Game *--> Board
+Board *--> "1..N" Zone
+
+Zone --> Player
+Zone <|-- BaseZone
+Zone <|-- OthersZone
+
+BaseZone *--> "1 " LeaderRow
+BaseZone *--> "2  " Row
+
+Row o--> "3..N" Square
+Row <|-- LeaderRow
+
+LeaderRow *--> LeaderSquare
+
+Square o--> "0..1" Card
+LeaderSquare o--> "0..1" Leader
+
+note right of Board
+	The **Board** will have as many **Zones** 
+	as there are **Players** playing
+end note
+
+note right of Zone
+	Each **Zone** belongs to **1 Player**
+end note
+
+note left of BaseZone
+	A **BaseZone** is composed of the 1st and 2nd rows,
+	where cards protecting the **Leader** in the 3rd row
+	will be placed. Only the **Leader** can be in the 3rd row
+end note 
+
+@enduml

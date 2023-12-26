@@ -1,0 +1,29 @@
+@startuml
+title "Domain Model - Player"
+
+class Game {}
+class Player {}
+
+Game *--> "2..N" Player
+
+Player *--> Name
+
+Player *--> Hand
+Hand o--> "0..N" Card
+
+Player --> Action
+Action ..> Hand
+Action <|-- Surrender
+Action <|-- TurnAction
+TurnAction ..> Board
+TurnAction <|-- PutCard
+TurnAction <|-- AttackCard
+
+
+note as TurnActionNote
+	When the player has the turn, they can perform 
+	actions that cannot be done without the turn,
+	we call this actions, **TurnAction**
+end note
+TurnAction .. TurnActionNote
+@enduml

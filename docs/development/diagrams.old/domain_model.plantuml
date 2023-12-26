@@ -1,0 +1,89 @@
+@startuml 
+title "Domain model"
+!theme plain
+
+class Player
+class Card
+class Leader
+class Equipment
+class Spell
+class Warrior
+class Statistic
+class Round
+class Turn
+
+class WarriorType {
+ All warrior types:
+____
+ Common
+ Uncommon
+ Rare
+ Epic
+ Legendary
+ Mithic
+}
+
+class Action {
+ Some actions:
+____
+ Surrender
+ UseSpell
+ Equip
+ Put
+ Move
+ Attack
+}
+
+CardBattleGame *--> Turn
+CardBattleGame *--> Round
+CardBattleGame *--> "2..N" Player
+CardBattleGame *--> Dealer
+
+Turn --> Player : Over
+
+Round --> DealStrategy : Define
+Dealer ..> DealStrategy
+Dealer *--> Deck
+DealStrategy ..> Card : Deal
+DealStrategy .l.> Deck
+Deck *--> " 1..N" Card
+
+Player o--> Action
+Player *--> Zone
+
+Zone *--> "3" Row
+Row <|-- ThirdRow
+Row <|-- SecondRow
+Row <|-- FirstRow
+Row *--> "1..N" Square
+Square o--> "0..1" Card
+Square <|-- LeaderSquare
+Square <|-- WarriorSquare
+
+Player *--> Hand
+Hand o----> "0..N" Card
+
+Card <|--- Leader
+Card <|--- Warrior
+Card <|--- Equipment
+Card <|--- Spell
+
+Warrior *--> WarriorType
+
+Leader *-r-> "0..1" Equipment : Equip
+Warrior *-l-> "0..1" Equipment : Equip
+
+Leader *--> "3" Statistic
+Warrior *--> "3" Statistic
+Equipment --> Statistic : Improve
+
+Statistic <|-- Damage
+Statistic <|-- Health
+Statistic <|-- Armor
+
+Spell --> Effect : Cause
+Spell *--> TriggerCondition
+TriggerCondition <|-- RoundCondition
+TriggerCondition <|-- UseSpellCondition
+TriggerCondition <|-- AdquireCardCondition
+@enduml 

@@ -1,0 +1,20 @@
+@startuml
+title "Domain model - Turn and Round"
+
+Game *--> "2..N" Player
+Game *--> Turn
+Game *--> Round
+
+Round --> Turn
+
+Turn --> Player : "Current player with turn"
+
+note as RoundAndTurn
+	When the turn has passed 
+	through all the players,
+	then Round increase
+end note
+
+Round .. RoundAndTurn
+
+@enduml

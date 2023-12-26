@@ -1,0 +1,61 @@
+@startuml 
+title "Domain Model - Card"
+
+class Card {}
+class Spell {}
+class Equipment {}
+class Combatant {}
+class Leader {}
+class Warrior {}
+class Rarity {
+ Rarity can be one of these:
+---
+ Common
+ Uncommon
+ Rare
+ Epic
+ Legendary
+ Mithic
+}
+
+Card *--> Name
+Card *--> Description
+
+Card <|-- Spell
+Card <|-- Equipment 
+Card <|-- Combatant 
+
+Spell *--> Effect : cause
+
+Equipment --> Combatant : equipped on
+Equipment --> Statistic : increment
+
+Combatant <|-- Leader
+Combatant <|-- Warrior
+Combatant *--> "3    " Statistic
+Combatant *--> Cooldown
+
+Warrior *---> Rarity
+
+note bottom of Effect
+	An **Effect** is a series of operations 
+	that affect the **Game state** when a 
+	**Spell** is used
+end note
+
+note left of Combatant
+	The **Combatants** require the 
+	**3 types of Statistics**
+end note
+
+note bottom of Leader
+	If **Leader** dies, the player 
+	**loses the game**
+end note
+
+note bottom of Cooldown
+	**Number of rounds** to wait before 
+	you can use this **Combatant**
+end note
+
+@enduml

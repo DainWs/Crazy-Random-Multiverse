@@ -1,0 +1,12 @@
+@startuml
+title "Domain Model - Dealer"
+
+Dealer *--> Deck
+Dealer o--> DealStrategy
+DealStrategy --> Deck
+
+DealStrategy <|-- LeaderStrategy
+
+
+
+@enduml

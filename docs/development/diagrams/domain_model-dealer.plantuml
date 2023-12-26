@@ -1,0 +1,32 @@
+@startuml
+title "Domain Model - Dealer"
+
+class Dealer {}
+class Round {}
+class Deck {}
+class Card {}
+class DealtCard {} 
+
+Game *--> Dealer 
+Dealer --> Round
+Round --> DealtCard : decide
+DealtCard --> Deck : from
+Dealer *--> Deck
+Deck o--> "(1*4)..N  " Card
+Dealer --> Card : dealt
+
+note left of Round
+	Depending on the **Round**,
+	**different cards are dealt**
+end note 
+
+note bottom of DealtCard
+	A **DealtCard** is those **Cards**
+	that have been **decided to be dealt**
+end note 
+
+note bottom of Deck
+	A **Deck** requires a **minimum of** 
+	**1 card for each type of card** (4 types)
+end note
+@enduml
