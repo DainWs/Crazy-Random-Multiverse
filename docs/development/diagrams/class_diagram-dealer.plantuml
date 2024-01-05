@@ -1,12 +1,35 @@
 @startuml
-title "Domain Model - Dealer"
+title "Class diagram - Dealer [In progress]"
 
-Dealer *--> Deck
+class Dealer {
+ -deckRepository: DeckRepository
+ +setDealStrategy(dealStrategy): void
+ +dealCards(): List<Card>
+ +dealCards(dealStrategy): List<Card>
+}
+
+interface DeckRepository {
+ +getDeck(DeckFilter): Deck
+ +getSpellDeck(): Deck
+ +getEquipmentDeck(): Deck
+ +getLeaderDeck(): Deck
+ +getCommonWarriorDeck(): Deck
+ +getUncommonWarriorDeck(): Deck
+ +getRareWarriorDeck(): Deck
+ +getEpicWarriorDeck(): Deck
+ +getLegendaryWarriorDeck(): Deck
+ +getMithicWarriorDeck(): Deck
+}
+
+interface DealStrategy {
+ +drawFrom(Deck): List<Card>
+}
+
+Dealer *--> DeckRepository
 Dealer o--> DealStrategy
+Dealer ..> Deck
 DealStrategy --> Deck
 
-DealStrategy <|-- LeaderStrategy
-
-
+DealStrategy <|.. LeaderStrategy
 
 @enduml

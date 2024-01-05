@@ -1,0 +1,156 @@
+@startuml
+title "Class diagram - Card"
+
+abstract class Card {
+ -name: Text
+ -description: Text
+ #Card(CardCode, name, description)
+ +getCode(): CardCode
+ +{abstract} getType(): CardType
+ +{abstract} isType(CardType): boolean
+ +getName(): Text
+ +getDescription(): Text
+ +equals(Object): boolean
+ +hashCode(): int
+ +toString(): String
+}
+
+class CardCode {
+ -value: long
+ +CardCode(value)
+ +getValue(): long
+ +equals(Object): boolean
+ +hashCode(): int
+ +toString(): String
+}
+
+class Spell {
+ -effectId: long
+ #Spell(Builder)
+ +getEffectId()
+ +toString(): String
+}
+
+class SpellBuilder as "Builder" {
+ +Builder()
+ +withCode(uniqueCode): Builder
+ +withName(uniqueCode): Builder
+ +withDescription(uniqueCode): Builder
+ +withEffectId(effectId): Builder
+ +build(): Spell
+}
+
+class Equipment {
+ -damage: long
+ -health: long
+ -armor: long
+ -effectId: long
+ #Equipment(Builder)
+ +getDamageValue(): long
+ +getHealthValue(): long
+ +getArmorValue(): long
+ +getEffectId(): long
+ +hasEffect(): boolean
+ +toString(): String
+}
+
+class EquipmentBuilder as "Builder" {
+ +Builder()
+ +withCode(uniqueCode): Builder
+ +withName(uniqueCode): Builder
+ +withDescription(uniqueCode): Builder
+ +withDamageBuff(double): Builder
+ +withDamageDebuff(double): Builder
+ +withHealthBuff(double): Builder
+ +withHealthDebuff(double): Builder
+ +withArmorBuff(double): Builder
+ +withArmorDebuff(double): Builder
+ +build(): Equipment
+}
+
+abstract class Combatant {
+ #damage: Damage
+ #health: Health
+ #armor: Armor
+ +receiveDamageFrom(Combatant): void
+ +equip(Equipment): void
+ +unequip(): void
+ +isAlive(): boolean
+ +getDamage(): Damage
+ +getHealth(): Health
+ +getArmor(): Armor
+ +getEquipment(): Equipment
+ +toString(): String
+}
+
+class Leader {}
+class Warrior {
+ -rarity: WarriorRarity
+ #Warrior(Builder)
+ +getRarity(): WarriorRarity
+ +isRarity(warriorRarity): boolean
+ +equals(Object): boolean
+ +toString(): String
+ +{static} commonWarriorBuilder(): Builder
+}
+
+class WarriorBuilder as "Builder" {
+ +Builder(warriorRarity)
+ +withCode(uniqueCode): Builder
+ +withName(uniqueCode): Builder
+ +withDescription(uniqueCode): Builder
+ +withDamage(Damage): Builder
+ +withNoneDamage(): Builder
+ +withInfiniteDamage(): Builder
+ +withPhysicalDamage(double): Builder
+ +withMagicalDamage(double): Builder
+ +withTrueDamage(double): Builder
+ +withHealth(Health): Builder
+ +withInfiniteHealth(Health): Builder
+ +withHealth(double): Builder
+ +withHealth(double, max): Builder
+ +withArmor(Armor): Builder
+ +withNoneArmor(): Builder
+ +withPhysicalArmor(double): Builder
+ +withMagicalArmor(double): Builder
+ +withEquipment(Equipment): Builder
+ +build(): Warrior
+}
+
+enum CardType {
+ LEADER 
+ WARRIOR
+ EQUIPMENT 
+ SPELL
+}
+
+enum CardRarity {
+ COMMON
+ UNCOMMON
+ RARE
+ EPIC
+ LEGENDARY
+ MITHIC
+}
+
+Card *--> CardCode
+Card --> CardType
+Card <|-- Spell
+Card <|-- Equipment
+Card <|-- Combatant
+Combatant o--> "0..1" Equipment
+Combatant <|-- Leader
+Combatant <|-- Warrior
+
+Spell --> SpellBuilder
+Equipment --> EquipmentBuilder
+Warrior --> WarriorBuilder
+Warrior *--> CardRarity
+
+note as SeeMore
+ **See more:**
+  class_diagram-effect.plantuml
+  class_diagram-statistics.plantuml
+end note
+
+@enduml
