@@ -1,42 +1,47 @@
 package com.dainws.games.cbg.domain.action;
 
-import java.util.Map.Entry;
-
+import com.dainws.games.cbg.domain.board.Board;
+import com.dainws.games.cbg.domain.board.Coordinate;
+import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.communication.GameEventListener;
-import com.dainws.games.cbg.domain.communication.PlayerEventListener;
+import com.dainws.games.cbg.domain.events.Event;
+import com.dainws.games.cbg.domain.events.EventCode;
+import com.dainws.games.cbg.domain.events.EventHandler;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
-import com.dainws.games.cbg.domain.player.Zone;
 
 public class SurrenderAction implements Action {
 
-	private GameEventListener gameEventListener;
-	private PlayerEventListener playerEventListener;
+	private EventHandler eventHandler;
 
 	@Override
 	public void perform(ActionContext context) throws PlayerActionException {
-		assert (this.gameEventListener != null && this.playerEventListener != null);
+		assert (this.eventHandler != null);
 
+		Board board = context.getBoard();
 		Player sourcePlayer = context.getSourcePlayer();
-		Zone zone = sourcePlayer.getZone();
-
-		for (Entry<Position, Combatant> entry : zone.getPositions().entrySet()) {
-			zone.removeCombatant(entry.getKey());
+		Zone zone = board.getZone(sourcePlayer);
+		Combatant[][] combatants = zone.getCombatants();
+		
+		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
+			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
+				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
+				if (zone.hasCombatant(coordinate)) {
+					zone.removeCombatant(coordinate);
+				}
+			}
 		}
 
-		this.playerEventListener.onPlayerSurrenderAction(context);
-		this.gameEventListener.onPlayerLoseGame(context.getGame(), sourcePlayer);
+		this.notifyPlayerSurrenderAction(context);
 	}
-
-	@Override
-	public void setGameEventListener(GameEventListener gameEventListener) {
-		this.gameEventListener = gameEventListener;
+	
+	private void notifyPlayerSurrenderAction(ActionContext context) {
+		Event event = new ActionEvent(EventCode.PLAYER_SURRENDER, context);
+		this.eventHandler.notifyEventToPlayers(context.getGame().getPlayers(), event);
 	}
-
+	
 	@Override
-	public void setPlayerEventListener(PlayerEventListener playerEventListener) {
-		this.playerEventListener = playerEventListener;
+	public void setEventHandler(EventHandler eventHandler) {
+		this.eventHandler = eventHandler;
 	}
 }

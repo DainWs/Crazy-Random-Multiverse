@@ -2,28 +2,28 @@ package com.dainws.games.cbg.domain.action;
 
 import java.lang.System.Logger.Level;
 
+import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.card.Equipment;
+import com.dainws.games.cbg.domain.events.EventCode;
 import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Hand;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Zone;
 
 public class EquipAction extends PlayerTurnAction {
 
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.playerEventListener != null);
+		assert (this.eventHandler != null);
 
 		this.validate(context);
 
 		try {
+			Combatant combatant = this.getTargetCombatantFrom(context);
 			Equipment equipment = (Equipment) context.getSourceCard();
-			Zone zone = context.getTargetPlayer().getZone();
-			Combatant combatant = zone.getCombatant(context.getTargetPosition());
 			combatant.equip(equipment);
 
 			this.logger.log(Level.TRACE, "%s ha sido equipado en el combatiente %s", equipment, combatant);
@@ -31,7 +31,12 @@ public class EquipAction extends PlayerTurnAction {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
 
-		this.playerEventListener.onPlayerEquipCardAction(context);
+		this.notifyActionEvent(EventCode.PLAYER_EQUIP_CARD, context);
+	}
+	
+	private Combatant getTargetCombatantFrom(ActionContext context) {
+		Zone targetZone = context.getTargetZone();
+		return targetZone.getCombatant(context.getTargetCoordinate());
 	}
 
 	private void validate(ActionContext context) throws PlayerActionException {

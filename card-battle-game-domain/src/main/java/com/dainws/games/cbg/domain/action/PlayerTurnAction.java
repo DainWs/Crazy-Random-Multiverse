@@ -1,20 +1,21 @@
 package com.dainws.games.cbg.domain.action;
 
 import java.lang.System.Logger;
+import java.util.List;
 
 import com.dainws.games.cbg.domain.Game;
-import com.dainws.games.cbg.domain.communication.GameEventListener;
-import com.dainws.games.cbg.domain.communication.PlayerEventListener;
+import com.dainws.games.cbg.domain.events.EventCode;
+import com.dainws.games.cbg.domain.events.EventHandler;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Player;
 
 public abstract class PlayerTurnAction implements Action {
-	
-	protected GameEventListener gameEventListener;
-	protected PlayerEventListener playerEventListener;
+
+	protected EventHandler eventHandler;
 	protected Logger logger;
 
 	public PlayerTurnAction() {
+		this.eventHandler = new EventHandler();
 		this.logger = System.getLogger(LOGGER_NAME);
 	}
 	
@@ -33,13 +34,13 @@ public abstract class PlayerTurnAction implements Action {
 
 	protected abstract void performPlayerAction(ActionContext context) throws PlayerActionException;
 	
-	@Override
-	public void setGameEventListener(GameEventListener gameEventListener) {
-		this.gameEventListener = gameEventListener;
+	protected void notifyActionEvent(EventCode eventCode, ActionContext context) {
+		List<Player> players = context.getGame().getPlayers();
+		this.eventHandler.notifyEventToPlayers(players, new ActionEvent(eventCode, context));
 	}
-	
+
 	@Override
-	public void setPlayerEventListener(PlayerEventListener playerEventListener) {
-		this.playerEventListener = playerEventListener;
+	public void setEventHandler(EventHandler eventHandler) {
+		this.eventHandler = eventHandler;
 	}
 }

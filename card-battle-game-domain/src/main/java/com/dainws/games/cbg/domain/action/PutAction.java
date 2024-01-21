@@ -2,35 +2,45 @@ package com.dainws.games.cbg.domain.action;
 
 import java.lang.System.Logger.Level;
 
+import com.dainws.games.cbg.domain.board.Coordinate;
+import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Card;
+import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
+import com.dainws.games.cbg.domain.events.EventCode;
 import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Hand;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
 
 public class PutAction extends PlayerTurnAction {
 
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.playerEventListener != null);
+		assert (this.eventHandler != null);
 
 		this.validate(context);
 
 		try {
-			Combatant combatant = (Combatant) context.getSourceCard();
-			Position targetPosition = context.getTargetPosition();
-			context.getSourcePlayer().getHand().remove(combatant);
-			context.getTargetZone().putCombatant(combatant, targetPosition);
+			Coordinate targetCoordinate = context.getTargetCoordinate();
+			Zone targetZone = context.getTargetZone();
+			
+			Combatant combatant = this.grabCombatantFromHand(context);
+			targetZone.putCombatant(targetCoordinate, combatant);
 
-			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, targetPosition);
+			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, targetCoordinate);
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
 
-		this.playerEventListener.onPlayerPutCardAction(context);
+		this.notifyActionEvent(EventCode.PLAYER_PUT_CARD, context);
+	}
+	
+	private Combatant grabCombatantFromHand(ActionContext context) {
+		CardCode cardCode = context.getTargetCard().getCode();
+		Hand hand = context.getTargetPlayer().getHand();
+		return (Combatant) hand.grab(cardCode);
 	}
 
 	private void validate(ActionContext context) throws PlayerActionException {
@@ -46,7 +56,7 @@ public class PutAction extends PlayerTurnAction {
 			throw new PlayerActionException(sourcePlayer, "EXCEPTION_SELECTED_CARD_IS_NOT_A_COMBATANT");
 		}
 
-		if (context.getTargetZone().hasCombatant(context.getTargetPosition())) {
+		if (context.getTargetZone().hasCombatant(context.getTargetCoordinate())) {
 			throw new PlayerActionException(sourcePlayer, "EXCEPTION_TARGET_POSITION_IS_OCCUPIED");
 		}
 	}
