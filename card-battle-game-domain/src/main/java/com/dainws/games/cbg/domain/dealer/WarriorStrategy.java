@@ -21,11 +21,11 @@ public class WarriorStrategy implements DealStrategy {
 	}
 	
 	@Override
-	public List<Card> dealFrom(Deck deck) {
+	public List<Card> drawFrom(Deck deck) {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.getWarrior(this.rarity));
+			cards.add(deck.drawWarrior(this.rarity));
 		}
 		
 		return cards;

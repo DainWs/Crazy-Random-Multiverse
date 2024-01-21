@@ -5,6 +5,7 @@ import java.util.List;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.dealer.DealStrategy;
 import com.dainws.games.cbg.domain.dealer.DealStrategyFactory;
+import com.dainws.games.cbg.domain.dealer.ClassicDealStrategyFactory;
 import com.dainws.games.cbg.domain.dealer.Deck;
 import com.dainws.games.cbg.domain.event.Event;
 import com.dainws.games.cbg.domain.event.EventCode;
@@ -15,17 +16,17 @@ import com.dainws.games.cbg.domain.player.Player;
 
 public class DealerService {
 	private Deck deck;
-	private DealStrategyFactory dealStrategyFactory;
+	private DealStrategyFactory classicDealStrategyFactory;
 	private EventHandler eventHandler;
 
 	public DealerService(Deck deck) {
 		this.deck = deck;
-		this.dealStrategyFactory = new DealStrategyFactory();
+		this.classicDealStrategyFactory = new ClassicDealStrategyFactory();
 		this.eventHandler = new EventHandler();
 	}
 
 	public void dealCardsToPlayerWithTurn(Game game) {
-		DealStrategy strategy =  this.dealStrategyFactory.createStrategy(game.getRound());
+		DealStrategy strategy =  this.classicDealStrategyFactory.createStrategy(game.getRound());
 		Player player = game.getPlayerWithTurn();
 
 		this.dealCardsToPlayer(game, player, strategy);		
@@ -59,7 +60,7 @@ public class DealerService {
 		this.eventHandler.notifyEventToPlayers(otherPlayers, event);
 	}
 	
-	public void setDealStrategyFactory(DealStrategyFactory dealStrategyFactory) {
-		this.dealStrategyFactory = dealStrategyFactory;
+	public void setDealStrategyFactory(DealStrategyFactory classicDealStrategyFactory) {
+		this.classicDealStrategyFactory = classicDealStrategyFactory;
 	}
 }

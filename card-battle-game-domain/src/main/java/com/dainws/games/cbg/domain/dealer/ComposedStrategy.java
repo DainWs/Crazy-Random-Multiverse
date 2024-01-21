@@ -21,11 +21,11 @@ public class ComposedStrategy implements DealStrategy {
 	}
 
 	@Override
-	public List<Card> dealFrom(Deck deck) {
+	public List<Card> drawFrom(Deck deck) {
 		List<Card> cards = new ArrayList<>();
 
 		for (DealStrategy dealStrategy : this.dealStrategies) {
-			cards.addAll(dealStrategy.dealFrom(deck));
+			cards.addAll(dealStrategy.drawFrom(deck));
 		}
 
 		return cards;

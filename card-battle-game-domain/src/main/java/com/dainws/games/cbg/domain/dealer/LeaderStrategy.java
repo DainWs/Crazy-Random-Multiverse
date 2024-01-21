@@ -17,11 +17,11 @@ public class LeaderStrategy implements DealStrategy {
 	}
 	
 	@Override
-	public List<Card> dealFrom(Deck deck) {
+	public List<Card> drawFrom(Deck deck) {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.getLeader());
+			cards.add(deck.drawLeader());
 		}
 		
 		return cards;

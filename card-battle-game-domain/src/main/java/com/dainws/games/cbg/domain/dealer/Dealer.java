@@ -17,10 +17,10 @@ public final class Dealer {
 	}
 
 	public List<Card> dealCards() {
-		return this.strategy.dealFrom(this.deck);
+		return this.strategy.drawFrom(this.deck);
 	}
 	
 	public List<Card> dealCards(DealStrategy customDealStrategy) {
-		return customDealStrategy.dealFrom(this.deck);
+		return customDealStrategy.drawFrom(this.deck);
 	}
 }
