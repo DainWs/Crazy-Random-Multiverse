@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain.dealer.exception;
+package com.dainws.games.cbg.domain.exception;
 
 import com.dainws.games.cbg.domain.card.Card;
 

@@ -1,6 +1,5 @@
-package com.dainws.games.cbg.domain.dealer.exception;
+package com.dainws.games.cbg.domain.exception;
 
-import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.translator.TranslatableKey;
 
 public class EmptyDeckException extends GameRuntimeException {

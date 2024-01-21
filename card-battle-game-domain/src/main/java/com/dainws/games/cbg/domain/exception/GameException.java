@@ -1,6 +1,6 @@
 package com.dainws.games.cbg.domain.exception;
 
-import com.dainws.games.cbg.domain.communication.Error;
+import com.dainws.games.cbg.domain.error.Error;
 import com.dainws.games.cbg.domain.translator.Language;
 import com.dainws.games.cbg.domain.translator.Text;
 import com.dainws.games.cbg.domain.translator.Translatable;
