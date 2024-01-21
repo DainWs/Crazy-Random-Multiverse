@@ -29,9 +29,9 @@ public class ActionContextFactory {
 		}
 
 		context.setSourceCard(this.cardRepository.find(contextTemplate.getSourceCardCode()));
-		context.setSourcePosition(contextTemplate.getSourcePosition());
+		context.setSourceCoordinate(contextTemplate.getSourceCoordinate());
 		context.setTargetCard(this.cardRepository.find(contextTemplate.getTargetCardCode()));
-		context.setTargetPosition(contextTemplate.getTargetPosition());
+		context.setTargetCoordinate(contextTemplate.getTargetCoordinate());
 		return context;
 	}
 }

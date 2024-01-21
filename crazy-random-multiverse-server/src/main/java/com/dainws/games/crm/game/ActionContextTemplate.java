@@ -1,20 +1,20 @@
 package com.dainws.games.crm.game;
 
 import com.dainws.games.cbg.domain.GameCode;
+import com.dainws.games.cbg.domain.board.Coordinate;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.player.PlayerCode;
-import com.dainws.games.cbg.domain.player.Position;
 
 public class ActionContextTemplate {
 	private GameCode gameCode;
 
 	private PlayerCode sourcePlayerCode;
 	private CardCode sourceCardCode;
-	private Position sourcePosition;
+	private Coordinate sourceCoordinate;
 
 	private PlayerCode targetPlayerCode;
 	private CardCode targetCardCode;
-	private Position targetPosition;
+	private Coordinate targetCoordinate;
 
 	public GameCode getGameCode() {
 		return gameCode;
@@ -44,12 +44,12 @@ public class ActionContextTemplate {
 		this.sourceCardCode = sourceCardCode;
 	}
 
-	public Position getSourcePosition() {
-		return sourcePosition;
+	public Coordinate getSourceCoordinate() {
+		return sourceCoordinate;
 	}
 
-	public void setSourcePosition(Position sourcePosition) {
-		this.sourcePosition = sourcePosition;
+	public void setSourceCoordinate(Coordinate sourceCoordinate) {
+		this.sourceCoordinate = sourceCoordinate;
 	}
 
 	public boolean isTargetPlayerRequired() {
@@ -72,11 +72,11 @@ public class ActionContextTemplate {
 		this.targetCardCode = targetCardCode;
 	}
 
-	public Position getTargetPosition() {
-		return targetPosition;
+	public Coordinate getTargetCoordinate() {
+		return targetCoordinate;
 	}
 
-	public void setTargetPosition(Position targetPosition) {
-		this.targetPosition = targetPosition;
+	public void setTargetCoordinate(Coordinate targetCoordinate) {
+		this.targetCoordinate = targetCoordinate;
 	}
 }

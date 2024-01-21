@@ -4,8 +4,8 @@ import java.lang.System.Logger;
 import java.util.List;
 
 import com.dainws.games.cbg.domain.Game;
-import com.dainws.games.cbg.domain.events.EventCode;
-import com.dainws.games.cbg.domain.events.EventHandler;
+import com.dainws.games.cbg.domain.event.EventCode;
+import com.dainws.games.cbg.domain.event.EventHandler;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Player;
 

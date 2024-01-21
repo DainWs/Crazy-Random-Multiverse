@@ -8,7 +8,7 @@ import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.events.EventCode;
+import com.dainws.games.cbg.domain.event.EventCode;
 import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Hand;

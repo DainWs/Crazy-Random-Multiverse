@@ -5,7 +5,7 @@ import java.lang.System.Logger.Level;
 import com.dainws.games.cbg.domain.board.Coordinate;
 import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Combatant;
-import com.dainws.games.cbg.domain.events.EventCode;
+import com.dainws.games.cbg.domain.event.EventCode;
 import com.dainws.games.cbg.domain.exception.GameRuntimeException;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 import com.dainws.games.cbg.domain.player.Player;

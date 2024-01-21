@@ -2,20 +2,21 @@ package com.dainws.games.crm.game;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.action.ActionContext;
+import com.dainws.games.cbg.domain.board.Board;
+import com.dainws.games.cbg.domain.board.Coordinate;
+import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
-import com.dainws.games.cbg.domain.player.Zone;
 
 class ActionContextImpl implements ActionContext {
 	private Game game;
 
 	private Player sourcePlayer;
-	private Position sourcePosition;
+	private Coordinate sourceCoordinate;
 	private Card sourceCard;
 
 	private Player targetPlayer;
-	private Position targetPosition;
+	private Coordinate targetCoordinate;
 	private Card targetCard;
 
 	public ActionContextImpl() {}
@@ -27,6 +28,11 @@ class ActionContextImpl implements ActionContext {
 	@Override
 	public Game getGame() {
 		return game;
+	}
+	
+	@Override
+	public Board getBoard() {
+		return this.game.getBoard();
 	}
 
 	public void setSourcePlayer(Player sourcePlayer) {
@@ -40,7 +46,8 @@ class ActionContextImpl implements ActionContext {
 
 	@Override
 	public Zone getSourceZone() {
-		return this.sourcePlayer.getZone();
+		Board board = this.getBoard();
+		return board.getZone(this.sourcePlayer.getPlayerCode());
 	}
 
 	public void setSourceCard(Card sourceCard) {
@@ -52,13 +59,13 @@ class ActionContextImpl implements ActionContext {
 		return this.sourceCard;
 	}
 
-	public void setSourcePosition(Position sourcePosition) {
-		this.sourcePosition = sourcePosition;
+	public void setSourceCoordinate(Coordinate sourceCoordinate) {
+		this.sourceCoordinate = sourceCoordinate;
 	}
 
 	@Override
-	public Position getSourcePosition() {
-		return sourcePosition;
+	public Coordinate getSourceCoordinate() {
+		return sourceCoordinate;
 	}
 
 	public void setTargetPlayer(Player targetPlayer) {
@@ -72,7 +79,8 @@ class ActionContextImpl implements ActionContext {
 
 	@Override
 	public Zone getTargetZone() {
-		return this.targetPlayer.getZone();
+		Board board = this.getBoard();
+		return board.getZone(this.targetPlayer.getPlayerCode());
 	}
 
 	public void setTargetCard(Card targetCard) {
@@ -84,12 +92,12 @@ class ActionContextImpl implements ActionContext {
 		return targetCard;
 	}
 
-	public void setTargetPosition(Position targetPosition) {
-		this.targetPosition = targetPosition;
+	public void setTargetCoordinate(Coordinate targetCoordinate) {
+		this.targetCoordinate = targetCoordinate;
 	}
 
 	@Override
-	public Position getTargetPosition() {
-		return targetPosition;
+	public Coordinate getTargetCoordinate() {
+		return targetCoordinate;
 	}
 }
