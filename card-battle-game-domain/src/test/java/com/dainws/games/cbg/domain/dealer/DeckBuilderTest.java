@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.cbg.domain.card.Equipment;
 import com.dainws.games.cbg.domain.card.Spell;
 import com.dainws.games.cbg.domain.card.Warrior;
-import com.dainws.games.cbg.domain.dealer.exception.DuplicatedCardException;
-import com.dainws.games.cbg.domain.dealer.exception.EmptyDeckException;
+import com.dainws.games.cbg.domain.exception.DuplicatedCardException;
+import com.dainws.games.cbg.domain.exception.EmptyDeckException;
 
 class DeckBuilderTest {
 

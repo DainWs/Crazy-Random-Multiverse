@@ -10,17 +10,19 @@ import com.dainws.games.cbg.domain.action.MoveAction;
 import com.dainws.games.cbg.domain.action.PutAction;
 import com.dainws.games.cbg.domain.action.SurrenderAction;
 import com.dainws.games.cbg.domain.error.ErrorHandler;
-import com.dainws.games.cbg.domain.event.EventHandler;
+import com.dainws.games.cbg.domain.event.ConsoleEventPublisher;
+import com.dainws.games.cbg.domain.event.EventPublisher;
+import com.dainws.games.cbg.domain.event.EventTrigger;
 import com.dainws.games.cbg.domain.exception.PlayerActionException;
 
-public class ActionService {
+public class ActionService implements EventTrigger {
 	private ActionContextFactory contextFactory;
-	private EventHandler eventHandler;
+	private EventPublisher eventPublisher;
 	private ErrorHandler errorHandler;
 
 	public ActionService(ActionContextFactory actionContextFactory) {
 		this.contextFactory = actionContextFactory;
-		this.eventHandler = new EventHandler();
+		this.eventPublisher = new ConsoleEventPublisher();
 		this.errorHandler = new ErrorHandler();
 	}
 
@@ -55,7 +57,7 @@ public class ActionService {
 	private boolean performAction(Action action, ActionContextTemplate contextTemplate) {
 		try {
 			ActionContext actionContext = this.createContext(contextTemplate);
-			action.setEventHandler(this.eventHandler);
+			action.setEventPublisher(this.eventPublisher);
 			action.perform(actionContext);
 			return true;
 		} catch (PlayerActionException exception) {
@@ -64,11 +66,12 @@ public class ActionService {
 		}
 	}
 
-	public void setEventListener(EventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 
-	public void setErrorListener(ErrorHandler errorHandler) {
+	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
 }

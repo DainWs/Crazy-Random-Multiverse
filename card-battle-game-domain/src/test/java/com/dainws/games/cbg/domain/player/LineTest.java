@@ -38,10 +38,10 @@ class LineTest {
 	@Test
 	void testGivenPositionWithSameLinePosition_whenGetSquareFromPosition_thenReturnSquareWithSamePosition() {
 		SquarePosition thatSquarePosition = SquarePosition.CENTER;
-		Position position = new Position(this.testLinePosition, thatSquarePosition);
+		Coordinate coordinate = new Coordinate(this.testLinePosition, thatSquarePosition);
 
-		Square square = this.line.getSquareFrom(position);
+		Square square = this.line.getSquareFrom(coordinate);
 
-		assertTrue(square.isPosition(position));
+		assertTrue(square.isPosition(coordinate));
 	}
 }

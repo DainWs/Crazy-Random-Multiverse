@@ -9,20 +9,20 @@ import org.junit.jupiter.api.Test;
 class PositionTest {
 	LinePosition testLinePosition;
 	SquarePosition testSquarePosition;
-	Position position;
+	Coordinate coordinate;
 
 	@BeforeEach
 	void beforeEach() {
 		this.testLinePosition = LinePosition.FRONT;
 		this.testSquarePosition = SquarePosition.LEFT;
-		this.position = new Position(this.testLinePosition, this.testSquarePosition);
+		this.coordinate = new Coordinate(this.testLinePosition, this.testSquarePosition);
 	}
 
 	@Test
 	void testGivenSameLinePosition_whenIsFromLinePosition_thenReturnTrue() {
 		LinePosition sameLinePosition = this.testLinePosition;
 
-		boolean result = this.position.isFrom(sameLinePosition);
+		boolean result = this.coordinate.isFrom(sameLinePosition);
 
 		assertTrue(result);
 	}
@@ -31,7 +31,7 @@ class PositionTest {
 	void testGivenDifferentLinePosition_whenIsFromLinePosition_thenReturnFalse() {
 		LinePosition otherLinePosition = LinePosition.BACK;
 
-		boolean result = this.position.isFrom(otherLinePosition);
+		boolean result = this.coordinate.isFrom(otherLinePosition);
 
 		assertFalse(result);
 	}
@@ -40,7 +40,7 @@ class PositionTest {
 	void testGivenSameSquarePosition_whenIsFromSquarePosition_thenReturnTrue() {
 		SquarePosition sameSquarePosition = this.testSquarePosition;
 
-		boolean result = this.position.isFrom(sameSquarePosition);
+		boolean result = this.coordinate.isFrom(sameSquarePosition);
 
 		assertTrue(result);
 	}
@@ -49,7 +49,7 @@ class PositionTest {
 	void testGivenDifferentSquarePosition_whenIsFromSquarePosition_thenReturnFalse() {
 		SquarePosition otherSquarePosition = SquarePosition.CENTER;
 
-		boolean result = this.position.isFrom(otherSquarePosition);
+		boolean result = this.coordinate.isFrom(otherSquarePosition);
 
 		assertFalse(result);
 	}
@@ -58,9 +58,9 @@ class PositionTest {
 	@Test
 	void testGivenPositionWithDifferentLinePosition_whenEquals_thenReturnFalse() {
 		LinePosition otherLinePosition = LinePosition.BACK;
-		Position otherPosition = new Position(otherLinePosition, this.testSquarePosition);
+		Coordinate otherPosition = new Coordinate(otherLinePosition, this.testSquarePosition);
 
-		boolean result = this.position.equals(otherPosition);
+		boolean result = this.coordinate.equals(otherPosition);
 
 		assertFalse(result);
 	}
@@ -68,18 +68,18 @@ class PositionTest {
 	@Test
 	void testGivenPositionWithDifferentSquarePosition_whenEquals_thenReturnFalse() {
 		SquarePosition otherSquarePosition = SquarePosition.CENTER;
-		Position otherPosition = new Position(this.testLinePosition, otherSquarePosition);
+		Coordinate otherPosition = new Coordinate(this.testLinePosition, otherSquarePosition);
 
-		boolean result = this.position.equals(otherPosition);
+		boolean result = this.coordinate.equals(otherPosition);
 
 		assertFalse(result);
 	}
 
 	@Test
 	void testGivenSamePosition_whenEquals_thenReturnTrue() {
-		Position thatPosition = new Position(this.testLinePosition, this.testSquarePosition);
+		Coordinate thatPosition = new Coordinate(this.testLinePosition, this.testSquarePosition);
 
-		boolean result = this.position.equals(thatPosition);
+		boolean result = this.coordinate.equals(thatPosition);
 
 		assertTrue(result);
 	}

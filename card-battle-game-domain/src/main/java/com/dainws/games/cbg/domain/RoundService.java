@@ -1,20 +1,22 @@
 package com.dainws.games.cbg.domain;
 
+import com.dainws.games.cbg.domain.event.ConsoleEventPublisher;
 import com.dainws.games.cbg.domain.event.Event;
 import com.dainws.games.cbg.domain.event.EventCode;
 import com.dainws.games.cbg.domain.event.EventDetails;
-import com.dainws.games.cbg.domain.event.EventHandler;
+import com.dainws.games.cbg.domain.event.EventPublisher;
+import com.dainws.games.cbg.domain.event.EventTrigger;
 import com.dainws.games.cbg.domain.player.Player;
 
-public class RoundService {
+public class RoundService implements EventTrigger {
 
 	private static final int FIRST_TURN = 0;
 	private static final int FIRST_ROUND = 0;
 
-	private EventHandler eventHandler;
+	private EventPublisher eventPublisher;
 
 	public RoundService() {
-		this.eventHandler = new EventHandler();
+		this.eventPublisher = new ConsoleEventPublisher();
 	}
 	
 	public void resetTurnAndRoundOf(Game game) {
@@ -87,19 +89,18 @@ public class RoundService {
 		details.setGame(game);
 		details.setTargetPlayer(game.getPlayerWithTurn());
 
-		Event event = new Event(EventCode.TURN_CHANGE, details);
-		this.eventHandler.notifyEventToPlayers(game.getPlayers(), event);
+		this.eventPublisher.publish(new Event(EventCode.TURN_CHANGE, details));
 	}
 
 	private void notifyRoundChangeOf(Game game) {
 		EventDetails details = new EventDetails();
 		details.setGame(game);
 
-		Event event = new Event(EventCode.ROUND_CHANGE, details);
-		this.eventHandler.notifyEventToPlayers(game.getPlayers(), event);
+		this.eventPublisher.publish(new Event(EventCode.ROUND_CHANGE, details));
 	}
 
-	public void setEventListener(EventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 }

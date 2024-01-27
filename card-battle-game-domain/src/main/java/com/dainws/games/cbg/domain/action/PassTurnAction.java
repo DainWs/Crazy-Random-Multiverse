@@ -51,4 +51,19 @@ public class PassTurnAction extends PlayerTurnAction {
 		}
 	}
 
+	
+	// TODO captura de eventos de dominio, y reaccion a estos, ejemplo: 
+	// onPlayerAttackAction -> updateAlivePlayers
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

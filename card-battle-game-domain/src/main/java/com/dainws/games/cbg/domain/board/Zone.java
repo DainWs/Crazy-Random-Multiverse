@@ -7,9 +7,13 @@ import com.dainws.games.cbg.domain.exception.EmptyCoordinateException;
 import com.dainws.games.cbg.domain.exception.NotEmptyCoordinateException;
 
 public abstract class Zone {
+	private int horizontalDimension;
+	private int verticalDimension;
 	private Combatant[][] combatants;
 
 	protected Zone(int horizontalDimension, int verticalDimension) {
+		this.horizontalDimension = horizontalDimension;
+		this.verticalDimension = verticalDimension;
 		this.combatants = new Combatant[verticalDimension][horizontalDimension];
 	}
 	
@@ -90,16 +94,24 @@ public abstract class Zone {
 		int row = coordinate.getRow();
 		int column = coordinate.getColumn();
 
-		boolean isRowOutOfRange = (0 > row || row > this.combatants.length);
+		boolean isRowOutOfRange = (0 > row || row >= this.verticalDimension);
 		if (isRowOutOfRange) {
 			return false;
 		}
 
-		boolean isColumnOutOfRange = (0 > column || column > this.combatants[row].length);
+		boolean isColumnOutOfRange = (0 > column || column >= this.horizontalDimension);
 		return !isColumnOutOfRange;
 	}
-	
+
 	public Combatant[][] getCombatants() {
 		return this.combatants.clone();
+	}
+	
+	public int getHorizontalDimension() {
+		return this.horizontalDimension;
+	}
+	
+	public int getVerticalDimension() {
+		return this.verticalDimension;
 	}
 }

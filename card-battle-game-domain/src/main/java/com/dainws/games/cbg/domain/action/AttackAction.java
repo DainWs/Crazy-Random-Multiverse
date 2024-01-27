@@ -12,7 +12,7 @@ public class AttackAction extends PlayerTurnAction {
 
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.eventHandler != null);
+		assert (this.eventPublisher != null);
 
 		try {
 			Combatant sourceCombatant = this.getSourceCombatantFrom(context);

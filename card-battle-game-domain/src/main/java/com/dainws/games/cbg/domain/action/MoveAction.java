@@ -14,7 +14,7 @@ public class MoveAction extends PlayerTurnAction {
 
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.eventHandler != null);
+		assert (this.eventPublisher != null);
 
 		this.validate(context);
 

@@ -1,18 +1,24 @@
 package com.dainws.games.cbg.domain;
 
 import com.dainws.games.cbg.domain.board.Board;
+import com.dainws.games.cbg.domain.event.ConsoleEventPublisher;
 import com.dainws.games.cbg.domain.event.Event;
 import com.dainws.games.cbg.domain.event.EventCode;
 import com.dainws.games.cbg.domain.event.EventDetails;
-import com.dainws.games.cbg.domain.event.EventHandler;
+import com.dainws.games.cbg.domain.event.EventPublisher;
+import com.dainws.games.cbg.domain.event.EventTrigger;
 import com.dainws.games.cbg.domain.player.Player;
 
-public class GameService {
+public class GameService implements EventTrigger {
 
-	private EventHandler eventHandler;
+	private EventPublisher eventPublisher;
 
 	public GameService() {
-		this.eventHandler = new EventHandler();
+		this.eventPublisher = new ConsoleEventPublisher();
+	}
+	
+	public void startGame(Game game) {
+		this.publishGameEvent(EventCode.GAME_START, game);
 	}
 
 	public void updateAlivePlayersOf(Game game) {
@@ -61,8 +67,7 @@ public class GameService {
 		EventDetails details = new EventDetails();
 		details.setGame(game);
 
-		Event event = new Event(eventCode, details);
-		this.eventHandler.notifyEventToPlayers(game.getPlayers(), event);
+		this.eventPublisher.publish(new Event(eventCode, details));
 	}
 	
 	private void publishPlayerEvent(EventCode eventCode, Game game, Player player) {
@@ -70,11 +75,11 @@ public class GameService {
 		details.setGame(game);
 		details.setTargetPlayer(player);
 
-		Event event = new Event(eventCode, details);
-		this.eventHandler.notifyEventToPlayers(game.getPlayers(), event);
+		this.eventPublisher.publish(new Event(eventCode, details));
 	}
 
-	public void setEventListener(EventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 }

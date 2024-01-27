@@ -1,4 +1,4 @@
-package com.dainws.games.cbg.domain;
+package com.dainws.games.cbg.domain.effect;
 
 import com.dainws.games.cbg.domain.exception.EffectException;
 

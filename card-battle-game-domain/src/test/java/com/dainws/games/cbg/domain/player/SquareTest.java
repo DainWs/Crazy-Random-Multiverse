@@ -11,23 +11,23 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.cbg.domain.card.Warrior;
 import com.dainws.games.cbg.domain.card.WarriorFactory;
 import com.dainws.games.cbg.domain.exception.CardNotFoundException;
-import com.dainws.games.cbg.domain.exception.PositionNotEmptyException;
+import com.dainws.games.cbg.domain.exception.NotEmptyCoordinateException;
 
 class SquareTest {
 
-	Position testPosition;
+	Coordinate testPosition;
 	Square square;
 
 	@BeforeEach
 	void beforeEach() {
 		LinePosition testLinePosition = LinePosition.FRONT;
 		SquarePosition testSquarePosition = SquarePosition.LEFT;
-		this.testPosition = new Position(testLinePosition, testSquarePosition);
+		this.testPosition = new Coordinate(testLinePosition, testSquarePosition);
 		this.square = new Square(this.testPosition);
 	}
 
 	@Test
-	void testGivenSquareWithWarrior_whenHasWarrior_thenReturnTrue() throws PositionNotEmptyException {
+	void testGivenSquareWithWarrior_whenHasWarrior_thenReturnTrue() throws NotEmptyCoordinateException {
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 		this.square.putCombatant(warrior);
 
@@ -49,7 +49,7 @@ class SquareTest {
 	void testGivenDifferentPosition_whenIsPosition_thenReturnFalse() {
 		LinePosition otherLinePosition = LinePosition.BACK;
 		SquarePosition otherSquarePosition = SquarePosition.CENTER;
-		Position otherPosition = new Position(otherLinePosition, otherSquarePosition);
+		Coordinate otherPosition = new Coordinate(otherLinePosition, otherSquarePosition);
 
 		boolean result = this.square.isPosition(otherPosition);
 
@@ -64,7 +64,7 @@ class SquareTest {
 	}
 
 	@Test
-	void testGivenWarriorAndEmptySquare_whenPutCombatant_thenSquareHasWarrior() throws PositionNotEmptyException {
+	void testGivenWarriorAndEmptySquare_whenPutCombatant_thenSquareHasWarrior() throws NotEmptyCoordinateException {
 		this.square.removeCombatant();
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 
@@ -82,17 +82,17 @@ class SquareTest {
 	}
 
 	@Test
-	void testGivenWarriorAndFilledSquare_whenPutCombatant_thenThrowSquareAlreadyFilledException() throws PositionNotEmptyException {
+	void testGivenWarriorAndFilledSquare_whenPutCombatant_thenThrowSquareAlreadyFilledException() throws NotEmptyCoordinateException {
 		WarriorFactory warriorFactory = new WarriorFactory();
 		Warrior warrior = warriorFactory.createBasicWarrior();
 		this.square.removeCombatant();
 		this.square.putCombatant(warriorFactory.createBasicWarrior());
 
-		assertThrows(PositionNotEmptyException.class, () -> this.square.putCombatant(warrior));
+		assertThrows(NotEmptyCoordinateException.class, () -> this.square.putCombatant(warrior));
 	}
 
 	@Test
-	void testGivenFilledSquare_whenRemoveWarrior_thenSquareIsNotFilled() throws PositionNotEmptyException {
+	void testGivenFilledSquare_whenRemoveWarrior_thenSquareIsNotFilled() throws NotEmptyCoordinateException {
 		this.square.putCombatant(new WarriorFactory().createBasicWarrior());
 
 		this.square.removeCombatant();
@@ -101,7 +101,7 @@ class SquareTest {
 	}
 	
 	@Test
-	void testGivenSquareWithWarrior_whenGetWarrior_thenDoesNotThrowException() throws PositionNotEmptyException {
+	void testGivenSquareWithWarrior_whenGetWarrior_thenDoesNotThrowException() throws NotEmptyCoordinateException {
 		Warrior warrior = new WarriorFactory().createBasicWarrior();
 		this.square.putCombatant(warrior);
 
@@ -119,7 +119,7 @@ class SquareTest {
 	void testGivenSquareWithDifferentPosition_whenEquals_thenReturnFalse() {
 		LinePosition otherLinePosition = LinePosition.BACK;
 		SquarePosition otherSquarePosition = SquarePosition.CENTER;
-		Position otherPosition = new Position(otherLinePosition, otherSquarePosition);
+		Coordinate otherPosition = new Coordinate(otherLinePosition, otherSquarePosition);
 		Square thatSquare = new Square(otherPosition);
 
 		boolean result = this.square.equals(thatSquare);

@@ -2,8 +2,8 @@ package com.dainws.games.cbg.domain.card;
 
 import java.util.Objects;
 
-import com.dainws.games.cbg.domain.Effect;
-import com.dainws.games.cbg.domain.EffectId;
+import com.dainws.games.cbg.domain.effect.Effect;
+import com.dainws.games.cbg.domain.effect.EffectId;
 
 public class Spell extends Card {
 	private EffectId effectId;
