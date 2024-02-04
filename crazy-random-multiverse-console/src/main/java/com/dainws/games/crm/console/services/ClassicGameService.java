@@ -9,8 +9,8 @@ import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.dealer.Dealer;
 import com.dainws.games.cbg.domain.dealer.LeaderStrategy;
+import com.dainws.games.cbg.domain.player.Coordinate;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.crm.console.domain.models.GameMode;
 import com.dainws.games.crm.console.events.GameEvent;
 import com.dainws.games.crm.console.events.PlayerEvent;
@@ -55,7 +55,7 @@ public class ClassicGameService implements AbstractGameService {
 	private void putLeadersOfPlayers(Game game) {
 		for (Player player : game.getPlayers()) {
 			Card firstLeaderCard = player.getHand().getCardsOf(CardType.LEADER).get(0);
-			new PutAction(player, firstLeaderCard.getCode(), Position.LEADER_POSITION).perform();
+			new PutAction(player, firstLeaderCard.getCode(), Coordinate.LEADER_POSITION).perform();
 			this.eventPublisher.publishEvent(PlayerEvent.newPlayerGetCardsEvent(player));
 		}
 	}

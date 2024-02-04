@@ -1,15 +1,20 @@
 package com.dainws.games.crm.stomp.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserInfoResponse {
-	private String sessionId;
+	@JsonProperty("uid")
+	private String uid;
+	
+	@JsonProperty("username")
 	private String username;
 
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
-	public String getSessionId() {
-		return sessionId;
+	public String getUid() {
+		return uid;
 	}
 
 	public void setUsername(String username) {

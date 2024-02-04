@@ -12,9 +12,9 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.persistence.exceptions.UserNotFoundException;
+import com.dainws.games.crm.domain.model.User;
+import com.dainws.games.crm.domain.model.UserCode;
+import com.dainws.games.crm.exception.UserNotFoundException;
 import com.dainws.games.crm.services.UserService;
 import com.dainws.games.crm.stomp.dto.UserInfoResponse;
 import com.dainws.games.crm.stomp.dto.UserUpdateRequest;
@@ -59,7 +59,7 @@ public class UserController {
 	public UserInfoResponse info(@Header("simpSessionId") String sessionId) throws UserNotFoundException {
 		User user = this.getUser(sessionId);
 		UserInfoResponse response = new UserInfoResponse();
-		response.setSessionId(sessionId);
+		response.setUid(sessionId);
 		response.setUsername(user.getName());
 		return response;
 	}

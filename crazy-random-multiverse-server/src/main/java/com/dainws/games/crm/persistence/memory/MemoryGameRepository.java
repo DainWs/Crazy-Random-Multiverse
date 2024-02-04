@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.GameCode;
-import com.dainws.games.crm.persistence.GameRepository;
-import com.dainws.games.crm.persistence.exceptions.GameNotFoundException;
+import com.dainws.games.crm.domain.GameRepository;
+import com.dainws.games.crm.exception.GameNotFoundException;
 
 public class MemoryGameRepository implements GameRepository {
 	private Map<GameCode, Game> games;

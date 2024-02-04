@@ -8,13 +8,13 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.cbg.domain.ActionService;
 import com.dainws.games.cbg.domain.GameCode;
+import com.dainws.games.cbg.domain.action.ActionContextTemplate;
+import com.dainws.games.cbg.domain.board.Coordinate;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.player.PlayerCode;
-import com.dainws.games.cbg.domain.player.Position;
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.game.ActionContextTemplate;
-import com.dainws.games.crm.services.PlayerFacade;
 import com.dainws.games.crm.stomp.dto.PlayerPutCardRequest;
 import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
 import com.dainws.games.crm.stomp.dto.models.PositionDto;
@@ -22,10 +22,10 @@ import com.dainws.games.crm.stomp.dto.models.PositionDto;
 @Controller
 public class PlayerController {
 
-	private PlayerFacade playerFacade;
+	private ActionService actionService;
 
-	public PlayerController(PlayerFacade playerFacade) {
-		this.playerFacade = playerFacade;
+	public PlayerController(ActionService actionService) {
+		this.actionService = actionService;
 	}
 
 	@MessageMapping("/game/{gameCode}/player/put-card")
@@ -40,9 +40,9 @@ public class PlayerController {
 		contextTemplate.setSourcePlayerCode(playerCode);
 		contextTemplate.setSourceCardCode(this.mapCardCodeDto(putCardRequest.getSourceCardCode()));
 		contextTemplate.setTargetPlayerCode(playerCode);
-		contextTemplate.setTargetPosition(this.mapPositionDto(putCardRequest.getTargetPosition()));
+		contextTemplate.setTargetCoordinate(this.mapPositionDto(putCardRequest.getTargetPosition()));
 
-		this.playerFacade.playerPutCard(contextTemplate);
+		this.actionService.playerPutCard(contextTemplate);
 	}
 	
 	@MessageExceptionHandler
@@ -59,7 +59,7 @@ public class PlayerController {
 		return new CardCode(dto.getCode(), dto.getType());
 	}
 
-	private Position mapPositionDto(PositionDto dto) {
-		return new Position(dto.getLinePosition(), dto.getSquarePosition());
+	private Coordinate mapPositionDto(PositionDto dto) {
+		return new Coordinate(dto.getRow(), dto.getColumn());
 	}
 }

@@ -2,6 +2,8 @@ import EventCodes from "./EventCodes";
 import GameCreateProcessor from "./GameCreateProcessor";
 import GameStartProcessor from "./GameStartProcessor";
 import GameEndProcessor from "./GameEndProcessor";
+import PlayerGetTurnProcessor from "./PlayerGetTurnProcessor";
+import PlayerGetCardProcessor from "./PlayerGetCardProcessor";
 
 const EventProcessors = new Map()
 EventProcessors.set(EventCodes.GAME_CREATED, GameCreateProcessor)
@@ -10,8 +12,8 @@ EventProcessors.set(EventCodes.GAME_END, GameEndProcessor)
 EventProcessors.set(EventCodes.PLAYER_WIN,)
 EventProcessors.set(EventCodes.PLAYER_LOSE,)
 EventProcessors.set(EventCodes.PLAYER_SURRENDER,)
-EventProcessors.set(EventCodes.PLAYER_GET_TURN,)
-EventProcessors.set(EventCodes.PLAYER_GET_CARD,)
+EventProcessors.set(EventCodes.PLAYER_GET_TURN, PlayerGetTurnProcessor)
+EventProcessors.set(EventCodes.PLAYER_GET_CARD, PlayerGetCardProcessor)
 EventProcessors.set(EventCodes.PLAYER_PUT_CARD,)
 EventProcessors.set(EventCodes.PLAYER_MOVE_CARD,)
 EventProcessors.set(EventCodes.PLAYER_ATTACK_CARD,)
@@ -28,7 +30,7 @@ function getEventProcessor(eventCode) {
         }
     }
 
-    throw new Error("No event processor found fo EventCode " + eventCode)
+    throw new Error("No event processor found for EventCode " + eventCode)
 }
 
 export default {

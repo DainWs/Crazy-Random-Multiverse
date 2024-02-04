@@ -4,53 +4,48 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.cbg.domain.communication.Destination;
-import com.dainws.games.crm.domain.Party;
-import com.dainws.games.crm.domain.PartyCode;
-import com.dainws.games.crm.domain.PartyException;
-import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.persistence.PartyRepository;
-import com.dainws.games.crm.persistence.exceptions.PartyNotFoundException;
+import com.dainws.games.crm.domain.PartyPublisher;
+import com.dainws.games.crm.domain.PartyRepository;
+import com.dainws.games.crm.domain.model.Party;
+import com.dainws.games.crm.domain.model.PartyCode;
+import com.dainws.games.crm.domain.model.User;
+import com.dainws.games.crm.exception.PartyException;
+import com.dainws.games.crm.exception.PartyNotFoundException;
 
 @Service
 public class PartyService {
 	private PartyRepository partyRepository;
-	private PartyChannel partyChannel;
+	private PartyPublisher partyPublisher;
 
-	public PartyService(PartyRepository partyRepository, PartyChannel partyChannel) {
+	public PartyService(PartyRepository partyRepository, PartyPublisher partyPublisher) {
 		this.partyRepository = partyRepository;
-		this.partyChannel = partyChannel;
+		this.partyPublisher = partyPublisher;
 	}
 
 	public void createParty(User partyOwner) throws PartyException {
-		if (this.isUserInParty(partyOwner)) {
+		if (this.partyRepository.hasPartyWhereUserIsPresent(partyOwner)) {
 			throw new PartyException("USER_ALREADY_IN_PARTY");
 		}
 
 		Party party = new Party(partyOwner);
 		this.partyRepository.save(party);
 		
-		this.sendPartyInfoTo(partyOwner.getCode(), party);
+		this.sendPartyInfoTo(partyOwner, party);
 	}
 
 	public void joinParty(PartyCode partyCode, User user) throws PartyException {
-		if (this.isUserInParty(user)) {
+		if (this.partyRepository.hasPartyWhereUserIsPresent(user)) {
 			throw new PartyException("USER_ALREADY_IN_PARTY");
 		}
 
-		Party party = this.getParty(partyCode);
+		Party party = this.partyRepository.find(partyCode);
 		party.add(user);
 
 		this.sendPartyInfoTo(party.getUsers(), party);
 	}
 
-	public void leaveParty(User user) throws PartyException {
-		if (!this.isUserInParty(user)) {
-			throw new PartyException("USER_IS_NOT_AT_A_PARTY");
-		}
-
-		Party party = this.getPartyWhereUserIsPlayer(user);
+	public void leaveParty(User user) throws PartyNotFoundException {
+		Party party = this.partyRepository.findPartyWhereUserIsPresent(user);
 		party.remove(user);
 		
 		this.sendPartyInfoTo(party.getUsers(), party);
@@ -59,9 +54,16 @@ public class PartyService {
 			this.partyRepository.delete(party.getCode());
 		}
 	}
-
-	public void lockParty(PartyCode partyCode) {
-		this.lockParty(this.partyRepository.find(partyCode));
+	
+	public void tryLeaveParty(User user) {
+		if (this.partyRepository.hasPartyWhereUserIsPresent(user)) {
+			this.leaveParty(user);
+		}
+	}
+	
+	public void updatePartyListOf(User user) {
+		List<Party> parties = this.partyRepository.findAll();
+		this.partyPublisher.sendPartyList(user, parties);
 	}
 
 	public void lockParty(Party party) {
@@ -69,50 +71,18 @@ public class PartyService {
 		this.partyRepository.save(party);
 	}
 
-	public void unlockParty(PartyCode partyCode) {
-		this.lockParty(this.partyRepository.find(partyCode));
-	}
-
 	public void unlockParty(Party party) {
 		party.unlock();
 		this.partyRepository.save(party);
 	}
-
-	public Party getParty(PartyCode partyCode) {
-		return this.partyRepository.find(partyCode);
-	}
-
-	public Party getPartyWhereUserIsOwner(User user) throws PartyNotFoundException {
-		return this.getAllParties()
-				.stream()
-				.filter(party -> party.getOwner().equals(user))
-				.findFirst()
-				.orElseThrow(PartyNotFoundException::new);
-	}
-	
-	public Party getPartyWhereUserIsPlayer(User user) throws PartyNotFoundException {
-		return this.getAllParties()
-				.stream()
-				.filter(party -> party.has(user))
-				.findFirst()
-				.orElseThrow(PartyNotFoundException::new);
-	}
-
-	public List<Party> getAllParties() {
-		return this.partyRepository.findAll();
-	}
-
-	public boolean isUserInParty(User user) {
-		return this.getAllParties().stream().anyMatch(party -> party.has(user));
-	}
 	
 	private void sendPartyInfoTo(List<User> users, Party party) {
 		for (User user : users) {
-			this.sendPartyInfoTo(user.getCode(), party);			
+			this.sendPartyInfoTo(user, party);			
 		}
 	}
 	
-	private void sendPartyInfoTo(UserCode userCode, Party party) {
-		this.partyChannel.sendPartyInfo(Destination.from(userCode.getValue()), party);
+	private void sendPartyInfoTo(User user, Party party) {
+		this.partyPublisher.sendPartyInfo(user, party);
 	}
 }

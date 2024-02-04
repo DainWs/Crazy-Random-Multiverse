@@ -1,7 +1,5 @@
 package com.dainws.games.crm.stomp.dto.models;
 
-import java.util.Map;
-
 import jakarta.validation.constraints.NotNull;
 
 public class ZoneDto {
@@ -9,7 +7,7 @@ public class ZoneDto {
 	private PlayerDto owner;
 	
 	@NotNull
-	private Map<PositionDto, CardDto> positions;
+	private CardDto[][] combatants;
 	
 	public void setOwner(PlayerDto owner) {
 		this.owner = owner;
@@ -19,11 +17,11 @@ public class ZoneDto {
 		return owner;
 	}
 	
-	public void setPositions(Map<PositionDto, CardDto> positions) {
-		this.positions = positions;
+	public void setCombatants(CardDto[][] combatants) {
+		this.combatants = combatants;
 	}
 	
-	public Map<PositionDto, CardDto> getPositions() {
-		return positions;
+	public CardDto[][] getCombatants() {
+		return combatants;
 	}
 }

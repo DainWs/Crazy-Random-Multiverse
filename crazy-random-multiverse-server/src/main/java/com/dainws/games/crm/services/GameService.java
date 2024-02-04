@@ -1,52 +1,63 @@
 package com.dainws.games.crm.services;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.GameCode;
-import com.dainws.games.cbg.domain.card.Card;
-import com.dainws.games.crm.domain.Party;
-import com.dainws.games.crm.game.ClassicGameFactory;
-import com.dainws.games.crm.persistence.CardRepository;
-import com.dainws.games.crm.persistence.GameRepository;
-import com.dainws.games.crm.persistence.exceptions.GameNotFoundException;
+import com.dainws.games.cbg.domain.event.ConsoleEventPublisher;
+import com.dainws.games.cbg.domain.event.Event;
+import com.dainws.games.cbg.domain.event.EventCode;
+import com.dainws.games.cbg.domain.event.EventDetails;
+import com.dainws.games.cbg.domain.event.EventPublisher;
+import com.dainws.games.cbg.domain.event.EventTrigger;
+import com.dainws.games.crm.domain.GameRepository;
+import com.dainws.games.crm.domain.PartyRepository;
+import com.dainws.games.crm.domain.model.User;
+import com.dainws.games.crm.exception.GameNotFoundException;
 
 @Service
-public class GameService {
+public class GameService implements EventTrigger {
+	private GameFactory gameFactory;
 	private GameRepository gameRepository;
-	private CardRepository cardRepository;
+	private EventPublisher eventPublisher;
 	private Logger logger;
 
-	public GameService(GameRepository gameRepository, CardRepository cardRepository) {
+	public GameService(GameRepository gameRepository, PartyRepository partyRepository) {
+		this.gameFactory = new GameFactory(partyRepository);
 		this.gameRepository = gameRepository;
-		this.cardRepository = cardRepository;
+		this.eventPublisher = new ConsoleEventPublisher();
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
-	public Game createFrom(Party party) {		
-		this.logger.trace("Creando juego para la fiesta {}", party.getCodeValue());
-		Set<Card> cards = this.cardRepository.findAll();
-		Game classicGame = new ClassicGameFactory()
-				.create(party, cards);
+	public Game createGameFromPartyOwner(User partyOwner) {
+		Game game = this.gameFactory.createGameFromPartyOwner(partyOwner);
 
-		this.gameRepository.save(classicGame);
-		this.logger.trace("El juego para la fiesta {} ha sido creado", party.getCodeValue());
-		return classicGame;
+		this.gameRepository.save(game);
+		this.logger.trace("El juego con codigo {} ha sido creado", game.getCode());
+
+		this.publishGameCreatedEvent(game);
+		return game;
 	}
 
-	public void save(Game game) {
-		this.gameRepository.save(game);
+	private void publishGameCreatedEvent(Game game) {
+		EventDetails details = new EventDetails();
+		details.setGame(game);
+		this.eventPublisher.publish(new Event(EventCode.GAME_CREATED, details));
 	}
 
 	public void delete(GameCode gameCode) {
 		this.gameRepository.delete(gameCode);
+		this.logger.trace("El juego con codigo {} ha sido borrado", gameCode);
 	}
 
 	public Game findGame(GameCode gameCode) throws GameNotFoundException {
 		return this.gameRepository.find(gameCode);
+	}
+
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 }

@@ -19,6 +19,10 @@ public abstract class Zone {
 	
 	public abstract double getVitality();
 
+	public boolean isAlive() {
+		return this.getVitality() > 0;
+	}
+
 	public boolean hasCombatant(Coordinate coordinate) {
 		if (this.isValidCoordinate(coordinate)) {
 			int row = coordinate.getRow();

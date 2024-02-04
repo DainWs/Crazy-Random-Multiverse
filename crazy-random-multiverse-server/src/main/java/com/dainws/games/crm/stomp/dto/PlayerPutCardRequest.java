@@ -12,7 +12,7 @@ public class PlayerPutCardRequest {
 	private CardCodeDto sourceCardCode;
 
 	@NotNull
-	@JsonProperty("position")
+	@JsonProperty("coordinate")
 	private PositionDto targetPosition;
 
 	public CardCodeDto getSourceCardCode() {

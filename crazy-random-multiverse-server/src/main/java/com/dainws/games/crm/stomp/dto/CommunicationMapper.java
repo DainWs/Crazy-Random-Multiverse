@@ -1,8 +1,8 @@
 package com.dainws.games.crm.stomp.dto;
 
-import com.dainws.games.cbg.domain.communication.Error;
-import com.dainws.games.cbg.domain.communication.Event;
-import com.dainws.games.cbg.domain.communication.EventDetails;
+import com.dainws.games.cbg.domain.error.Error;
+import com.dainws.games.cbg.domain.event.Event;
+import com.dainws.games.cbg.domain.event.EventDetails;
 import com.dainws.games.cbg.domain.translator.Text;
 
 public class CommunicationMapper {
@@ -40,8 +40,8 @@ public class CommunicationMapper {
 			detailsDto.setSourceCard(modelMapper.mapCardToDto(details.getSourceCard()));
 		}
 
-		if (details.hasSourcePosition()) {
-			detailsDto.setSourcePosition(modelMapper.mapPositionToDto(details.getSourcePosition()));
+		if (details.hasSourceCoordinate()) {
+			detailsDto.setSourcePosition(modelMapper.mapCoordinateToDto(details.getSourceCoordinate()));
 		}
 
 		if (details.hasTargetPlayer()) {
@@ -52,8 +52,8 @@ public class CommunicationMapper {
 			detailsDto.setTargetCard(modelMapper.mapCardToDto(details.getTargetCard()));
 		}
 
-		if (details.hasTargetPosition()) {
-			detailsDto.setTargetPosition(modelMapper.mapPositionToDto(details.getTargetPosition()));
+		if (details.hasTargetCoordinate()) {
+			detailsDto.setTargetPosition(modelMapper.mapCoordinateToDto(details.getTargetCoordinate()));
 		}
 
 		return detailsDto;

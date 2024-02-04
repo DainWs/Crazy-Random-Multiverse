@@ -1,10 +1,14 @@
 package com.dainws.games.crm.stomp.dto;
 
-import com.dainws.games.cbg.domain.communication.EventCode;
+import com.dainws.games.cbg.domain.event.EventCode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EventDto {
 
+	@JsonProperty("code")
 	private EventCode code;
+
+	@JsonProperty("details")
 	private EventDetailsDto details;
 	
 	public EventDto() {}

@@ -1,30 +1,27 @@
 package com.dainws.games.crm.stomp.dto.models;
 
-import com.dainws.games.cbg.domain.player.LinePosition;
-import com.dainws.games.cbg.domain.player.SquarePosition;
-
-import jakarta.validation.constraints.NotNull;
-
 public class PositionDto {
-	@NotNull
-	private LinePosition linePosition;
+	private int row;
+	private int column;
 
-	@NotNull
-	private SquarePosition squarePosition;
-
-	public LinePosition getLinePosition() {
-		return linePosition;
+	public void setRow(int row) {
+		this.row = row;
 	}
-
-	public void setLinePosition(LinePosition linePosition) {
-		this.linePosition = linePosition;
+	
+	public int getRow() {
+		return row;
 	}
-
-	public SquarePosition getSquarePosition() {
-		return squarePosition;
+	
+	public void setColumn(int column) {
+		this.column = column;
 	}
-
-	public void setSquarePosition(SquarePosition squarePosition) {
-		this.squarePosition = squarePosition;
+	
+	public int getColumn() {
+		return column;
+	}
+	
+	@Override
+	public String toString() {
+		return this.row+"_"+this.column;
 	}
 }

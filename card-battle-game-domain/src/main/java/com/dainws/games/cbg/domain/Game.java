@@ -1,7 +1,6 @@
 package com.dainws.games.cbg.domain;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.dainws.games.cbg.domain.board.Board;
 import com.dainws.games.cbg.domain.exception.PlayerNotFoundException;
@@ -18,7 +17,7 @@ public class Game {
 
 	public Game(List<Player> players) {
 		this.code = new GameCode();
-		this.round = 0;
+		this.round = -1;
 		this.playerIndexWithTurn = 0;
 		this.players = players;
 		this.board = new Board(players);
@@ -53,19 +52,15 @@ public class Game {
 	}
 
 	public Player getPlayer(PlayerCode playerCode) throws PlayerNotFoundException {
-		Optional<Player> optional = Optional.empty();
+		return this.players.stream()
+			.filter(player -> player.getPlayerCode().equals(playerCode))
+			.findFirst()
+			.orElseThrow(PlayerNotFoundException::new);
+	}
 
-		for (Player player : this.players) {
-			if (player.getPlayerCode().equals(playerCode)) {
-				optional = Optional.of(player);
-			}
-		}
-
-		if (optional.isEmpty()) {
-			throw new PlayerNotFoundException();
-		}
-
-		return optional.get();
+	public boolean hasPlayer(PlayerCode playerCode) {
+		return this.players.stream()
+			.anyMatch(player -> player.getPlayerCode().equals(playerCode));
 	}
 
 	public Board getBoard() {

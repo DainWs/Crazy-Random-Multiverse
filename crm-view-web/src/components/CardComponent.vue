@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue';
-
 /**
     card: { 
         type: { // TODO define class type Card
@@ -20,7 +18,7 @@ import { ref } from 'vue';
     }
  */
 
-const props = defineProps({ card: { required: true, default: {type: undefined} } })
+const props = defineProps({ card: { required: true } })
 const emit = defineEmits(['onClick', 'onDrag', 'onDrop'])
 
 const isEquipment = (props.card.type == 'EQUIPMENT')
@@ -29,7 +27,7 @@ const isCombatant = (props.card.type == 'LEADER' || isWarrior)
 </script>
 
 <template><!-- TODO Colocar imagenes de fondo de los tipos de carta -->
-    <div v-bind:class="`card ${card.type?.toLowerCase()} ${card.rarity?.toLowerCase()}`"> <!-- TODO To lower case -->
+    <div v-bind:class="`card ${card.type.toLowerCase()} ${card.rarity.toLowerCase()}`"> <!-- TODO To lower case -->
         <div class="type">{{ card.type }}</div>
         <div class="name">{{ card.name }}</div>
         <div class="description">{{ card.description }}</div>
@@ -56,7 +54,7 @@ const isCombatant = (props.card.type == 'LEADER' || isWarrior)
     </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .card {
     width: 300px;
     height: 210px;

@@ -9,20 +9,20 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import com.dainws.games.cbg.domain.communication.Destination;
-import com.dainws.games.cbg.domain.communication.Error;
-import com.dainws.games.cbg.domain.communication.Event;
-import com.dainws.games.cbg.domain.communication.GameChannel;
-import com.dainws.games.crm.domain.Party;
-import com.dainws.games.crm.services.PartyChannel;
-import com.dainws.games.crm.stomp.dto.EventDto;
+import com.dainws.games.cbg.domain.error.Error;
+import com.dainws.games.cbg.domain.event.Event;
+import com.dainws.games.cbg.domain.player.Player;
+import com.dainws.games.crm.domain.PartyPublisher;
+import com.dainws.games.crm.domain.model.Party;
+import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.stomp.dto.CommunicationMapper;
 import com.dainws.games.crm.stomp.dto.ErrorDto;
+import com.dainws.games.crm.stomp.dto.EventDto;
 import com.dainws.games.crm.stomp.dto.ModelMapper;
 import com.dainws.games.crm.stomp.dto.models.PartyDto;
 import com.dainws.games.crm.stomp.dto.models.PartyListDto;
 
-public class StompCommunicationChannel implements GameChannel, PartyChannel {
+public class StompCommunicationChannel implements PartyPublisher {
 
 	private SimpMessagingTemplate messagingTemplate;
 	private Logger logger;
@@ -32,38 +32,36 @@ public class StompCommunicationChannel implements GameChannel, PartyChannel {
 		this.logger = LoggerFactory.getLogger(StompCommunicationChannel.class.getCanonicalName());
 	}
 
-	@Override
-	public void send(Destination destination, Error error) {
-		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), destination);
+	public void send(Player player, Error error) {
+		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), player.getName());
 
-		String sessionId = destination.getValue();
+		String sessionId = player.getCode();
 		ErrorDto errorDto = new CommunicationMapper().mapErrorToDto(error);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
 	}
 
-	@Override
-	public void send(Destination destination, Event event) {
-		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), destination);
+	public void send(Player player, Event event) {
+		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
 
-		String sessionId = destination.getValue();
+		String sessionId = player.getCode();
 		EventDto eventDto = new CommunicationMapper().mapEventToDto(event);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 	}
 
 	@Override
-	public void sendPartyInfo(Destination destination, Party party) {
-		this.logger.trace("Enviando información de la fiesta, al cliente {}", destination);
+	public void sendPartyInfo(User to, Party party) {
+		this.logger.trace("Enviando información de la fiesta, al cliente {}", to.getName());
 
-		String sessionId = destination.getValue();
+		String sessionId = to.getCode().getValue();
 		PartyDto partyDto = new ModelMapper().mapPartyToPartyDto(party);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/info", partyDto, createHeaders(sessionId));
 	}
 
 	@Override
-	public void sendPartyList(Destination destination, List<Party> party) {
-		this.logger.trace("Enviando lista de las fiestas, al cliente {}", destination);
+	public void sendPartyList(User to, List<Party> party) {
+		this.logger.trace("Enviando lista de las fiestas, al cliente {}", to.getName());
 
-		String sessionId = destination.getValue();
+		String sessionId = to.getCode().getValue();
 		PartyListDto partyListDto = new ModelMapper().mapPartiesToPartyList(party);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/list", partyListDto, createHeaders(sessionId));
 	}

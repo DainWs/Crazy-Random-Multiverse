@@ -2,10 +2,10 @@ package com.dainws.games.crm.services;
 
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.persistence.UserRepository;
-import com.dainws.games.crm.persistence.exceptions.UserNotFoundException;
+import com.dainws.games.crm.domain.UserRepository;
+import com.dainws.games.crm.domain.model.User;
+import com.dainws.games.crm.domain.model.UserCode;
+import com.dainws.games.crm.exception.UserNotFoundException;
 
 @Service
 public class UserService {
@@ -25,16 +25,13 @@ public class UserService {
 		this.userRepository.save(user);
 	}
 
-	public void delete(UserCode userCode) throws UserNotFoundException {
-		User user = this.findUser(userCode);
-		if (this.partyService.isUserInParty(user)) {
-			this.partyService.leaveParty(user);
-		}
-
-		this.userRepository.delete(userCode);
-	}
-
 	public User findUser(UserCode userCode) throws UserNotFoundException {
 		return this.userRepository.find(userCode);
+	}
+
+	public void delete(UserCode userCode) throws UserNotFoundException {
+		User user = this.findUser(userCode);
+		this.partyService.tryLeaveParty(user);
+		this.userRepository.delete(userCode);
 	}
 }

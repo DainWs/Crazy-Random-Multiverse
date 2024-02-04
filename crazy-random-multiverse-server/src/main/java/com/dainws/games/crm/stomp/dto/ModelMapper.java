@@ -1,12 +1,12 @@
 package com.dainws.games.crm.stomp.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.dainws.games.cbg.domain.Game;
+import com.dainws.games.cbg.domain.board.Board;
+import com.dainws.games.cbg.domain.board.Coordinate;
+import com.dainws.games.cbg.domain.board.Zone;
 import com.dainws.games.cbg.domain.card.Card;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
@@ -14,10 +14,8 @@ import com.dainws.games.cbg.domain.card.Equipment;
 import com.dainws.games.cbg.domain.card.Leader;
 import com.dainws.games.cbg.domain.card.Warrior;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.cbg.domain.player.Position;
-import com.dainws.games.cbg.domain.player.Zone;
-import com.dainws.games.crm.domain.Party;
-import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.model.Party;
+import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
 import com.dainws.games.crm.stomp.dto.models.CardDto;
 import com.dainws.games.crm.stomp.dto.models.GameDto;
@@ -64,10 +62,12 @@ public class ModelMapper {
 		GameDto gameDto = new GameDto();
 		gameDto.setPlayerWithTurn(this.mapPlayerToDto(game.getPlayerWithTurn()));
 
+		Board board = game.getBoard();
 		List<ZoneDto> playerZones = new ArrayList<>();
 		for (Player player : game.getPlayers()) {
-			if (player.isAlive()) {
-				playerZones.add(this.mapPlayerZoneToDto(player));
+			Zone playerZone = board.getZone(player);
+			if (playerZone.isAlive()) {
+				playerZones.add(this.mapPlayerZoneToDto(playerZone, player));
 			}
 		}
 
@@ -75,26 +75,26 @@ public class ModelMapper {
 		return gameDto;
 	}
 
-	public ZoneDto mapPlayerZoneToDto(Player player) {
+	public ZoneDto mapPlayerZoneToDto(Zone playerZone, Player player) {
 		ZoneDto zoneDto = new ZoneDto();
 		zoneDto.setOwner(this.mapPlayerToDto(player));
 
-		Zone playerZone = player.getZone();
-		Map<PositionDto, CardDto> positions = new HashMap<>();
-		for (Entry<Position, Combatant> entry : playerZone.getPositions().entrySet()) {
-			PositionDto position = this.mapPositionToDto(entry.getKey());
-			CardDto card = null;
+		int verticalDimension = playerZone.getVerticalDimension();
+		int horizontalDimension = playerZone.getHorizontalDimension();
 
-			Combatant value = entry.getValue();
-			if (value != null) {
-				card = this.mapCardToDto(value);
+		CardDto[][] combatantDtos = new CardDto[verticalDimension][horizontalDimension]; 
+		for (int rowIndex = 0; rowIndex < verticalDimension; rowIndex++) {
+			for (int columnIndex = 0; columnIndex < horizontalDimension; columnIndex++) {
+				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
+				
+				if (playerZone.hasCombatant(coordinate)) {
+					Combatant combatant = playerZone.getCombatant(coordinate);
+					combatantDtos[rowIndex][columnIndex] = this.mapCardToDto(combatant);
+				}
 			}
-
-			positions.put(position, card);
-
 		}
 
-		zoneDto.setPositions(positions);
+		zoneDto.setCombatants(combatantDtos);
 		return zoneDto;
 	}
 
@@ -103,15 +103,19 @@ public class ModelMapper {
 		playerDto.setCode(player.getCode());
 		playerDto.setName(player.getName());
 		playerDto.setSpectator(player.isSpectator());
-		playerDto.setAlive(player.isAlive());
+		playerDto.setAlive(!player.isSpectator());
 		return playerDto;
 	}
 
-	public PositionDto mapPositionToDto(Position position) {
+	public PositionDto mapCoordinateToDto(Coordinate coordinate) {
 		PositionDto positionDto = new PositionDto();
-		positionDto.setLinePosition(position.getLinePosition());
-		positionDto.setSquarePosition(position.getSquarePosition());
+		positionDto.setRow(coordinate.getRow());
+		positionDto.setColumn(coordinate.getColumn());
 		return positionDto;
+	}
+	
+	public Coordinate mapDtoToCoordinate(PositionDto dto) {
+		return new Coordinate(dto.getRow(), dto.getColumn());
 	}
 
 	public CardDto mapCardToDto(Card card) {
