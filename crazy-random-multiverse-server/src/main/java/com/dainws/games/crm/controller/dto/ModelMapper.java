@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto;
+package com.dainws.games.crm.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +14,16 @@ import com.dainws.games.cbg.domain.card.Equipment;
 import com.dainws.games.cbg.domain.card.Leader;
 import com.dainws.games.cbg.domain.card.Warrior;
 import com.dainws.games.cbg.domain.player.Player;
+import com.dainws.games.crm.controller.dto.models.CardCodeDto;
+import com.dainws.games.crm.controller.dto.models.CardDto;
+import com.dainws.games.crm.controller.dto.models.GameDto;
+import com.dainws.games.crm.controller.dto.models.PartyDto;
+import com.dainws.games.crm.controller.dto.models.PartyListDto;
+import com.dainws.games.crm.controller.dto.models.PlayerDto;
+import com.dainws.games.crm.controller.dto.models.PositionDto;
+import com.dainws.games.crm.controller.dto.models.ZoneDto;
 import com.dainws.games.crm.domain.model.Party;
 import com.dainws.games.crm.domain.model.User;
-import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
-import com.dainws.games.crm.stomp.dto.models.CardDto;
-import com.dainws.games.crm.stomp.dto.models.GameDto;
-import com.dainws.games.crm.stomp.dto.models.PartyDto;
-import com.dainws.games.crm.stomp.dto.models.PartyListDto;
-import com.dainws.games.crm.stomp.dto.models.PlayerDto;
-import com.dainws.games.crm.stomp.dto.models.PositionDto;
-import com.dainws.games.crm.stomp.dto.models.ZoneDto;
 
 public class ModelMapper {
 

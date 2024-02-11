@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp;
+package com.dainws.games.crm.controller;
 
 import java.util.List;
 
@@ -12,27 +12,26 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import com.dainws.games.cbg.domain.error.Error;
 import com.dainws.games.cbg.domain.event.Event;
 import com.dainws.games.cbg.domain.player.Player;
-import com.dainws.games.crm.domain.PartyPublisher;
+import com.dainws.games.crm.controller.dto.CommunicationMapper;
+import com.dainws.games.crm.controller.dto.ErrorDto;
+import com.dainws.games.crm.controller.dto.EventDto;
+import com.dainws.games.crm.controller.dto.ModelMapper;
+import com.dainws.games.crm.controller.dto.models.PartyDto;
+import com.dainws.games.crm.controller.dto.models.PartyListDto;
 import com.dainws.games.crm.domain.model.Party;
 import com.dainws.games.crm.domain.model.User;
-import com.dainws.games.crm.stomp.dto.CommunicationMapper;
-import com.dainws.games.crm.stomp.dto.ErrorDto;
-import com.dainws.games.crm.stomp.dto.EventDto;
-import com.dainws.games.crm.stomp.dto.ModelMapper;
-import com.dainws.games.crm.stomp.dto.models.PartyDto;
-import com.dainws.games.crm.stomp.dto.models.PartyListDto;
 
-public class StompCommunicationChannel implements PartyPublisher {
+public class StompCommunicationClient {
 
 	private SimpMessagingTemplate messagingTemplate;
 	private Logger logger;
 
-	public StompCommunicationChannel(SimpMessagingTemplate messagingTemplate) {
+	public StompCommunicationClient(SimpMessagingTemplate messagingTemplate) {
 		this.messagingTemplate = messagingTemplate;
-		this.logger = LoggerFactory.getLogger(StompCommunicationChannel.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(StompCommunicationClient.class.getCanonicalName());
 	}
 
-	public void send(Player player, Error error) {
+	public void sendError(Player player, Error error) {
 		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), player.getName());
 
 		String sessionId = player.getCode();
@@ -40,7 +39,7 @@ public class StompCommunicationChannel implements PartyPublisher {
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
 	}
 
-	public void send(Player player, Event event) {
+	public void sendEvent(Player player, Event event) {
 		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
 
 		String sessionId = player.getCode();
@@ -48,7 +47,6 @@ public class StompCommunicationChannel implements PartyPublisher {
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 	}
 
-	@Override
 	public void sendPartyInfo(User to, Party party) {
 		this.logger.trace("Enviando información de la fiesta, al cliente {}", to.getName());
 
@@ -57,7 +55,6 @@ public class StompCommunicationChannel implements PartyPublisher {
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/info", partyDto, createHeaders(sessionId));
 	}
 
-	@Override
 	public void sendPartyList(User to, List<Party> party) {
 		this.logger.trace("Enviando lista de las fiestas, al cliente {}", to.getName());
 

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp;
+package com.dainws.games.crm.controller;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
@@ -15,9 +15,9 @@ import com.dainws.games.cbg.domain.board.Coordinate;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.player.PlayerCode;
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.stomp.dto.PlayerPutCardRequest;
-import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
-import com.dainws.games.crm.stomp.dto.models.PositionDto;
+import com.dainws.games.crm.controller.dto.PlayerPutCardRequest;
+import com.dainws.games.crm.controller.dto.models.CardCodeDto;
+import com.dainws.games.crm.controller.dto.models.PositionDto;
 
 @Controller
 public class PlayerController {

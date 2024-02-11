@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto.models;
+package com.dainws.games.crm.controller.dto.models;
 
 import jakarta.validation.constraints.NotNull;
 

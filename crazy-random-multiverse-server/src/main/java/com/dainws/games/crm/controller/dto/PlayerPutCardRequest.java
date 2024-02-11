@@ -1,7 +1,7 @@
-package com.dainws.games.crm.stomp.dto;
+package com.dainws.games.crm.controller.dto;
 
-import com.dainws.games.crm.stomp.dto.models.CardCodeDto;
-import com.dainws.games.crm.stomp.dto.models.PositionDto;
+import com.dainws.games.crm.controller.dto.models.CardCodeDto;
+import com.dainws.games.crm.controller.dto.models.PositionDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotNull;

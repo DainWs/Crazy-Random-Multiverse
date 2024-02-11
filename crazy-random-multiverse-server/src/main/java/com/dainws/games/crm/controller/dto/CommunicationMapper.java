@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto;
+package com.dainws.games.crm.controller.dto;
 
 import com.dainws.games.cbg.domain.error.Error;
 import com.dainws.games.cbg.domain.event.Event;

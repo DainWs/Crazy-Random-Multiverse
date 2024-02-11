@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp;
+package com.dainws.games.crm.controller;
 
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;

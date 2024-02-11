@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto;
+package com.dainws.games.crm.controller.dto;
 
 public class UserJoinPartyRequest {
 	private String partyCode;

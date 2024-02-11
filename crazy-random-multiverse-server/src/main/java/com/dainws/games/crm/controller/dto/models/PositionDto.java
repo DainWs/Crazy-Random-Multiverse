@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto.models;
+package com.dainws.games.crm.controller.dto.models;
 
 public class PositionDto {
 	private int row;

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp.dto;
+package com.dainws.games.crm.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.stomp;
+package com.dainws.games.crm.controller;
 
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.cbg.domain.translator.Translatable;
+import com.dainws.games.crm.controller.dto.UserJoinPartyRequest;
 import com.dainws.games.crm.domain.model.PartyCode;
 import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.domain.model.UserCode;
@@ -16,7 +17,6 @@ import com.dainws.games.crm.exception.PartyNotFoundException;
 import com.dainws.games.crm.exception.UserNotFoundException;
 import com.dainws.games.crm.services.PartyFacade;
 import com.dainws.games.crm.services.UserService;
-import com.dainws.games.crm.stomp.dto.UserJoinPartyRequest;
 
 @Controller
 public class PartyController {
