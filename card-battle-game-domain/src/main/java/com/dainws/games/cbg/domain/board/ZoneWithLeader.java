@@ -15,11 +15,16 @@ public class ZoneWithLeader extends Zone {
 
 	public ZoneWithLeader() {
 		super(HORIZONTAL_DIMENSION, VERTICAL_DIMENSION);
+		this.leader = null;
 	}
-	
+
 	@Override
-	public double getVitality() {
-		return this.leader.getHealth().getValue();
+	public boolean isAlive() {
+		if (this.leader == null) {
+			return true;
+		}
+
+		return this.leader.isAlive();
 	}
 
 	@Override
@@ -50,8 +55,12 @@ public class ZoneWithLeader extends Zone {
 	}
 
 	private void putLeader(Combatant combatant) throws CoordinateNotAllowedException {
+		if (this.leader != null) {
+			throw new CoordinateNotAllowedException("EXCEPTION_COORDINATE_NOT_EMPTY");
+		}
+
 		if (!combatant.getType().equals(CardType.LEADER)) {
-			throw new CoordinateNotAllowedException("That combatant inst a leader");
+			throw new CoordinateNotAllowedException("EXCEPTION_COORDINATE_REQUIRES_LEADER");
 		}
 
 		this.leader = (Leader) combatant;
@@ -63,7 +72,7 @@ public class ZoneWithLeader extends Zone {
 			super.removeCombatant(coordinate);
 		}
 	}
-	
+
 	public Leader getLeader() {
 		return this.leader;
 	}

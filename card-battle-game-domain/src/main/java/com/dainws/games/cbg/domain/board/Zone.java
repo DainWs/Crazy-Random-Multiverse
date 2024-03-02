@@ -16,12 +16,8 @@ public abstract class Zone {
 		this.verticalDimension = verticalDimension;
 		this.combatants = new Combatant[verticalDimension][horizontalDimension];
 	}
-	
-	public abstract double getVitality();
 
-	public boolean isAlive() {
-		return this.getVitality() > 0;
-	}
+	public abstract boolean isAlive();
 
 	public boolean hasCombatant(Coordinate coordinate) {
 		if (this.isValidCoordinate(coordinate)) {

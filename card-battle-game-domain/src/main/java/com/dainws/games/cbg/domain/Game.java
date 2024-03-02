@@ -17,7 +17,7 @@ public class Game {
 
 	public Game(List<Player> players) {
 		this.code = new GameCode();
-		this.round = -1;
+		this.round = 0;
 		this.playerIndexWithTurn = 0;
 		this.players = players;
 		this.board = new Board(players);

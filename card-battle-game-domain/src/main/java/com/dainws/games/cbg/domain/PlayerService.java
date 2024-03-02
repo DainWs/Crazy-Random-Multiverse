@@ -21,7 +21,7 @@ public class PlayerService implements EventTrigger {
 		for (Player player : game.getPlayers()) {
 			if (this.shouldPlayerDie(game, player)) {
 				player.die();
-				this.publishPlayerEvent(EventCode.PLAYER_LOSE, game, player);
+				this.publishPlayerEvent(EventCode.PLAYER_DIE, game, player);
 			}
 		}
 	}
@@ -32,8 +32,7 @@ public class PlayerService implements EventTrigger {
 		}
 
 		Board board = game.getBoard();
-		double zoneVitality = board.getZoneVitality(player.getPlayerCode());
-		return (zoneVitality <= 0);
+		return board.isZoneAlive(player.getPlayerCode());
 	}
 
 	private void publishPlayerEvent(EventCode eventCode, Game game, Player player) {

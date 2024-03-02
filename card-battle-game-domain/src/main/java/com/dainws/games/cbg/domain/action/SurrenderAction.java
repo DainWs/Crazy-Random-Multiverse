@@ -41,7 +41,7 @@ public class SurrenderAction implements Action {
 	}
 	
 	private void notifyPlayerSurrenderAction(ActionContext context) {
-		this.eventPublisher.publish(new ActionEvent(EventCode.PLAYER_SURRENDER, context));
+		this.eventPublisher.publish(new ActionEvent(EventCode.PLAYER_DIE, context));
 	}
 	
 	@Override

@@ -17,9 +17,15 @@ public class Board {
 		
 		for (Player player : players) {
 			if (!player.isSpectator()) {
-				this.zones.put(player.getPlayerCode(), new ZoneWithLeader());
+				this.setZone(player, new ZoneWithLeader());
 			}
 		}
+	}
+	
+	public void setZone(Player player, Zone zone) {
+		assert(!player.isSpectator());
+		
+		this.zones.put(player.getPlayerCode(), zone);
 	}
 	
 	public Zone getZone(Player player) {
@@ -34,7 +40,7 @@ public class Board {
 		throw new ZoneNotFoundException();
 	}
 	
-	public double getZoneVitality(PlayerCode code) {
-		return this.getZone(code).getVitality();
+	public boolean isZoneAlive(PlayerCode code) {
+		return this.getZone(code).isAlive();
 	}
 }

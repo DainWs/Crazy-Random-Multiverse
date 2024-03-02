@@ -49,7 +49,7 @@ public class DealerService implements EventTrigger {
 		details.setGame(game);
 		details.setTargetPlayer(player);
 		details.setTargetCard(card);
-		Event event = new Event(EventCode.DEALED_CARD_TO_PLAYER, details);
+		Event event = new Event(EventCode.PLAYER_RECEIVE_CARD, details);
 		this.eventPublisher.publish(event);
 	}
 

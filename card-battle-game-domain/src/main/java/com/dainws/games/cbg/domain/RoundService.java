@@ -11,7 +11,7 @@ import com.dainws.games.cbg.domain.player.Player;
 public class RoundService implements EventTrigger {
 
 	private static final int FIRST_TURN = 0;
-	private static final int FIRST_ROUND = 0;
+	private static final int FIRST_ROUND = 1;
 
 	private EventPublisher eventPublisher;
 
