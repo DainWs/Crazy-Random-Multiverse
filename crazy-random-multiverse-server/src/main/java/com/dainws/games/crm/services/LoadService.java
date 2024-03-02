@@ -29,7 +29,7 @@ public class LoadService {
 	private Map<GameCode, Set<User>> preparedPlayers;
 	private Logger logger;
 
-	public LoadService( GameService gameService, GameStateManager gameStateManager) {
+	public LoadService(GameService gameService, GameStateManager gameStateManager) {
 		this.gameService = gameService;
 		this.gameStateManager = gameStateManager;
 		this.pendingGames = new ArrayList<>();

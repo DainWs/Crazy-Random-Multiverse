@@ -12,8 +12,7 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.controller.dto.UserInfoResponse;
-import com.dainws.games.crm.controller.dto.UserUpdateRequest;
+import com.dainws.games.crm.controller.dto.models.UserDto;
 import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.domain.model.UserCode;
 import com.dainws.games.crm.exception.UserNotFoundException;
@@ -48,20 +47,20 @@ public class UserController {
 	}
 
 	@MessageMapping("/user/update")
-	public void updateAccount(@Payload UserUpdateRequest updateRequest, @Header("simpSessionId") String sessionId)
+	public void updateAccount(@Payload UserDto userDto, @Header("simpSessionId") String sessionId)
 			throws UserNotFoundException {
-		User user = new User(sessionId, updateRequest.getUsername());
+		User user = new User(sessionId, userDto.getUsername());
 		this.userService.update(user);
 	}
 
 	@MessageMapping("/user/info")
 	@SendToUser("/topic/user/info")
-	public UserInfoResponse info(@Header("simpSessionId") String sessionId) throws UserNotFoundException {
+	public UserDto info(@Header("simpSessionId") String sessionId) throws UserNotFoundException {
 		User user = this.getUser(sessionId);
-		UserInfoResponse response = new UserInfoResponse();
-		response.setUid(sessionId);
-		response.setUsername(user.getName());
-		return response;
+		UserDto userDto = new UserDto();
+		userDto.setUid(sessionId);
+		userDto.setUsername(user.getName());
+		return userDto;
 	}
 	
 	@MessageExceptionHandler

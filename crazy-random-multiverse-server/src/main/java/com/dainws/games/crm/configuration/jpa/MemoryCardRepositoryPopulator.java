@@ -1,4 +1,4 @@
-package com.dainws.games.crm.configuration.auto.jpa;
+package com.dainws.games.crm.configuration.jpa;
 
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.card.CardType;

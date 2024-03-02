@@ -15,7 +15,6 @@ import com.dainws.games.cbg.domain.event.EventTrigger;
 import com.dainws.games.crm.domain.GameRepository;
 import com.dainws.games.crm.domain.PartyRepository;
 import com.dainws.games.crm.domain.model.User;
-import com.dainws.games.crm.exception.GameNotFoundException;
 
 @Service
 public class GameService implements EventTrigger {
@@ -52,7 +51,7 @@ public class GameService implements EventTrigger {
 		this.logger.trace("El juego con codigo {} ha sido borrado", gameCode);
 	}
 
-	public Game findGame(GameCode gameCode) throws GameNotFoundException {
+	public Game findGame(GameCode gameCode) {
 		return this.gameRepository.find(gameCode);
 	}
 

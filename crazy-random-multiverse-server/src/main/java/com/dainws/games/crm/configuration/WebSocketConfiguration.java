@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.dainws.games.crm.stomp.StompCommunicationChannel;
+import com.dainws.games.crm.controller.CommunicationClient;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -45,7 +45,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 	}
 	
 	@Bean
-	public StompCommunicationChannel communicationChannel(SimpMessagingTemplate messagingTemplate) {
-		return new StompCommunicationChannel(messagingTemplate);
+	public CommunicationClient communicationChannel(SimpMessagingTemplate messagingTemplate) {
+		return new CommunicationClient(messagingTemplate);
 	}
 }

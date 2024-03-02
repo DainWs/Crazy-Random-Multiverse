@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.dainws.games.crm.domain.UserRepository;
 import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.domain.model.UserCode;
-import com.dainws.games.crm.exception.UserNotFoundException;
 
 @Service
 public class UserService {
@@ -25,11 +24,11 @@ public class UserService {
 		this.userRepository.save(user);
 	}
 
-	public User findUser(UserCode userCode) throws UserNotFoundException {
+	public User findUser(UserCode userCode) {
 		return this.userRepository.find(userCode);
 	}
 
-	public void delete(UserCode userCode) throws UserNotFoundException {
+	public void delete(UserCode userCode) {
 		User user = this.findUser(userCode);
 		this.partyService.tryLeaveParty(user);
 		this.userRepository.delete(userCode);

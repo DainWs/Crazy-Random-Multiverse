@@ -1,4 +1,4 @@
-package com.dainws.games.crm.persistence.action;
+package com.dainws.games.crm.persistence;
 
 import com.dainws.games.cbg.domain.Game;
 import com.dainws.games.cbg.domain.action.ActionContext;

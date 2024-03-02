@@ -9,15 +9,10 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.cbg.domain.ActionService;
-import com.dainws.games.cbg.domain.GameCode;
 import com.dainws.games.cbg.domain.action.ActionContextTemplate;
-import com.dainws.games.cbg.domain.board.Coordinate;
-import com.dainws.games.cbg.domain.card.CardCode;
-import com.dainws.games.cbg.domain.player.PlayerCode;
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.controller.dto.PlayerPutCardRequest;
-import com.dainws.games.crm.controller.dto.models.CardCodeDto;
-import com.dainws.games.crm.controller.dto.models.PositionDto;
+import com.dainws.games.crm.controller.dto.ActionDto;
+import com.dainws.games.crm.controller.dto.ActionMapper;
 
 @Controller
 public class PlayerController {
@@ -29,20 +24,68 @@ public class PlayerController {
 	}
 
 	@MessageMapping("/game/{gameCode}/player/put-card")
-	public void playerPutCard(@Header(value = "simpSessionId") String sessionId,
+	public void putCard(
+			@Header(value = "simpSessionId") String agentCode,
 			@DestinationVariable(value = "gameCode") String gameCodeAsString, 
-			@Payload PlayerPutCardRequest putCardRequest) {
-		GameCode gameCode = GameCode.fromString(gameCodeAsString);
-		PlayerCode playerCode = PlayerCode.from(sessionId);
-
-		ActionContextTemplate contextTemplate = new ActionContextTemplate();
-		contextTemplate.setGameCode(gameCode);
-		contextTemplate.setSourcePlayerCode(playerCode);
-		contextTemplate.setSourceCardCode(this.mapCardCodeDto(putCardRequest.getSourceCardCode()));
-		contextTemplate.setTargetPlayerCode(playerCode);
-		contextTemplate.setTargetCoordinate(this.mapPositionDto(putCardRequest.getTargetPosition()));
-
+			@Payload ActionDto actionDto
+	) {
+		actionDto.setGameCode(gameCodeAsString);
+		actionDto.setSourcePlayerCode(agentCode);
+		
+		ActionContextTemplate contextTemplate = new ActionMapper().mapPutActionDto(actionDto);
 		this.actionService.playerPutCard(contextTemplate);
+	}
+	
+	@MessageMapping("/game/{gameCode}/player/move-card")
+	public void moveCard(
+			@Header(value = "simpSessionId") String agentCode,
+			@DestinationVariable(value = "gameCode") String gameCodeAsString, 
+			@Payload ActionDto actionDto
+	) {
+		actionDto.setGameCode(gameCodeAsString);
+		actionDto.setSourcePlayerCode(agentCode);
+		
+		ActionContextTemplate contextTemplate = new ActionMapper().mapMoveActionDto(actionDto);
+		this.actionService.playerMoveCard(contextTemplate);
+	}
+	
+	@MessageMapping("/game/{gameCode}/player/attack-card")
+	public void attackCard(
+			@Header(value = "simpSessionId") String agentCode,
+			@DestinationVariable(value = "gameCode") String gameCodeAsString, 
+			@Payload ActionDto actionDto
+	) {
+		actionDto.setGameCode(gameCodeAsString);
+		actionDto.setSourcePlayerCode(agentCode);
+		
+		ActionContextTemplate contextTemplate = new ActionMapper().mapAttackActionDto(actionDto);
+		this.actionService.playerAttackCard(contextTemplate);
+	}
+	
+	@MessageMapping("/game/{gameCode}/player/equip-card")
+	public void equipCard(
+			@Header(value = "simpSessionId") String agentCode,
+			@DestinationVariable(value = "gameCode") String gameCodeAsString, 
+			@Payload ActionDto actionDto
+	) {
+		actionDto.setGameCode(gameCodeAsString);
+		actionDto.setSourcePlayerCode(agentCode);
+		
+		ActionContextTemplate contextTemplate = new ActionMapper().mapEquipActionDto(actionDto);
+		this.actionService.playerEquipCard(contextTemplate);
+	}
+	
+	@MessageMapping("/game/{gameCode}/player/surrender")
+	public void surrenderCard(
+			@Header(value = "simpSessionId") String agentCode,
+			@DestinationVariable(value = "gameCode") String gameCodeAsString
+	) {
+		ActionDto actionDto = new ActionDto();
+		actionDto.setGameCode(gameCodeAsString);
+		actionDto.setSourcePlayerCode(agentCode);
+		
+		ActionContextTemplate contextTemplate = new ActionMapper().mapSurrenderActionDto(actionDto);
+		this.actionService.playerSurrender(contextTemplate);
 	}
 	
 	@MessageExceptionHandler
@@ -53,13 +96,5 @@ public class PlayerController {
 		}
 
 		return exception.getMessage();
-	}
-
-	private CardCode mapCardCodeDto(CardCodeDto dto) {
-		return new CardCode(dto.getCode(), dto.getType());
-	}
-
-	private Coordinate mapPositionDto(PositionDto dto) {
-		return new Coordinate(dto.getRow(), dto.getColumn());
 	}
 }

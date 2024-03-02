@@ -20,15 +20,16 @@ import com.dainws.games.crm.controller.dto.models.PartyDto;
 import com.dainws.games.crm.controller.dto.models.PartyListDto;
 import com.dainws.games.crm.domain.model.Party;
 import com.dainws.games.crm.domain.model.User;
+import com.dainws.games.crm.services.UserClient;
 
-public class StompCommunicationClient {
+public class CommunicationClient implements UserClient {
 
 	private SimpMessagingTemplate messagingTemplate;
 	private Logger logger;
 
-	public StompCommunicationClient(SimpMessagingTemplate messagingTemplate) {
+	public CommunicationClient(SimpMessagingTemplate messagingTemplate) {
 		this.messagingTemplate = messagingTemplate;
-		this.logger = LoggerFactory.getLogger(StompCommunicationClient.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(CommunicationClient.class.getCanonicalName());
 	}
 
 	public void sendError(Player player, Error error) {
@@ -47,6 +48,7 @@ public class StompCommunicationClient {
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 	}
 
+	@Override
 	public void sendPartyInfo(User to, Party party) {
 		this.logger.trace("Enviando información de la fiesta, al cliente {}", to.getName());
 
@@ -55,6 +57,7 @@ public class StompCommunicationClient {
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/info", partyDto, createHeaders(sessionId));
 	}
 
+	@Override
 	public void sendPartyList(User to, List<Party> party) {
 		this.logger.trace("Enviando lista de las fiestas, al cliente {}", to.getName());
 

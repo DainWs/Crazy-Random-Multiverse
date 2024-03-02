@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.crm.domain.PartyPublisher;
 import com.dainws.games.crm.domain.PartyRepository;
 import com.dainws.games.crm.domain.model.Party;
 import com.dainws.games.crm.domain.model.PartyCode;
@@ -15,11 +14,11 @@ import com.dainws.games.crm.exception.PartyNotFoundException;
 @Service
 public class PartyService {
 	private PartyRepository partyRepository;
-	private PartyPublisher partyPublisher;
+	private UserClient userClient;
 
-	public PartyService(PartyRepository partyRepository, PartyPublisher partyPublisher) {
+	public PartyService(PartyRepository partyRepository, UserClient userClient) {
 		this.partyRepository = partyRepository;
-		this.partyPublisher = partyPublisher;
+		this.userClient = userClient;
 	}
 
 	public void createParty(User partyOwner) throws PartyException {
@@ -63,7 +62,7 @@ public class PartyService {
 	
 	public void updatePartyListOf(User user) {
 		List<Party> parties = this.partyRepository.findAll();
-		this.partyPublisher.sendPartyList(user, parties);
+		this.userClient.sendPartyList(user, parties);
 	}
 
 	public void lockParty(Party party) {
@@ -83,6 +82,6 @@ public class PartyService {
 	}
 	
 	private void sendPartyInfoTo(User user, Party party) {
-		this.partyPublisher.sendPartyInfo(user, party);
+		this.userClient.sendPartyInfo(user, party);
 	}
 }
