@@ -27,22 +27,5 @@ viewedPlayer.value = playerInfo
 </template>
 
 
-<style scoped lang="scss">
-.game {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: row;
-
-  & > .zone {
-    flex-grow: 1;
-  }
-
-  & > .player-list {
-    display: flex;
-    flex-direction: column;
-
-  }
-}
+<style lang="scss" src="@/ui/assets/styles/page/game.scss" scoped>
 </style>

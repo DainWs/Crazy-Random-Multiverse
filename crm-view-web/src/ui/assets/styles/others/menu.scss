@@ -1,0 +1,9 @@
+.menu {
+    display: inline-flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    &--horizontal > div {
+        margin: 0;
+    }
+}

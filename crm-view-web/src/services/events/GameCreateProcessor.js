@@ -1,3 +1,4 @@
+import router from "@/configuration/vueRouter"
 import StompDestinations from "@/services/stomp/StompDestinations"
 import StompService from "@/services/stomp/StompService"
 
@@ -17,6 +18,8 @@ async function process(event, currentContext) {
     currentContext.hand = { cards: new Array() }; // TODO player hand initialization
     console.log("current context initialized:")
     console.log(currentContext)
+
+    router.push('/game')
 
     StompService.send(StompDestinations.GAME_READY)
 }

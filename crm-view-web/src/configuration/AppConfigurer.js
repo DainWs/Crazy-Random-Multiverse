@@ -31,12 +31,12 @@ async function configureWebsocket() {
     StompClient.activate()
 }
 
-function configure() {
+function configureApp() {
     configureEnviroment()
     configureSettings()
     configureWebsocket()
 }
 
-export default {
-    configure
+export {
+    configureApp
 }
