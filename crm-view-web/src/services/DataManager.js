@@ -1,8 +1,8 @@
 import { ref } from "vue";
-import Topics from "@/services/stomp/StompTopics";
-import Destinations from "@/services/stomp/StompDestinations";
-import StompMessageHandler from "@/services/stomp/StompMessageHandler";
-import StompService from "./stomp/StompService";
+import Topics from "@/api/stomp/stompTopics";
+import Destinations from "@/api/stomp/stompDestinations";
+import StompMessageHandler from "@/api/stomp/stompMessageHandler";
+import StompService from "../api/stomp/stompAdapter";
 
 const partyInfo = ref({
     code: undefined,
@@ -13,9 +13,9 @@ const partyInfo = ref({
     users: []
 })
 
-const partyList = ref({
+const partyList = {
     parties: []
-})
+}
 
 const userInfo = ref({
     uid: '',
@@ -23,19 +23,30 @@ const userInfo = ref({
 })
 
 StompMessageHandler.subscribe("Manager", Topics.PARTY_INFO, (data) => {partyInfo.value = data})
-StompMessageHandler.subscribe("Manager", Topics.PARTY_LIST, (data) => {partyList.value = data})
+StompMessageHandler.subscribe("Manager", Topics.PARTY_LIST, (data) => {partyList.parties = data.parties})
 StompMessageHandler.subscribe("Manager", Topics.USER_INFO, (data) => {userInfo.value = data})
 
 function getPartyInfo() {
     return partyInfo;
 }
 
+const setPartyInfo = (partyInfo) => {
+}
+
 function getPartyList() {
     return partyList;
 }
 
+const setPartyList = (partyList) => {
+
+}
+
 function getUserInfo() {
     return userInfo;
+}
+
+const setUserInfo = (userInfo) => {
+
 }
 
 async function refresh() {
@@ -44,7 +55,10 @@ async function refresh() {
 
 export default {
     getPartyInfo,
+    setPartyInfo,
     getPartyList,
+    setPartyList,
     getUserInfo,
+    setUserInfo,
     refresh
 }

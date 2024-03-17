@@ -1,15 +1,9 @@
-import StompDestinations from '@/services/stomp/StompDestinations';
-import stompService from '@/services/stomp/StompService';
+import { createParty } from '@/api/v1.js'
 
-const createParty = async () => {
-    await stompService.send(StompDestinations.PARTY_CREATE);
-}
-
-const refreshParties = async () => {
-    await stompService.sendSync(StompDestinations.PARTY_LIST);
+const createPartyProxy = async () => {
+    await createParty();
 }
 
 export default {
-    createParty,
-    refreshParties
+    createParty: createPartyProxy
 }

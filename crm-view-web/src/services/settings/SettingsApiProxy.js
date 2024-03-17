@@ -1,3 +1,5 @@
+import LocalStorageSettingsApi from "./LocalStorageSettingsApi";
+
 const simulatedAppSettings = {
     username: `user_${new Date().getTime()}`,
 }
@@ -20,7 +22,7 @@ function updateSimulatedSettings(settings) {
     simulatedAppSettings.username = settings.username;
 }
 
-async function getSettings() {
+function getSettings() {
     if (properties.realSettingsApi) {
         return properties.realSettingsApi.getSettings();
     }

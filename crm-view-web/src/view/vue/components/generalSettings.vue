@@ -1,7 +1,8 @@
 <script setup>
+import { ref } from 'vue';
 import settingsController from '@/controllers/settingsController';
-const username = settingsController.getUsername();
-const onChangeUsername = settingsController.changeUsername;
+const username = ref(settingsController.getUsername());
+const setUsername = settingsController.setUsername;
 const persistUsername = settingsController.persistUsername;
 </script>
 
@@ -19,7 +20,7 @@ const persistUsername = settingsController.persistUsername;
                     </div>
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
                         <input class="text-black" type="text" v-bind:value="username" 
-                            @change="onChangeUsername($event)" @focusout="persistUsername()"/>
+                            @change="setUsername($event.target.value)" @focusout="persistUsername()"/>
                     </div>
                 </div>
 
@@ -31,4 +32,4 @@ const persistUsername = settingsController.persistUsername;
     </div>
 </template>
 
-<style lang="scss" src="@/ui/assets/styles/page/components/generalSettings.scss" scoped></style>
+<style lang="scss" src="@/view/assets/styles/page/components/generalSettings.scss" scoped></style>

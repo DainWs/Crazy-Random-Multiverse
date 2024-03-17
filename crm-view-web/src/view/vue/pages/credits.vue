@@ -30,5 +30,5 @@ const creditSections = creditsController.getCredits();
   </div>
 </template>
 
-<style  lang="scss" src="@/ui/assets/styles/page/credits.scss" scoped>
+<style  lang="scss" src="@/view/assets/styles/page/credits.scss" scoped>
 </style>

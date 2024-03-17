@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import Destinations from '@/services/stomp/StompDestinations'
-import StompService from '@/services/stomp/StompService'
+import Destinations from '@/api/stomp/stompDestinations'
+import StompService from '@/api/stomp/stompAdapter'
 import DataManager from '@/services/DataManager'
 
 // TODO separar logica
@@ -45,5 +45,5 @@ function start() {
   </div>
 </template>
 
-<style lang="scss" src="@/ui/assets/styles/page/party.scss" scoped>
+<style lang="scss" src="@/view/assets/styles/page/party.scss" scoped>
 </style>

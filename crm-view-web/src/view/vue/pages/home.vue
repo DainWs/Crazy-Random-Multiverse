@@ -1,14 +1,13 @@
 <script setup>
 import homeController from '@/controllers/homeController';
 const createParty = homeController.createParty;
-const refreshParties = homeController.refreshParties;
 
-const plataform = env.plataform;
+const isNotBrowserPlataform = CRM_PLATAFORM !== 'browser';
 </script>
 
 <template>
   <div class="home">
-    <img alt="Monos con Minigun logo" class="logo" src="@/ui/assets/images/logo.png" />
+    <img alt="Monos con Minigun logo" class="logo" src="@/view/assets/images/logo.png" />
 
     <nav class="home__content">
       <div> <!-- ¿este div por qué? -->
@@ -17,20 +16,20 @@ const plataform = env.plataform;
         </div>
         <div class="menu">
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/party" @click="createParty">Create Party</RouterLink>
+            <RouterLink to="/party" @click="createParty">Crear partida</RouterLink>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/party-list" @click="refreshParties">Join Party</RouterLink>
+            <RouterLink to="/party-list">Unirse a partida</RouterLink>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/settings">Settings</RouterLink>
+            <RouterLink to="/settings">Ajustes</RouterLink>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/credits">Credits</RouterLink>
+            <RouterLink to="/credits">Creditos</RouterLink>
           </div>
 
-          <div class="menu__item button button--hover button--left-to-right" v-if="plataform !== 'browser'">
-            <a>Exit</a>
+          <div class="menu__item button button--hover button--left-to-right" v-if="isNotBrowserPlataform">
+            <a>Salir</a>
           </div>
         </div>
       </div>
@@ -38,5 +37,5 @@ const plataform = env.plataform;
   </div>
 </template>
 
-<style lang="scss" src="@/ui/assets/styles/page/home.scss" scoped>
+<style lang="scss" src="@/view/assets/styles/page/home.scss" scoped>
 </style>

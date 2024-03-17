@@ -10,4 +10,4 @@ export default {
   </main>
 </template>
 
-<style lang="scss" src="@/ui/assets/styles/main.scss"></style>
+<style lang="scss" src="@/view/assets/styles/main.scss"></style>

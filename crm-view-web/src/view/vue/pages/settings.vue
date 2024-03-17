@@ -21,4 +21,4 @@
     </div>
 </template>
 
-<style lang="scss" src="@/ui/assets/styles/page/settings.scss" scoped></style>
+<style lang="scss" src="@/view/assets/styles/page/settings.scss" scoped></style>

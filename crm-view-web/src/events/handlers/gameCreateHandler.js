@@ -1,6 +1,5 @@
-import router from "@/configuration/vueRouter"
-import StompDestinations from "@/services/stomp/StompDestinations"
-import StompService from "@/services/stomp/StompService"
+import { navigate } from "@/view";
+import { sendReady } from "@/api/v1";
 
 async function process(event, currentContext) {
     console.log("############# Game Event: 'Game create' received")
@@ -19,9 +18,8 @@ async function process(event, currentContext) {
     console.log("current context initialized:")
     console.log(currentContext)
 
-    router.push('/game')
-
-    StompService.send(StompDestinations.GAME_READY)
+    navigate('/game');
+    sendReady();
 }
 
 function findPlayer(game, userUid) {

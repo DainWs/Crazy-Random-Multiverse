@@ -1,6 +1,4 @@
-import { ref } from "vue";
-
-const sections = ref([
+const CREDITS_SECTIONS = [
     {
         id: "section__director",
         name: "Director",
@@ -22,10 +20,10 @@ const sections = ref([
             "DainWs"
         ] 
     }
-])
+]
 
 const getCredits = () => {
-    return sections;
+    return CREDITS_SECTIONS;
 }
 
 export default { getCredits };

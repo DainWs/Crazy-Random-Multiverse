@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import ZoneComponent from '@/components/ZoneComponent.vue';
+import ZoneComponent from '@/view/vue/components/ZoneComponent.vue';
 import GameController from '@/controllers/GameController';
 
 const game = GameController.getGameInfo();
@@ -27,5 +27,5 @@ viewedPlayer.value = playerInfo
 </template>
 
 
-<style lang="scss" src="@/ui/assets/styles/page/game.scss" scoped>
+<style lang="scss" src="@/view/assets/styles/page/game.scss" scoped>
 </style>

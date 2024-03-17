@@ -1,4 +1,6 @@
-import Topics from '@/services/stomp/StompTopics'
+
+
+import EventCodes from '@/events/eventCodes.js'
 
 const topicSubscribers = new Map()
 topicSubscribers.set(Topics.USER_INFO, new Map())
@@ -7,12 +9,12 @@ topicSubscribers.set(Topics.PARTY_LIST, new Map())
 topicSubscribers.set(Topics.GAME_EVENT, new Map())
 topicSubscribers.set(Topics.GAME_ERROR, new Map())
 
-function subscribe(id, topic, callback) {
-	topicSubscribers.get(topic).set(id, callback)
+function subscribe(id, eventCode, callback) {
+	topicSubscribers.get(eventCode).set(id, callback)
 }
 
-function unsubscribe(id, topic) {
-	topicSubscribers.get(topic).delete(id)
+function unsubscribe(id, eventCode) {
+	topicSubscribers.get(eventCode).delete(id)
 }
 
 function onUserInfo(message) {
@@ -43,14 +45,15 @@ function notifyMessageToTopicSubscribers(topic, message) {
 	let subscribers = topicSubscribers.get(topic)
 	subscribers.forEach((callback, _) => callback(JSON.parse(message.body)))
 }
+const subscribe = (id, eventCode, callback) => {}
+const unsubscribe = (id, eventCode) => {}
+
+const notify = (eventCode, event) => {
+
+}
 
 export default {
-	subscribe,
-	unsubscribe,
-
-	onUserInfo,
-	onPartyInfo,
-	onPartyList,
-	onGameEvent,
-	onGameError
+    subscribe,
+    unsubscribe,
+    notify
 }

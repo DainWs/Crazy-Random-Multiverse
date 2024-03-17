@@ -1,8 +1,5 @@
 import { configureApp } from '@/configuration/appConfigurer';
-import { createUI } from '@/ui';
+import { mountView } from '@/view';
 
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap"
-
-configureApp()
-createUI()
+configureApp();
+mountView();

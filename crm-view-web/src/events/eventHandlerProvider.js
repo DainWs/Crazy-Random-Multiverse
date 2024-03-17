@@ -1,9 +1,9 @@
-import EventCodes from "./EventCodes";
-import GameCreateProcessor from "./GameCreateProcessor";
-import GameStartProcessor from "./GameStartProcessor";
-import GameEndProcessor from "./GameEndProcessor";
-import PlayerGetTurnProcessor from "./PlayerGetTurnProcessor";
-import PlayerGetCardProcessor from "./PlayerGetCardProcessor";
+import EventCodes from "@/events/eventCodes.js";
+import GameCreateProcessor from "@/events/handlers/gameCreateHandler.js";
+import GameStartProcessor from "@/events/handlers/gameStartHandler.js";
+import GameEndProcessor from "@/events/handlers/gameEndHandler.js";
+import PlayerGetTurnProcessor from "@/events/handlers/playerGetTurnHandler.js";
+import PlayerGetCardProcessor from "@/events/handlers/playerGetCardHandler.js";
 
 const EventProcessors = new Map()
 EventProcessors.set(EventCodes.GAME_CREATED, GameCreateProcessor)

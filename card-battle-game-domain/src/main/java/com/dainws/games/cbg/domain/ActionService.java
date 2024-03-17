@@ -43,7 +43,7 @@ public class ActionService implements EventTrigger {
 	}
 
 	public void playerUseSpell(ActionContextTemplate contextTemplate) {
-		this.performAction(null, contextTemplate);
+		this.performAction(null, contextTemplate); // TODO pending
 	}
 
 	public void playerSurrender(ActionContextTemplate contextTemplate) {

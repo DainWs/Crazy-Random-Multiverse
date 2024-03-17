@@ -1,20 +1,18 @@
 import SettingsApiProxy from "./SettingsApiProxy"
 
-// TODO esto tal vez sea un Controller
-
-async function getSettings() {
+const getSettings = () => {
     return SettingsApiProxy.getSettings()
 }
 
-async function setUsername(username) {
-    const appSettings = await SettingsApiProxy.getSettings()
+const setUsername = (username) => {
+    const appSettings = SettingsApiProxy.getSettings()
     appSettings.username = username
 
     SettingsApiProxy.updateSettings(appSettings)
 }
 
-async function getUsername() {
-    return (await getSettings()).username
+const getUsername = () => {
+    return getSettings().username
 }
 
 export default {

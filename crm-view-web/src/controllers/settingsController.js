@@ -1,31 +1,25 @@
-import { ref } from 'vue'
-import settingsService from '@/services/settings/SettingsService'
-import StompDestinations from '@/services/stomp/StompDestinations'
-import stompService from '@/services/stomp/StompService'
+import { updateUserInfo } from '@/api/v1.js';
+import settingsService from '@/services/settings/settingsService'
 
-const username = ref('');
-
-settingsService.getUsername()
-  .then(value => username.value = value)
+const settigns = settingsService.getSettings();
 
 const getUsername = () => {
-    return username;
+    return settigns.username;
 }
 
-const changeUsername = async (event) => {
-    let newUsername = event.target.value
+const setUsername = async (newUsername) => {
     if (newUsername != undefined) {
-        username.value = newUsername
+        settigns.username = newUsername
     }
 }
 
 const persistUsername = async () => {
-    settingsService.setUsername(username.value)
-    await stompService.send(StompDestinations.USER_UPDATE, {username: username.value})
+    settingsService.setUsername(settigns.username);
+    updateUserInfo({username: settigns.username});
 }
 
 export default {
     getUsername,
-    changeUsername,
+    setUsername,
     persistUsername
 }

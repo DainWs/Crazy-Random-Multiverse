@@ -1,7 +1,7 @@
 import { ref } from "vue";
-import Topics from "@/services/stomp/StompTopics";
-import StompMessageHandler from "@/services/stomp/StompMessageHandler";
-import EventProcessorProvider from "@/services/events/EventProcessorProvider";
+import Topics from "@/api/stomp/stompTopics";
+import StompMessageHandler from "@/api/stomp/stompMessageHandler";
+import EventProcessorProvider from "@/events/eventHandlerProvider";
 import DataManager from "@/services/DataManager";
 
 const userInfo = DataManager.getUserInfo()
@@ -28,10 +28,7 @@ const errorInfo = ref({
     language: undefined
 })
 
-StompMessageHandler.subscribe("GameController", Topics.GAME_EVENT, processGameEvent)
-StompMessageHandler.subscribe("GameController", Topics.GAME_ERROR, processGameError)
-
-async function processGameEvent(event) {
+const processGameEvent = async (event) => {
     try {
         const currentContext = {
             user: userInfo.value,
@@ -53,7 +50,7 @@ async function processGameEvent(event) {
     }
 }
 
-function processGameError(error) {
+const processGameError = (error) => {
     errorInfo.value = error
 }
 
@@ -71,6 +68,9 @@ function getHandInfo() {
 }
 
 export default {
+    processGameEvent,
+    processGameError,
+
     getGameInfo,
     getPlayerInfo,
     getHandInfo

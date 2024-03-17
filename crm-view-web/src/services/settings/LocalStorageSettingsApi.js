@@ -5,9 +5,8 @@ function updateSettings(settings) {
     localStorage.setItem("settings", jsonSettings);
 }
 
-async function getSettings() {
+function getSettings() {
     let jsonSettings = localStorage.getItem("settings");
-    console.log(jsonSettings)
     return AppSettingsParser.parseToObject(jsonSettings);
 }
 

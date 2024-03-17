@@ -1,25 +1,15 @@
 <script setup>
-import { useRouter } from 'vue-router'
-import Destinations from '@/services/stomp/StompDestinations'
-import StompService from '@/services/stomp/StompService'
-import DataManager from '@/services/DataManager'
+import partyController from '@/controllers/partyController'
+import { reactive, watch } from 'vue'
 
-const router = useRouter()
-const partyList = DataManager.getPartyList()
+// TODO tal vez los controllers deberian devolver un proxy
+const parties = partyController.getParties();
+const joinParty = partyController.joinParty;
+const refreshParties = partyController.refreshParties;
 
-async function join(party) {
-  await StompService.send(`${Destinations.PARTY_JOIN}/${party.code}`)
-  router.push("/party")
-}
-
-function refresh() {
-  DataManager.refresh();
-}
-
-function back() {
-  
-}
-
+watch(parties, async (newParties, oldParties) => {
+  console.log("change")
+})
 </script>
 
 <template>
@@ -29,21 +19,21 @@ function back() {
         <h1 class="title">Lista de fiestas</h1>
       </div>
       <ul class="party-list__content">
-        <li v-for="party in partyList.parties">
+        <li v-for="party in parties">
           <span>{{ party.name }}</span>
           <div class="content-splitter"></div>
           <span class="members-count">Jugadores: {{ party.userCount }}/{{ party.maxUsers }}</span>
           <div class="button button--icon">
-              <a @click="() => join(party)" v-show="party.userCount < party.maxUsers">Entrar &#10095;</a>
+              <a @click="() => joinParty(party)" v-show="party.userCount < party.maxUsers">Entrar &#10095;</a>
           </div>
         </li>
       </ul>
       <div class="party-list__footer menu menu--horizontal">
         <div class="button button--hover button--left-to-right secondary">
-          <a @click="back">Salir</a>
+          <RouterLink to="/">Salir</RouterLink>
         </div>
         <div class="button button--hover button--left-to-right">
-          <a @click="refresh">Actualizar</a>
+          <a @click="refreshParties">Actualizar</a>
         </div>
       </div>
     </div>

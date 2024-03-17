@@ -1,4 +1,4 @@
-import StompMessageHandler from '@/services/stomp/StompMessageHandler';
+import StompMessageHandler from '@/api/stomp/stompMessageHandler';
 
 let isConnected = false;
 let stompClient = undefined;
@@ -17,15 +17,6 @@ async function send(destination, message = undefined) {
 	}
 
 	await stompClient.publish({ destination, body })
-}
-
-function sendSync(destination, message = undefined) {
-	let body = message
-	if (message !== undefined) {
-		body = JSON.stringify(message)
-	}
-
-	stompClient.publish({ destination, body })
 }
 
 function onConnect() {
@@ -56,6 +47,5 @@ function log(message) {
 
 export default {
 	setClient,
-	send,
-	sendSync
+	send
 }
