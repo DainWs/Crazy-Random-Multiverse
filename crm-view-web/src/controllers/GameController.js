@@ -1,32 +1,32 @@
-import { ref } from "vue";
-import Topics from "@/api/stomp/stompTopics";
-import StompMessageHandler from "@/api/stomp/stompMessageHandler";
 import EventProcessorProvider from "@/events/eventHandlerProvider";
-import DataManager from "@/services/DataManager";
+import DataManager from "@/application/DataManager";
+import { makeReactive } from '@/view';
 
-const userInfo = DataManager.getUserInfo()
+console.log(makeReactive)
 
-const gameInfo = ref({
+const userInfo = DataManager?.getUserInfo();
+
+const gameInfo = {
     playerWithTurn: undefined,
     zones: []
-})
+}
 
-const playerInfo = ref({
+const playerInfo = {
     code: undefined,
     name: undefined,
     isSpectator: false,
     isAlive: true
-})
+}
 
-const handInfo = ref({
+const handInfo = {
     cards: new Array()
-})
+}
 
-const errorInfo = ref({
+const errorInfo = {
     key: undefined,
     value: undefined,
     language: undefined
-})
+}
 
 const processGameEvent = async (event) => {
     try {

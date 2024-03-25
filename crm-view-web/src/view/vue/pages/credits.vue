@@ -1,6 +1,7 @@
 <script setup>
-import creditsController from '@/controllers/creditsController';
-const creditSections = creditsController.getCredits();
+import creditsController from '@/view/vue/controllers/creditsController';
+const credits = creditsController.getCredits();
+const onBackClick = creditsController.onBackClick;
 </script>
 
 <template>
@@ -10,10 +11,10 @@ const creditSections = creditsController.getCredits();
         <h1 class="credits__title">Credits</h1>
 
         <div class="credits__section-list">
-          <div v-for="section in creditSections" :key="section.id" class="credits__section">
+          <div v-for="section in credits" :key="section.id" class="credits__section">
             <h2 class="text-center">{{ section.name }}</h2>
             <div class="people-list">
-              <span v-for="person in section.people" :key="`${section.id}_person-${person}`">{{ person }}</span>
+              <span v-for="person in section.people" :key="`${section.id}_${person}`">{{ person }}</span>
             </div>
           </div>
         </div>
@@ -21,7 +22,7 @@ const creditSections = creditsController.getCredits();
         <div class="credits__footer pb-5 pt-2">
           <div class="menu">
             <div class="button button--hover button--left-to-right">
-              <RouterLink to="/">Back</RouterLink>
+              <a @click="onBackClick">Back</a>
             </div>
           </div>
         </div>

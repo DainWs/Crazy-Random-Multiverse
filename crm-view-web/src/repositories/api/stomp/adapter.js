@@ -1,4 +1,4 @@
-import StompMessageHandler from '@/api/stomp/stompMessageHandler';
+import messageHandler from '@/repositories/api/stomp/messageHandler';
 
 let isConnected = false;
 let stompClient = undefined;
@@ -21,11 +21,11 @@ async function send(destination, message = undefined) {
 
 function onConnect() {
 	isConnected = true;
-	stompClient.subscribe('/user/topic/user/info', StompMessageHandler.onUserInfo);
-	stompClient.subscribe('/user/topic/party/info', StompMessageHandler.onPartyInfo);
-	stompClient.subscribe('/user/topic/party/list', StompMessageHandler.onPartyList);
-	stompClient.subscribe('/user/topic/error', StompMessageHandler.onGameError);
-	stompClient.subscribe('/user/topic/event', StompMessageHandler.onGameEvent);
+	stompClient.subscribe('/user/topic/user/info', messageHandler.onUserInfo);
+	stompClient.subscribe('/user/topic/party/info', messageHandler.onPartyInfo);
+	stompClient.subscribe('/user/topic/party/list', messageHandler.onPartyList);
+	stompClient.subscribe('/user/topic/error', messageHandler.onGameError);
+	stompClient.subscribe('/user/topic/event', messageHandler.onGameEvent);
 	log('Connected')
 }
 

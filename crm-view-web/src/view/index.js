@@ -4,14 +4,9 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
 const mountView = () => {
-    viewImplementation.mountView();
-}
-
-const navigate = (route) => {
-    viewImplementation.navigate(route);
+    viewImplementation.mount();
 }
 
 export {
-    mountView,
-    navigate
+    mountView
 }

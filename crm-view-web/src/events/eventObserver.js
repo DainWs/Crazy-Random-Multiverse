@@ -2,20 +2,9 @@
 
 import EventCodes from '@/events/eventCodes.js'
 
-const topicSubscribers = new Map()
-topicSubscribers.set(Topics.USER_INFO, new Map())
-topicSubscribers.set(Topics.PARTY_INFO, new Map())
-topicSubscribers.set(Topics.PARTY_LIST, new Map())
-topicSubscribers.set(Topics.GAME_EVENT, new Map())
-topicSubscribers.set(Topics.GAME_ERROR, new Map())
 
-function subscribe(id, eventCode, callback) {
-	topicSubscribers.get(eventCode).set(id, callback)
-}
 
-function unsubscribe(id, eventCode) {
-	topicSubscribers.get(eventCode).delete(id)
-}
+const subscribers = new Map()
 
 function onUserInfo(message) {
 	notifyMessageToTopicSubscribers(Topics.USER_INFO, message)
@@ -45,11 +34,41 @@ function notifyMessageToTopicSubscribers(topic, message) {
 	let subscribers = topicSubscribers.get(topic)
 	subscribers.forEach((callback, _) => callback(JSON.parse(message.body)))
 }
-const subscribe = (id, eventCode, callback) => {}
-const unsubscribe = (id, eventCode) => {}
+
+const subscribe = (id, eventCode, callback) => {
+	let subscriberList = new Array();
+	if (subscribers.has(eventCode)) {
+		subscriberList = subscribers.get(eventCode);
+	}
+
+	const newSubscriber = { id, callback };
+
+	let isSubscriberWithId = subscriber => subscriber.id === newSubscriber.id; 
+	if (subscriberList.some(isSubscriberWithId)) {
+		let index = subscriberList.findIndex(isSubscriberWithId);
+		subscriberList[index] = newSubscriber;
+	} else {
+		subscriberList.push(newSubscriber)
+	}
+
+	subscribers.set(eventCode, subscriberList);
+}
+
+const unsubscribe = (id, eventCode) => {
+	let subscriberList = subscribers.get(eventCode);
+
+	let isSubscriberWithId = subscriber => subscriber.id === id; 
+	if (subscriberList.some(isSubscriberWithId)) {
+		let index = subscriberList.findIndex(isSubscriberWithId);
+		subscriberList = subscriberList.slice(index, index + 1);
+	}
+
+	subscribers.set(eventCode, subscriberList);
+}
 
 const notify = (eventCode, event) => {
-
+	subscribers.get(eventCode)
+		.forEach(subscriber => subscriber.callback(event));
 }
 
 export default {

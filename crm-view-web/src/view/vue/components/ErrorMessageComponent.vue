@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, triggerRef } from 'vue';
 
 const MILISECONDS_PER_SECOND = 1000
 

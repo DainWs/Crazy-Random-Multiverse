@@ -1,13 +1,17 @@
 <script setup>
-import homeController from '@/controllers/homeController';
-const createParty = homeController.createParty;
-
-const isNotBrowserPlataform = CRM_PLATAFORM !== 'browser';
+import Logo from '@/view/vue/components/shared/Logo.vue'
+import homeController from '@/view/vue/controllers/homeController';
+const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
+const onCreatePartyClick = homeController.onCreatePartyClick;
+const onJoinPartyClick = homeController.onJoinPartyClick;
+const onSettingsClick = homeController.onSettingsClick;
+const onCreditsClick = homeController.onCreditsClick;
+const onExitClick = homeController.onExitClick;
 </script>
 
 <template>
   <div class="home">
-    <img alt="Monos con Minigun logo" class="logo" src="@/view/assets/images/logo.png" />
+    <Logo />
 
     <nav class="home__content">
       <div> <!-- ¿este div por qué? -->
@@ -16,20 +20,20 @@ const isNotBrowserPlataform = CRM_PLATAFORM !== 'browser';
         </div>
         <div class="menu">
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/party" @click="createParty">Crear partida</RouterLink>
+            <a @click="onCreatePartyClick">Crear partida</a>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/party-list">Unirse a partida</RouterLink>
+            <a @click="onJoinPartyClick">Unirse a partida</a>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/settings">Ajustes</RouterLink>
+            <a @click="onSettingsClick">Ajustes</a>
           </div>
           <div class="menu__item button button--hover button--left-to-right">
-            <RouterLink to="/credits">Creditos</RouterLink>
+            <a @click="onCreditsClick">Creditos</a>
           </div>
 
-          <div class="menu__item button button--hover button--left-to-right" v-if="isNotBrowserPlataform">
-            <a>Salir</a>
+          <div class="menu__item button button--hover button--left-to-right" v-if="isNotBrowserPlatform">
+            <a @click="onExitClick">Salir</a>
           </div>
         </div>
       </div>

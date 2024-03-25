@@ -1,5 +1,5 @@
-import { navigate } from "@/view";
-import { sendReady } from "@/api/v1";
+import { navigateTo } from '@/view';
+import { sendReady } from '@/repositories/api/v1';
 
 async function process(event, currentContext) {
     console.log("############# Game Event: 'Game create' received")
@@ -18,7 +18,7 @@ async function process(event, currentContext) {
     console.log("current context initialized:")
     console.log(currentContext)
 
-    navigate('/game');
+    navigateTo('/game');
     sendReady();
 }
 

@@ -1,11 +1,9 @@
-import { configureApi } from '@/configuration/apiConfigurer';
-import { configureStorage } from '@/configuration/storageConfigurer';
-import { configureEnviroment } from './enviromentConfigurer';
+import { configureEnviroment } from '@/configuration/enviromentConfigurer';
+import { configureStomp } from '@/configuration/stompConfigurer';
 
 const configureApp = () => {
     configureEnviroment()
-    configureStorage()
-    configureApi()
+    configureStomp()
 }
 
 export {

@@ -32,21 +32,32 @@ const columnIDPrefix = `${props.owner?.name}-column-`
 
 <template>
     <div class="zone">
-        <div class="line" v-for="(lineColumns, lineIndex) in zone" :id="`${lineIDPrefix}${lineIndex}`" :key="`${lineIDPrefix}${lineIndex}`">
+        <div class="zone__content">
+        <div class="line" v-for="(lineColumns, lineIndex) in zone.combatants" :id="`${lineIDPrefix}${lineIndex}`" :key="`${lineIDPrefix}${lineIndex}`">
             <div class="column" v-for="(card, columnIndex) in lineColumns" :id="`${columnIDPrefix}${columnIndex}`" :key="`${columnIDPrefix}${columnIndex}`">
-                <CardComponent :card="card" v-if="card !== undefined && card !== null"/>
-                <CardSkeletonComponent v-else />
+                <CardSkeletonComponent v-if="card === undefined || card === null"/>
+                <CardComponent :card="card" v-else />
             </div>
+        </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 .card {
-    width: 300px;
-    height: 210px;
-
     margin: 0;
-
+    width: 200px;
+    aspect-ratio: 1 / 1.5;
 }
+
+.zone {
+    margin: auto;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 </style>

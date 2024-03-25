@@ -1,0 +1,11 @@
+$vertical: "vertical";
+$horizontal: "horizontal";
+
+@mixin listSystem($direction: $vertical) {
+    display: flex;
+    @if $direction == $vertical {
+        flex-direction: column;
+    } @else {
+        flex-direction: row;
+    }
+}
