@@ -1,0 +1,4 @@
+Actions,Source Player,Source Card,Source Position,Target Player,Target Card,Target Position,DOM Source,DOM Source Event,DOM Target,DOM Target Event
+Put,Player[01],Card[001],,Player[01],,"Position[X=1,Y=1]",Hand,Grab,ZoneCardSlot,Drop
+Move,Player[01],,"Position[X=1,Y=1]",Player[01],,"Position[X=1,Y=2]",ZoneSlot,Grab,ZoneCardSlot,Drop
+Attack,Player[01],,"Position[X=1,Y=1]",Player[02],,"Position[X=1,Y=1]",ZoneSlot.Card,Click,ZoneCardSlot.Card,Click

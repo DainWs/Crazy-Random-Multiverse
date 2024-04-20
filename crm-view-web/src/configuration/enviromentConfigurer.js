@@ -1,8 +1,7 @@
 const configureEnviroment = () => {
-    global.CRM_PLATAFORM = process.env.VUE_APP_PLATAFORM ?? 'browser';;
-    global.CRM_PLATAFORM = process.env.VUE_APP_PLATAFORM ?? 'browser';;
-    global.CRM_SERVER_HOSTNAME = process.env.VUE_SERVER_HOSTNAME ?? getServerHostnameFromPlataform();;
-    global.CRM_SERVER_PORT = process.env.VUE_SERVER_PORT ?? getServerPortFromPlataform();;
+    global.CRM_PLATAFORM = process.env.VUE_PLATAFORM ?? 'browser';
+    global.CRM_SERVER_HOSTNAME = process.env.VUE_SERVER_HOSTNAME ?? getServerHostnameFromPlataform();
+    global.CRM_SERVER_PORT = process.env.VUE_SERVER_PORT ?? getServerPortFromPlataform();
     global.CRM_SERVER_HOST = process.env.VUE_SERVER_HOST ?? `${CRM_SERVER_HOSTNAME}:${CRM_SERVER_PORT}`;
 }
 

@@ -1,0 +1,48 @@
+@startuml
+title "Domain model - Action"
+
+class PutAction {
+ **Propiedades**:
+  |- sourcePlayer
+  |- sourceCard
+  |- targetPlayer
+  \- targetPosition
+ **Requisitos**:
+  |- sourcePlayer y targetPlayer deben 
+  | ser los mismos
+  \- targetPosition no puede tener
+    ninguna carta
+}
+
+class MoveAction {
+ **Propiedades**:
+  |- sourcePlayer
+  |- sourcePosition
+  |- targetPlayer
+  \- targetPosition
+ **Requisitos**:
+  |- sourcePlayer y targetPlayer deben 
+  | ser los mismos
+  \- targetPosition no puede tener
+    ninguna carta
+}
+
+class AttackAction {
+ **Propiedades**:
+  |- sourcePlayer
+  |- sourcePosition
+  |- targetPlayer
+  \- targetPosition
+ **Requisitos**:
+  |- sourcePlayer y targetPlayer deben 
+  | ser distintos
+  |- sourcePosition debe contener
+  |  una carta
+  \- targetPosition debe contener
+    una carta
+}
+
+Action <|.. PutAction
+Action <|.. MoveAction
+Action <|.. AttackAction
+@enduml

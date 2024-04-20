@@ -1,6 +1,5 @@
-import eventObserver from "@/events/eventObserver";
-import { updateUserInfo } from "@/repositories/api/v1";
-import settingsRepository from "@/repositories/settingsRepository";
+import { sendRefreshUserInfo, sendUpdateUserInfo } from "@/infrastructure/api/v1";
+import settingsRepository from "@/infrastructure/repositories/settingsRepository";
 
 const getSettingSections = () => {
     return settingsRepository.findAllSettingSections();
@@ -38,7 +37,8 @@ function updateUserInfoIfHasChange(settings) {
     const currentSettings = settingsRepository.findAllSettings();
 
     if (settings.username && settings.username !== currentSettings.username) {
-        updateUserInfo({ username: settings.username });
+        sendUpdateUserInfo({ username: settings.username });
+        setTimeout(sendRefreshUserInfo, 500);
     }
 }
 

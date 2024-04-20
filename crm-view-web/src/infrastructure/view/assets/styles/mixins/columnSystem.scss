@@ -1,0 +1,10 @@
+@mixin columnSystem($max-width: 100vw, $num-columns: 16) {
+    display: grid;
+    grid-template-columns: repeat($num-columns, calc($max-width / $num-columns));
+    grid-template-rows: 1fr;
+}
+
+@mixin columnSpan($from-column, $to-columns) {
+    grid-column-start: $from-column;
+    grid-column-end: $to-columns;
+}

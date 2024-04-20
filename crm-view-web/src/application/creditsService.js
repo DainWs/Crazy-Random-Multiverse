@@ -1,4 +1,4 @@
-import creditsRepository from "@/repositories/creditsRepository"
+import creditsRepository from "@/infrastructure/repositories/creditsRepository"
 
 const getCredits = () => {
     return creditsRepository.findAllCredits();
