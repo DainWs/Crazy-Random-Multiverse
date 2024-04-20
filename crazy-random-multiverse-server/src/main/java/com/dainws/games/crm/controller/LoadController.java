@@ -1,14 +1,17 @@
 package com.dainws.games.crm.controller;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.cbg.domain.GameCode;
 import com.dainws.games.cbg.domain.translator.Translatable;
 import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.domain.model.UserCode;
+import com.dainws.games.crm.exception.GameNotFoundException;
 import com.dainws.games.crm.exception.UserNotFoundException;
 import com.dainws.games.crm.services.LoadService;
 import com.dainws.games.crm.services.UserService;
@@ -29,10 +32,13 @@ public class LoadController {
 		this.loadService.loadGameOfPartyOwner(user);
 	}
 	
-	@MessageMapping("/game/ready")
-	public void readyToStart(@Header("simpSessionId") String sessionId) {
+	@MessageMapping("/game/{gameCode}/ready")
+	public void readyToStart(
+			@Header("simpSessionId") String sessionId,
+			@DestinationVariable(value = "gameCode") String gameCodeAsString
+	) throws IllegalAccessException {
 		User user = this.getUser(sessionId);
-		this.loadService.setUserReady(user);
+		this.loadService.setUserReady(GameCode.fromString(gameCodeAsString), user);
 	}
 	
 	@MessageExceptionHandler

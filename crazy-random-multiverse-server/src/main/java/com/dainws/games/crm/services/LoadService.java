@@ -1,9 +1,7 @@
 package com.dainws.games.crm.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,22 +15,20 @@ import com.dainws.games.cbg.domain.GameStateManager;
 import com.dainws.games.cbg.domain.player.PlayerCode;
 import com.dainws.games.crm.domain.model.User;
 import com.dainws.games.crm.exception.GameNotFoundException;
-import com.dainws.games.crm.exception.PartyNotFoundException;
 
 @Service
 public class LoadService {
-	private static final int ROUND_BEFORE_START = -1;
 	
 	private GameService gameService;
 	private GameStateManager gameStateManager;
-	private List<Game> pendingGames;
+	private Map<GameCode, Game> pendingGames;
 	private Map<GameCode, Set<User>> preparedPlayers;
 	private Logger logger;
 
 	public LoadService(GameService gameService, GameStateManager gameStateManager) {
 		this.gameService = gameService;
 		this.gameStateManager = gameStateManager;
-		this.pendingGames = new ArrayList<>();
+		this.pendingGames = new HashMap<>();
 		this.preparedPlayers = new HashMap<>();
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
@@ -41,15 +37,21 @@ public class LoadService {
 		Game game = this.gameService.createGameFromPartyOwner(partyOwner);
 
 		this.logger.info("Esperando a que todos los jugadores del juego {} esten listos", game.getCode());
-		this.pendingGames.add(game);
+		this.pendingGames.put(game.getCode(), game);
 		this.preparedPlayers.put(game.getCode(), new HashSet<>());
 	}
 
-	public void setUserReady(User user) throws PartyNotFoundException, GameNotFoundException {
-		PlayerCode playerCode = this.getPlayerCodeFrom(user);
-		Game game = this.getGameWherePlayerCodeIsPresent(playerCode);
+	public void setUserReady(GameCode gameCode,  User user) throws GameNotFoundException, IllegalAccessException {
+		if (!this.pendingGames.containsKey(gameCode)) {
+			throw new GameNotFoundException();
+		}
+		
+		Game game = this.pendingGames.get(gameCode);
+		if (!game.hasPlayer(this.getPlayerCodeFromUser(user))) {
+			throw new IllegalAccessException("Acceso denegado - jugador no encontrado en el juego indicado");
+		}
 	
-		Set<User> preparedPlayers = this.preparedPlayers.get(game.getCode());
+		Set<User> preparedPlayers = this.preparedPlayers.get(gameCode);
 		preparedPlayers.add(user);
 
 		int numPlayers = game.getPlayers().size();
@@ -64,21 +66,12 @@ public class LoadService {
 	private void startGame(Game game) {
 		this.logger.debug("Todos los jugadores del juego {} estan listos para comenzar", game.getCode());
 		this.preparedPlayers.remove(game.getCode());
-		
-		// TODO poco intuitivo?
-		game.setRound(ROUND_BEFORE_START);
-		gameStateManager.updateGameState(game);
+
+		Game.prepareGameToStart(game);
+		this.gameStateManager.next(game);
 	}
 	
-	private Game getGameWherePlayerCodeIsPresent(PlayerCode playerCode) throws GameNotFoundException {
-		return this.pendingGames.stream()
-			.filter(game -> game.hasPlayer(playerCode))
-			.findFirst()
-			.orElseThrow(GameNotFoundException::new);
-	}
-
-	private PlayerCode getPlayerCodeFrom(User user) {
-		String uuid = user.getCode().getValue();
-		return PlayerCode.from(uuid);
+	private PlayerCode getPlayerCodeFromUser(User user) {
+		return PlayerCode.from(user.getCode().getValue());
 	}
 }

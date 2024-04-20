@@ -3,6 +3,7 @@ package com.dainws.games.cbg.domain.board;
 import com.dainws.games.cbg.domain.card.CardType;
 import com.dainws.games.cbg.domain.card.Combatant;
 import com.dainws.games.cbg.domain.card.Leader;
+import com.dainws.games.cbg.domain.card.statistics.Health;
 import com.dainws.games.cbg.domain.exception.CoordinateNotAllowedException;
 import com.dainws.games.cbg.domain.exception.EmptyCoordinateException;
 
@@ -25,6 +26,12 @@ public class ZoneWithLeader extends Zone {
 		}
 
 		return this.leader.isAlive();
+	}
+
+	@Override
+	public Health getZoneHealth() {
+		Health leaderHealth = this.leader.getHealth();
+		return Health.newInstance(leaderHealth.getValue(), leaderHealth.getMaxValue());
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.dainws.games.cbg.domain.board;
 
 import com.dainws.games.cbg.domain.card.Combatant;
+import com.dainws.games.cbg.domain.card.statistics.Health;
 import com.dainws.games.cbg.domain.exception.CoordinateNotAllowedException;
 import com.dainws.games.cbg.domain.exception.CoordinateOutOfBoundsException;
 import com.dainws.games.cbg.domain.exception.EmptyCoordinateException;
@@ -18,6 +19,8 @@ public abstract class Zone {
 	}
 
 	public abstract boolean isAlive();
+	
+	public abstract Health getZoneHealth();
 
 	public boolean hasCombatant(Coordinate coordinate) {
 		if (this.isValidCoordinate(coordinate)) {

@@ -130,7 +130,7 @@ public class CardDto {
 		return health;
 	}
 
-	public void setHealth(double health) {
+	public void setHealth(Double health) {
 		this.health = health;
 		if (health == 0) {
 			this.health = null;
@@ -141,7 +141,7 @@ public class CardDto {
 		return maxHealth;
 	}
 
-	public void setMaxHealth(double maxHealth) {
+	public void setMaxHealth(Double maxHealth) {
 		this.maxHealth = maxHealth;
 		if (maxHealth == 0) {
 			this.maxHealth = null;

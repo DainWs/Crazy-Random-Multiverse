@@ -7,6 +7,12 @@ public class ZoneDto {
 	private PlayerDto owner;
 	
 	@NotNull
+	private Double health;
+	
+	@NotNull
+	private Double maxHealth;
+	
+	@NotNull
 	private CardDto[][] combatants;
 	
 	public void setOwner(PlayerDto owner) {
@@ -15,6 +21,28 @@ public class ZoneDto {
 	
 	public PlayerDto getOwner() {
 		return owner;
+	}
+	
+	public Double getHealth() {
+		return health;
+	}
+
+	public void setHealth(Double health) {
+		this.health = health;
+		if (health == 0) {
+			this.health = null;
+		}
+	}
+
+	public Double getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(Double maxHealth) {
+		this.maxHealth = maxHealth;
+		if (maxHealth == 0) {
+			this.maxHealth = null;
+		}
 	}
 	
 	public void setCombatants(CardDto[][] combatants) {

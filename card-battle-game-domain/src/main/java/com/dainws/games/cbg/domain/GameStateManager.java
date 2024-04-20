@@ -15,7 +15,7 @@ public class GameStateManager implements EventTrigger {
 		this.eventPublisher = new ConsoleEventPublisher();
 	}
 
-	public void updateGameState(Game game) {
+	public void next(Game game) {
 		if (this.isGameInStartState(game)) {
 			this.doStartStateProcess(game);
 		}

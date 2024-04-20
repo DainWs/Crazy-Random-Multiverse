@@ -8,6 +8,8 @@ import com.dainws.games.cbg.domain.player.Player;
 import com.dainws.games.cbg.domain.player.PlayerCode;
 
 public class Game {
+	private static final int ROUND_BEFORE_START = -1;
+
 	private GameCode code;
 	private int playerIndexWithTurn;
 	private int round;
@@ -65,5 +67,9 @@ public class Game {
 
 	public Board getBoard() {
 		return board;
+	}
+	
+	public static void prepareGameToStart(Game game) {
+		game.setRound(ROUND_BEFORE_START);
 	}
 }

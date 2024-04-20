@@ -7,23 +7,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ActionDto {
 	@JsonProperty(value = "game", defaultValue = "")
 	private String gameCode;
+
+	@JsonProperty(value = "type", defaultValue = "")
+	private ActionType type; 
 	
-	@JsonProperty("source_player")
+	@JsonProperty("sourcePlayer")
 	private String sourcePlayerCode;
 	
-	@JsonProperty("source_card")
+	@JsonProperty("sourceCard")
 	private CardCodeDto sourceCardCode;
 	
-	@JsonProperty("source_position")
+	@JsonProperty("sourcePosition")
 	private PositionDto sourcePosition;
 
-	@JsonProperty("target_player")
+	@JsonProperty("targetPlayer")
 	private String targetPlayerCode;
 	
-	@JsonProperty("target_card")
+	@JsonProperty("targetCard")
 	private CardCodeDto targetCardCode;
 
-	@JsonProperty("target_position")
+	@JsonProperty("targetPosition")
 	private PositionDto targetPosition;
 
 	public String getGameCode() {
@@ -32,6 +35,14 @@ public class ActionDto {
 	
 	public void setGameCode(String gameCode) {
 		this.gameCode = gameCode;
+	}
+	
+	public ActionType getType() {
+		return type;
+	}
+	
+	public void setType(ActionType type) {
+		this.type = type;
 	}
 	
 	public String getSourcePlayerCode() {

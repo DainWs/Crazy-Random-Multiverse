@@ -60,6 +60,7 @@ public class ModelMapper {
 
 	public GameDto mapGameToDto(Game game) {
 		GameDto gameDto = new GameDto();
+		gameDto.setCode(game.getCode().toString());
 		gameDto.setPlayerWithTurn(this.mapPlayerToDto(game.getPlayerWithTurn()));
 
 		Board board = game.getBoard();
@@ -78,7 +79,9 @@ public class ModelMapper {
 	public ZoneDto mapPlayerZoneToDto(Zone playerZone, Player player) {
 		ZoneDto zoneDto = new ZoneDto();
 		zoneDto.setOwner(this.mapPlayerToDto(player));
-
+		zoneDto.setHealth(playerZone.getZoneHealth().getValue());
+		zoneDto.setMaxHealth(playerZone.getZoneHealth().getMaxValue());
+		
 		int verticalDimension = playerZone.getVerticalDimension();
 		int horizontalDimension = playerZone.getHorizontalDimension();
 
