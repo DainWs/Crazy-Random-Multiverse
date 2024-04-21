@@ -7,7 +7,7 @@ import { mkdirSync } from 'fs';
 const __dirname = path.resolve('.');
 
 export default {
-    entry: './src/main.js',
+    entry: './src/main.ts',
     output: {
         clean: true,
         filename: 'assets/app.js',
@@ -25,6 +25,10 @@ export default {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.ts$/,
+                loader: 'ts-loader',
             },
             {
                 test: /\.(css|s[ac]ss)$/,
@@ -50,6 +54,7 @@ export default {
         })
     ],
     resolve: {
+        extensions: ['.*', '.js', '.ts', '.scss', '.vue', '.json'],
         alias: {
             "@": path.resolve(__dirname, 'src'),
             // API Aliases
@@ -58,10 +63,9 @@ export default {
             "@repositories": path.resolve(__dirname, 'src', 'infrastructure', 'repositories'),
             // VIEW Aliases
             "@assets": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'assets'),
-            //"@vue": path.resolve(__dirname, 'src/infrastructure/view/vue/'),
-            //"@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages/'),
-            //"@vue-components": path.resolve(__dirname, 'src/infrastructure/view/vue/components/')
+            "@vue-root": path.resolve(__dirname, 'src/infrastructure/view/vue/'),
+            "@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages/'),
+            "@vue-components": path.resolve(__dirname, 'src/infrastructure/view/vue/components/')
         },
-        extensions: ['.js'],
     },
 };

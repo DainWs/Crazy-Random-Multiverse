@@ -1,4 +1,4 @@
-import { GameCode } from '@/domain/game';
+import { Game, GameCode } from '@/domain/game';
 import { CardCode } from '@/domain/card';
 import { PlayerCode } from '@/domain/player';
 import { Position } from '@/domain/position';

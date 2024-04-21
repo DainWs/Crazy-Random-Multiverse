@@ -13,7 +13,7 @@
       "@repositories/*": ["infrastructure/repositories/*"],
       // VIEW Aliases
       "@assets/*": ["infrastructure/view/assets/*"],
-      "@vue/*": ["infrastructure/view/vue/*"],
+      "@vue-root/*": ["infrastructure/view/vue/*"],
       "@vue-pages/*": ["infrastructure/view/vue/pages/*"],
       "@vue-components/*": ["infrastructure/view/vue/components/*"],
     },

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CRM Game gui",
   "author": "DainWs",
-  "main": "src/main.js",
+  "main": "src/main.ts",
   "type": "module",
   "private": true,
   "scripts": {
