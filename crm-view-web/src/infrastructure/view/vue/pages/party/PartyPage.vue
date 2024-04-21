@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
-import AppButton from '@/infrastructure/view/vue/shared/AppButton.vue';
-import partyController from '@/infrastructure/view/vue/party/PartyController';
+import AppButton from '@/infrastructure/view/vue/components/shared/AppButton.vue';
+import partyController from '@/infrastructure/view/vue/pages/party/PartyController';
 onMounted(partyController.onLoad);
 const userInfo = partyController.getUserInfo();
 const partyInfo = partyController.getReactivePartyInfo();
@@ -36,5 +36,5 @@ const onLeaveClick = partyController.onLeaveClick;
   </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/page/party.scss" scoped>
+<style lang="scss" src="@assets/styles/page/party.scss" scoped>
 </style>

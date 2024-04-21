@@ -1,6 +1,6 @@
 <script setup>
-import AppArrow from '@/infrastructure/view/vue/shared/AppArrow.vue'
-import settingsController from '@/infrastructure/view/vue/settings/SettingsController';
+import AppArrow from '@/infrastructure/view/vue/components/shared/AppArrow.vue'
+import settingsController from '@/infrastructure/view/vue/pages/settings/SettingsController';
 const settings = settingsController.getSettings();
 const settingSections = settingsController.getAvailableSettingSections();
 const saveChanges = settingsController.saveChanges;
@@ -15,7 +15,7 @@ const onBackClick = settingsController.onBackClick;
             <div class="settings__navigation col-12 col-md-3">
                 <div class="navigation__item link back">
                     <a @click="onBackClick">
-                        <AppArrow direction="left" /> Back
+                        <AppArrow direction="left" color="white" /> Back
                     </a>
                 </div>
                 <div v-for="settingSection in settingSections" :key="settingSection.id" class="navigation__item link">
@@ -33,4 +33,4 @@ const onBackClick = settingsController.onBackClick;
     </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/page/settings.scss" scoped></style>
+<style lang="scss" src="@assets/styles/page/settings.scss" scoped></style>

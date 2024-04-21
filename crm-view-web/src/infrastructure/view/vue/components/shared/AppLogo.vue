@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <img alt="Monos con Minigun logo" class="logo" src="@/infrastructure/view/assets/images/logo.png" />
+  <img alt="Monos con Minigun logo" class="logo" src="@assets/images/logo.png" />
 </template>
 
 <style lang="scss" scoped>

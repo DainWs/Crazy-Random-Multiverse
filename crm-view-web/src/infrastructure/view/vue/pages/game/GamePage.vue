@@ -1,7 +1,7 @@
 <script setup>
-import ZonePreview from '@/infrastructure/view/vue/game/components/zone/ZonePreview.vue';
-import ZoneNavigator from '@/infrastructure/view/vue/game/components/zone/ZoneNavigator.vue';
-import gameController from '@/infrastructure/view/vue/game/GameController';
+import ZoneView from '@/infrastructure/view/vue/components/game/zone/ZoneView.vue';
+import ZoneNavigator from '@/infrastructure/view/vue/components/game/zone/ZoneNavigator.vue';
+import gameController from '@/infrastructure/view/vue/pages/game/GameController';
 const game = gameController.getReactiveGame();
 const playerInfo = gameController.getReactivePlayerInfo();
 const previewedZone = gameController.getReactivePreviewedZone();
@@ -15,11 +15,11 @@ const onActionPerformed = gameController.onActionPerformed;
     <!-- TODO Agregar e implementar componente ErrorMessagesComponent -->
   
     <!-- TODO Agregar enemy zone preview -->
-    <ZonePreview :zone="previewedZone" @action="onActionPerformed" />
+    <ZoneView :zone="previewedZone" @action="onActionPerformed" />
     <ZoneNavigator :game="game" @select="onZoneSelect" />
   </div>
 </template>
 
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/page/game.scss">
+<style lang="scss" src="@assets/styles/page/game.scss">
 </style>

@@ -1,6 +1,6 @@
 import { createAction } from "@/domain/action";
 import { sendAction } from "@/infrastructure/api/v1";
-import gameProvider from "./providers/gameProvider";
+import gameProvider from "@/application/providers/gameProvider";
 
 /**
  * @typedef {import('@/domain/action').ActionSource} ActionSource

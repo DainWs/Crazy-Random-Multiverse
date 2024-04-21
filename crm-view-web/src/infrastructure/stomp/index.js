@@ -8,7 +8,7 @@ let stompClient = undefined;
 
 const createSessionWithUsername = (username) => {
     stompClient =  new Client({
-        brokerURL: `ws://${CRM_SERVER_HOST}/ws`,
+        brokerURL: `ws://${process.env.SERVER_HOST}/ws`,
         connectHeaders: { username },
         reconnectDelay: 100,
         debug: (message) => console.log(message),

@@ -1,11 +1,10 @@
 <script setup>
-import ZoneCardSlot from '@/infrastructure/view/vue/game/components/zone/ZoneCardSlot.vue';
+import ZoneSlot from '@/infrastructure/view/vue/components/game/zone/ZoneSlot.vue';
 import { 
-    onGrabCardFromSlot, 
-    onDragCardOverSlot,
+    onGrabCardFromSlot,
     onDropCardOnSlot,
     extractActionParts
-} from '@/infrastructure/view/vue/game/components/zone/ZoneViewLogic'
+} from '@/infrastructure/view/vue/components/game/zone/ZoneViewLogic'
 /**
  * @typedef {object} Props
  * @property {import('@/domain/zone').Zone} zone
@@ -15,12 +14,12 @@ import {
 const props = defineProps({ zone: {required: true} });
 const emit = defineEmits(['action']);
 
-const onGrab = (event) => {
+const onGrabCard = (event) => {
     onGrabCardFromSlot(event)
     event.originalEvent.dataTransfer.effectAllowed = 'move';
 }
 
-const onDropCardOnSlot = (event) => {
+const onDropCard = (event) => {
     event.originalEvent.stopPropagation();
     const processedEvent = onDropCardOnSlot(event);
     const actionParts = extractActionParts(processedEvent);
@@ -28,7 +27,7 @@ const onDropCardOnSlot = (event) => {
     return false;
 }
 
-const onDragCardOverSlot = (event) => {
+const onDragCard = (event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
     return;
@@ -40,10 +39,10 @@ const onDragCardOverSlot = (event) => {
         <div class="zone__content">
             <div class="line" v-for="(lineColumns, lineIndex) in zone.combatants" :key="`${lineIndex}`">
                 <div class="column" v-for="(card, columnIndex) in lineColumns" :key="`${lineIndex}-${columnIndex}`">
-                    <ZoneCardSlot :slot="{row: lineIndex, column: columnIndex}" :card="card"
-                        @grab="onGrab({ player: zone.owner, ...$event })"
-                        @dragover="onDragCardOverSlot({ player: zone.owner, ...$event })"
-                        @drop="onDropCardOnSlot({ player: zone.owner, ...$event })"
+                    <ZoneSlot :slot="{row: lineIndex, column: columnIndex}" :card="card"
+                        @grab="onGrabCard({ player: zone.owner, ...$event })"
+                        @dragover="onDropCard({ player: zone.owner, ...$event })"
+                        @drop="onDragCard({ player: zone.owner, ...$event })"
                     />
                 </div>
             </div>
@@ -51,5 +50,5 @@ const onDragCardOverSlot = (event) => {
     </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/components/zone.scss">
+<style lang="scss" src="@assets/styles/components/zone.scss">
 </style>

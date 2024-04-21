@@ -1,9 +1,9 @@
-import { configureEnviroment } from '@/configuration/enviromentConfigurer';
-import { configureStomp } from '@/configuration/stompConfigurer';
+import { createSessionWithUsername } from "@/infrastructure/stomp";
+import { getSetting } from "@/application/settingsService";
 
 const configureApp = () => {
-    configureEnviroment()
-    configureStomp()
+    const username = getSetting('username');
+    createSessionWithUsername(username);
 }
 
 export {

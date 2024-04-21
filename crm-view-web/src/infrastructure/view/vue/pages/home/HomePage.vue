@@ -1,6 +1,6 @@
 <script setup>
-import AppLogo from '@/infrastructure/view/vue/shared/AppLogo.vue'
-import homeController from '@/infrastructure/view/vue/home/HomeController';
+import AppLogo from '@/infrastructure/view/vue/components/shared/AppLogo.vue'
+import homeController from '@/infrastructure/view/vue/pages/home/HomeController';
 const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
 const onCreatePartyClick = homeController.onCreatePartyClick;
 const onJoinPartyClick = homeController.onJoinPartyClick;
@@ -16,7 +16,7 @@ const onExitClick = homeController.onExitClick;
     <nav class="home__content">
       <div> <!-- ¿este div por qué? -->
         <div class="home__title">
-          <h1>Crazy Random Multiverses - {{ value.title }}</h1>
+          <h1>Crazy Random Multiverses</h1>
         </div>
         <div class="menu">
           <div class="menu__item button button--hover button--left-to-right">
@@ -41,5 +41,5 @@ const onExitClick = homeController.onExitClick;
   </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/page/home.scss" scoped>
+<style lang="scss" src="@assets/styles/page/home.scss" scoped>
 </style>

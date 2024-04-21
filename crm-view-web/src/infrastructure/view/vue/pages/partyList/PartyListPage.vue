@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue';
-import partyListController from '@/infrastructure/view/vue/partyList/PartyListController';
+import partyListController from '@/infrastructure/view/vue/pages/partyList/PartyListController';
 onMounted(partyListController.onLoad);
 const partyList = partyListController.getReactivePartyList();
 const onRefreshPartiesClick = partyListController.onRefreshPartiesClick;
@@ -37,5 +37,5 @@ const onBackClick = partyListController.onBackClick;
 </template>
 
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/page/partyList.scss" scoped>
+<style lang="scss" src="@assets/styles/page/partyList.scss" scoped>
 </style>

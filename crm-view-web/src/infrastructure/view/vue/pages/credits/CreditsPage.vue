@@ -1,5 +1,5 @@
 <script setup>
-import creditsController from '@/infrastructure/view/vue/controllers/creditsController';
+import creditsController from '@/infrastructure/view/vue/pages/credits/CreditsController';
 const credits = creditsController.getCredits();
 const onBackClick = creditsController.onBackClick;
 </script>
@@ -31,5 +31,5 @@ const onBackClick = creditsController.onBackClick;
   </div>
 </template>
 
-<style  lang="scss" src="@/infrastructure/view/assets/styles/page/credits.scss" scoped>
+<style  lang="scss" src="@assets/styles/page/credits.scss" scoped>
 </style>

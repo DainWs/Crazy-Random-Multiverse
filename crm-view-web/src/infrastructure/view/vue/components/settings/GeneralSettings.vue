@@ -21,16 +21,20 @@ defineEmits(['settingChange', 'saveClick'])
                 <div class="title m-0">
                     <h1 class="col-12 col-sm-12">General settings</h1>
                 </div>
+                
+                <hr/>
 
                 <div class="d-flex flex-row option">
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-8">
-                        <h2 class="text-white flex-grow-1 m-0">Name</h2>
+                        <h5 class="text-white flex-grow-1 m-0">Name</h5>
                     </div>
                     <div class="d-flex align-items-center col-12 col-sm-6 col-md-4">
                         <input class="text-black" type="text" :value="settings.username" 
                             @change="$emit('settingChange', { name: 'username', value: $event.target.value })"/>
                     </div>
                 </div>
+
+                <hr/>
 
                 <div class="option menu">
                     <div class="button button--hover button--left-to-right">
@@ -43,4 +47,4 @@ defineEmits(['settingChange', 'saveClick'])
     </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/components/generalSettings.scss" scoped></style>
+<style lang="scss" src="@assets/styles/components/generalSettings.scss" scoped></style>

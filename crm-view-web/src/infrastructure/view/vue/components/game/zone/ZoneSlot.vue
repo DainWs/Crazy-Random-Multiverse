@@ -1,5 +1,5 @@
 <script setup>
-import CardComponent from '@/infrastructure/view/vue/components/card/CardComponent.vue';
+import CardComponent from '@/infrastructure/view/vue/components/game/card/CardComponent.vue';
 
 /**
  * @typedef {object} Props

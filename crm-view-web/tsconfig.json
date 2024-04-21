@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "noImplicitAny": true,
+        "module": "ES2022",
+        "target": "esnext",
+        "allowJs": true,
+        "moduleResolution": "node",
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["*"],
+            // API Aliases
+            "@api/*": ["infrastructure/api/*"],
+            // REPOSITORIES Aliases
+            "@repositories/*": ["infrastructure/repositories/*"],
+            // VIEW Aliases
+            "@assets/*": ["infrastructure/view/assets/*"],
+            "@vue/*": ["infrastructure/view/vue/*"],
+            "@vue-pages/*": ["infrastructure/view/vue/pages/*"],
+            "@vue-components/*": ["infrastructure/view/vue/components/*"],
+        },
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ]
+    }
+  }

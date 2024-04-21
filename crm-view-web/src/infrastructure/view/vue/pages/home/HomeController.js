@@ -26,7 +26,7 @@ const onExitClick = () => {
 }
 
 const isNotBrowserPlatform = () => {
-    return CRM_PLATAFORM !== 'browser';
+    return process.env.PLATAFORM !== 'browser';
 }
 
 export default {

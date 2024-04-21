@@ -1,9 +1,9 @@
 <script setup>
-import CardDescription from '@/infrastructure/view/vue/components/card/CardDescription.vue'
 import { getCardTypeDescription, hasCardStatistics } from '@/domain/card';
-import StatisticDamage from './StatisticDamage.vue';
-import StatisticArmor from './StatisticArmor.vue';
-import StatisticHealth from './StatisticHealth.vue';
+import CardDescription from '@/infrastructure/view/vue/components/game/card/CardDescription.vue'
+import StatisticDamage from '@/infrastructure/view/vue/components/game/card/StatisticDamage.vue';
+import StatisticArmor from '@/infrastructure/view/vue/components/game/card/StatisticArmor.vue';
+import StatisticHealth from '@/infrastructure/view/vue/components/game/card/StatisticHealth.vue';
 
 
 /**
@@ -51,4 +51,4 @@ defineEmits(['click', 'drag', 'drop']);
     </div>
 </template>
 
-<style lang="scss" src="@/infrastructure/view/assets/styles/components/card.scss" ></style>
+<style lang="scss" src="@assets/styles/components/card.scss" ></style>
