@@ -1,9 +1,9 @@
 import eventObserver from "@/application/events/observer";
-import gameProvider from "@/application/providers/gameProvider";
+import { gameRepository } from "@/infrastructure/repositories";
 
 const processGameEvent = (gameEvent) => {
 	if (gameEvent.details.game) {
-		gameProvider.supply(gameEvent.details.game);
+		gameRepository.updateCurrentGame(gameEvent.details.game);
 	}
 
     eventObserver.notify(gameEvent.code, gameEvent);

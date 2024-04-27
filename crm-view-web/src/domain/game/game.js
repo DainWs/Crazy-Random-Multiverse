@@ -1,4 +1,4 @@
-import { isPlayerOwnerOfZone } from '@/domain/zone';
+import { isPlayerOwnerOfZone } from '@/domain/game/zone';
 
 /**
  * @typedef {import('@/domain/player').Player} Player

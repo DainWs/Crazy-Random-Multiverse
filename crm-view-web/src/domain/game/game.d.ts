@@ -1,5 +1,5 @@
-import { Player } from "@/domain/player";
-import { Zone } from "@/domain/zone";
+import { Player } from "@/domain/game/player";
+import { Zone } from "@/domain/game/zone";
 
 export type GameCode = String;
 

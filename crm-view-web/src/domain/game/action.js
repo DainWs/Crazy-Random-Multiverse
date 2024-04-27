@@ -1,10 +1,10 @@
-import actionResolver from '@/domain/actionResolver';
+import actionResolver from '@/domain/game/actionResolver';
 
 /**
  * @typedef {import('@/domain/game').Game} Game
- * @typedef {import('@/domain/action').Action} Action
- * @typedef {import('@/domain/action').ActionSource} ActionSource
- * @typedef {import('@/domain/action').ActionTarget} ActionTarget
+ * @typedef {import('@/domain/game/action').Action} Action
+ * @typedef {import('@/domain/game/action').ActionSource} ActionSource
+ * @typedef {import('@/domain/game/action').ActionTarget} ActionTarget
  */
 
 /**

@@ -1,5 +1,5 @@
 import { sendRefreshUserInfo, sendUpdateUserInfo } from "@/infrastructure/api/v1";
-import settingsRepository from "@/infrastructure/repositories/settingsRepository";
+import settingsRepository from "@/infrastructure/repositories/localSettingsRepository";
 
 const getSettingSections = () => {
     return settingsRepository.findAllSettingSections();

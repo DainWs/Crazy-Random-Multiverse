@@ -56,16 +56,16 @@ export default {
     resolve: {
         extensions: ['.*', '.js', '.ts', '.scss', '.vue', '.json'],
         alias: {
-            "@": path.resolve(__dirname, 'src'),
+            "@/": path.resolve(__dirname, 'src'),
             // API Aliases
-            "@api": path.resolve(__dirname, 'src', 'infrastructure', 'api'),
+            "@api/": path.resolve(__dirname, 'src', 'infrastructure', 'api'),
             // REPOSITORIES Aliases
-            "@repositories": path.resolve(__dirname, 'src', 'infrastructure', 'repositories'),
+            "@repositories/": path.resolve(__dirname, 'src', 'infrastructure', 'repositories'),
             // VIEW Aliases
-            "@assets": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'assets'),
-            "@vue-root": path.resolve(__dirname, 'src/infrastructure/view/vue/'),
-            "@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages/'),
-            "@vue-components": path.resolve(__dirname, 'src/infrastructure/view/vue/components/')
+            "@assets/": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'assets'),
+            "@vue-root/": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'vue'),
+            "@vue-pages/": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'vue', 'pages'),
+            "@vue-components/": path.resolve(__dirname, 'src', 'infrastructure', 'view', 'vue', 'components')
         },
     },
 };

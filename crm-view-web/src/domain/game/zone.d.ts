@@ -1,5 +1,5 @@
-import { Player as Owner } from '@/domain/player';
-import { Card as Combatant } from '@/domain/card';
+import { Player as Owner } from '@/domain/game/player';
+import { Card as Combatant } from '@/domain/game/card';
 
 export type Zone = {
     health: Number,

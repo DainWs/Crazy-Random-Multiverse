@@ -1,30 +1,59 @@
-import { Card } from "@/domain/card";
-import { Game } from "@/domain/game";
-import { Hand } from "@/domain/hand";
-import { Player } from "@/domain/player";
-import { Position } from "@/domain/position";
+import { Card } from "@/domain/game/card";
+import { Game } from "@/domain/game/game";
+import { Hand } from "@/domain/game/hand";
+import { Party } from "@/domain/game/party";
+import { PartyList } from "@/domain/game/partyList";
+import { Player } from "@/domain/game/player";
+import { Position } from "@/domain/game/position";
+import { User } from "@/domain/UserRepository";
 
-export type EventCode = 'GAME_CREATED' | 'GAME_START' | 'GAME_END' | 'PLAYER_WIN' | 'PLAYER_LOSE' | 'PLAYER_SURRENDER' | 'PLAYER_GET_TURN' | 'PLAYER_GET_CARD' | 'PLAYER_PUT_CARD' | 'PLAYER_MOVE_CARD' | 'PLAYER_ATTACK_CARD' | 'PLAYER_EQUIP_CARD' | 'PLAYER_USE_SPELL' | 'PLAYER_PASS_TURN';
-
-export type EventDetails = {
-    game: Game,
-    sourcePlayer: Player,
-    sourceCard: Card,
-    sourcePosition: Position,
-    targetPlayer: Player,
-    targetCard: Card,
-    targetPosition: Position,
+type GameEvent = {
+    code: 'GAME_CREATED' | 'GAME_START' | 'GAME_END' | 'PLAYER_WIN' | 'PLAYER_LOSE' 
+| 'PLAYER_SURRENDER' | 'PLAYER_GET_TURN' | 'PLAYER_GET_CARD' | 'PLAYER_PUT_CARD' | 'PLAYER_MOVE_CARD' 
+| 'PLAYER_ATTACK_CARD' | 'PLAYER_EQUIP_CARD' | 'PLAYER_USE_SPELL' | 'PLAYER_PASS_TURN',
+    details: {
+        game: Game,
+        sourcePlayer: Player,
+        sourceCard: Card,
+        sourcePosition: Position,
+        targetPlayer: Player,
+        targetCard: Card,
+        targetPosition: Position,
+    }
 };
 
-export type Event = {
-    code: EventCode,
-    details: EventDetails
-};
+type UserEvent = {
+    code: 'USER_UPDATE',
+    details: User
+}
 
-export type Context = {
+type PartyEvent = {
+    code: 'PARTY_INFO_UPDATE',
+    details: Party
+}
+
+type PartyListEvent = {
+    code: 'PARTY_LIST_UPDATE',
+    details: PartyList
+}
+
+type Event = GameEvent | UserEvent | PartyEvent | PartyListEvent;
+
+type Context = {
     game: Game,
     player: Player,
     hand: Hand
 }
 
-export type EventHandler = (event: Event, context?: Context) => Promise<Void>;
+type EventHandler = (event: Event, context?: Context) => Promise<void>;
+
+export { 
+    GameEvent,
+    UserEvent,
+    PartyEvent,
+    PartyListEvent,
+    Event,
+    Context, 
+    EventHandler 
+}
+export default Event;

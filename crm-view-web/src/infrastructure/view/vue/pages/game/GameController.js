@@ -1,5 +1,5 @@
 import { triggerAction } from "@/application/actionService";
-import { getPlayerZoneFrom } from "@/domain/game";
+import { getPlayerZoneFrom } from "@/domain/game/game";
 import { ref } from "vue";
 
 /**

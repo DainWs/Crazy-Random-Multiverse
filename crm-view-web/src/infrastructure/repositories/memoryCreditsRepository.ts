@@ -1,24 +1,6 @@
-/**
- * @typedef Person
- * @type {string}
- */
+import { Credits } from "@/domain/CreditsRepository";
 
-/**
- * @typedef CreditSection
- * @property {string} id
- * @property {string} name
- * @property {Array.<Person>} people
- */
-
-/**
- * @typedef Credits
- * @type {Array.<CreditSection>}
- */
-
-/**
- * @type {Credits}
- */
-const CREDITS = [
+const CREDITS: Credits = [
     {
         id: "section__director",
         name: "Director",
@@ -42,7 +24,7 @@ const CREDITS = [
     }
 ]
 
-const findAllCredits = () => {
+const findAllCredits = (): Credits => {
     return CREDITS;
 }
 

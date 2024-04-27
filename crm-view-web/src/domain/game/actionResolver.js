@@ -1,8 +1,8 @@
 /**
- * @typedef {import('@/domain/action').ViewElement} ViewElement
- * @typedef {import('@/domain/action').ViewAction} ViewAction
- * @typedef {import('@/domain/action').ActionTrigger} ActionTrigger
- * @typedef {import('@/domain/action').ActionType} ActionType
+ * @typedef {import('@/domain/game/action').ViewElement} ViewElement
+ * @typedef {import('@/domain/game/action').ViewAction} ViewAction
+ * @typedef {import('@/domain/game/action').ActionTrigger} ActionTrigger
+ * @typedef {import('@/domain/game/action').ActionType} ActionType
  */
 
 /**

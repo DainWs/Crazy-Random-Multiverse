@@ -1,5 +1,5 @@
 <script setup>
-import { getCardTypeDescription, hasCardStatistics } from '@/domain/card';
+import { getCardTypeDescription, hasCardStatistics } from '@/domain/game/card';
 import CardDescription from '@/infrastructure/view/vue/components/game/card/CardDescription.vue'
 import StatisticDamage from '@/infrastructure/view/vue/components/game/card/StatisticDamage.vue';
 import StatisticArmor from '@/infrastructure/view/vue/components/game/card/StatisticArmor.vue';

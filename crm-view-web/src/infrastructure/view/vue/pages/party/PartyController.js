@@ -6,8 +6,6 @@ import { startParty, leaveParty, refreshPartyInfo, setPartyInfoUpdateHandler } f
 const defaultPartyInfo = {
     code: undefined,
     name: undefined,
-    isSpectator: false,
-    isAlive: true,
     users: []
 };
 

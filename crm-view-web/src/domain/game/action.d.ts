@@ -1,7 +1,7 @@
-import { Game, GameCode } from '@/domain/game';
-import { CardCode } from '@/domain/card';
-import { PlayerCode } from '@/domain/player';
-import { Position } from '@/domain/position';
+import { Game, GameCode } from '@/domain/game/game';
+import { CardCode } from '@/domain/game/card';
+import { PlayerCode } from '@/domain/game/player';
+import { Position } from '@/domain/game/position';
 
 export type ViewElement = "Hand" | "ZoneSlot" | "ZoneSlot.Card";
 export type ViewAction = "Grab" | "Drop" | "Click";

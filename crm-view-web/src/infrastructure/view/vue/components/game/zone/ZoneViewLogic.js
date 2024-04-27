@@ -1,5 +1,5 @@
 /**
- * @typedef {import('@/domain/action').ActionParts} ActionParts
+ * @typedef {import('@/domain/game/action').ActionParts} ActionParts
  */
 
 

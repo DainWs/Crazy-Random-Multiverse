@@ -1,22 +1,18 @@
-import eventObserver from "@/application/events/observer";
-
-const properties = {
-    user: { username: undefined }
-};
+import { userRepository } from "@/infrastructure/repositories";
+import { triggerEvent } from "@/application/eventService";
 
 const updateLocalUser = (user) => {
-    const oldUser = properties.user;
+    const oldUser = userRepository.findCurrentUser();
 
     if (oldUser.username !== user.username) {
-        properties.user = user;
+        userRepository.updateCurrentUser(user);
 
-        const event = { code: 'USER_INFO', details: user };
-        eventObserver.notify(event.code, event);
+        triggerEvent({ code: 'USER_UPDATE', details: user });
     }
 }
 
 const getUser = () => {
-    return properties.user;
+    return userRepository.findCurrentUser();
 }
 
 export {
