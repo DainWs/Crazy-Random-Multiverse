@@ -1,10 +1,10 @@
 import { triggerAction } from "@/application/actionService";
-import { getPlayerZoneFrom } from "@/domain/game/game";
+import { getPlayerZoneFrom } from "@/domain/models/Game";
 import { ref } from "vue";
 
 /**
  * @typedef GameReference
- * @property {import("@/domain/game").Game} value
+ * @property {import("@/domain/models").Game} value
  */
 
 /**

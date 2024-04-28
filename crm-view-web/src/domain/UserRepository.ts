@@ -1,11 +1,8 @@
-type User = {
-    username: string
-};
+import User from "@/domain/models/User";
 
 interface UserRepository {
     findCurrentUser(): User
     updateCurrentUser(user: User): void
 };
 
-export { User };
 export default UserRepository;

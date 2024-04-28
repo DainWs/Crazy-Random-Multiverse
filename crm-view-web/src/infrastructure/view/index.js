@@ -1,4 +1,4 @@
-import viewImplementation from '@/infrastructure/view/vue'
+import viewImplementation from "@/infrastructure/view/vue";
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"

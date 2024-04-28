@@ -1,29 +1,36 @@
 {
     "compilerOptions": {
         "outDir": "./dist/",
-        "noImplicitAny": true,
         "module": "ES2022",
         "target": "esnext",
-        "allowJs": false,
-        "moduleResolution": "node",
-        "baseUrl": "./src",
+        "strict": true,
+        "jsx": "preserve",
+        "jsxImportSource": "vue",
+        "importHelpers": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": true,
+        "allowArbitraryExtensions": true,
+        "allowJs": true,
+        "moduleResolution": "Node",
+        "baseUrl": ".",
         "paths": {
-            "@/*": ["*"],
-            // API Aliases
-            "@api/*": ["infrastructure/api/*"],
-            // REPOSITORIES Aliases
-            "@repositories/*": ["infrastructure/repositories/*"],
-            // VIEW Aliases
-            "@assets/*": ["infrastructure/view/assets/*"],
-            "@vue-root/*": ["infrastructure/view/vue/*"],
-            "@vue-pages/*": ["infrastructure/view/vue/pages/*"],
-            "@vue-components/*": ["infrastructure/view/vue/components/*"],
+            "@/*": [ "src/*" ],
+            "@api/*": [ "src/infrastructure/api/*" ],
+            "@repositories/*": [ "src/infrastructure/repositories/*" ],
+            "@assets/*": [ "src/infrastructure/view/assets/*" ],
+            "@vue-root/*": [ "src/infrastructure/view/vue/*" ],
+            "@vue-pages/*": [ "src/infrastructure/view/vue/pages/*" ],
+            "@vue-components/*": [  "src/infrastructure/view/vue/components/*" ],
         },
+        "types": ["@types/node"],
         "lib": [
             "esnext",
             "dom",
             "dom.iterable",
             "scripthost"
         ]
-    }
-  }
+    },
+    "include": ["**/*"]
+}

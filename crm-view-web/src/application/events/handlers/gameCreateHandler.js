@@ -2,7 +2,7 @@ import { navigateTo } from '@/infrastructure/view';
 import { sendReadyToPlay } from '@/infrastructure/api/v1';
 
 /**
- * @type {import('@/application/events/event').EventHandler}
+ * @type {import('@/application/events').EventHandler}
  */
 async function handle(event, context) {
     console.log("############# Game Event: 'Game create' received")

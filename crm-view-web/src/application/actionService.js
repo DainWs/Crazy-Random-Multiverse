@@ -1,11 +1,11 @@
-import { createAction } from "@/domain/game/action";
+import { createAction } from "@/domain/actions/Action";
 import { sendAction } from "@/infrastructure/api/v1";
 import { gameRepository } from "@/infrastructure/repositories";
 
 
 /**
- * @typedef {import('@/domain/game/action').ActionSource} ActionSource
- * @typedef {import('@/domain/game/action').ActionTarget} ActionTarget
+ * @typedef {import('@/domain/actions/Action').ActionSource} ActionSource
+ * @typedef {import('@/domain/actions/Action').ActionTarget} ActionTarget
  */
 
 /**

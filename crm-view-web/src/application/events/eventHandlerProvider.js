@@ -5,8 +5,8 @@ import PlayerGetTurnEventHandler from "@/application/events/handlers/playerGetTu
 import PlayerGetCardEventHandler from "@/application/events/handlers/playerGetCardHandler.js";
 
 /**
- * @typedef {import('@/application/events/event').EventCode} EventCode
- * @typedef {import('@/application/events/event').EventHandler} EventHandler
+ * @typedef {import('@/application/events').EventCode} EventCode
+ * @typedef {import('@/application/events').EventHandler} EventHandler
  */
 
 /**

@@ -1,5 +1,5 @@
 /**
- * @type {import('@/application/events/event').EventHandler}
+ * @type {import('@/application/events').EventHandler}
  */
  async function handle(event, context) {
     console.log("############# Player Event: 'Player get turn' received")

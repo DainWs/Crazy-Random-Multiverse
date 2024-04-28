@@ -1,4 +1,4 @@
-import { Game } from "@/domain/game/game";
+import { Game } from "@/domain/models/Game";
 
 interface GameRepository {
     existCurrentGame(): boolean,

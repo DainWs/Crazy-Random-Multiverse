@@ -1,10 +1,9 @@
-import { createSessionWithUsername } from "@/infrastructure/stomp";
-import { settingsRepository, userRepository } from "@/infrastructure/repositories";
+import { configureRepositories } from "@/configuration/repositoryConfigurer"
+import { configureStomp } from "@/configuration/stompConfigurer";
 
 const configureApp = () => {
-    const username = settingsRepository.findSettingByName("username");
-    userRepository.updateCurrentUser({ username });
-    createSessionWithUsername(username);
+    configureRepositories();
+    configureStomp();
 }
 
 export {

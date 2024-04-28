@@ -1,5 +1,5 @@
 import UserRepository from "@/domain/UserRepository";
-import GameRepository from "@/domain/GameRepository";
+import GameRepository from "@/domain/modelsRepository";
 import SettingsRepository from "@/domain/SettingsRepository";
 import CreditsRepository from "@/domain/CreditsRepository";
 

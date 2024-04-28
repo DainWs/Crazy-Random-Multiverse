@@ -3,7 +3,7 @@ import AppArrow from '@/infrastructure/view/vue/components/shared/AppArrow.vue';
 
 /**
  * @typedef {object} Props
- * @property {import('@/domain/game').Game} game
+ * @property {import('@/domain/models').Game} game
  */
 
 /** @type {Props} */

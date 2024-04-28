@@ -1,4 +1,4 @@
-import { User } from "@/domain/UserRepository";
+import User from "@/domain/models/User";
 
 let currentUser: User;
 

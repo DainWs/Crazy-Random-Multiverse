@@ -1,8 +1,8 @@
 
 /**
- * @typedef {import('@/application/events/event').Event} Event
- * @typedef {import('@/application/events/event').EventCode} EventCode
- * @typedef {import('@/application/events/event').EventHandler} EventHandler
+ * @typedef {import('@/application/events').Event} Event
+ * @typedef {import('@/application/events').EventCode} EventCode
+ * @typedef {import('@/application/events').EventHandler} EventHandler
  */
 
 /**
