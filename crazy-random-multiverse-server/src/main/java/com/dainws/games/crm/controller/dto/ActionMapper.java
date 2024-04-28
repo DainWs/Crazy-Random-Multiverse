@@ -5,6 +5,7 @@ import com.dainws.games.cbg.domain.action.ActionContextTemplate;
 import com.dainws.games.cbg.domain.board.Coordinate;
 import com.dainws.games.cbg.domain.card.CardCode;
 import com.dainws.games.cbg.domain.player.PlayerCode;
+import com.dainws.games.crm.controller.dto.models.ActionDto;
 import com.dainws.games.crm.controller.dto.models.CardCodeDto;
 import com.dainws.games.crm.controller.dto.models.PositionDto;
 

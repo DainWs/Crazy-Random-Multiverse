@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto;
+package com.dainws.games.crm.controller.dto.models;
 
 public enum ActionType {
 	PUT_ACTION,

@@ -1,7 +1,5 @@
-package com.dainws.games.crm.controller.dto;
+package com.dainws.games.crm.controller.dto.models;
 
-import com.dainws.games.crm.controller.dto.models.CardCodeDto;
-import com.dainws.games.crm.controller.dto.models.PositionDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ActionDto {

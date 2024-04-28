@@ -4,6 +4,9 @@ import com.dainws.games.cbg.domain.error.Error;
 import com.dainws.games.cbg.domain.event.Event;
 import com.dainws.games.cbg.domain.event.EventDetails;
 import com.dainws.games.cbg.domain.translator.Text;
+import com.dainws.games.crm.controller.dto.models.ErrorDto;
+import com.dainws.games.crm.controller.dto.models.EventDetailsDto;
+import com.dainws.games.crm.controller.dto.models.EventDto;
 
 public class CommunicationMapper {
 	public ErrorDto mapErrorToDto(Error error) {

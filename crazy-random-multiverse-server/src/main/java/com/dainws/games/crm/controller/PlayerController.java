@@ -15,9 +15,9 @@ import org.springframework.stereotype.Controller;
 import com.dainws.games.cbg.domain.ActionService;
 import com.dainws.games.cbg.domain.action.ActionContextTemplate;
 import com.dainws.games.cbg.domain.translator.Translatable;
-import com.dainws.games.crm.controller.dto.ActionDto;
 import com.dainws.games.crm.controller.dto.ActionMapper;
-import com.dainws.games.crm.controller.dto.ActionType;
+import com.dainws.games.crm.controller.dto.models.ActionDto;
+import com.dainws.games.crm.controller.dto.models.ActionType;
 
 @Controller
 public class PlayerController {
