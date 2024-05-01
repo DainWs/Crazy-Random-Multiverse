@@ -1,13 +1,13 @@
-import { ref } from 'vue';
-import router from '@/infrastructure/view/vue/configuration/router';
+import {ref} from 'vue';
+import router from '@vue-root/configuration/router';
 import {
   joinParty,
   refreshPartyList,
   setPartyListUpdateHandler
 } from '@/application/partyService';
 
-const partyList = ref({ parties: [] });
-setPartyListUpdateHandler(newPartyList => (partyList.value = newPartyList));
+const partyList = ref({parties: []});
+setPartyListUpdateHandler((newPartyList) => (partyList.value = newPartyList));
 
 const getReactivePartyList = () => {
   return partyList;
@@ -21,7 +21,7 @@ const onRefreshPartiesClick = async () => {
   await refreshPartyList();
 };
 
-const onJoinPartyClick = async party => {
+const onJoinPartyClick = async (party) => {
   await joinParty(party.code);
   router.push('/party');
 };

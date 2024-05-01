@@ -1,6 +1,6 @@
-import { triggerAction } from '@/application/actionService';
-import { getPlayerZoneFrom } from '@/domain/models/Game';
-import { ref } from 'vue';
+import {triggerAction} from '@/application/actionService';
+import {getPlayerZoneFrom} from '@/domain/models/Game';
+import {ref} from 'vue';
 
 /**
  * @typedef GameReference
@@ -16,10 +16,10 @@ import { ref } from 'vue';
  * @type {GameReference}
  */
 const game = ref({
-  playerWithTurn: { code: '1', name: 'DainWs' },
+  playerWithTurn: {code: '1', name: 'DainWs'},
   zones: [
     {
-      owner: { code: '1', name: 'DainWs' },
+      owner: {code: '1', name: 'DainWs'},
       health: 100,
       maxHealth: 100,
       combatants: [
@@ -43,25 +43,25 @@ const game = ref({
       ]
     },
     {
-      owner: { code: '2', name: 'Alberto' },
+      owner: {code: '2', name: 'Alberto'},
       health: 100,
       maxHealth: 100,
       combatants: [[null, null, null], [null, null, null], [null]]
     },
     {
-      owner: { code: '3', name: 'Alfredo' },
+      owner: {code: '3', name: 'Alfredo'},
       health: 70,
       maxHealth: 100,
       combatants: [[null, null, null], [null, null, null], [null]]
     },
     {
-      owner: { code: '4', name: 'Gordi' },
+      owner: {code: '4', name: 'Gordi'},
       health: 10,
       maxHealth: 100,
       combatants: [[null, null, null], [null, null, null], [null]]
     },
     {
-      owner: { code: '5', name: 'Javier' },
+      owner: {code: '5', name: 'Javier'},
       health: 50,
       maxHealth: 100,
       combatants: [[null, null, null], [null, null, null], [null]]
@@ -93,7 +93,7 @@ const getReactivePreviewedZone = () => {
   return previewedZone;
 };
 
-const onZoneSelect = zone => {
+const onZoneSelect = (zone) => {
   previewedZone.value = zone;
 };
 

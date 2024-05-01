@@ -1,5 +1,5 @@
 <script setup>
-import CardComponent from '@/infrastructure/view/vue/components/game/card/CardComponent.vue';
+import CardComponent from '@vue-components/card/CardComponent.vue';
 
 /**
  * @typedef {object} Props
@@ -13,9 +13,7 @@ defineEmits(['grab', 'dragover', 'drop']);
 </script>
 
 <template>
-  <div
-    class="zone-slot"
-    @dragstart="$emit('grab', { slot, card, originalEvent: $event })"
+  <div class="zone-slot" @dragstart="$emit('grab', { slot, card, originalEvent: $event })"
     @dragover="$emit('dragover', { slot, card, originalEvent: $event })"
     @drop="$emit('drop', { slot, card, originalEvent: $event })">
     <CardComponent :card="card" v-if="card" />

@@ -14,11 +14,11 @@ class Game {
   }
 
   public getPlayers(): Player[] {
-    return this.zones.map(zone => zone.owner);
+    return this.zones.map((zone) => zone.owner);
   }
 
   public getPlayerZone(player: Player): Zone | undefined {
-    return this.zones.find(zone => zone.isPlayerOwner(player));
+    return this.zones.find((zone) => zone.isPlayerOwner(player));
   }
 }
 

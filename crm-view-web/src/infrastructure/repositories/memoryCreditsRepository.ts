@@ -1,4 +1,4 @@
-import { Credits } from '@/domain/CreditsRepository';
+import {Credits} from '@/domain/CreditsRepository';
 
 const CREDITS: Credits = [
   {

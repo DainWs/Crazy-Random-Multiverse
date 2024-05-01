@@ -1,6 +1,6 @@
 <script setup>
-import AppLogo from '@/infrastructure/view/vue/components/shared/AppLogo.vue'
-import homeController from '@/infrastructure/view/vue/pages/home/HomeController';
+import AppLogo from '@vue-components/shared/AppLogo.vue'
+import homeController from '@vue-pages/home/HomeController';
 const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
 const onCreatePartyClick = homeController.onCreatePartyClick;
 const onJoinPartyClick = homeController.onJoinPartyClick;
@@ -32,7 +32,7 @@ const onExitClick = homeController.onExitClick;
             <a @click="onCreditsClick">Creditos</a>
           </div>
 
-          <div class="menu__item button button--hover button--left-to-right" v-if="isNotBrowserPlatform">
+          <div v-if="isNotBrowserPlatform" class="menu__item button button--hover button--left-to-right">
             <a @click="onExitClick">Salir</a>
           </div>
         </div>
@@ -41,5 +41,4 @@ const onExitClick = homeController.onExitClick;
   </div>
 </template>
 
-<style lang="scss" src="@assets/styles/page/home.scss" scoped>
-</style>
+<style lang="scss" src="@assets/styles/page/home.scss" scoped></style>

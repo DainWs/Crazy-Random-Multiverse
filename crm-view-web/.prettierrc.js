@@ -5,7 +5,7 @@ export default {
   tabWidth: 2,
   useTabs: false,
   semi: true,
+  bracketSpacing: false,
   bracketSameLine: true,
-  arrowParens: 'avoid',
-  singleAttributePerLine: false
+  arrowParens: 'always'
 };

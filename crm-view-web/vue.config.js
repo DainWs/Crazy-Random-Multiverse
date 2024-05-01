@@ -52,7 +52,11 @@ export default defineConfig({
                 "@assets": path.resolve(__dirname, 'src/infrastructure/view/assets'),
                 "@vue-root": path.resolve(__dirname, 'src/infrastructure/view/vue'),
                 "@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages'),
-                "@vue-components": path.resolve(__dirname, 'src/infrastructure/view/vue/components'),
+                "@vue-components": [
+                    path.resolve(__dirname, "src/infrastructure/view/vue/components"),
+                    path.resolve(__dirname, "src/infrastructure/view/vue/pages/settings/components"),
+                    path.resolve(__dirname, "src/infrastructure/view/vue/pages/game/components")
+                ],
             },
         },
     },

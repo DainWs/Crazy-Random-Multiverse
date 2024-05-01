@@ -85,7 +85,11 @@
     }
   }
 
-  &--left-to-right a {
+  a {
+    color: rgb(167, 90, 27);
+    height: 100%;
+    text-decoration: none;
+
     &:before,
     &:after {
       top: 0;
@@ -108,11 +112,5 @@
     &:hover:after {
       width: 100%;
     }
-  }
-
-  a {
-    color: rgb(167, 90, 27);
-    height: 100%;
-    text-decoration: none;
   }
 }

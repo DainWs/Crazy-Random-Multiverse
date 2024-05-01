@@ -72,5 +72,5 @@ class Card {
   }
 }
 
-export { CardCode, CardType, CardRarity, DamageType, ArmorType };
+export {CardCode, CardType, CardRarity, DamageType, ArmorType};
 export default Card;

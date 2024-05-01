@@ -1,6 +1,6 @@
 import StompClientImpl from '@/infrastructure/stomp/StompClientImpl';
-import { setClient } from '@api/v1';
-import { userRepository } from '@repositories/index';
+import {setClient} from '@api/v1';
+import {userRepository} from '@repositories/index';
 
 const configureStomp = () => {
   const username: string = userRepository.findCurrentUser().username;
@@ -20,4 +20,4 @@ function getServerHost() {
   throw new Error('SERVER_HOST enviroment variable not defined');
 }
 
-export { configureStomp };
+export {configureStomp};

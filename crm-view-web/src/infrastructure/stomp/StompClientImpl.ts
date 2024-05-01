@@ -1,4 +1,4 @@
-import { Client as StompClient } from '@stomp/stompjs';
+import {Client as StompClient} from '@stomp/stompjs';
 import messageController from '@/infrastructure/stomp/messageController';
 
 import IApiClient from '@api/IClient';
@@ -9,14 +9,14 @@ class StompClientImpl extends StompClient implements IApiClient {
   public constructor(username: string, serverHost: string) {
     super({
       brokerURL: `ws://${serverHost}/ws`,
-      connectHeaders: { username },
+      connectHeaders: {username},
       reconnectDelay: 100,
-      debug: message => console.log(message)
+      debug: (message) => console.log(message)
     });
 
-    this.onConnect = frame => messageController.onConnect(this, frame);
-    this.onDisconnect = frame => messageController.onDisconnect(this, frame);
-    this.onStompError = frame => messageController.onStompError(frame);
+    this.onConnect = (frame) => messageController.onConnect(this, frame);
+    this.onDisconnect = (frame) => messageController.onDisconnect(this, frame);
+    this.onStompError = (frame) => messageController.onStompError(frame);
     this.activate();
   }
 
@@ -29,7 +29,7 @@ class StompClientImpl extends StompClient implements IApiClient {
       body = JSON.stringify(message);
     }
 
-    return await this.publish({ destination, body });
+    return await this.publish({destination, body});
   }
 }
 

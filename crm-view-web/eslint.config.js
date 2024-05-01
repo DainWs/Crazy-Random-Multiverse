@@ -17,6 +17,12 @@ export default [
       '@typescript-eslint/no-array-constructor': 'off',
       '@typescript-eslint/no-unused-vars': 'warn'
     },
-    settings: {}
+    settings: {},
+    languageOptions: {
+      globals: {
+        system: true,
+        process: true
+      }
+    }
   }
 ];

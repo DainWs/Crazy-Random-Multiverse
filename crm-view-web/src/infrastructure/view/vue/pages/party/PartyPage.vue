@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
-import AppButton from '@/infrastructure/view/vue/components/shared/AppButton.vue';
-import partyController from '@/infrastructure/view/vue/pages/party/PartyController';
+import AppButton from '@vue-components/shared/AppButton.vue';
+import partyController from '@vue-pages/party/PartyController';
 onMounted(partyController.onLoad);
 const userInfo = partyController.getUserInfo();
 const partyInfo = partyController.getReactivePartyInfo();
@@ -22,19 +22,18 @@ const onLeaveClick = partyController.onLeaveClick;
         </div>
       </div>
       <ul class="party__content">
-        <li v-for="user in partyInfo.users">
+        <li v-for="user in partyInfo.users" :key="`list-item__${user}`">
           {{ user }}
-          <span class="tag" v-show="userInfo.username === user">Tú</span>
-          <span class="tag" v-show="user === partyInfo.owner">Admin</span>
+          <span v-show="userInfo.username === user" class="tag">Tú</span>
+          <span v-show="user === partyInfo.owner" class="tag">Admin</span>
         </li>
       </ul>
       <div class="party__footer menu menu--horizontal">
         <AppButton text="Salir" kind="secondary" @click="onLeaveClick" />
-        <AppButton text="Empezar" @click="onStartClick" v-show="userInfo.username === partyInfo.owner"/>
+        <AppButton v-show="userInfo.username === partyInfo.owner" text="Empezar" @click="onStartClick" />
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" src="@assets/styles/page/party.scss" scoped>
-</style>
+<style lang="scss" src="@assets/styles/page/party.scss" scoped></style>

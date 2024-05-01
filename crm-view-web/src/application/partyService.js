@@ -15,24 +15,24 @@ const properties = {
   partyListUpdateHandler: () => {}
 };
 
-eventObserver.subscribe('PARTY_SERVICE', 'PARTY_INFO_UPDATE', event =>
+eventObserver.subscribe('PARTY_SERVICE', 'PARTY_INFO_UPDATE', (event) =>
   properties.partyInfoUpdateHandler(event.details)
 );
-eventObserver.subscribe('PARTY_SERVICE', 'PARTY_LIST_UPDATE', event =>
+eventObserver.subscribe('PARTY_SERVICE', 'PARTY_LIST_UPDATE', (event) =>
   properties.partyListUpdateHandler(event.details)
 );
 
-const updateLocalPartyInfo = partyInfo => {
+const updateLocalPartyInfo = (partyInfo) => {
   properties.partyInfo = partyInfo;
 
-  const event = { code: 'PARTY_INFO_UPDATE', details: partyInfo };
+  const event = {code: 'PARTY_INFO_UPDATE', details: partyInfo};
   eventObserver.notify(event.code, event);
 };
 
-const updateLocalPartyList = partyList => {
+const updateLocalPartyList = (partyList) => {
   properties.partyList = partyList;
 
-  const event = { code: 'PARTY_LIST_UPDATE', details: partyList };
+  const event = {code: 'PARTY_LIST_UPDATE', details: partyList};
   eventObserver.notify(event.code, event);
 };
 
@@ -44,7 +44,7 @@ const createParty = async () => {
   await sendCreateParty();
 };
 
-const joinParty = async partyCode => {
+const joinParty = async (partyCode) => {
   await sendJoinParty(partyCode);
 };
 
@@ -63,14 +63,14 @@ const refreshPartyList = async () => {
 /**
  * @deprecated subscribe to eventService instead
  */
-const setPartyInfoUpdateHandler = handlerCallback => {
+const setPartyInfoUpdateHandler = (handlerCallback) => {
   properties.partyInfoUpdateHandler = handlerCallback;
 };
 
 /**
  * @deprecated subscribe to eventService instead
  */
-const setPartyListUpdateHandler = handlerCallback => {
+const setPartyListUpdateHandler = (handlerCallback) => {
   properties.partyListUpdateHandler = handlerCallback;
 };
 

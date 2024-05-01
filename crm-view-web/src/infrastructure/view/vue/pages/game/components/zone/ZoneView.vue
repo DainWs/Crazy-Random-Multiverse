@@ -1,17 +1,17 @@
 <script setup>
-import ZoneSlot from '@/infrastructure/view/vue/components/game/zone/ZoneSlot.vue';
-import { 
+import ZoneSlot from '@vue-components/zone/ZoneSlot.vue';
+import {
     onGrabCardFromSlot,
     onDropCardOnSlot,
     extractActionParts
-} from '@/infrastructure/view/vue/components/game/zone/ZoneViewLogic'
+} from '@vue-components/zone/ZoneViewLogic'
 /**
  * @typedef {object} Props
  * @property {import('@/domain/zone').Zone} zone
  */
 
 /** @type {Props} */
-const props = defineProps({ zone: {required: true} });
+const props = defineProps({ zone: { required: true } });
 const emit = defineEmits(['action']);
 
 const onGrabCard = (event) => {
@@ -39,16 +39,14 @@ const onDragCard = (event) => {
         <div class="zone__content">
             <div class="line" v-for="(lineColumns, lineIndex) in zone.combatants" :key="`${lineIndex}`">
                 <div class="column" v-for="(card, columnIndex) in lineColumns" :key="`${lineIndex}-${columnIndex}`">
-                    <ZoneSlot :slot="{row: lineIndex, column: columnIndex}" :card="card"
+                    <ZoneSlot :slot="{ row: lineIndex, column: columnIndex }" :card="card"
                         @grab="onGrabCard({ player: zone.owner, ...$event })"
                         @dragover="onDropCard({ player: zone.owner, ...$event })"
-                        @drop="onDragCard({ player: zone.owner, ...$event })"
-                    />
+                        @drop="onDragCard({ player: zone.owner, ...$event })" />
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<style lang="scss" src="@assets/styles/components/zone.scss">
-</style>
+<style lang="scss" src="@assets/styles/components/zone.scss"></style>

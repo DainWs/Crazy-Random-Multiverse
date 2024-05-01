@@ -1,5 +1,5 @@
-import { navigateTo } from '@/infrastructure/view';
-import { sendReadyToPlay } from '@/infrastructure/api/v1';
+import {navigateTo} from '@/infrastructure/view';
+import {sendReadyToPlay} from '@/infrastructure/api/v1';
 
 /**
  * @type {import('@/application/events').EventHandler}
@@ -17,7 +17,7 @@ async function handle(event, context) {
 
   context.game = game;
   context.player = player;
-  context.hand = { cards: [] }; // TODO player hand initialization
+  context.hand = {cards: []}; // TODO player hand initialization
   console.log('current context initialized:');
   console.log(context);
 
@@ -26,7 +26,7 @@ async function handle(event, context) {
 }
 
 function findPlayer(game, userUid) {
-  return game.zones.find(zone => {
+  return game.zones.find((zone) => {
     console.log('zone:');
     console.log(zone);
     const zoneOwner = zone.owner;

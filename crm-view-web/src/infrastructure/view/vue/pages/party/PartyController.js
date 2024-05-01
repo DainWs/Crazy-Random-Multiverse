@@ -1,6 +1,6 @@
-import { ref } from 'vue';
-import router from '@/infrastructure/view/vue/configuration/router';
-import { getUser } from '@/application/userService';
+import {ref} from 'vue';
+import router from '@vue-root/configuration/router';
+import {getUser} from '@/application/userService';
 import {
   startParty,
   leaveParty,
@@ -15,7 +15,7 @@ const defaultPartyInfo = {
 };
 
 const partyInfo = ref(defaultPartyInfo);
-setPartyInfoUpdateHandler(newPartyInfo => (partyInfo.value = newPartyInfo));
+setPartyInfoUpdateHandler((newPartyInfo) => (partyInfo.value = newPartyInfo));
 
 const getUserInfo = () => {
   return getUser();

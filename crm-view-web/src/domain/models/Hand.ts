@@ -1,5 +1,5 @@
-import { PlayerCode } from '@/domain/models/Player';
-import Card, { CardCode } from '@/domain/models/Card';
+import {PlayerCode} from '@/domain/models/Player';
+import Card, {CardCode} from '@/domain/models/Card';
 
 class Hand {
   public owner: PlayerCode;
@@ -19,12 +19,12 @@ class Hand {
   }
 
   public removeCard(cardToRemove: Card): void {
-    const index = this.cards.findIndex(card => card.equals(cardToRemove));
+    const index = this.cards.findIndex((card) => card.equals(cardToRemove));
     this.cards = this.cards.slice(index, index + 1);
   }
 
   public findCard(cardCode: CardCode): Card | undefined {
-    return this.cards.find(card => card.code.equals(cardCode));
+    return this.cards.find((card) => card.code.equals(cardCode));
   }
 }
 

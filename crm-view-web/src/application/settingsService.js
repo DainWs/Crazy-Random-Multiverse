@@ -1,7 +1,4 @@
-import {
-  sendRefreshUserInfo,
-  sendUpdateUserInfo
-} from '@/infrastructure/api/v1';
+import {sendRefreshUserInfo, sendUpdateUserInfo} from '@/infrastructure/api/v1';
 import settingsRepository from '@/infrastructure/repositories/localSettingsRepository';
 
 const getSettingSections = () => {
@@ -12,14 +9,14 @@ const getSettings = () => {
   return settingsRepository.findAllSettings();
 };
 
-const getSetting = settingName => {
+const getSetting = (settingName) => {
   return settingsRepository.findSettingByName(settingName);
 };
 
 /**
  * @param {Array.<{name: string, value: any}>} settings
  */
-const setSettings = settings => {
+const setSettings = (settings) => {
   updateUserInfoIfHasChange(settings);
 
   const currentSettings = settingsRepository.findAllSettings();
@@ -29,7 +26,7 @@ const setSettings = settings => {
 };
 
 function applyChanges(currentSettings, newSettings) {
-  newSettings.forEach(setting => {
+  newSettings.forEach((setting) => {
     if (currentSettings[setting.name] !== undefined) {
       currentSettings[setting.name] = setting.value;
     }
@@ -40,9 +37,9 @@ function updateUserInfoIfHasChange(settings) {
   const currentSettings = settingsRepository.findAllSettings();
 
   if (settings.username && settings.username !== currentSettings.username) {
-    sendUpdateUserInfo({ username: settings.username });
+    sendUpdateUserInfo({username: settings.username});
     setTimeout(sendRefreshUserInfo, 500);
   }
 }
 
-export { getSettingSections, setSettings, getSettings, getSetting };
+export {getSettingSections, setSettings, getSettings, getSetting};

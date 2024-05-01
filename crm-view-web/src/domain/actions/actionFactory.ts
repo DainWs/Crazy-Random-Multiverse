@@ -24,4 +24,4 @@ function createAction(
   };
 }
 
-export { createAction };
+export {createAction};

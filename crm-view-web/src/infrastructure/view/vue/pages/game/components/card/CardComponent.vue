@@ -1,9 +1,9 @@
 <script setup>
 import Card from '@/domain/models/Card';
-import CardDescription from '@/infrastructure/view/vue/components/game/card/CardDescription.vue'
-import StatisticDamage from '@/infrastructure/view/vue/components/game/card/StatisticDamage.vue';
-import StatisticArmor from '@/infrastructure/view/vue/components/game/card/StatisticArmor.vue';
-import StatisticHealth from '@/infrastructure/view/vue/components/game/card/StatisticHealth.vue';
+import CardDescription from '@vue-components/card/CardDescription.vue'
+import StatisticDamage from '@vue-components/card/StatisticDamage.vue';
+import StatisticArmor from '@vue-components/card/StatisticArmor.vue';
+import StatisticHealth from '@vue-components/card/StatisticHealth.vue';
 
 /**
  * @typedef {object} Props
@@ -18,12 +18,9 @@ defineEmits(['click', 'drag', 'drop']);
 
 <template>
     <!-- TODO Colocar imagenes de fondo de los tipos de carta -->
-    <div :class="`gcard ${props.card.type} ${props.card.rarity ?? ''}`.toLowerCase()" 
-        @click="$emit('click', $event, card)"
-        @drag="$emit('drag', $event, card)" 
-        @drop="$emit('drop', $event, card)"
-        draggable="true"
-    >
+    <div :class="`gcard ${props.card.type} ${props.card.rarity ?? ''}`.toLowerCase()"
+        @click="$emit('click', $event, card)" @drag="$emit('drag', $event, card)" @drop="$emit('drop', $event, card)"
+        draggable="true">
         <div class="gcard--type">{{ card.getTypeDescription() }}</div>
         <div class="gcard--name">{{ card.name }}</div>
 
@@ -50,4 +47,4 @@ defineEmits(['click', 'drag', 'drop']);
     </div>
 </template>
 
-<style lang="scss" src="@assets/styles/components/card.scss" ></style>
+<style lang="scss" src="@assets/styles/components/card.scss"></style>

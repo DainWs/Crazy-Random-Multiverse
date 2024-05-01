@@ -22,7 +22,7 @@ const findAllSettings = (): Settings => {
 
 const findAllSettingSections = (): Array<SettingSection> => {
   const settingSections = new Array();
-  settingSections.push({ id: 1, name: 'General' });
+  settingSections.push({id: 1, name: 'General'});
   return settingSections;
 };
 

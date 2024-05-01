@@ -13,11 +13,6 @@ const gameRepository: GameRepository = memoryGameRepository;
 const settingsRepository: SettingsRepository = localSettingsRepository;
 const creditsRepository: CreditsRepository = memoryCreditsRepository;
 
-export {
-  userRepository,
-  gameRepository,
-  settingsRepository,
-  creditsRepository
-};
+export {userRepository, gameRepository, settingsRepository, creditsRepository};
 
 // TODO este indice para la resolución de repositorios tal vez no deba estar aqui

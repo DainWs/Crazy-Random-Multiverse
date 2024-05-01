@@ -39,5 +39,5 @@ class GameEvent {
   }
 }
 
-export { GameEventCode, GameEventDetails };
+export {GameEventCode, GameEventDetails};
 export default GameEvent;

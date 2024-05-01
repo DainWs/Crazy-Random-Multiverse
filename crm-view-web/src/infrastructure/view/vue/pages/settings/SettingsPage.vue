@@ -1,6 +1,6 @@
-<script setup>
-import AppArrow from '@/infrastructure/view/vue/components/shared/AppArrow.vue';
-import settingsController from '@/infrastructure/view/vue/pages/settings/SettingsController';
+<script lang="ts" setup>
+import AppArrow from '@vue-components/shared/AppArrow.vue';
+import settingsController from '@vue-root/pages/settings/SettingsController';
 const settings = settingsController.getSettings();
 const settingSections = settingsController.getAvailableSettingSections();
 const saveChanges = settingsController.saveChanges;
@@ -23,10 +23,10 @@ const onBackClick = settingsController.onBackClick;
         </div>
       </div>
       <div class="settings__content col-12 col-md-9">
-        <router-view :settings="settings" @settingChange="onSettingChange" @saveClick="saveChanges" />
+        <router-view :settings="settings" @setting-change="onSettingChange" @save-click="saveChanges" />
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" src="@assets/styles/page/settings.scss" scoped></style>
+<style lang="scss" src="@assets/styles/page/settings.scss"></style>

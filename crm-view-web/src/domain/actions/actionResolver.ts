@@ -59,4 +59,4 @@ function createKey(
   return `${sourceViewElement}@${sourceViewAction}_to_${targetViewElement}@${targetViewAction}`;
 }
 
-export default { resolveType };
+export default {resolveType};

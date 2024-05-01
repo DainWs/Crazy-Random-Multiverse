@@ -9,10 +9,10 @@ import PositionDto from '@/infrastructure/stomp/dto/PositionDto';
 import UserDto from '@/infrastructure/stomp/dto/UserDto';
 import ZoneDto from '@/infrastructure/stomp/dto/ZoneDto';
 
-import Card, { CardCode } from '@/domain/models/Card';
+import Card, {CardCode} from '@/domain/models/Card';
 import Game from '@/domain/models/Game';
 import GameError from '@/domain/models/GameError';
-import GameEvent, { GameEventDetails } from '@/domain/events/GameEvent';
+import GameEvent, {GameEventDetails} from '@/domain/events/GameEvent';
 import Party from '@/domain/models/Party';
 import PartyList from '@/domain/models/PartyList';
 import Player from '@/domain/models/Player';
@@ -49,7 +49,7 @@ const mapErrorDtoToGameError = (dto: ErrorDto): GameError => {
 const mapGameEventDtoToGameEvent = (dto: GameEventDto): GameEvent => {
   const detailsDto = dto.details;
 
-  const details: GameEventDetails = { game: mapGameDtoToGame(detailsDto.game) };
+  const details: GameEventDetails = {game: mapGameDtoToGame(detailsDto.game)};
   if (detailsDto.sourceCard)
     details.sourceCard = mapCardDtoToCard(detailsDto.sourceCard);
   if (detailsDto.sourcePlayer)

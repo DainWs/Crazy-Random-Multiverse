@@ -1,4 +1,4 @@
-import { IFrame, IMessage } from '@stomp/stompjs';
+import {IFrame, IMessage} from '@stomp/stompjs';
 import StompClientImpl from '@/infrastructure/stomp/StompClientImpl';
 import UserDto from '@/infrastructure/stomp/dto/UserDto';
 import PartyDto from '@/infrastructure/stomp/dto/PartyDto';
@@ -7,12 +7,12 @@ import GameEventDto from '@/infrastructure/stomp/dto/GameEventDto';
 import ErrorDto from '@/infrastructure/stomp/dto/ErrorDto';
 import dtoMapper from '@/infrastructure/stomp/dtoMapper';
 
-import { updateLocalUser } from '@/application/userService';
+import {updateLocalUser} from '@/application/userService';
 import {
   updateLocalPartyInfo,
   updateLocalPartyList
 } from '@/application/partyService';
-import { processGameError, processGameEvent } from '@/application/gameService';
+import {processGameError, processGameEvent} from '@/application/gameService';
 
 const onConnect = (stompClient: StompClientImpl, frame: IFrame) => {
   stompClient.subscribe('/user/topic/user/info', onUserInfoMessage);

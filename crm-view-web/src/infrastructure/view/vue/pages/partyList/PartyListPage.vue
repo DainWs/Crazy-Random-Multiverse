@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue';
-import partyListController from '@/infrastructure/view/vue/pages/partyList/PartyListController';
+import partyListController from '@vue-pages/partyList/PartyListController';
 onMounted(partyListController.onLoad);
 const partyList = partyListController.getReactivePartyList();
 const onRefreshPartiesClick = partyListController.onRefreshPartiesClick;
@@ -15,12 +15,12 @@ const onBackClick = partyListController.onBackClick;
         <h1 class="title">Lista de fiestas</h1>
       </div>
       <ul class="party-list__content">
-        <li v-for="party in partyList.parties">
+        <li v-for="party in partyList.parties" :key="`list-item__${party.code}`">
           <span>{{ party.name }}</span>
           <div class="content-splitter"></div>
           <span class="members-count">Jugadores: {{ party.userCount }}/{{ party.maxUsers }}</span>
           <div class="button button--icon">
-              <a @click="onJoinPartyClick(party)" v-show="party.userCount < party.maxUsers">Entrar &#10095;</a>
+            <a v-show="party.userCount < party.maxUsers" @click="onJoinPartyClick(party)">Entrar &#10095;</a>
           </div>
         </li>
       </ul>
@@ -37,5 +37,4 @@ const onBackClick = partyListController.onBackClick;
 </template>
 
 
-<style lang="scss" src="@assets/styles/page/partyList.scss" scoped>
-</style>
+<style lang="scss" src="@assets/styles/page/partyList.scss" scoped></style>

@@ -1,5 +1,5 @@
 import EventProcessorProvider from '@/application/events/eventHandlerProvider';
-import { makeReactive } from '@/infrastructure/view';
+import {makeReactive} from '@/infrastructure/view';
 
 console.log(makeReactive);
 
@@ -27,7 +27,7 @@ const errorInfo = {
   language: undefined
 };
 
-const processGameEvent = async event => {
+const processGameEvent = async (event) => {
   try {
     const currentContext = {
       user: userInfo.value,
@@ -48,7 +48,7 @@ const processGameEvent = async event => {
   }
 };
 
-const processGameError = error => {
+const processGameError = (error) => {
   errorInfo.value = error;
 };
 

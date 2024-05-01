@@ -1,20 +1,23 @@
-<script setup>
-const props = defineProps({
-  text: { type: string, required: true },
-  kind: { type: string, required: false },
-  hasIcon: { type: Boolean, required: false },
-  invertAnimation: { type: Boolean, required: false }
+<script lang="ts" setup>
+type ExpectedProps = {
+  text: String,
+  kind: 'primary' | 'secondary',
+  hasIcon?: boolean
+};
+
+const props = withDefaults(defineProps<ExpectedProps>(), {
+  kind: 'primary',
+  hasIcon: false
 });
 
-let kindClass = props.kind?.toLowerCase() ?? "";
-let iconClass = (props.hasIcon) ? "button--icon" : "";
-let animationClass = (props.invertAnimation) ? "button--right-to-left" : "button--left-to-right";
+const iconClass = (props.hasIcon) ? 'button--icon' : '';
 
-defineEmits(['click'])
+type EmitEvent = { click: [] };
+defineEmits<EmitEvent>();
 </script>
 
 <template>
-  <div :class="`button button--hover ${animationClass} ${iconClass} ${kindClass}`">
+  <div :class="`button button--hover button--animations ${iconClass} ${kind}`">
     <a @click="$emit('click')">
       <slot name="before"></slot>
       {{ text }}
@@ -23,5 +26,4 @@ defineEmits(['click'])
   </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

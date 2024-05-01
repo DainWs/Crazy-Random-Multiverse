@@ -32,7 +32,7 @@ eventHandlers.set('PLAYER_PASS_TURN');
  * @param {EventCode} eventCode
  * @returns {EventHandler}
  */
-const getEventHandler = eventCode => {
+const getEventHandler = (eventCode) => {
   if (eventHandlers.has(eventCode)) {
     return eventHandlers.get(eventCode);
   }

@@ -2,7 +2,7 @@
  * @typedef {import('@/domain/actions/Action').ActionParts} ActionParts
  */
 
-const onGrabCardFromSlot = event => {
+const onGrabCardFromSlot = (event) => {
   /** @type {ActionParts} */
   const parts = {
     source: {
@@ -20,7 +20,7 @@ const onGrabCardFromSlot = event => {
   return event;
 };
 
-const onDropCardOnSlot = event => {
+const onDropCardOnSlot = (event) => {
   const parts = extractActionParts(event);
   parts.target = {
     targetTrigger: {
@@ -43,7 +43,7 @@ const injectActionParts = (event, parts) => {
 /**
  * @returns {ActionParts}
  */
-const extractActionParts = event => {
+const extractActionParts = (event) => {
   return JSON.parse(event.originalEvent.dataTransfer.getData('action'));
 };
 

@@ -1,5 +1,5 @@
-import router from '@/infrastructure/view/vue/configuration/router';
-import { createParty } from '@/application/partyService';
+import router from '@vue-root/configuration/router';
+import {createParty} from '@/application/partyService';
 
 const onCreatePartyClick = async () => {
   await createParty();

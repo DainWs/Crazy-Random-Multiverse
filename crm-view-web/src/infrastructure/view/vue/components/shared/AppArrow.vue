@@ -1,5 +1,12 @@
-<script setup>
-defineProps(['direction', 'color']);
+<script lang="ts" setup>
+type Props = {
+  direction: 'left' | 'right' | 'up' | 'bottom',
+  color: 'white' | 'black'
+};
+
+withDefaults(defineProps<Props>(), {
+  color: 'white'
+});
 </script>
 
 <template>
@@ -8,5 +15,4 @@ defineProps(['direction', 'color']);
   </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

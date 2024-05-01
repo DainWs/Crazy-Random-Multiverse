@@ -1,6 +1,6 @@
-import { Game } from '@/domain/models/Game';
-import { Hand } from '@/domain/models/Hand';
-import { Player } from '@/domain/models/Player';
+import {Game} from '@/domain/models/Game';
+import {Hand} from '@/domain/models/Hand';
+import {Player} from '@/domain/models/Player';
 import Event from '@/domain/events/Event';
 
 type Context = {
@@ -11,4 +11,4 @@ type Context = {
 
 type EventHandler = (event: Event, context?: Context) => Promise<void>;
 
-export { Context, EventHandler };
+export {Context, EventHandler};

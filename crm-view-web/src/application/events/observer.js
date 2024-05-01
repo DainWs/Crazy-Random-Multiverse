@@ -26,7 +26,7 @@ const subscribe = (id, eventCode, eventHandler) => {
     subscriberList = subscribers.get(eventCode);
   }
 
-  const newSubscriber = { id, eventHandler };
+  const newSubscriber = {id, eventHandler};
 
   const subscriberIndex = getSubscriberIndexById(subscriberList, id);
   if (subscriberIndex) {
@@ -59,11 +59,11 @@ const unsubscribe = (id, eventCode) => {
 const notify = (eventCode, event) => {
   subscribers
     .get(eventCode)
-    .forEach(subscriber => subscriber.eventHandler(event));
+    .forEach((subscriber) => subscriber.eventHandler(event));
 };
 
 function getSubscriberIndexById(subscriberList, id) {
-  const isSubscriberWithId = subscriber => subscriber.id === id;
+  const isSubscriberWithId = (subscriber) => subscriber.id === id;
   if (subscriberList.some(isSubscriberWithId)) {
     return subscriberList.findIndex(isSubscriberWithId);
   }

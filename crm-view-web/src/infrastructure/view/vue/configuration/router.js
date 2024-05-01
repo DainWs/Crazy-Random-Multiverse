@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
-import HomePage from '@/infrastructure/view/vue/pages/home/HomePage.vue';
-import GamePage from '@/infrastructure/view/vue/pages/game/GamePage.vue';
-import PartyPage from '@/infrastructure/view/vue/pages/party/PartyPage.vue';
-import PartyListPage from '@/infrastructure/view/vue/pages/partyList/PartyListPage.vue';
-import CreditsPage from '@/infrastructure/view/vue/pages/credits/CreditsPage.vue';
-import SettingsPage from '@/infrastructure/view/vue/pages/settings/SettingsPage.vue';
-import GeneralSettings from '@/infrastructure/view/vue/components/settings/GeneralSettings.vue';
+import HomePage from '@vue-pages/home/HomePage.vue';
+import GamePage from '@vue-pages/game/GamePage.vue';
+import PartyPage from '@vue-pages/party/PartyPage.vue';
+import PartyListPage from '@vue-pages/partyList/PartyListPage.vue';
+import CreditsPage from '@vue-pages/credits/CreditsPage.vue';
+import SettingsPage from '@vue-pages/settings/SettingsPage.vue';
+import GeneralSettings from '@vue-root/components/settings/GeneralSettings.vue';
 
 const router = createRouter({
   history: createWebHistory(),

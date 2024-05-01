@@ -1,5 +1,5 @@
 <script setup>
-import AppArrow from '@/infrastructure/view/vue/components/shared/AppArrow.vue';
+import AppArrow from '@vue-components/shared/AppArrow.vue';
 
 /**
  * @typedef {object} Props
