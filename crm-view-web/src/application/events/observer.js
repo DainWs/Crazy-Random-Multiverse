@@ -1,4 +1,3 @@
-
 /**
  * @typedef {import('@/application/events').Event} Event
  * @typedef {import('@/application/events').EventCode} EventCode
@@ -18,60 +17,61 @@ const subscribers = new Map();
 
 /**
  * @param {String} id
- * @param {EventCode} eventCode 
- * @param {EventHandler} eventHandler 
+ * @param {EventCode} eventCode
+ * @param {EventHandler} eventHandler
  */
 const subscribe = (id, eventCode, eventHandler) => {
-	let subscriberList = new Array();
-	if (subscribers.has(eventCode)) {
-		subscriberList = subscribers.get(eventCode);
-	}
+  let subscriberList = new Array();
+  if (subscribers.has(eventCode)) {
+    subscriberList = subscribers.get(eventCode);
+  }
 
-	const newSubscriber = { id, eventHandler };
+  const newSubscriber = { id, eventHandler };
 
-	const subscriberIndex = getSubscriberIndexById(subscriberList, id);
-	if (subscriberIndex) {
-		subscriberList[index] = newSubscriber;
-	} else {
-		subscriberList.push(newSubscriber);
-	}
+  const subscriberIndex = getSubscriberIndexById(subscriberList, id);
+  if (subscriberIndex) {
+    subscriberList[subscriberIndex] = newSubscriber;
+  } else {
+    subscriberList.push(newSubscriber);
+  }
 
-	subscribers.set(eventCode, subscriberList);
-}
+  subscribers.set(eventCode, subscriberList);
+};
 
 /**
  * @param {String} id
- * @param {EventCode} eventCode 
+ * @param {EventCode} eventCode
  */
 const unsubscribe = (id, eventCode) => {
-	let subscriberList = subscribers.get(eventCode);
+  let subscriberList = subscribers.get(eventCode);
 
-	const subscriberIndex = getSubscriberIndexById(subscriberList, id);
-	if (subscriberIndex) {
-		subscriberList = subscriberList.slice(subscriberIndex, subscriberIndex + 1);
-		subscribers.set(eventCode, subscriberList);
-	}
-}
+  const subscriberIndex = getSubscriberIndexById(subscriberList, id);
+  if (subscriberIndex) {
+    subscriberList = subscriberList.slice(subscriberIndex, subscriberIndex + 1);
+    subscribers.set(eventCode, subscriberList);
+  }
+};
 
 /**
- * @param {EventCode} eventCode 
- * @param {Event} event 
+ * @param {EventCode} eventCode
+ * @param {Event} event
  */
 const notify = (eventCode, event) => {
-	subscribers.get(eventCode)
-		.forEach(subscriber => subscriber.eventHandler(event));
-}
+  subscribers
+    .get(eventCode)
+    .forEach(subscriber => subscriber.eventHandler(event));
+};
 
 function getSubscriberIndexById(subscriberList, id) {
-	const isSubscriberWithId = subscriber => subscriber.id === id; 
-	if (subscriberList.some(isSubscriberWithId)) {
-		return subscriberList.findIndex(isSubscriberWithId);
-	}
-	return null;
+  const isSubscriberWithId = subscriber => subscriber.id === id;
+  if (subscriberList.some(isSubscriberWithId)) {
+    return subscriberList.findIndex(isSubscriberWithId);
+  }
+  return null;
 }
 
 export default {
-    subscribe,
-    unsubscribe,
-    notify
-}
+  subscribe,
+  unsubscribe,
+  notify
+};

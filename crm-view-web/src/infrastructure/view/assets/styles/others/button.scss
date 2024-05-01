@@ -1,119 +1,118 @@
 .button {
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    color: rgb(167, 90, 27);
-    background-color: rgb(255, 196, 0);
-    margin-bottom: 3%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  color: rgb(167, 90, 27);
+  background-color: rgb(255, 196, 0);
+  margin-bottom: 3%;
 
-    &:hover {
-        color: rgb(255, 196, 0);
+  &:hover {
+    color: rgb(255, 196, 0);
+  }
+
+  &.secondary {
+    border-width: 0.2rem;
+    border-style: solid;
+    border-color: rgb(255, 196, 0);
+
+    background-color: rgb(0, 0, 0, 0);
+
+    &.small {
+      border-width: 0.125rem;
     }
+  }
 
-    &.secondary {
-        border-width: .2rem;
-        border-style: solid;
-        border-color: rgb(255, 196, 0);
-
-        background-color: rgb(0, 0, 0, 0);
-
-        &.small {
-            border-width: .125rem;
-        }
-    }
-
-    &--icon {
-        margin: 0;
-
-        a {
-            padding: .5rem;
-            min-width: 50px;
-            min-height: 50px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 1.4rem;
-            letter-spacing: 0;
-            line-height: 1;
-            color: rgb(255, 196, 0);
-            background-color: rgb(0, 0, 0, 0);
-            transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
-
-            cursor: pointer;
-            user-select: none;
-
-            &:hover {
-                color: rgb(0, 0, 0);
-                background-color: rgb(255, 196, 0);
-            }
-        }
-    }
-
-    &--hover a {
-        position: relative;
-        padding: 2vh 3vh;
-        font-size: 1.4rem;
-        color: rgb(255, 196, 0);
-        letter-spacing: 1.1rem;
-        text-transform: uppercase;
-        transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
-        cursor: pointer;
-        user-select: none;
-
-        &:before,
-        &:after {
-            content: '';
-            position: absolute;
-            transition: inherit;
-            z-index: -1;
-        }
-
-        &:hover {
-            color: rgb(255, 196, 0);
-            transition-delay: 0s;
-
-            &:before {
-                transition-delay: 0s;
-            }
-
-            &:after {
-                background: rgb(167, 90, 27);
-                transition-delay: 0s;
-            }
-        }
-    }
-
-    &--left-to-right a {
-
-        &:before,
-        &:after {
-            top: 0;
-            width: 0;
-            height: 100%;
-        }
-
-        &:before {
-            right: 0;
-            border: 1px solid rgb(167, 90, 27);
-            border-left: 0;
-            border-right: 0;
-        }
-
-        &:after {
-            left: 0;
-        }
-
-        &:hover:before,
-        &:hover:after {
-            width: 100%;
-        }
-    }
+  &--icon {
+    margin: 0;
 
     a {
-        color: rgb(167, 90, 27);
-        height: 100%;
-        text-decoration: none;
+      padding: 0.5rem;
+      min-width: 50px;
+      min-height: 50px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 1.4rem;
+      letter-spacing: 0;
+      line-height: 1;
+      color: rgb(255, 196, 0);
+      background-color: rgb(0, 0, 0, 0);
+      transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
+
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        color: rgb(0, 0, 0);
+        background-color: rgb(255, 196, 0);
+      }
     }
+  }
+
+  &--hover a {
+    position: relative;
+    padding: 2vh 3vh;
+    font-size: 1.4rem;
+    color: rgb(255, 196, 0);
+    letter-spacing: 1.1rem;
+    text-transform: uppercase;
+    transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
+    cursor: pointer;
+    user-select: none;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      transition: inherit;
+      z-index: -1;
+    }
+
+    &:hover {
+      color: rgb(255, 196, 0);
+      transition-delay: 0s;
+
+      &:before {
+        transition-delay: 0s;
+      }
+
+      &:after {
+        background: rgb(167, 90, 27);
+        transition-delay: 0s;
+      }
+    }
+  }
+
+  &--left-to-right a {
+    &:before,
+    &:after {
+      top: 0;
+      width: 0;
+      height: 100%;
+    }
+
+    &:before {
+      right: 0;
+      border: 1px solid rgb(167, 90, 27);
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &:after {
+      left: 0;
+    }
+
+    &:hover:before,
+    &:hover:after {
+      width: 100%;
+    }
+  }
+
+  a {
+    color: rgb(167, 90, 27);
+    height: 100%;
+    text-decoration: none;
+  }
 }

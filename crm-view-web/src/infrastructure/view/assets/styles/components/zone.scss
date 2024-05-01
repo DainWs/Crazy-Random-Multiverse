@@ -5,34 +5,34 @@ $card-width: calc(18vh * $card-aspect-ratio-width);
 $card-height: calc(18vh * $card-aspect-ratio-height);
 
 .zone {
-    margin: auto;
+  margin: auto;
 
-    .line {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    &--name {
-        font-size: 1vw;
-        font-weight: 600;
-    }
+  &--name {
+    font-size: 1vw;
+    font-weight: 600;
+  }
 
-    &--health {
-        font-size: .75vw;
-        font-weight: 300;
-    }
+  &--health {
+    font-size: 0.75vw;
+    font-weight: 300;
+  }
 
-    &-slot {
-        margin: 1rem;
-        padding: 0;
-        border-width: 1px;
-        border-color: black;
-        border-style: dashed;
-        border-radius: 0.6rem;
-        width: $card-width;
-        height: $card-height;
+  &-slot {
+    margin: 1rem;
+    padding: 0;
+    border-width: 1px;
+    border-color: black;
+    border-style: dashed;
+    border-radius: 0.6rem;
+    width: $card-width;
+    height: $card-height;
 
-        background-color: rgba(71, 71, 71, 0.15);
-    }
+    background-color: rgba(71, 71, 71, 0.15);
+  }
 }

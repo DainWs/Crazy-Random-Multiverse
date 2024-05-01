@@ -1,11 +1,11 @@
 class Position {
-    public row: Number;
-    public column: Number;
+  public row: number;
+  public column: number;
 
-    public constructor(row: Number, column: Number) {
-        this.row = row;
-        this.column = column;
-    }
-};
+  public constructor(row: number, column: number) {
+    this.row = row;
+    this.column = column;
+  }
+}
 
 export default Position;

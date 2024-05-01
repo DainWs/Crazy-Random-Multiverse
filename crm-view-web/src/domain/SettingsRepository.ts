@@ -1,26 +1,25 @@
-type SettingName = "username";
+type SettingName = 'username';
 type SettingValue = string | undefined;
 
 type Settings = {
-    username: SettingValue
-}
+  username: SettingValue;
+};
 
 type MinimalSettings = {
-    username: SettingValue
-}
+  username: SettingValue;
+};
 
 type SettingSection = {
-    id: number,
-    name: string
-}
+  id: number;
+  name: string;
+};
 
 interface SettingsRepository {
-    saveSettings(settings: Settings): void;
-    findSettingByName(settingName: SettingName): SettingValue,
-    findAllSettings(): Settings,
-    findAllSettingSections(): Array<SettingSection>
+  saveSettings(settings: Settings): void;
+  findSettingByName(settingName: SettingName): SettingValue;
+  findAllSettings(): Settings;
+  findAllSettingSections(): Array<SettingSection>;
 }
-
 
 export { SettingName, SettingValue, Settings, MinimalSettings, SettingSection };
 export default SettingsRepository;

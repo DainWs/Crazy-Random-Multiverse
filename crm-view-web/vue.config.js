@@ -32,7 +32,7 @@ export default defineConfig({
 
     // Tags Security (styles and scripts)
     crossorigin: undefined,
-    integrity: true,
+    integrity: false,
 
     // Webpack
     configureWebpack: {

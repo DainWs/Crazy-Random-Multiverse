@@ -1,7 +1,6 @@
-import { createAction } from "@/domain/actions/Action";
-import { sendAction } from "@/infrastructure/api/v1";
-import { gameRepository } from "@/infrastructure/repositories";
-
+import { createAction } from '@/domain/actions/actionFactory';
+import { sendAction } from '@/infrastructure/api/v1';
+import { gameRepository } from '@/infrastructure/repositories';
 
 /**
  * @typedef {import('@/domain/actions/Action').ActionSource} ActionSource
@@ -13,9 +12,9 @@ import { gameRepository } from "@/infrastructure/repositories";
  * @param {ActionTarget} actionTarget
  */
 const triggerAction = async (actionSource, actionTarget) => {
-    const game = gameRepository.findCurrentGame();
-    const action = createAction(game, actionSource, actionTarget);
-    await sendAction(game.code, action);
-}
+  const game = gameRepository.findCurrentGame();
+  const action = createAction(game, actionSource, actionTarget);
+  await sendAction(game.code, action);
+};
 
-export { triggerAction }
+export { triggerAction };

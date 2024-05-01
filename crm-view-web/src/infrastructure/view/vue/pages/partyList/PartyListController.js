@@ -1,35 +1,39 @@
 import { ref } from 'vue';
-import router from "@/infrastructure/view/vue/configuration/router";
-import { joinParty, refreshPartyList, setPartyListUpdateHandler } from '@/application/partyService';
+import router from '@/infrastructure/view/vue/configuration/router';
+import {
+  joinParty,
+  refreshPartyList,
+  setPartyListUpdateHandler
+} from '@/application/partyService';
 
-const partyList = ref({parties: []});
-setPartyListUpdateHandler(newPartyList => partyList.value = newPartyList);
+const partyList = ref({ parties: [] });
+setPartyListUpdateHandler(newPartyList => (partyList.value = newPartyList));
 
 const getReactivePartyList = () => {
-    return partyList;
-}
+  return partyList;
+};
 
 const onLoad = async () => {
-    await refreshPartyList();
-}
+  await refreshPartyList();
+};
 
 const onRefreshPartiesClick = async () => {
-    await refreshPartyList();
-}
+  await refreshPartyList();
+};
 
-const onJoinPartyClick = async (party) => {
-    await joinParty(party.code);
-    router.push('/party');
-}
+const onJoinPartyClick = async party => {
+  await joinParty(party.code);
+  router.push('/party');
+};
 
 const onBackClick = () => {
-    router.push('/');
-}
+  router.push('/');
+};
 
 export default {
-    getReactivePartyList,
-    onLoad,
-    onRefreshPartiesClick,
-    onJoinPartyClick,
-    onBackClick
-}
+  getReactivePartyList,
+  onLoad,
+  onRefreshPartiesClick,
+  onJoinPartyClick,
+  onBackClick
+};

@@ -1,26 +1,32 @@
 type CardTypeDto = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 
 type CardCodeDto = {
-    value: Number,
-    type: CardTypeDto
+  value: number;
+  type: CardTypeDto;
 };
 
-type CardRarityDto = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
+type CardRarityDto =
+  | 'COMMON'
+  | 'UNCOMMON'
+  | 'RARE'
+  | 'EPIC'
+  | 'LEGENDARY'
+  | 'MITHIC';
 type DamageTypeDto = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorTypeDto = 'PHYSICAL' | 'MAGIC';
 
 type CardDto = {
-    code : CardCodeDto
-    name : String
-    description : String
-    type : CardTypeDto
-    rarity : CardRarityDto
-    damage : Number
-    damageType : DamageTypeDto
-    armor : Number
-    armorType : ArmorTypeDto
-    health : Number
-    maxHealth : Number
-}
+  code: CardCodeDto;
+  name: string;
+  description: string;
+  type: CardTypeDto;
+  rarity: CardRarityDto;
+  damage: number;
+  damageType: DamageTypeDto;
+  armor: number;
+  armorType: ArmorTypeDto;
+  health: number;
+  maxHealth: number;
+};
 
 export default CardDto;

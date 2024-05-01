@@ -1,6 +1,6 @@
 type PositionDto = {
-    row: Number;
-    column: Number;
+  row: number;
+  column: number;
 };
 
 export default PositionDto;

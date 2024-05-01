@@ -1,21 +1,21 @@
-import { Game } from "@/domain/models/Game";
+import Game from '@/domain/models/Game';
 
 let currentGame: Game | undefined;
 
 const existCurrentGame = (): boolean => {
-    return (currentGame !== undefined);
-}
+  return currentGame !== undefined;
+};
 
 const findCurrentGame = (): Game | undefined => {
-    return currentGame;
-}
+  return currentGame;
+};
 
 const updateCurrentGame = (game: Game): void => {
-    currentGame = game;
-}
+  currentGame = game;
+};
 
 export default {
-    existCurrentGame,
-    findCurrentGame,
-    updateCurrentGame
-}
+  existCurrentGame,
+  findCurrentGame,
+  updateCurrentGame
+};

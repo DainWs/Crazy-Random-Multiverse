@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
-  text: { type: String, required: true },
-  kind: { type: String, required: false },
+  text: { type: string, required: true },
+  kind: { type: string, required: false },
   hasIcon: { type: Boolean, required: false },
   invertAnimation: { type: Boolean, required: false }
 });

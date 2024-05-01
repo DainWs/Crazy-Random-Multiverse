@@ -1,7 +1,6 @@
-
 type UserDto = {
-    uid: string, // stomp session uid
-    username: string
-}
+  uid: string; // stomp session uid
+  username: string;
+};
 
 export default UserDto;

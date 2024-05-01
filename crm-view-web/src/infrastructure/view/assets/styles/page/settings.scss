@@ -49,42 +49,42 @@ $settings-option-odd-background: rgba(79, 79, 79, 0.4);
     background-color: $settings-nav-background;
 
     & > .navigation__item {
-        width: 100%;
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      &.link a {
+        padding: 1rem 1rem;
+        color: $settings-btn-text;
+        font-size: 1.4rem;
+        text-decoration: none;
 
         display: flex;
-        flex-direction: column;
-  
-        &.link a {
-          padding: 1rem 1rem;
-          color: $settings-btn-text;
-          font-size: 1.4rem;
-          text-decoration: none;
+        align-items: center;
 
-          display: flex;
-          align-items: center;
-  
-          &:hover {
-            background-color: $settings-btn-hover;
-          }
+        &:hover {
+          background-color: $settings-btn-hover;
         }
-  
-        border: 1px solid $settings-btn-borders;
-        background-color: $settings-btn-background;
-  
-        &.back {
-          * {
-            color: $settings-btn-back-text;
-          }
-  
-          position: relative;
-  
-          border: 1px solid $settings-btn-back-borders;
-          background-color: $settings-btn-back-background;
-  
-          &:hover {
-            background-color: $settings-btn-back-hover;
-          }
+      }
+
+      border: 1px solid $settings-btn-borders;
+      background-color: $settings-btn-background;
+
+      &.back {
+        * {
+          color: $settings-btn-back-text;
         }
+
+        position: relative;
+
+        border: 1px solid $settings-btn-back-borders;
+        background-color: $settings-btn-back-background;
+
+        &:hover {
+          background-color: $settings-btn-back-hover;
+        }
+      }
     }
   }
 

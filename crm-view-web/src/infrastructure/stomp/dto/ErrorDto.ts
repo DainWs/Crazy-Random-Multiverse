@@ -1,7 +1,7 @@
 type ErrorDto = {
-    key: string,
-    value: string,
-    language: string
+  key: string;
+  value: string;
+  language: string;
 };
 
 export default ErrorDto;

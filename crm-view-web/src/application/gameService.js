@@ -1,19 +1,16 @@
-import eventObserver from "@/application/events/observer";
-import { gameRepository } from "@/infrastructure/repositories";
+import eventObserver from '@/application/events/observer';
+import { gameRepository } from '@/infrastructure/repositories';
 
-const processGameEvent = (gameEvent) => {
-	if (gameEvent.details.game) {
-		gameRepository.updateCurrentGame(gameEvent.details.game);
-	}
+const processGameEvent = gameEvent => {
+  if (gameEvent.details.game) {
+    gameRepository.updateCurrentGame(gameEvent.details.game);
+  }
 
-    eventObserver.notify(gameEvent.code, gameEvent);
-}
+  eventObserver.notify(gameEvent.code, gameEvent);
+};
 
-const processGameError = (gameError) => {
-    eventObserver.notify('ERROR', gameError);
-}
+const processGameError = gameError => {
+  eventObserver.notify('ERROR', gameError);
+};
 
-export {
-    processGameEvent,
-    processGameError
-}
+export { processGameEvent, processGameError };

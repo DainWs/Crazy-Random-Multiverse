@@ -1,14 +1,13 @@
 <script setup>
-import { getCardTypeDescription, hasCardStatistics } from '@/domain/models/Card';
+import Card from '@/domain/models/Card';
 import CardDescription from '@/infrastructure/view/vue/components/game/card/CardDescription.vue'
 import StatisticDamage from '@/infrastructure/view/vue/components/game/card/StatisticDamage.vue';
 import StatisticArmor from '@/infrastructure/view/vue/components/game/card/StatisticArmor.vue';
 import StatisticHealth from '@/infrastructure/view/vue/components/game/card/StatisticHealth.vue';
 
-
 /**
  * @typedef {object} Props
- * @property {import('@/domain/card').Card} card
+ * @property {Card} card
  */
 
 /** @type {Props} */
@@ -25,7 +24,7 @@ defineEmits(['click', 'drag', 'drop']);
         @drop="$emit('drop', $event, card)"
         draggable="true"
     >
-        <div class="gcard--type">{{ getCardTypeDescription(card.description) }}</div>
+        <div class="gcard--type">{{ card.getTypeDescription() }}</div>
         <div class="gcard--name">{{ card.name }}</div>
 
         <div class="gcard--image">
@@ -34,7 +33,7 @@ defineEmits(['click', 'drag', 'drop']);
 
         <div class="gcard__details">
             <slot name="details">
-                <div v-if="hasCardStatistics(card)">
+                <div v-if="card.hasStatistics()">
                     <StatisticHealth :value="card.health" :max-value="card.maxHealth" />
                     <StatisticDamage :value="card.damage" :type="card.damageType" />
                     <StatisticArmor :value="card.armor" :type="card.armorType" />

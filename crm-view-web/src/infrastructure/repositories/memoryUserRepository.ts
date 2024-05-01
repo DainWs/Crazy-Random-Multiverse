@@ -1,16 +1,16 @@
-import User from "@/domain/models/User";
+import User from '@/domain/models/User';
 
 let currentUser: User;
 
 const findCurrentUser = (): User => {
-    return currentUser;
-}
+  return currentUser;
+};
 
 const updateCurrentUser = (user: User): void => {
-    currentUser = user;
-}
+  currentUser = user;
+};
 
 export default {
-    findCurrentUser,
-    updateCurrentUser
-}
+  findCurrentUser,
+  updateCurrentUser
+};

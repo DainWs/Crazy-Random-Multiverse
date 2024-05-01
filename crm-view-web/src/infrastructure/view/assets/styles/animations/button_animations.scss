@@ -1,87 +1,82 @@
 @mixin button-menu($fromBGColor, $fromColor, $toBGColor, $toColor) {
-    & a { color: $fromColor };
+  & a {
+    color: $fromColor;
+  }
 
-    &--item {
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        background-color: $fromBGColor;
-        margin-bottom: 3%;
+  &--item {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: $fromBGColor;
+    margin-bottom: 3%;
 
-        &_link {
-            position: relative;
-            padding: 2vh 3vh;
-            font-size: 1.4rem;
-            color: $fromColor;
-            letter-spacing: 1.1rem;
-            text-transform: uppercase;
-            transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
-            cursor: pointer;
-            user-select: none;
+    &_link {
+      position: relative;
+      padding: 2vh 3vh;
+      font-size: 1.4rem;
+      color: $fromColor;
+      letter-spacing: 1.1rem;
+      text-transform: uppercase;
+      transition: all 400ms cubic-bezier(0.77, 0, 0.175, 1);
+      cursor: pointer;
+      user-select: none;
 
-            &:before,
-            &:after {
-                content: '';
-                position: absolute;
-                transition: inherit;
-                z-index: -1;
-            }
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        transition: inherit;
+        z-index: -1;
+      }
 
-            &:hover {
-                color: $toColor;
-                transition-delay: 0s;
+      &:hover {
+        color: $toColor;
+        transition-delay: 0s;
 
-                &:before {
-                    transition-delay: 0s;
-                }
-
-                &:after {
-                    transition-delay: 0s;
-                }
-            }
-
+        &:before {
+          transition-delay: 0s;
         }
+
+        &:after {
+          transition-delay: 0s;
+        }
+      }
     }
+  }
 }
 
 @mixin fill-from($side, $toBackground) {
+  &:before,
+  &:after {
+    top: 0;
+    width: 0;
+    height: 100%;
+  }
 
+  &:before {
+    @if $side ==left {
+      right: 0;
+    } @else {
+      left: 0;
+    }
+
+    border: 1px solid $toBackground;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  &:after {
+    @if $side ==left {
+      left: 0;
+    } @else {
+      right: 0;
+    }
+  }
+
+  &:hover {
     &:before,
     &:after {
-        top: 0;
-        width: 0;
-        height: 100%;
+      width: 100%;
     }
-
-    &:before {
-        @if $side ==left {
-            right: 0;
-        }
-
-        @else {
-            left: 0;
-        }
-
-        border: 1px solid $toBackground;
-        border-left: 0;
-        border-right: 0;
-    }
-
-    &:after {
-        @if $side ==left {
-            left: 0;
-        }
-
-        @else {
-            right: 0;
-        }
-    }
-
-    &:hover {
-
-        &:before,
-        &:after {
-            width: 100%;
-        }
-    }
+  }
 }

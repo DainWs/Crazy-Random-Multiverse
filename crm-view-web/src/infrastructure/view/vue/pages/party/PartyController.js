@@ -1,43 +1,48 @@
-import { ref } from "vue"
-import router from "@/infrastructure/view/vue/configuration/router";
-import { getUser } from "@/application/userService";
-import { startParty, leaveParty, refreshPartyInfo, setPartyInfoUpdateHandler } from "@/application/partyService";
+import { ref } from 'vue';
+import router from '@/infrastructure/view/vue/configuration/router';
+import { getUser } from '@/application/userService';
+import {
+  startParty,
+  leaveParty,
+  refreshPartyInfo,
+  setPartyInfoUpdateHandler
+} from '@/application/partyService';
 
 const defaultPartyInfo = {
-    code: undefined,
-    name: undefined,
-    users: []
+  code: undefined,
+  name: undefined,
+  users: []
 };
 
 const partyInfo = ref(defaultPartyInfo);
-setPartyInfoUpdateHandler(newPartyInfo => partyInfo.value = newPartyInfo);
+setPartyInfoUpdateHandler(newPartyInfo => (partyInfo.value = newPartyInfo));
 
 const getUserInfo = () => {
-    return getUser();
-}
+  return getUser();
+};
 
 const getReactivePartyInfo = () => {
-    return partyInfo;
-}
+  return partyInfo;
+};
 
 const onLoad = async () => {
-    await refreshPartyInfo();
-}
+  await refreshPartyInfo();
+};
 
 const onStartClick = async () => {
-    await startParty();
-}
+  await startParty();
+};
 
-const onLeaveClick = async () => { 
-    await leaveParty();
-    partyInfo.value = defaultPartyInfo;
-    router.push('/');
-}
+const onLeaveClick = async () => {
+  await leaveParty();
+  partyInfo.value = defaultPartyInfo;
+  router.push('/');
+};
 
 export default {
-    getUserInfo,
-    getReactivePartyInfo,
-    onLoad,
-    onStartClick,
-    onLeaveClick
-}
+  getUserInfo,
+  getReactivePartyInfo,
+  onLoad,
+  onStartClick,
+  onLeaveClick
+};

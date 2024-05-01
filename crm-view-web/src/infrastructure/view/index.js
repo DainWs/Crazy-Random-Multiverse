@@ -1,12 +1,10 @@
-import viewImplementation from "@/infrastructure/view/vue";
+import viewImplementation from '@/infrastructure/view/vue';
 
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
 
 const mountView = () => {
-    viewImplementation.mount();
-}
+  viewImplementation.mount();
+};
 
-export {
-    mountView
-}
+export { mountView };

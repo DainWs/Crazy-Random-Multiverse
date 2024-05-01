@@ -1,3 +1,3 @@
-type GameCodeDto = String;
+type GameCodeDto = string;
 
 export default GameCodeDto;

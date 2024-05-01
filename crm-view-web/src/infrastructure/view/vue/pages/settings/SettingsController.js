@@ -1,5 +1,9 @@
-import router from "@/infrastructure/view/vue/configuration/router";
-import { getSettingSections, getSettings, setSettings } from '@/application/settingsService'
+import router from '@/infrastructure/view/vue/configuration/router';
+import {
+  getSettingSections,
+  getSettings,
+  setSettings
+} from '@/application/settingsService';
 
 /**
  * @type {Map.<string, any>}
@@ -7,40 +11,42 @@ import { getSettingSections, getSettings, setSettings } from '@/application/sett
 const changedSettings = new Map();
 
 const saveChanges = () => {
-    const settings = new Array();
+  const settings = new Array();
 
-    changedSettings.forEach((value, key) => settings.push({name: key, value: value}));
-    changedSettings.clear();
+  changedSettings.forEach((value, key) =>
+    settings.push({ name: key, value: value })
+  );
+  changedSettings.clear();
 
-    setSettings(settings);
-}
+  setSettings(settings);
+};
 
 const getAllSettings = () => {
-    return getSettings();
-}
+  return getSettings();
+};
 
 const getAvailableSettingSections = () => {
-    return getSettingSections();
-}
+  return getSettingSections();
+};
 
-const onSettingChange = (setting) => {
-    changedSettings.set(setting.name, setting.value);
-}
+const onSettingChange = setting => {
+  changedSettings.set(setting.name, setting.value);
+};
 
-const onSettingSectionClick = (settingSection) => {
-    const settingSectionRoute = settingSection.name.toLowerCase();
-    router.push(`/settings/${settingSectionRoute}`);
-}
+const onSettingSectionClick = settingSection => {
+  const settingSectionRoute = settingSection.name.toLowerCase();
+  router.push(`/settings/${settingSectionRoute}`);
+};
 
 const onBackClick = () => {
-    router.push('/');
-}
+  router.push('/');
+};
 
 export default {
-    saveChanges,
-    getSettings: getAllSettings,
-    getAvailableSettingSections,
-    onSettingChange,
-    onSettingSectionClick,
-    onBackClick
-}
+  saveChanges,
+  getSettings: getAllSettings,
+  getAvailableSettingSections,
+  onSettingChange,
+  onSettingSectionClick,
+  onBackClick
+};

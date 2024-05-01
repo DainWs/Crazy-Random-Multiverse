@@ -32,7 +32,7 @@ defineExpose({show, hide})
 </script>
 
 <template>
-    <div class="error-message" v-show="isShowing">
+    <div v-show="isShowing" class="error-message">
         <p>{{ message }}</p>
     </div>
 </template>

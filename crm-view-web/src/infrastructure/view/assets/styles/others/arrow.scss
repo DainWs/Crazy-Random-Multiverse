@@ -1,37 +1,36 @@
 .arrow {
-    border-width: 0 3px 3px 0;
-    border-style: solid;
-    border-color: black;
-    display: inline-block;
-    padding: 3px;
+  border-width: 0 3px 3px 0;
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  padding: 3px;
 
-    &__container {
-        width: 2rem;
-        padding: 1rem;
-    }
+  &__container {
+    width: 2rem;
+    padding: 1rem;
+  }
 
-    &.white {
-        border-color: white;
-    }
+  &.white {
+    border-color: white;
+  }
 
-    &.right {
-        transform: rotate(-45deg) translateY(-50%);
-        -webkit-transform: rotate(-45deg) translateY(-50%);
-    }
+  &.right {
+    transform: rotate(-45deg) translateY(-50%);
+    -webkit-transform: rotate(-45deg) translateY(-50%);
+  }
 
-    &.left {
-        transform: rotate(135deg) translateY(50%);
-        -webkit-transform: rotate(135deg) translateY(50%);
-    }
+  &.left {
+    transform: rotate(135deg) translateY(50%);
+    -webkit-transform: rotate(135deg) translateY(50%);
+  }
 
-    &.up {
-        transform: rotate(-135deg) translateX(-50%);
-        -webkit-transform: rotate(-135deg) translateX(-50%);
-    }
+  &.up {
+    transform: rotate(-135deg) translateX(-50%);
+    -webkit-transform: rotate(-135deg) translateX(-50%);
+  }
 
-    &.down {
-        transform: rotate(45deg) translateX(50%);
-        -webkit-transform: rotate(45deg) translateX(50%);
-    }
-
+  &.down {
+    transform: rotate(45deg) translateX(50%);
+    -webkit-transform: rotate(45deg) translateX(50%);
+  }
 }

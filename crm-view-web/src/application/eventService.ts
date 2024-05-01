@@ -1,7 +1,5 @@
-import { Event } from "@/application/events";
+import Event from '@/application/events';
 
-const triggerEvent = (event: Event): void => {
+const triggerEvent = (event: Event): void => {};
 
-}
-
-export { triggerEvent }
+export { triggerEvent };

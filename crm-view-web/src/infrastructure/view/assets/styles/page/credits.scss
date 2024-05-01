@@ -1,50 +1,50 @@
 .credits {
-    overflow: auto;
+  overflow: auto;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  height: 100%;
+
+  &__container {
+    padding: 2rem 4rem 0 4rem;
+    width: 80%;
     height: 100%;
 
-    &__container {
-        padding: 2rem 4rem 0 4rem;
-        width: 80%;
-        height: 100%;
+    background-color: rgba(58, 58, 58, 0.521);
+  }
 
-        background-color: rgba(58, 58, 58, 0.521);
+  &__title {
+    color: rgba(white, 1) !important;
+    text-align: center;
+  }
+
+  &__section {
+    margin-bottom: 0.5rem;
+    padding: 1rem;
+
+    background-color: rgba(255, 255, 255, 0.336);
+
+    .people-list {
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+
+      span {
+        font-size: 2rem;
+        font-weight: bold;
+      }
     }
+  }
 
-    &__title {
-        color: rgba(white, 1) !important;
-        text-align: center;
+  &__footer {
+    position: relative;
+
+    & > div {
+      display: inline-flex;
+      justify-content: space-between;
+      flex-direction: column;
     }
-
-    &__section {
-        margin-bottom: 0.5rem;
-        padding: 1rem;
-
-        background-color: rgba(255, 255, 255, 0.336);
-
-        .people-list {
-            display: flex;
-            justify-content: space-evenly;
-            flex-wrap: wrap;
-
-            span {
-                font-size: 2rem;
-                font-weight: bold;
-            }
-        }
-    }
-
-    &__footer {
-        position: relative;
-
-        &>div {
-            display: inline-flex;
-            justify-content: space-between;
-            flex-direction: column;
-        }
-    }
+  }
 }

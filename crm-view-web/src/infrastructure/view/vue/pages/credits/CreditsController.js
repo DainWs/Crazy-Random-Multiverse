@@ -1,15 +1,15 @@
-import router from "@/infrastructure/view/vue/configuration/router";
-import { getCredits } from "@/application/creditsService";
+import router from '@/infrastructure/view/vue/configuration/router';
+import { getCredits } from '@/application/creditsService';
 
 const getAllCredits = () => {
-    return getCredits();
-}
+  return getCredits();
+};
 
 const onBackClick = () => {
-    router.push('/');
-}
+  router.push('/');
+};
 
-export default { 
-    getCredits: getAllCredits,
-    onBackClick
+export default {
+  getCredits: getAllCredits,
+  onBackClick
 };

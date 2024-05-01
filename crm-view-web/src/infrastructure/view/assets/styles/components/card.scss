@@ -13,70 +13,78 @@ $num-rows: calc(16 * $card-aspect-ratio-height);
 $row-height: calc($card-height / $num-rows);
 
 .gcard {
-    margin: 0;
-    padding: 0;
-    border-radius: 0.6rem;
-    width: $card-width;
-    height: $card-height;
-    //aspect-ratio: $card-aspect-ratio-width / $card-aspect-ratio-height;
+  margin: 0;
+  padding: 0;
+  border-radius: 0.6rem;
+  width: $card-width;
+  height: $card-height;
+  //aspect-ratio: $card-aspect-ratio-width / $card-aspect-ratio-height;
 
-    background-color: white;
+  background-color: white;
 
-    display: grid;
-    grid-template-columns: repeat($num-columns, $column-width);
-    grid-template-rows: repeat($num-rows, $row-height);
+  display: grid;
+  grid-template-columns: repeat($num-columns, $column-width);
+  grid-template-rows: repeat($num-rows, $row-height);
 
-    font-size: 1.2vh;
+  font-size: 1.2vh;
 
-    &--name,
-    &--image,
-    &--type {
-        display: block;
+  &--name,
+  &--image,
+  &--type {
+    display: block;
+  }
+
+  $first-row: 1;
+  $first-column: 1;
+
+  &--name {
+    grid-row-start: $first-row;
+    grid-row-end: math.round(calc($first-row + calc($num-rows * 0.075)));
+    grid-column-start: math.round(calc($num-columns / 4));
+    grid-column-end: -(math.round(calc($num-columns / 4)));
+  }
+
+  &--image {
+    grid-row-start: math.round(calc($first-row + calc($num-rows * 0.075)));
+    grid-row-end: math.round(calc($first-row + calc($num-rows * 0.4)));
+    grid-column-start: $first-column;
+    grid-column-end: -$first-column;
+  }
+
+  &--type {
+    $type-row: math.round(calc($first-row + calc($num-rows * 0.4)));
+    grid-row-start: $type-row;
+    grid-row-end: math.round(calc($type-row + calc($num-rows * 0.075)));
+    grid-column-start: math.round(calc($num-columns / 4));
+    grid-column-end: -(math.round(calc($num-columns / 4)));
+  }
+
+  &__details {
+    $type-row: math.round(calc($first-row + calc($num-rows * 0.4)));
+    grid-row-start: math.round(calc($type-row + calc($num-rows * 0.075)));
+    grid-row-end: -$first-row;
+    grid-column-start: math.round(calc($num-columns / 4));
+    grid-column-end: -(math.round(calc($num-columns / 4)));
+  }
+
+  &.leader {
+  }
+  &.equipment {
+  }
+  &.spell {
+  }
+  &.warrior {
+    &.common {
     }
-
-    $first-row: 1;
-    $first-column: 1;
-
-    &--name {
-        grid-row-start: $first-row;
-        grid-row-end: math.round(calc($first-row + calc($num-rows * .075)));
-        grid-column-start: math.round(calc($num-columns / 4));
-        grid-column-end: -(math.round(calc($num-columns / 4)));
+    &.uncommon {
     }
-
-    &--image {
-        grid-row-start: math.round(calc($first-row + calc($num-rows * .075)));
-        grid-row-end: math.round(calc($first-row + calc($num-rows * .4)));
-        grid-column-start: $first-column;
-        grid-column-end: -$first-column;
+    &.rare {
     }
-
-    &--type {
-        $type-row: math.round(calc($first-row + calc($num-rows * .4)));
-        grid-row-start: $type-row;
-        grid-row-end: math.round(calc($type-row + calc($num-rows * .075)));
-        grid-column-start: math.round(calc($num-columns / 4));
-        grid-column-end: -(math.round(calc($num-columns / 4)));
+    &.epic {
     }
-
-    &__details {
-        $type-row: math.round(calc($first-row + calc($num-rows * .4)));
-        grid-row-start: math.round(calc($type-row + calc($num-rows * .075)));;
-        grid-row-end: -$first-row;
-        grid-column-start: math.round(calc($num-columns / 4));
-        grid-column-end: -(math.round(calc($num-columns / 4)));
+    &.legendary {
     }
-
-    &.leader {}
-    &.equipment {}
-    &.spell {}
-    &.warrior {
-
-        &.common {}
-        &.uncommon {}
-        &.rare {}
-        &.epic {}
-        &.legendary {}
-        &.mithic {}
+    &.mithic {
     }
+  }
 }
