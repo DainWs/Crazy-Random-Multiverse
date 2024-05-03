@@ -1,15 +1,17 @@
+import Event from '@/domain/events/Event';
 import User from '@/domain/models/User';
 
 type UserEventCode = 'USER_UPDATE';
 
-class UserEvent {
-  public code: UserEventCode;
-  public details: User;
-
+class UserEvent extends Event<User> {
   public constructor(code: UserEventCode, details: User) {
-    this.code = code;
-    this.details = details;
+    super(code, details);
+  }
+
+  public getCode(): UserEventCode {
+    return this.getCode();
   }
 }
 
+export {UserEventCode};
 export default UserEvent;

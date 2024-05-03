@@ -1,6 +1,6 @@
 <script setup>
-import ZoneView from '@vue-components/zone/ZoneView.vue';
-import ZoneNavigator from '@vue-components/zone/ZoneNavigator.vue';
+import ZoneView from '@vue-pages/game/zone/ZoneView.vue';
+import ZoneNavigator from '@vue-pages/game/zone/ZoneNavigator.vue';
 import gameController from '@vue-pages/game/GameController';
 const game = gameController.getReactiveGame();
 const playerInfo = gameController.getReactivePlayerInfo();

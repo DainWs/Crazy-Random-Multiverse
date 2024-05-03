@@ -21,7 +21,6 @@ const onCreditsClick = () => {
 const onExitClick = () => {
   if (isNotBrowserPlatform()) {
     // TODO interface to close app not defined
-    system?.exit();
   }
 };
 

@@ -1,10 +1,10 @@
 <script setup>
-import ZoneSlot from '@vue-components/zone/ZoneSlot.vue';
+import ZoneSlot from '@vue-pages/game/zone/ZoneSlot.vue';
 import {
     onGrabCardFromSlot,
     onDropCardOnSlot,
     extractActionParts
-} from '@vue-components/zone/ZoneViewLogic'
+} from '@vue-pages/game/zone/ZoneViewLogic'
 /**
  * @typedef {object} Props
  * @property {import('@/domain/zone').Zone} zone

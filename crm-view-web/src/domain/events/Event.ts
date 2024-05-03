@@ -1,8 +1,21 @@
-import PartyListEvent from '@/domain/events/PartyListEvent';
-import PartyEvent from '@/domain/events/PartyEvent';
-import UserEvent from '@/domain/events/UserEvent';
-import GameEvent from '@/domain/events/GameEvent';
+import EventCode from '@/domain/events/EventCode';
 
-type Event = GameEvent | UserEvent | PartyEvent | PartyListEvent;
+abstract class Event<T> {
+  private code: EventCode;
+  private details: T;
+
+  protected constructor(code: EventCode, details: T) {
+    this.code = code;
+    this.details = details;
+  }
+
+  public getCode() {
+    return this.code;
+  }
+
+  public getDetails() {
+    return this.details;
+  }
+}
 
 export default Event;

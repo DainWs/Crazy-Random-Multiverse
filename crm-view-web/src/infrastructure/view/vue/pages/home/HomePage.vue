@@ -1,6 +1,6 @@
-<script setup>
+<script lang="ts" setup>
 import AppLogo from '@vue-components/shared/AppLogo.vue'
-import homeController from '@vue-pages/home/HomeController';
+import homeController from '@/infrastructure/view/vue/pages/home/HomeController';
 const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
 const onCreatePartyClick = homeController.onCreatePartyClick;
 const onJoinPartyClick = homeController.onJoinPartyClick;

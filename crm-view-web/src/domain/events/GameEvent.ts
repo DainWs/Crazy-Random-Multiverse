@@ -1,3 +1,4 @@
+import Event from '@/domain/events/Event';
 import Card from '@/domain/models/Card';
 import Game from '@/domain/models/Game';
 import Player from '@/domain/models/Player';
@@ -29,13 +30,13 @@ type GameEventDetails = {
   targetPosition?: Position;
 };
 
-class GameEvent {
-  public code: GameEventCode;
-  public details: GameEventDetails;
-
+class GameEvent extends Event<GameEventDetails> {
   public constructor(code: GameEventCode, details: GameEventDetails) {
-    this.code = code;
-    this.details = details;
+    super(code, details);
+  }
+
+  public getCode(): GameEventCode {
+    return this.getCode();
   }
 }
 

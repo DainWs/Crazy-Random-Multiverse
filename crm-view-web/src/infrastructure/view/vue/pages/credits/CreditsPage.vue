@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import creditsController from '@vue-pages/credits/CreditsController';
 const credits = creditsController.getCredits();
 const onBackClick = creditsController.onBackClick;

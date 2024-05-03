@@ -18,6 +18,14 @@ class Party {
     this.owner = 'none';
     this.users = new Array();
   }
+
+  public getUserCapacity(): string {
+    return `${this.userCount}/${this.maxUsers}`;
+  }
+
+  public isFullCapacity(): boolean {
+    return this.userCount >= this.maxUsers;
+  }
 }
 
 export default Party;

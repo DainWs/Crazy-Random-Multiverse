@@ -5,7 +5,8 @@ export default {
   tabWidth: 2,
   useTabs: false,
   semi: true,
-  bracketSpacing: false,
+  bracketSpacing: true,
   bracketSameLine: true,
-  arrowParens: 'always'
+  arrowParens: 'always',
+  printWidth: 160
 };

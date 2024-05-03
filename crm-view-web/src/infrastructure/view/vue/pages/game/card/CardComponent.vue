@@ -1,9 +1,9 @@
 <script setup>
 import Card from '@/domain/models/Card';
-import CardDescription from '@vue-components/card/CardDescription.vue'
-import StatisticDamage from '@vue-components/card/StatisticDamage.vue';
-import StatisticArmor from '@vue-components/card/StatisticArmor.vue';
-import StatisticHealth from '@vue-components/card/StatisticHealth.vue';
+import CardDescription from '@vue-pages/game/card/CardDescription.vue'
+import StatisticDamage from '@vue-pages/game/card/StatisticDamage.vue';
+import StatisticArmor from '@vue-pages/game/card/StatisticArmor.vue';
+import StatisticHealth from '@vue-pages/game/card/StatisticHealth.vue';
 
 /**
  * @typedef {object} Props

@@ -1,5 +1,27 @@
-import Event from '@/application/events';
+import eventObserver from '@/domain/events/eventObserver';
 
-const triggerEvent = (event: Event): void => {};
+const gameEventService = {
+  subscribe: eventObserver.subscribeToGameEvent,
+  unsubscribe: eventObserver.unsubscribeFromGameEvent,
+  notify: eventObserver.notifyGameEvent
+};
 
-export {triggerEvent};
+const partyEventService = {
+  subscribe: eventObserver.subscribeToPartyEvent,
+  unsubscribe: eventObserver.unsubscribeFromPartyEvent,
+  notify: eventObserver.notifyPartyEvent
+};
+
+const partyListEventService = {
+  subscribe: eventObserver.subscribeToPartyListEvent,
+  unsubscribe: eventObserver.unsubscribeFromPartyListEvent,
+  notify: eventObserver.notifyPartyListEvent
+};
+
+const userEventService = {
+  subscribe: eventObserver.subscribeToUserEvent,
+  unsubscribe: eventObserver.unsubscribeFromUserEvent,
+  notify: eventObserver.notifyUserEvent
+};
+
+export {gameEventService, partyEventService, partyListEventService, userEventService};
