@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { SettingSectionName } from '@/domain/SettingsRepository';
+import SettingSection from '@/domain/settings/SettingSection';
 
-defineProps<{ sectionName: SettingSectionName }>();
+defineProps<{ sectionName: SettingSection }>();
 defineEmits<{ saveClick: [] }>();
 </script>
 

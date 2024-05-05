@@ -1,4 +1,5 @@
-import {sendRefreshUserInfo, sendUpdateUserInfo} from '@/infrastructure/api/v1';
+import { SettingName, SettingValue } from '@/domain/settings/Settings';
+import { sendRefreshUserInfo, sendUpdateUserInfo } from '@/infrastructure/api/v1';
 import settingsRepository from '@/infrastructure/repositories/localSettingsRepository';
 
 const getSettingSections = () => {
@@ -14,7 +15,7 @@ const getSetting = (settingName) => {
 };
 
 /**
- * @param {Array.<{name: string, value: any}>} settings
+ * @param {Map<SettingName, SettingValue>} settings
  */
 const setSettings = (settings) => {
   updateUserInfoIfHasChange(settings);
@@ -36,10 +37,10 @@ function applyChanges(currentSettings, newSettings) {
 function updateUserInfoIfHasChange(settings) {
   const currentSettings = settingsRepository.findAllSettings();
 
-  if (settings.username && settings.username !== currentSettings.username) {
-    sendUpdateUserInfo({username: settings.username});
+  if (settings.username && settings.username !== currentSettings.getSetting('username')) {
+    sendUpdateUserInfo({ username: settings.username });
     setTimeout(sendRefreshUserInfo, 500);
   }
 }
 
-export {getSettingSections, setSettings, getSettings, getSetting};
+export { getSettingSections, setSettings, getSettings, getSetting };

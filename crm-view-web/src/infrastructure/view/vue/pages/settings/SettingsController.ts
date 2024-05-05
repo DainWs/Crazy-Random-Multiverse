@@ -1,16 +1,9 @@
-import {
-  Setting,
-  SettingName,
-  SettingSection
-} from '@/domain/SettingsRepository';
-import {
-  getSettingSections,
-  getSettings,
-  setSettings
-} from '@/application/settingsService';
+import { getSettingSections, getSettings, setSettings } from '@/application/settingsService';
+import { SettingName, SettingValue } from '@/domain/settings/Settings';
+import SettingSection from '@/domain/settings/SettingSection';
 import router from '@vue-root/configuration/router';
 
-const changedSettings = new Map<SettingName, Setting>();
+const changedSettings = new Map<SettingName, SettingValue>();
 
 const getAllSettings = () => {
   return getSettings();
@@ -21,17 +14,16 @@ const getAvailableSettingSections = () => {
 };
 
 const saveChanges = () => {
-  setSettings(Array.from(changedSettings.values()));
+  setSettings(changedSettings);
   changedSettings.clear();
 };
 
-const onSettingChange = (setting: Setting) => {
-  changedSettings.set(setting.name, setting);
+const onSettingChange = (settingName: SettingName, settingValue: SettingValue) => {
+  changedSettings.set(settingName, settingValue);
 };
 
 const onSettingSectionClick = (settingSection: SettingSection) => {
-  const settingSectionRoute = settingSection.name;
-  router.push(`/settings/${settingSectionRoute}`);
+  router.push(`/settings/${settingSection}`);
 };
 
 const onBackClick = () => {

@@ -1,5 +1,5 @@
 import User from '@/domain/models/User';
-import {settingsRepository, userRepository} from '@repositories/index';
+import { settingsRepository, userRepository } from '@repositories/index';
 
 const configureRepositories = () => {
   configureSettingsRepository();
@@ -24,4 +24,4 @@ function configureUserRepository() {
   userRepository.updateCurrentUser(new User(username));
 }
 
-export {configureRepositories};
+export { configureRepositories };

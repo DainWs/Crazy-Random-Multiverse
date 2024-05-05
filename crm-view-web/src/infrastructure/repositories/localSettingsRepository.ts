@@ -1,49 +1,43 @@
-import {
-  MinimalSettings,
-  Settings,
-  SettingName,
-  SettingValue,
-  SettingSection
-} from '@/domain/SettingsRepository';
+import Settings, { SettingName, SettingValue } from '@/domain/settings/Settings';
+
+type MinimalSettings = Map<SettingName, SettingValue>;
 
 const saveSettings = (settings: Settings): void => {
   const jsonSettings = parseToJson(settings);
   localStorage.setItem('settings', jsonSettings);
 };
 
-const findSettingByName = (settingName: SettingName): SettingValue => {
-  return findAllSettings()[settingName] ?? undefined;
-};
-
-const findAllSettings = (): Settings => {
-  const jsonSettings = localStorage.getItem('settings') ?? '{}';
-  return parseToObject(jsonSettings);
-};
-
-const findAllSettingSections = (): Array<SettingSection> => {
-  const settingSections = new Array();
-  settingSections.push({id: 1, name: 'General'});
-  return settingSections;
-};
-
 function parseToJson(settings: Settings): string {
-  const minimalSettings: MinimalSettings = {
-    username: settings.username
-  };
+  const minimalSettings: MinimalSettings = new Map();
+  minimalSettings.set('username', settings.getSettingValue('username'));
 
   return JSON.stringify(minimalSettings);
 }
 
+const findSettingByName = (settingName: SettingName): SettingValue => {
+  return findAllSettings().getSettingValue(settingName);
+};
+
+const findAllSettings = (): Settings => {
+  const jsonSettings = localStorage.getItem('settings');
+  if (!jsonSettings) {
+    return new Settings();
+  }
+
+  return parseToObject(jsonSettings);
+};
+
 function parseToObject(stringObject: string): Settings {
+  const settings = new Settings();
+
   const minimalSettings: MinimalSettings = JSON.parse(stringObject);
-  return {
-    username: minimalSettings?.username
-  };
+  minimalSettings.forEach((value, name) => settings.setSettingValue(name, value));
+
+  return settings;
 }
 
 export default {
   saveSettings,
   findSettingByName,
-  findAllSettings,
-  findAllSettingSections
+  findAllSettings
 };

@@ -1,7 +1,6 @@
-import {Credits} from '@/domain/CreditsRepository';
 import {creditsRepository} from '@/infrastructure/repositories';
 
-const getCredits = (): Credits => {
+const getCredits = () => {
   return creditsRepository.findAllCredits();
 };
 
