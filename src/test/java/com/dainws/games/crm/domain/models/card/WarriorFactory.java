@@ -1,7 +1,5 @@
 package com.dainws.games.crm.domain.models.card;
 
-import com.dainws.games.crm.domain.models.card.Warrior;
-
 public class WarriorFactory {
 	public Warrior createBasicWarrior() {
 		return this.createWarriorWithoutDamageAndArmor();
