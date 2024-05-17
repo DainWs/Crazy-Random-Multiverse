@@ -13,5 +13,5 @@ class PartyListEvent extends Event<PartyList> {
   }
 }
 
-export {PartyListEventCode};
+export { PartyListEventCode };
 export default PartyListEvent;

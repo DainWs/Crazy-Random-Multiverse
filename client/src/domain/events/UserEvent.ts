@@ -13,5 +13,5 @@ class UserEvent extends Event<User> {
   }
 }
 
-export {UserEventCode};
+export { UserEventCode };
 export default UserEvent;

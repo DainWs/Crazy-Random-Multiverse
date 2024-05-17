@@ -12,5 +12,5 @@ interface CreditsRepository {
   findAllCredits(): Credits;
 }
 
-export {Person, CreditSection, Credits};
+export { Person, CreditSection, Credits };
 export default CreditsRepository;

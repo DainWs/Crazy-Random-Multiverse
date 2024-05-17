@@ -63,7 +63,7 @@ const sendAction = async (gameCode: GameCode, action: Action) => {
 };
 
 // CONFIGURATION ACCESS ONLY
-export {setClient};
+export { setClient };
 
 // PUBLIC ACCESS
 export {

@@ -7,4 +7,4 @@ const mountView = () => {
   viewImplementation.mount();
 };
 
-export {mountView};
+export { mountView };

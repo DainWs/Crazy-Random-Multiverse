@@ -1,5 +1,5 @@
-import {PlayerCode} from '@/domain/models/Player';
-import Card, {CardCode} from '@/domain/models/Card';
+import { PlayerCode } from '@/domain/models/Player';
+import Card, { CardCode } from '@/domain/models/Card';
 
 class Hand {
   public owner: PlayerCode;

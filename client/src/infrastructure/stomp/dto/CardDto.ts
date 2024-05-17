@@ -5,13 +5,7 @@ type CardCodeDto = {
   type: CardTypeDto;
 };
 
-type CardRarityDto =
-  | 'COMMON'
-  | 'UNCOMMON'
-  | 'RARE'
-  | 'EPIC'
-  | 'LEGENDARY'
-  | 'MITHIC';
+type CardRarityDto = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
 type DamageTypeDto = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorTypeDto = 'PHYSICAL' | 'MAGIC';
 

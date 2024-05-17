@@ -1,5 +1,5 @@
 import EventProcessorProvider from '@/application/events/eventHandlerProvider';
-import {makeReactive} from '@/infrastructure/view';
+import { makeReactive } from '@/infrastructure/view';
 
 console.log(makeReactive);
 

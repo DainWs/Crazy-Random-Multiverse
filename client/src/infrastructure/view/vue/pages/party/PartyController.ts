@@ -1,8 +1,8 @@
-import {ref} from 'vue';
+import { ref } from 'vue';
 import router from '@vue-root/configuration/router';
-import {getUser} from '@/application/userService';
-import {startParty, leaveParty, refreshPartyInfo} from '@/application/partyService';
-import {partyEventService} from '@/application/eventService';
+import { getUser } from '@/application/userService';
+import { startParty, leaveParty, refreshPartyInfo } from '@/application/partyService';
+import { partyEventService } from '@/application/eventService';
 import PartyEvent from '@/domain/events/PartyEvent';
 import Party from '@/domain/models/Party';
 

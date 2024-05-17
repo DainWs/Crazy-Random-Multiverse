@@ -1,5 +1,5 @@
 import eventObserver from '@/application/events/observer';
-import {gameRepository} from '@/infrastructure/repositories';
+import { gameRepository } from '@/infrastructure/repositories';
 
 const processGameEvent = (gameEvent) => {
   if (gameEvent.details.game) {
@@ -13,4 +13,4 @@ const processGameError = (gameError) => {
   eventObserver.notify('ERROR', gameError);
 };
 
-export {processGameEvent, processGameError};
+export { processGameEvent, processGameError };

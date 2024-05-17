@@ -24,4 +24,4 @@ const userEventService = {
   notify: eventObserver.notifyUserEvent
 };
 
-export {gameEventService, partyEventService, partyListEventService, userEventService};
+export { gameEventService, partyEventService, partyListEventService, userEventService };

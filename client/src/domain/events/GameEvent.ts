@@ -40,5 +40,5 @@ class GameEvent extends Event<GameEventDetails> {
   }
 }
 
-export {GameEventCode, GameEventDetails};
+export { GameEventCode, GameEventDetails };
 export default GameEvent;

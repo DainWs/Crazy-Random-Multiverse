@@ -10,5 +10,5 @@ class CardCodeDto {
   }
 }
 
-export {CardTypeDto};
+export { CardTypeDto };
 export default CardCodeDto;

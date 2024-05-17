@@ -1,11 +1,5 @@
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
-type CardRarity =
-  | 'COMMON'
-  | 'UNCOMMON'
-  | 'RARE'
-  | 'EPIC'
-  | 'LEGENDARY'
-  | 'MITHIC';
+type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
 type DamageType = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorType = 'PHYSICAL' | 'MAGIC';
 
@@ -72,5 +66,5 @@ class Card {
   }
 }
 
-export {CardCode, CardType, CardRarity, DamageType, ArmorType};
+export { CardCode, CardType, CardRarity, DamageType, ArmorType };
 export default Card;

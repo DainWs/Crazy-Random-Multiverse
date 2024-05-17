@@ -47,9 +47,4 @@ const extractActionParts = (event) => {
   return JSON.parse(event.originalEvent.dataTransfer.getData('action'));
 };
 
-export {
-  onGrabCardFromSlot,
-  onDropCardOnSlot,
-  injectActionParts,
-  extractActionParts
-};
+export { onGrabCardFromSlot, onDropCardOnSlot, injectActionParts, extractActionParts };

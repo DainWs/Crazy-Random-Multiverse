@@ -72,7 +72,7 @@ const notifyUserEvent = (event: UserEvent) => {
   Array.from(userEventSubscribers.values()).forEach((handler) => handler(event));
 };
 
-export {SubscriberId, EventContext};
+export { SubscriberId, EventContext };
 export default {
   subscribeToGameEvent,
   subscribeToPartyEvent,

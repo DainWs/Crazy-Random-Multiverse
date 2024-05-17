@@ -1,5 +1,5 @@
 import router from '@vue-root/configuration/router';
-import {getCredits} from '@/application/creditsService';
+import { getCredits } from '@/application/creditsService';
 
 const getAllCredits = () => {
   return getCredits();

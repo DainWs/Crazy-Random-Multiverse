@@ -1,5 +1,5 @@
-import {CardCode} from '@/domain/models/Card';
-import {PlayerCode} from '@/domain/models/Player';
+import { CardCode } from '@/domain/models/Card';
+import { PlayerCode } from '@/domain/models/Player';
 import Position from '@/domain/models/Position';
 import ActionTrigger from '@/domain/actions/ActionTrigger';
 
