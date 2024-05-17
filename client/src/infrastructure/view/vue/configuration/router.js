@@ -6,7 +6,7 @@ import PartyPage from '@vue-pages/party/PartyPage.vue';
 import PartyListPage from '@vue-pages/partyList/PartyListPage.vue';
 import CreditsPage from '@vue-pages/credits/CreditsPage.vue';
 import SettingsPage from '@vue-pages/settings/SettingsPage.vue';
-import GeneralSettings from '@vue-root/components/settings/GeneralSettings.vue';
+import GeneralSettings from '@vue-pages/settings/components/GeneralSettings.vue';
 
 const router = createRouter({
   history: createWebHistory(),

@@ -4,14 +4,15 @@ type MinimalSettings = Map<SettingName, SettingValue>;
 
 const saveSettings = (settings: Settings): void => {
   const jsonSettings = parseToJson(settings);
+  console.log(jsonSettings);
   localStorage.setItem('settings', jsonSettings);
 };
 
 function parseToJson(settings: Settings): string {
   const minimalSettings: MinimalSettings = new Map();
   minimalSettings.set('username', settings.getSettingValue('username'));
-
-  return JSON.stringify(minimalSettings);
+  console.log(minimalSettings);
+  return JSON.stringify(minimalSettings); // TODO no es posible pasar un mapa a string, tiene que ser un objeto
 }
 
 const findSettingByName = (settingName: SettingName): SettingValue => {
@@ -21,7 +22,9 @@ const findSettingByName = (settingName: SettingName): SettingValue => {
 const findAllSettings = (): Settings => {
   const jsonSettings = localStorage.getItem('settings');
   if (!jsonSettings) {
-    return new Settings();
+    const newSettings = new Settings();
+    saveSettings(newSettings);
+    return newSettings;
   }
 
   return parseToObject(jsonSettings);
@@ -31,7 +34,10 @@ function parseToObject(stringObject: string): Settings {
   const settings = new Settings();
 
   const minimalSettings: MinimalSettings = JSON.parse(stringObject);
-  minimalSettings.forEach((value, name) => settings.setSettingValue(name, value));
+  if (minimalSettings) {
+    console.log(minimalSettings);
+    minimalSettings.forEach((value, name) => settings.setSettingValue(name, value));
+  }
 
   return settings;
 }

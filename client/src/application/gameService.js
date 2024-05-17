@@ -1,4 +1,4 @@
-import eventObserver from '@/application/events/observer';
+import { gameEventService } from '@/application/eventService';
 import { gameRepository } from '@/infrastructure/repositories';
 
 const processGameEvent = (gameEvent) => {
@@ -6,7 +6,7 @@ const processGameEvent = (gameEvent) => {
     gameRepository.updateCurrentGame(gameEvent.details.game);
   }
 
-  eventObserver.notify(gameEvent.code, gameEvent);
+  gameEventService.notify(gameEvent);
 };
 
 const processGameError = (gameError) => {

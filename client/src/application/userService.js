@@ -1,5 +1,5 @@
 import { userRepository } from '@/infrastructure/repositories';
-import { triggerEvent } from '@/application/eventService';
+import { userEventService } from '@/application/eventService';
 
 const updateLocalUser = (user) => {
   const oldUser = userRepository.findCurrentUser();
@@ -7,7 +7,7 @@ const updateLocalUser = (user) => {
   if (oldUser.username !== user.username) {
     userRepository.updateCurrentUser(user);
 
-    triggerEvent({ code: 'USER_UPDATE', details: user });
+    userEventService.notify({ code: 'USER_UPDATE', details: user });
   }
 };
 

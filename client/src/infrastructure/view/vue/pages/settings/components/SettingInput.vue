@@ -15,4 +15,4 @@ defineEmits<{ change: [settingValue: SettingValue] }>();
   </div>
 </template>
 
-<style lang="scss" src="@assets/styles/components/generalSettings.scss" scoped></style>
+<style lang="scss" src="" scoped></style>

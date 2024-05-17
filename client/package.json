@@ -8,7 +8,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "serve": "npm run validate && vue-cli-service serve --mode development",
+    "serve": "vue-cli-service serve --mode development",
     "build": "npm run validate && vue-cli-service build",
     "validate": "npm run format && npx eslint ./",
     "format": "prettier ./src/ --write",

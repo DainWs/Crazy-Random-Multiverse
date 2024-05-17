@@ -4,7 +4,9 @@ type SettingValue = string | undefined;
 class Settings {
   public username: SettingValue;
 
-  public constructor() {}
+  public constructor() {
+    this.username = `user-${Math.random() * 1000000}`;
+  }
 
   public setSettingValue(settingName: SettingName, settingValue: SettingValue): void {
     this[settingName] = settingValue;

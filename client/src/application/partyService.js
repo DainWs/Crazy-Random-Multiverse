@@ -1,4 +1,4 @@
-import eventObserver from '@/application/events/observer';
+import { partyEventService, partyListEventService } from '@/application/eventService';
 import { sendCreateGame, sendCreateParty, sendJoinParty, sendLeaveParty, sendRefreshPartyInfo, sendRefreshPartyList } from '@/infrastructure/api/v1';
 
 const properties = {
@@ -8,16 +8,12 @@ const properties = {
 
 const updateLocalPartyInfo = (partyInfo) => {
   properties.partyInfo = partyInfo;
-
-  const event = { code: 'PARTY_INFO_UPDATE', details: partyInfo };
-  eventObserver.notify(event.code, event);
+  partyEventService.notify({ code: 'PARTY_INFO_UPDATE', details: partyInfo });
 };
 
 const updateLocalPartyList = (partyList) => {
   properties.partyList = partyList;
-
-  const event = { code: 'PARTY_LIST_UPDATE', details: partyList };
-  eventObserver.notify(event.code, event);
+  partyListEventService.notify({ code: 'PARTY_LIST_UPDATE', details: partyList });
 };
 
 const startParty = async () => {

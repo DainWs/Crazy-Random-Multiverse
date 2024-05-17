@@ -1,9 +1,10 @@
 import { SettingName, SettingValue } from '@/domain/settings/Settings';
+import { getSettingSections as getSections } from '@/domain/settings/SettingSection';
 import { sendRefreshUserInfo, sendUpdateUserInfo } from '@/infrastructure/api/v1';
 import settingsRepository from '@/infrastructure/repositories/localSettingsRepository';
 
 const getSettingSections = () => {
-  return settingsRepository.findAllSettingSections();
+  return getSections();
 };
 
 const getSettings = () => {
@@ -27,11 +28,14 @@ const setSettings = (settings) => {
 };
 
 function applyChanges(currentSettings, newSettings) {
+  console.log(currentSettings);
+  console.log(newSettings);
   newSettings.forEach((setting) => {
     if (currentSettings[setting.name] !== undefined) {
       currentSettings[setting.name] = setting.value;
     }
   });
+  console.log(currentSettings);
 }
 
 function updateUserInfoIfHasChange(settings) {
