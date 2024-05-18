@@ -11,6 +11,7 @@
     "serve": "vue-cli-service serve --mode development",
     "build": "npm run validate && vue-cli-service build",
     "validate": "npm run format && npx eslint ./",
+    "test": "jest",
     "format": "prettier ./src/ --write",
     "sass": "sass --watch src/assets/styles:data"
   },
@@ -21,16 +22,17 @@
     "vue-router": "4.0.3"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-plugin-pwa": "~5.0.8",
     "@vue/cli-plugin-router": "~5.0.8",
     "@vue/cli-plugin-typescript": "~5.0.8",
-    "@vue/cli-plugin-unit-jest": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.25.0",
-    "jest": "^29.7.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
     "prettier": "3.2.5",
     "sass": "^1.32.7",
     "sass-loader": "^14.2.1",

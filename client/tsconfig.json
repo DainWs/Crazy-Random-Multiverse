@@ -26,9 +26,11 @@
         "src/infrastructure/view/vue/components/*",
         "src/infrastructure/view/vue/pages/settings/components/*",
         "src/infrastructure/view/vue/pages/game/components/*"
-      ]
+      ],
+
+      "@test/*": ["test/*"]
     },
-    "types": ["@types/node"],
+    "types": ["@types/node", "@types/jest", "jest"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": ["**/*"]

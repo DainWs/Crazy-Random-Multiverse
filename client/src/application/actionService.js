@@ -3,13 +3,8 @@ import { sendAction } from '@/infrastructure/api/v1';
 import { gameRepository } from '@/infrastructure/repositories';
 
 /**
- * @typedef {import('@/domain/actions/Action').ActionSource} ActionSource
- * @typedef {import('@/domain/actions/Action').ActionTarget} ActionTarget
- */
-
-/**
- * @param {ActionSource} actionSource
- * @param {ActionTarget} actionTarget
+ * @param {import('@/domain/actions/Action').ActionSource} actionSource
+ * @param {import('@/domain/actions/Action').ActionTarget} actionTarget
  */
 const triggerAction = async (actionSource, actionTarget) => {
   const game = gameRepository.findCurrentGame();
