@@ -20,7 +20,7 @@ class Hand {
 
   public removeCard(cardToRemove: Card): void {
     const index = this.cards.findIndex((card) => card.equals(cardToRemove));
-    this.cards = this.cards.slice(index, index + 1);
+    this.cards.splice(index, 1);
   }
 
   public findCard(cardCode: CardCode): Card | undefined {
