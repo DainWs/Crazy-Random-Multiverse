@@ -1,18 +1,15 @@
+import decrypt from 'decr';
 import Settings, { SettingName, SettingValue } from '@/domain/settings/Settings';
 
-type MinimalSettings = Map<SettingName, SettingValue>;
+const s3cr3t = '';
 
 const saveSettings = (settings: Settings): void => {
-  const jsonSettings = parseToJson(settings);
-  console.log(jsonSettings);
-  localStorage.setItem('settings', jsonSettings);
+  const stringSettings = parseToString(settings);
+  localStorage.setItem('settings', stringSettings);
 };
 
-function parseToJson(settings: Settings): string {
-  const minimalSettings: MinimalSettings = new Map();
-  minimalSettings.set('username', settings.getSettingValue('username'));
-  console.log(minimalSettings);
-  return JSON.stringify(minimalSettings); // TODO no es posible pasar un mapa a string, tiene que ser un objeto
+function parseToString(settings: Settings): string {
+  return btoa(btoa(JSON.stringify(settings)));
 }
 
 const findSettingByName = (settingName: SettingName): SettingValue => {
@@ -31,15 +28,7 @@ const findAllSettings = (): Settings => {
 };
 
 function parseToObject(stringObject: string): Settings {
-  const settings = new Settings();
-
-  const minimalSettings: MinimalSettings = JSON.parse(stringObject);
-  if (minimalSettings) {
-    console.log(minimalSettings);
-    minimalSettings.forEach((value, name) => settings.setSettingValue(name, value));
-  }
-
-  return settings;
+  return JSON.parse(atob(atob(stringObject)));
 }
 
 export default {
