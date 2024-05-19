@@ -2,16 +2,16 @@ import { PlayerCode } from '@/domain/models/Player';
 import Card, { CardCode } from '@/domain/models/Card';
 
 class Hand {
-  public owner: PlayerCode;
+  public ownerCode: PlayerCode;
   public cards: Card[];
 
-  public constructor(owner: PlayerCode) {
-    this.owner = owner;
+  public constructor(ownerCode: PlayerCode) {
+    this.ownerCode = ownerCode;
     this.cards = new Array();
   }
 
   public isOwner(playerCode: PlayerCode) {
-    return this.owner == playerCode;
+    return this.ownerCode == playerCode;
   }
 
   public addCard(card: Card): void {

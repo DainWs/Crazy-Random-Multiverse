@@ -11,7 +11,7 @@
     "serve": "vue-cli-service serve --mode development",
     "build": "npm run validate && vue-cli-service build",
     "validate": "npm run format && npx eslint ./",
-    "test": "jest",
+    "test": "jest --runInBand",
     "format": "prettier ./src/ --write",
     "sass": "sass --watch src/assets/styles:data"
   },

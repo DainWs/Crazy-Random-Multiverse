@@ -1,8 +1,10 @@
+process.env.TS_JEST_DISABLE_VER_CHECKER = true;
+
 /** @type {import('@jest/types').Config.InitialOptions} */
 export default {
   verbose: true,
   transform: {
-    '.*\.tsx?$': 'ts-jest'
+    '.*\.tsx?$': [ 'ts-jest', { diagnostics: false } ]
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
@@ -17,5 +19,6 @@ export default {
       '<rootDir>/src/infrastructure/view/vue/pages/game/components$1'
     ],
     '^@test(.*)$': '<rootDir>/test$1'
-  }
+  },
+  
 };

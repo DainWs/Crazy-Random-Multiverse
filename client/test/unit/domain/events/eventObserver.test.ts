@@ -1,4 +1,5 @@
-import User from '@/domain/models/User';
+import userFactory from '@test/domain/userFactory';
+
 import UserEvent from '@/domain/events/UserEvent';
 import eventObserver from '@/domain/events/eventObserver';
 
@@ -8,7 +9,7 @@ describe('EventObserver - Unit tests', () =>{
     const subcriberId = generateSubscriberId();
     eventObserver.subscribeToUserEvent(subcriberId, () => done());
 
-    const userEvent: UserEvent = new UserEvent('USER_UPDATE', new User('frodo'));
+    const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser());
     eventObserver.notifyUserEvent(userEvent);
   }, 1000);
 
@@ -17,7 +18,7 @@ describe('EventObserver - Unit tests', () =>{
     eventObserver.subscribeToGameEvent(subcriberId, () => done.fail());
     eventObserver.subscribeToUserEvent(subcriberId, () => setTimeout(done, 200));
 
-    const userEvent: UserEvent = new UserEvent('USER_UPDATE', new User('frodo'));
+    const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser());
     eventObserver.notifyUserEvent(userEvent);
   }, 2000);
 
@@ -29,7 +30,7 @@ describe('EventObserver - Unit tests', () =>{
       else done.fail();
     });
 
-    const userEvent: UserEvent = new UserEvent('USER_UPDATE', new User(username));
+    const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser(username));
     eventObserver.notifyUserEvent(userEvent);
   }, 1000);
 })

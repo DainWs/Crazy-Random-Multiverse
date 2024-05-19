@@ -15,6 +15,10 @@ class CardCode {
   public equals(that: CardCode) {
     return this.value == that.value && this.type == that.type;
   }
+
+  public toString() {
+    return `[${this.type},${this.value}]`;
+  }
 }
 
 class Card {
@@ -29,6 +33,7 @@ class Card {
   public armorType?: ArmorType;
   public health?: number;
   public maxHealth?: number;
+  // TODO agregar posibilidad de tener equipada una carta de tipo 'Equipment'
 
   public constructor(code: CardCode, type: CardType) {
     this.code = code;
