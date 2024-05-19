@@ -4,6 +4,7 @@ import Player from '@/domain/models/Player';
 import GameEvent from '@/domain/events/GameEvent';
 import PartyEvent from '@/domain/events/PartyEvent';
 import UserEvent from '@/domain/events/UserEvent';
+import ErrorEvent from '@/domain/events/ErrorEvent';
 import PartyListEvent from '@/domain/events/PartyListEvent';
 
 type SubscriberId = string;
@@ -18,11 +19,13 @@ type GameEventHandler = (event: GameEvent, context?: EventContext) => void;
 type PartyEventHandler = (event: PartyEvent) => void;
 type PartyListEventHandler = (event: PartyListEvent) => void;
 type UserEventHandler = (event: UserEvent) => void;
+type ErrorEventHandler = (event: ErrorEvent) => void;
 
 const gameEventSubscribers = new Map<SubscriberId, GameEventHandler>();
 const partyEventSubscribers = new Map<SubscriberId, PartyEventHandler>();
 const partyListEventSubscribers = new Map<SubscriberId, PartyListEventHandler>();
 const userEventSubscribers = new Map<SubscriberId, UserEventHandler>();
+const errorEventSubscribers = new Map<SubscriberId, ErrorEventHandler>();
 
 const subscribeToGameEvent = (id: SubscriberId, eventHandler: GameEventHandler) => {
   gameEventSubscribers.set(id, eventHandler);
@@ -38,6 +41,10 @@ const subscribeToPartyListEvent = (id: SubscriberId, eventHandler: PartyListEven
 
 const subscribeToUserEvent = (id: SubscriberId, eventHandler: UserEventHandler) => {
   userEventSubscribers.set(id, eventHandler);
+};
+
+const subscribeToErrorEvent = (id: SubscriberId, eventHandler: ErrorEventHandler) => {
+  errorEventSubscribers.set(id, eventHandler);
 };
 
 const unsubscribeFromGameEvent = (id: SubscriberId) => {
@@ -56,6 +63,10 @@ const unsubscribeFromUserEvent = (id: SubscriberId) => {
   userEventSubscribers.delete(id);
 };
 
+const unsubscribeFromErrorEvent = (id: SubscriberId) => {
+  errorEventSubscribers.delete(id);
+};
+
 const notifyGameEvent = (event: GameEvent, context?: EventContext) => {
   Array.from(gameEventSubscribers.values()).forEach((handler) => handler(event, context));
 };
@@ -72,18 +83,25 @@ const notifyUserEvent = (event: UserEvent) => {
   Array.from(userEventSubscribers.values()).forEach((handler) => handler(event));
 };
 
+const notifyErrorEvent = (event: ErrorEvent) => {
+  Array.from(errorEventSubscribers.values()).forEach((handler) => handler(event));
+};
+
 export { SubscriberId, EventContext };
 export default {
   subscribeToGameEvent,
   subscribeToPartyEvent,
   subscribeToPartyListEvent,
   subscribeToUserEvent,
+  subscribeToErrorEvent,
   unsubscribeFromGameEvent,
   unsubscribeFromPartyEvent,
   unsubscribeFromPartyListEvent,
   unsubscribeFromUserEvent,
+  unsubscribeFromErrorEvent,
   notifyGameEvent,
   notifyPartyEvent,
   notifyPartyListEvent,
-  notifyUserEvent
+  notifyUserEvent,
+  notifyErrorEvent
 };

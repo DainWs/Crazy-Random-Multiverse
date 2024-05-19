@@ -24,4 +24,10 @@ const userEventService = {
   notify: eventObserver.notifyUserEvent
 };
 
-export { gameEventService, partyEventService, partyListEventService, userEventService };
+const errorEventService = {
+  subscribe: eventObserver.subscribeToErrorEvent,
+  unsubscribe: eventObserver.unsubscribeFromErrorEvent,
+  notify: eventObserver.notifyErrorEvent
+};
+
+export { gameEventService, partyEventService, partyListEventService, userEventService, errorEventService };
