@@ -5,7 +5,7 @@ class Settings {
   public username: SettingValue;
 
   public constructor() {
-    this.username = `user-${Math.random() * 1000000}`;
+    this.username = `user-${Math.floor(Math.random() * 1000000)}`;
   }
 
   public setSettingValue(settingName: SettingName, settingValue: SettingValue): void {
