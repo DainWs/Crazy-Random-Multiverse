@@ -1,7 +1,10 @@
-import { SettingName, SettingValue } from '@/domain/settings/Settings';
+import User from '@/domain/models/User';
+import Settings, { SettingName, SettingValue } from '@/domain/settings/Settings';
 import { getSettingSections as getSections } from '@/domain/settings/SettingSection';
 import { sendRefreshUserInfo, sendUpdateUserInfo } from '@/infrastructure/api/v1';
 import settingsRepository from '@/infrastructure/repositories/localSettingsRepository';
+
+type SettingsMap = Map<SettingName, SettingValue>;
 
 const getSettingSections = () => {
   return getSections();
@@ -11,14 +14,11 @@ const getSettings = () => {
   return settingsRepository.findAllSettings();
 };
 
-const getSetting = (settingName) => {
+const getSetting = (settingName: SettingName) => {
   return settingsRepository.findSettingByName(settingName);
 };
 
-/**
- * @param {Map<SettingName, SettingValue>} settings
- */
-const setSettings = (settings) => {
+const setSettings = (settings: SettingsMap) => {
   updateUserInfoIfHasChange(settings);
 
   const currentSettings = settingsRepository.findAllSettings();
@@ -27,19 +27,18 @@ const setSettings = (settings) => {
   settingsRepository.saveSettings(currentSettings);
 };
 
-function applyChanges(currentSettings, newSettings) {
-  newSettings.forEach((setting) => {
-    if (currentSettings[setting.name] !== undefined) {
-      currentSettings[setting.name] = setting.value;
-    }
+function applyChanges(currentSettings: Settings, newSettings: SettingsMap) {
+  newSettings.forEach((value, key) => {
+    currentSettings.setSettingValue(key, value);
   });
 }
 
-function updateUserInfoIfHasChange(settings) {
+function updateUserInfoIfHasChange(settings: SettingsMap) {
   const currentSettings = settingsRepository.findAllSettings();
+  const usernameSetting = settings.get('username');
 
-  if (settings.username && settings.username !== currentSettings.getSetting('username')) {
-    sendUpdateUserInfo({ username: settings.username });
+  if (usernameSetting && currentSettings.isSettingEquals('username', usernameSetting)) {
+    sendUpdateUserInfo(new User((usernameSetting as string)));
     setTimeout(sendRefreshUserInfo, 500);
   }
 }

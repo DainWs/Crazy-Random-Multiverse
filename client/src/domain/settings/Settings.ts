@@ -15,6 +15,10 @@ class Settings {
   public getSettingValue(settingName: SettingName): SettingValue {
     return this[settingName];
   }
+
+  public isSettingEquals(settingName: SettingName, settingValue: SettingValue) {
+    return this[settingName] == settingValue;
+  }
 }
 
 export { SettingName, SettingValue };

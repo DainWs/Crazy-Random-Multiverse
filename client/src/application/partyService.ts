@@ -1,19 +1,17 @@
+import Party from '@/domain/models/Party';
+import PartyCode from '@/domain/models/PartyCode';
+import PartyList from '@/domain/models/PartyList';
+import PartyEvent from '@/domain/events/PartyEvent';
+import PartyListEvent from '@/domain/events/PartyListEvent';
 import { partyEventService, partyListEventService } from '@/application/eventService';
 import { sendCreateGame, sendCreateParty, sendJoinParty, sendLeaveParty, sendRefreshPartyInfo, sendRefreshPartyList } from '@/infrastructure/api/v1';
 
-const properties = {
-  partyInfo: {},
-  partyList: []
+const updateLocalPartyInfo = (partyInfo: Party) => {
+  partyEventService.notify(new PartyEvent('PARTY_INFO_UPDATE', partyInfo));
 };
 
-const updateLocalPartyInfo = (partyInfo) => {
-  properties.partyInfo = partyInfo;
-  partyEventService.notify({ code: 'PARTY_INFO_UPDATE', details: partyInfo });
-};
-
-const updateLocalPartyList = (partyList) => {
-  properties.partyList = partyList;
-  partyListEventService.notify({ code: 'PARTY_LIST_UPDATE', details: partyList });
+const updateLocalPartyList = (partyList: PartyList) => {
+  partyListEventService.notify(new PartyListEvent('PARTY_LIST_UPDATE', partyList));
 };
 
 const startParty = async () => {
@@ -24,7 +22,7 @@ const createParty = async () => {
   await sendCreateParty();
 };
 
-const joinParty = async (partyCode) => {
+const joinParty = async (partyCode: PartyCode) => {
   await sendJoinParty(partyCode);
 };
 
