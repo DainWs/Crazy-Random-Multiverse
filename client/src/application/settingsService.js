@@ -28,14 +28,11 @@ const setSettings = (settings) => {
 };
 
 function applyChanges(currentSettings, newSettings) {
-  console.log(currentSettings);
-  console.log(newSettings);
   newSettings.forEach((setting) => {
     if (currentSettings[setting.name] !== undefined) {
       currentSettings[setting.name] = setting.value;
     }
   });
-  console.log(currentSettings);
 }
 
 function updateUserInfoIfHasChange(settings) {

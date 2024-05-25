@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import { defineConfig } from '@vue/cli-service';
 
 const __dirname = path.resolve('.');
-console.log(__dirname)
+
 function isDevelopmentEnviroment() {
     return process.env.NODE_ENV === 'development';
 }

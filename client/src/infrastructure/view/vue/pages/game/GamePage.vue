@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import ZoneView from '@vue-pages/game/zone/ZoneView.vue';
 import ZoneNavigator from '@vue-pages/game/zone/ZoneNavigator.vue';
 import gameController from '@vue-pages/game/GameController';

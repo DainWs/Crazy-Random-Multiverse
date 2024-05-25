@@ -33,5 +33,5 @@
     "types": ["@types/node", "@types/jest", "jest"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["**/*"]
+  "include": ["**/*", ".eslintrc.json"]
 }

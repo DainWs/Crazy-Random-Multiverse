@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 type ExpectedProps = {
-  text: String,
+  text: string,
   kind: 'primary' | 'secondary',
   hasIcon?: boolean
 };

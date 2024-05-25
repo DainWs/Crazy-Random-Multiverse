@@ -1,7 +1,4 @@
-import decrypt from 'decr';
 import Settings, { SettingName, SettingValue } from '@/domain/settings/Settings';
-
-const s3cr3t = '';
 
 const saveSettings = (settings: Settings): void => {
   const stringSettings = parseToString(settings);
@@ -28,7 +25,14 @@ const findAllSettings = (): Settings => {
 };
 
 function parseToObject(stringObject: string): Settings {
-  return JSON.parse(atob(atob(stringObject)));
+  const settings = new Settings();
+
+  const dto = JSON.parse(atob(atob(stringObject)));
+  for (const key in dto) {
+    settings.setSettingValue((key as SettingName), dto[key]);
+  }
+
+  return settings;
 }
 
 export default {

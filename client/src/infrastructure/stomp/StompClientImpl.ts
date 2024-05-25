@@ -19,12 +19,18 @@ class StompClientImpl extends StompClient implements IApiClient {
   }
 
   public async send(destination: Destination, message?: Message): Promise<void> {
-    let body: string | undefined;
-    if (message !== undefined) {
-      body = JSON.stringify(message);
-    }
+    try {
+      let body: string | undefined;
+      if (message !== undefined) {
+        body = JSON.stringify(message);
+      }
 
-    return await this.publish({ destination, body });
+      return this.publish({ destination, body });
+    } catch (error) {
+      console.log(error);
+      if (!(error instanceof Error)) throw error;
+      if (!error.message.includes("There is no underlying STOMP connection")) throw error;
+    }
   }
 }
 

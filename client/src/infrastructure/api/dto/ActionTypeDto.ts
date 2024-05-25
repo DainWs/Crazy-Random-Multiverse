@@ -1,3 +1,5 @@
-type ActionTypeDto = 'PUT_CARD' | 'MOVE_CARD' | 'ATTACK_CARD';
+import ActionType from '@/domain/actions/ActionType';
+
+type ActionTypeDto = ActionType;
 
 export default ActionTypeDto;

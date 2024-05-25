@@ -2,7 +2,7 @@ import ActionTrigger from '@/domain/actions/ActionTrigger';
 import ViewElement from '@/domain/actions/ViewElements';
 import ViewAction from '@/domain/actions/ViewAction';
 
-type ActionType = 'PUT_CARD' | 'MOVE_CARD' | 'ATTACK_CARD' | 'NONE';
+type ActionType = 'PUT_CARD' | 'MOVE_CARD' | 'ATTACK_CARD';
 
 type ActionTriggerKey = string;
 const ACTION_TYPES = new Map<ActionTriggerKey, ActionType>();
@@ -18,7 +18,7 @@ const resolveActionType = (sourceTrigger: ActionTrigger, targetTrigger: ActionTr
     return resolvedType;
   }
 
-  return 'NONE';
+  throw new Error('Cant resolve ActionType from specified triggers');
 };
 
 function getKeyFromTriggers(sourceTrigger: ActionTrigger, targetTrigger: ActionTrigger): ActionTriggerKey {

@@ -1,8 +1,6 @@
 import EventProcessorProvider from '@/application/events/eventHandlerProvider';
 import { makeReactive } from '@/infrastructure/view';
 
-console.log(makeReactive);
-
 const userInfo = {};
 
 const gameInfo = {
