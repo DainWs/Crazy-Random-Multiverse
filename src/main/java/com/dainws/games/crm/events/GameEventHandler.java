@@ -28,12 +28,12 @@ public class GameEventHandler {
 		this.gameService = gameService;
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).GAME_CREATED")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).GAME_CREATED")
 	public void onGameCreated(Event event) {
 		this.sendEventToEveryPlayer(event);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).GAME_START")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).GAME_START")
 	public void onGameStart(Event event) throws InterruptedException, GameException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
@@ -43,7 +43,7 @@ public class GameEventHandler {
 		this.dealerService.dealCardsToPlayerWithTurn(game);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).GAME_END_WITH_WINNER")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).GAME_END_WITH_WINNER")
 	public void onGameEndWithWinner(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(4);
@@ -52,7 +52,7 @@ public class GameEventHandler {
 		this.gameService.delete(game.getCode());
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).GAME_END_WITH_TIE")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).GAME_END_WITH_TIE")
 	public void onGameEndWithTie(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(4);
@@ -61,7 +61,7 @@ public class GameEventHandler {
 		this.gameService.delete(game.getCode());
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).TURN_CHANGE")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).TURN_CHANGE")
 	public void onTurnChange(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
@@ -71,7 +71,7 @@ public class GameEventHandler {
 		this.dealerService.dealCardsToPlayerWithTurn(eventDetails.getGame());
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).ROUND_CHANGE")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).ROUND_CHANGE")
 	public void onRoundChange(Event event) {
 		this.sendEventToEveryPlayer(event);
 	}

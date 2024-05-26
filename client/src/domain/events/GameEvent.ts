@@ -7,12 +7,12 @@ import Position from '@/domain/models/Position';
 type GameEventCode =
   | 'GAME_CREATED'
   | 'GAME_START'
-  | 'GAME_END'
-  | 'PLAYER_WIN'
-  | 'PLAYER_LOSE'
-  | 'PLAYER_SURRENDER'
-  | 'PLAYER_GET_TURN'
-  | 'PLAYER_GET_CARD'
+  | 'GAME_END_WITH_WINNER'
+  | 'GAME_END_WITH_TIE'
+  | 'TURN_CHANGE'
+  | 'ROUND_CHANGE'
+  | 'PLAYER_DIE'
+  | 'PLAYER_RECEIVE_CARD'
   | 'PLAYER_PUT_CARD'
   | 'PLAYER_MOVE_CARD'
   | 'PLAYER_ATTACK_CARD'
@@ -36,7 +36,7 @@ class GameEvent extends Event<GameEventDetails> {
   }
 
   public getCode(): GameEventCode {
-    return this.getCode();
+    return  (super.getCode() as GameEventCode);
   }
 }
 

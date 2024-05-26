@@ -1,6 +1,7 @@
 import Game from "@/domain/models/Game";
 import GameEvent from "@/domain/events/GameEvent";
 import Context from "@/application/game/Context";
+import Player from "@/domain/models/Player";
 
 abstract class GameEventProcessor {
 
@@ -25,7 +26,7 @@ abstract class GameEventProcessor {
 
   private getPlayerFrom(game: Game) {
     const contextPlayer = Context.getPlayer();
-    let newestPlayer = game.getPlayerWithCode(contextPlayer.code);
+    const newestPlayer = game.getPlayerWithCode(contextPlayer?.code);
     if (newestPlayer == undefined) {
       contextPlayer.isAlive = false;
       contextPlayer.isSpectator = true;

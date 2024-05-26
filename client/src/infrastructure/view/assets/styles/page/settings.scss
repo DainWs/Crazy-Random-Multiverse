@@ -104,6 +104,7 @@ $settings-option-odd-background: rgba(79, 79, 79, 0.4);
         margin: 0 !important;
         text-align: center;
         white-space: nowrap;
+        color: black;
 
         &:before,
         &:after {
@@ -131,7 +132,7 @@ $settings-option-odd-background: rgba(79, 79, 79, 0.4);
       min-height: 3rem;
 
       &:nth-child(even) {
-        * {
+        *:not(.button) * {
           color: $settings-option-even-text;
         }
 
@@ -139,7 +140,7 @@ $settings-option-odd-background: rgba(79, 79, 79, 0.4);
       }
 
       &:nth-child(odd) {
-        * {
+        *:not(.button) *  {
           color: $settings-option-odd-text;
         }
 

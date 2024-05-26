@@ -3,7 +3,7 @@ import { setClient } from '@api/v1';
 import { userRepository } from '@repositories/index';
 
 const configureStomp = () => {
-  const username: string = userRepository.findCurrentUser().username;
+  const username: string = userRepository.getCurrentUser().username;
 
   setClient(new StompClientImpl(username, getServerHost()));
 };

@@ -2,7 +2,7 @@ import GameEvent from '@/domain/events/GameEvent';
 import Context from '@/application/game/Context';
 import GameEventProcessor from '@/application/game/GameEventProcessor';
 
-class PlayerGetCardProcessor extends GameEventProcessor {
+class PlayerReceiveCardProcessor extends GameEventProcessor {
   protected processEvent(event: GameEvent): void {
     console.log("############# Player Event: 'Player get card' received");
     console.log(event.getDetails().targetCard);
@@ -26,4 +26,4 @@ class PlayerGetCardProcessor extends GameEventProcessor {
   }
 }
 
-export default PlayerGetCardProcessor;
+export default PlayerReceiveCardProcessor;

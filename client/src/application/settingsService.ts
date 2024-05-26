@@ -2,7 +2,7 @@ import User from '@/domain/models/User';
 import Settings, { SettingName, SettingValue } from '@/domain/settings/Settings';
 import { getSettingSections as getSections } from '@/domain/settings/SettingSection';
 import { sendRefreshUserInfo, sendUpdateUserInfo } from '@/infrastructure/api/v1';
-import settingsRepository from '@/infrastructure/repositories/localSettingsRepository';
+import { userRepository, settingsRepository } from '@/infrastructure/repositories';
 
 type SettingsMap = Map<SettingName, SettingValue>;
 
@@ -19,6 +19,7 @@ const getSetting = (settingName: SettingName) => {
 };
 
 const setSettings = (settings: SettingsMap) => {
+  console.log(settings)
   updateUserInfoIfHasChange(settings);
 
   const currentSettings = settingsRepository.findAllSettings();
@@ -38,7 +39,9 @@ function updateUserInfoIfHasChange(settings: SettingsMap) {
   const usernameSetting = settings.get('username');
 
   if (usernameSetting && currentSettings.isSettingEquals('username', usernameSetting)) {
-    sendUpdateUserInfo(new User((usernameSetting as string)));
+    const user = userRepository.getCurrentUser();
+    user.username = usernameSetting;
+    sendUpdateUserInfo(user);
     setTimeout(sendRefreshUserInfo, 500);
   }
 }

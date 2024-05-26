@@ -1,7 +1,7 @@
 import User from '@/domain/models/User';
 
 interface UserRepository {
-  findCurrentUser(): User;
+  getCurrentUser(): User;
   updateCurrentUser(user: User): void;
 }
 

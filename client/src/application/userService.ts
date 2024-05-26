@@ -4,7 +4,7 @@ import { userRepository } from '@/infrastructure/repositories';
 import { userEventService } from '@/domain/services/eventService';
 
 const updateLocalUser = (user: User) => {
-  const oldUser = userRepository.findCurrentUser();
+  const oldUser = userRepository.getCurrentUser();
 
   if (oldUser.username !== user.username) {
     userRepository.updateCurrentUser(user);
@@ -14,7 +14,7 @@ const updateLocalUser = (user: User) => {
 };
 
 const getUser = () => {
-  return userRepository.findCurrentUser();
+  return userRepository.getCurrentUser();
 };
 
 export { updateLocalUser, getUser };

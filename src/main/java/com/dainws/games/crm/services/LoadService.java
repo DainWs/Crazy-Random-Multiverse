@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.GameStateManager;
+import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
+import com.dainws.games.crm.domain.event.Event;
+import com.dainws.games.crm.domain.event.EventCode;
+import com.dainws.games.crm.domain.event.EventDetails;
+import com.dainws.games.crm.domain.event.EventPublisher;
+import com.dainws.games.crm.domain.event.EventTrigger;
 import com.dainws.games.crm.domain.exception.GameNotFoundException;
 import com.dainws.games.crm.domain.models.Game;
 import com.dainws.games.crm.domain.models.GameCode;
@@ -17,8 +23,9 @@ import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.player.PlayerCode;
 
 @Service
-public class LoadService {
-	
+public class LoadService implements EventTrigger {
+
+	private EventPublisher eventPublisher;
 	private GameService gameService;
 	private GameStateManager gameStateManager;
 	private Map<GameCode, Game> pendingGames;
@@ -26,6 +33,7 @@ public class LoadService {
 	private Logger logger;
 
 	public LoadService(GameService gameService, GameStateManager gameStateManager) {
+		this.eventPublisher = new ConsoleEventPublisher();
 		this.gameService = gameService;
 		this.gameStateManager = gameStateManager;
 		this.pendingGames = new HashMap<>();
@@ -35,10 +43,11 @@ public class LoadService {
 
 	public void loadGameOfPartyOwner(User partyOwner) {
 		Game game = this.gameService.createGameFromPartyOwner(partyOwner);
-
-		this.logger.info("Esperando a que todos los jugadores del juego {} esten listos", game.getCode());
 		this.pendingGames.put(game.getCode(), game);
 		this.preparedPlayers.put(game.getCode(), new HashSet<>());
+
+		this.publishGameCreatedEvent(game);
+		this.logger.info("Esperando a que todos los jugadores del juego {} esten listos", game.getCode());
 	}
 
 	public void setUserReady(GameCode gameCode,  User user) throws GameNotFoundException, IllegalAccessException {
@@ -69,6 +78,17 @@ public class LoadService {
 
 		Game.prepareGameToStart(game);
 		this.gameStateManager.next(game);
+	}
+	
+	private void publishGameCreatedEvent(Game game) {
+		EventDetails details = new EventDetails();
+		details.setGame(game);
+		this.eventPublisher.publish(new Event(EventCode.GAME_CREATED, details));
+	}
+
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 	
 	private PlayerCode getPlayerCodeFromUser(User user) {

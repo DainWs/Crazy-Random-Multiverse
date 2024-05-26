@@ -2,7 +2,7 @@ import GameError from "@/domain/models/GameError";
 import IErrorViewer from "@/infrastructure/view/IErrorViewer";
 import { ref } from "vue";
 
-const errorQueue = ref(new Array<String>());
+const errorQueue = ref(new Array<string>());
 
 const showGameError = (gameError: GameError): void => {
   console.log(`Game error received [${gameError.code}]: ${gameError.description}`);

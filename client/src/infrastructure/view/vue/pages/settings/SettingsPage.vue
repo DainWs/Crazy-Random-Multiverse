@@ -7,6 +7,7 @@ const saveChanges = settingsController.saveChanges;
 const onSettingChange = settingsController.onSettingChange;
 const onSettingSectionClick = settingsController.onSettingSectionClick;
 const onBackClick = settingsController.onBackClick;
+// TODO reemplazar con clases de estilos propias
 </script>
 
 <template>
@@ -18,8 +19,8 @@ const onBackClick = settingsController.onBackClick;
             <AppArrow direction="left" color="white" /> Back
           </a>
         </div>
-        <div v-for="settingSection in settingSections" :key="settingSection.id" class="navigation__item link">
-          <a @click="onSettingSectionClick(settingSection)">{{ settingSection.name }}</a>
+        <div v-for="settingSection in settingSections" :key="settingSection" class="navigation__item link">
+          <a @click="onSettingSectionClick(settingSection)">{{ settingSection }}</a>
         </div>
       </div>
       <div class="settings__content col-12 col-md-9">

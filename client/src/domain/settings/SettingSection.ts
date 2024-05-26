@@ -1,6 +1,6 @@
 type SettingSection = 'general';
 
-const getSettingSections = () => {
+const getSettingSections = (): SettingSection[] => {
   return ['general'];
 };
 

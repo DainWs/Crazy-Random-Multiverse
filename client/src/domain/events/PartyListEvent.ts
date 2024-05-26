@@ -9,7 +9,7 @@ class PartyListEvent extends Event<PartyList> {
   }
 
   public getCode(): PartyListEventCode {
-    return this.getCode();
+    return  (super.getCode() as PartyListEventCode);
   }
 }
 

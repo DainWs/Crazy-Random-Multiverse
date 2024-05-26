@@ -2,9 +2,9 @@ import Event from '@/domain/events/Event';
 
 type SubscriberId = string;
 
-type EventHandler<T extends Event<Object>> = (event: T) => void;
+type EventHandler<T extends Event<unknown>> = (event: T) => void;
 
-class EventObserver<T extends Event<Object>> {
+class EventObserver<T extends Event<unknown>> {
   private subscribers: Map<SubscriberId, EventHandler<T>>;
 
   public constructor() {

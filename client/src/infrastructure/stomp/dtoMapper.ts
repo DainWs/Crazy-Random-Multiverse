@@ -21,7 +21,9 @@ import User from '@/domain/models/User';
 import Zone from '@/domain/models/Zone';
 
 const mapUserDtoToUser = (dto: UserDto): User => {
-  return new User(dto.username);
+  const user = new User(dto.username);
+  user.code = dto.uid;
+  return user;
 };
 
 const mapPartyDtoToParty = (dto: PartyDto): Party => {
@@ -81,7 +83,9 @@ function mapZoneDtoToZone(dto: ZoneDto): Zone {
     const rowDtoCombatants = dto.combatants[rowNumber];
     for (const columnNumber in rowDtoCombatants) {
       const combatantDto = rowDtoCombatants[columnNumber];
-      rowCombatants[columnNumber] = mapCardDtoToCard(combatantDto);
+      if (combatantDto) {
+        rowCombatants[columnNumber] = mapCardDtoToCard(combatantDto);
+      }
     }
 
     combatants[rowNumber] = rowCombatants;

@@ -3,24 +3,14 @@ import GameEventProcessor from '@/application/game/GameEventProcessor';
 import GameCreateEventProcessor from '@/application/game/GameCreateProcessor';
 import GameStartEventProcessor from '@/application/game/GameStartProcessor';
 import GameEndEventProcessor from '@/application/game/GameEndProcessor';
-import PlayerGetTurnEventProcessor from '@/application/game/PlayerGetTurnProcessor';
-import PlayerGetCardEventProcessor from '@/application/game/PlayerGetCardProcessor';
+import PlayerReceiveCardProcessor from '@/application/game/PlayerReceiveCardProcessor';
 
 const eventProcessors = new Map<GameEventCode, new () => GameEventProcessor>();
 eventProcessors.set('GAME_CREATED', GameCreateEventProcessor);
 eventProcessors.set('GAME_START', GameStartEventProcessor);
-eventProcessors.set('GAME_END', GameEndEventProcessor);
-//eventProcessors.set('PLAYER_WIN', null);
-//eventProcessors.set('PLAYER_LOSE', null);
-//eventProcessors.set('PLAYER_SURRENDER', null);
-eventProcessors.set('PLAYER_GET_TURN', PlayerGetTurnEventProcessor);
-eventProcessors.set('PLAYER_GET_CARD', PlayerGetCardEventProcessor);
-//eventProcessors.set('PLAYER_PUT_CARD', null);
-//eventProcessors.set('PLAYER_MOVE_CARD', null);
-//eventProcessors.set('PLAYER_ATTACK_CARD', null);
-//eventProcessors.set('PLAYER_EQUIP_CARD', null);
-//eventProcessors.set('PLAYER_USE_SPELL', null);
-//eventProcessors.set('PLAYER_PASS_TURN', null);
+eventProcessors.set('GAME_END_WITH_TIE', GameEndEventProcessor);
+eventProcessors.set('GAME_END_WITH_WINNER', GameEndEventProcessor);
+eventProcessors.set('PLAYER_RECEIVE_CARD', PlayerReceiveCardProcessor);
 
 const dispatch = (eventCode: GameEventCode): GameEventProcessor => {
   const EventProcessorClass = eventProcessors.get(eventCode);

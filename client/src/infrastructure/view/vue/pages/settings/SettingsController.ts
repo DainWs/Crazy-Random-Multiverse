@@ -19,6 +19,7 @@ const saveChanges = () => {
 };
 
 const onSettingChange = (settingName: SettingName, settingValue: SettingValue) => {
+  console.log(settingValue)
   changedSettings.set(settingName, settingValue);
 };
 

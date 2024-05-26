@@ -1,37 +1,39 @@
 import userFactory from '@test/domain/userFactory';
 
 import UserEvent from '@/domain/events/UserEvent';
-import eventObserver from '@/domain/events/oldeventObserver';
+import EventObserver from '@/domain/events/EventObserver';
 
 describe('EventObserver - Unit tests', () =>{
+  const eventObserver = new EventObserver<UserEvent>();
 
   test('Should notify subscriber if it is the event they have subscribed to', (done) => {
     const subcriberId = generateSubscriberId();
-    eventObserver.subscribeToUserEvent(subcriberId, () => done());
+    eventObserver.subscribe(subcriberId, () => done());
 
     const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser());
-    eventObserver.notifyUserEvent(userEvent);
+    eventObserver.notify(userEvent);
   }, 1000);
 
   test('Should not notify subscriber if it is not the event they have subscribed to', (done) => {
     const subcriberId = generateSubscriberId();
-    eventObserver.subscribeToGameEvent(subcriberId, () => done.fail());
-    eventObserver.subscribeToUserEvent(subcriberId, () => setTimeout(done, 200));
+    const eventObserverTwo = new EventObserver();
+    eventObserverTwo.subscribe(subcriberId, () => done.fail());
+    eventObserver.subscribe(subcriberId, () => setTimeout(done, 200));
 
     const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser());
-    eventObserver.notifyUserEvent(userEvent);
+    eventObserver.notify(userEvent);
   }, 2000);
 
   test('Should notify correct data to subscriber', (done) => {
     const username = 'frodo';
     const subcriberId = generateSubscriberId();
-    eventObserver.subscribeToUserEvent(subcriberId, (data) => {
+    eventObserver.subscribe(subcriberId, (data) => {
       if (data.getDetails().username == username) done();
       else done.fail();
     });
 
     const userEvent: UserEvent = new UserEvent('USER_UPDATE', userFactory.createUser(username));
-    eventObserver.notifyUserEvent(userEvent);
+    eventObserver.notify(userEvent);
   }, 1000);
 })
 

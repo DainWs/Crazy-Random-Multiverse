@@ -9,7 +9,7 @@ class UserEvent extends Event<User> {
   }
 
   public getCode(): UserEventCode {
-    return this.getCode();
+    return  (super.getCode() as UserEventCode);
   }
 }
 

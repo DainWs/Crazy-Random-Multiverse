@@ -30,6 +30,10 @@ public class ZoneWithLeader extends Zone {
 
 	@Override
 	public Health getZoneHealth() {
+		if (this.leader == null) {
+			return Health.INFINITE;
+		}
+
 		Health leaderHealth = this.leader.getHealth();
 		return Health.newInstance(leaderHealth.getValue(), leaderHealth.getMaxValue());
 	}

@@ -3,6 +3,7 @@ import SettingSection from '@/domain/settings/SettingSection';
 
 defineProps<{ sectionName: SettingSection }>();
 defineEmits<{ saveClick: [] }>();
+// TODO reemplazar con clases de estilos propias
 </script>
 
 <template>

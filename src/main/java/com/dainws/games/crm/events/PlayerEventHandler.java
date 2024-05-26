@@ -24,7 +24,7 @@ public class PlayerEventHandler {
 		this.playerService = playerService;
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_RECEIVE_CARD")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_RECEIVE_CARD")
 	public void onPlayerReceiveCard(Event event) throws InterruptedException {
 		// TODO extract this to DealerService
 		EventDetails details = event.getDetails();
@@ -32,6 +32,7 @@ public class PlayerEventHandler {
 		this.sendEventToPlayer(event, targetPlayer);
 
 		EventDetails detailsWithoutCard = new EventDetails();
+		detailsWithoutCard.setGame(details.getGame());
 		detailsWithoutCard.setTargetPlayer(targetPlayer);
 		Event eventWithoutCard = new Event(EventCode.PLAYER_RECEIVE_CARD, detailsWithoutCard);
 
@@ -42,7 +43,7 @@ public class PlayerEventHandler {
 		}
 	}
 	
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_ATTACK_CARD")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_ATTACK_CARD")
 	public void onPlayerAttackCard(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
@@ -52,27 +53,27 @@ public class PlayerEventHandler {
 		this.playerService.updateAlivePlayersOf(eventDetails.getGame());
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_PUT_CARD")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_PUT_CARD")
 	public void onPlayerPutCard(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_MOVE_CARD")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_MOVE_CARD")
 	public void onPlayerMoveCard(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_EQUIP_CARD")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_EQUIP_CARD")
 	public void onPlayerEquipCard(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_USE_SPELL")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_USE_SPELL")
 	public void onPlayerUseSpell(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event); // TODO pending
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.models.event.EventCode).PLAYER_DIE")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_DIE")
 	public void onPlayerDie(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 	}

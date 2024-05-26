@@ -9,7 +9,7 @@ class PartyEvent extends Event<Party> {
   }
 
   public getCode(): PartyEventCode {
-    return this.getCode();
+    return (super.getCode() as PartyEventCode);
   }
 }
 
