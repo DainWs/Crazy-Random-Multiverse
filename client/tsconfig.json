@@ -19,6 +19,7 @@
       "@/*": ["src/*"],
       "@api/*": ["src/infrastructure/api/*"],
       "@repositories/*": ["src/infrastructure/repositories/*"],
+      "@view/*": ["src/infrastructure/view/*"],
       "@assets/*": ["src/infrastructure/view/assets/*"],
       "@vue-root/*": ["src/infrastructure/view/vue/*"],
       "@vue-pages/*": ["src/infrastructure/view/vue/pages/*"],

@@ -1,7 +1,7 @@
 import userFactory from '@test/domain/userFactory';
 
 import UserEvent from '@/domain/events/UserEvent';
-import eventObserver from '@/domain/events/eventObserver';
+import eventObserver from '@/domain/events/oldeventObserver';
 
 describe('EventObserver - Unit tests', () =>{
 

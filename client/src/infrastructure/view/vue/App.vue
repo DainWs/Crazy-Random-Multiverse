@@ -1,12 +1,13 @@
-<script lang="ts">
-export default {
-  name: 'App'
-}
+<script lang="ts" setup>
+import ErrorViewerComponent from './components/ErrorViewerComponent.vue';
+
 </script>
 
 <template>
   <main>
     <router-view />
+
+    <ErrorViewerComponent />
   </main>
 </template>
 

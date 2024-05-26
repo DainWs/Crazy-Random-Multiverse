@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import INavigator, { AvailablePages } from '@view/INavigator';
+
 import HomePage from '@vue-pages/home/HomePage.vue';
 import GamePage from '@vue-pages/game/GamePage.vue';
 import PartyPage from '@vue-pages/party/PartyPage.vue';
@@ -48,4 +50,20 @@ const router = createRouter({
   ]
 });
 
+const navigatorRoutes = new Map<AvailablePages, string>();
+navigatorRoutes.set('home', '/');
+navigatorRoutes.set('game', '/game');
+navigatorRoutes.set('party', '/party');
+
+const navigateTo = (page: AvailablePages) => {
+  const route = navigatorRoutes.get(page);
+  if (!route) throw new Error('route not supported');
+  router.push(route);
+}
+
+const navigator: INavigator = {
+  navigateTo
+}
+
+export { navigator };
 export default router;

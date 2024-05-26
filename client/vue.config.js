@@ -49,6 +49,7 @@ export default defineConfig({
                 "@/*": path.resolve(__dirname, 'src/*'),
                 "@api": path.resolve(__dirname, 'src/infrastructure/api'),
                 "@repositories": path.resolve(__dirname, 'src/infrastructure/repositories'),
+                "@view": path.resolve(__dirname, 'src/infrastructure/view'),
                 "@assets": path.resolve(__dirname, 'src/infrastructure/view/assets'),
                 "@vue-root": path.resolve(__dirname, 'src/infrastructure/view/vue'),
                 "@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages'),

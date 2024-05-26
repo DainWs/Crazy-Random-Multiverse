@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import router from '@vue-root/configuration/router';
 import { joinParty, refreshPartyList } from '@/application/partyService';
-import { partyListEventService } from '@/application/eventService';
+import { partyListEventService } from '@/domain/services/eventService';
 import Party from '@/domain/models/Party';
 import PartyList from '@/domain/models/PartyList';
 import PartyListEvent from '@/domain/events/PartyListEvent';

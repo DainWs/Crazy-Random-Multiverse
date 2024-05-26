@@ -1,4 +1,4 @@
-import EventProcessorProvider from '@/application/events/eventHandlerProvider';
+import EventProcessorProvider from '@/application/game/processorDispatcher';
 import { makeReactive } from '@/infrastructure/view';
 
 const userInfo = {};

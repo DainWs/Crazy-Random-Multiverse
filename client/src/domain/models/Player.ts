@@ -6,11 +6,11 @@ class Player {
   public isSpectator: boolean;
   public isAlive: boolean;
 
-  public constructor(code: string, name: string) {
+  public constructor(code: string, name: string, isSpectator: boolean = false) {
     this.code = code;
     this.name = name;
-    this.isSpectator = false;
-    this.isAlive = true;
+    this.isSpectator = isSpectator;
+    this.isAlive = !isSpectator;
   }
 }
 

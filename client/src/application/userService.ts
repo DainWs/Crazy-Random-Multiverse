@@ -1,7 +1,7 @@
 import User from '@/domain/models/User';
 import UserEvent from '@/domain/events/UserEvent';
 import { userRepository } from '@/infrastructure/repositories';
-import { userEventService } from '@/application/eventService';
+import { userEventService } from '@/domain/services/eventService';
 
 const updateLocalUser = (user: User) => {
   const oldUser = userRepository.findCurrentUser();

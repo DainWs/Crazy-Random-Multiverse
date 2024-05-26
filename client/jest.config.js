@@ -10,6 +10,7 @@ export default {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@api(.*)$': '<rootDir>/src/infrastructure/api$1',
     '^@repositories(.*)$': '<rootDir>/src/infrastructure/repositories$1',
+    '^@view(.*)$': '<rootDir>/src/infrastructure/view$1',
     '^@assets(.*)$': '<rootDir>/src/infrastructure/view/assets$1',
     '^@vue-root(.*)$': '<rootDir>/src/infrastructure/view/vue$1',
     '^@vue-pages(.*)$': '<rootDir>/src/infrastructure/view/vue/pages$1',

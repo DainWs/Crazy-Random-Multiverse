@@ -1,5 +1,5 @@
 import GameCode from '@/domain/models/GameCode';
-import Player from '@/domain/models/Player';
+import Player, { PlayerCode } from '@/domain/models/Player';
 import Zone from '@/domain/models/Zone';
 
 class Game {
@@ -15,6 +15,11 @@ class Game {
 
   public getPlayers(): Player[] {
     return this.zones.map((zone) => zone.owner);
+  }
+
+  public getPlayerWithCode(code: PlayerCode) {
+    return this.getPlayers()
+      .find(player => player.code == code);
   }
 
   public getPlayerZone(player: Player): Zone | undefined {

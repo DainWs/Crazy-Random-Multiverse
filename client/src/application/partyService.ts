@@ -3,7 +3,7 @@ import PartyCode from '@/domain/models/PartyCode';
 import PartyList from '@/domain/models/PartyList';
 import PartyEvent from '@/domain/events/PartyEvent';
 import PartyListEvent from '@/domain/events/PartyListEvent';
-import { partyEventService, partyListEventService } from '@/application/eventService';
+import { partyEventService, partyListEventService } from '@/domain/services/eventService';
 import { sendCreateGame, sendCreateParty, sendJoinParty, sendLeaveParty, sendRefreshPartyInfo, sendRefreshPartyList } from '@/infrastructure/api/v1';
 
 const updateLocalPartyInfo = (partyInfo: Party) => {

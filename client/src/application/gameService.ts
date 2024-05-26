@@ -1,9 +1,9 @@
 import GameError from '@/domain/models/GameError';
 import GameEvent from '@/domain/events/GameEvent';
-import ErrorEvent from '@/domain/events/ErrorEvent';
-import { gameEventService, errorEventService } from '@/application/eventService';
+import processorDispatcher from '@/application/game/processorDispatcher';
+import { gameEventService } from '@/domain/services/eventService';
 import { gameRepository } from '@/infrastructure/repositories';
-import eventHandlerDispatcher from '@/application/events/gameEventDispatcher';
+import { errorViewer } from '@view/index';
 
 const processGameEvent = (gameEvent: GameEvent) => {
   const details = gameEvent.getDetails();
@@ -11,15 +11,14 @@ const processGameEvent = (gameEvent: GameEvent) => {
     gameRepository.updateCurrentGame(details.game);
   }
 
-  eventHandlerDispatcher.dispatchHandler(gameEvent.getCode())
-    .handle(gameEvent, );
+  processorDispatcher.dispatch(gameEvent.getCode())
+    .process(gameEvent, );
 
   gameEventService.notify(gameEvent);
 };
 
 const processGameError = (gameError: GameError) => {
-  const errorEvent = new ErrorEvent('ERROR', gameError);
-  errorEventService.notify(errorEvent);
+  errorViewer().showGameError(gameError);
 };
 
 export { processGameEvent, processGameError };
