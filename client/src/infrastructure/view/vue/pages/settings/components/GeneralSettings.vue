@@ -5,13 +5,12 @@ import SettingSection from '@vue-components/SettingSection.vue';
 
 defineProps<{ settings: Settings }>();
 defineEmits<{
-    settingChange: [settingName: SettingName, settingValue: SettingValue],
-    saveClick: []
+    settingChange: [settingName: SettingName, settingValue: SettingValue]
 }>();
 </script>
 
 <template>
-    <SettingSection section-name="general" @save-click="$emit('saveClick')">
+    <SettingSection section-name="general">
         <SettingInput setting-name="username" :setting-value="settings.getSettingValue('username')"
             @change="$emit('settingChange', 'username', $event)" />
     </SettingSection>

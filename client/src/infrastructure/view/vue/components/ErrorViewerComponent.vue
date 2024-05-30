@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import * as errorViewerController from '@vue-components/ErrorViewerController';
 const errorQueue = errorViewerController.getReactiveErrors();
+const shouldShowQueue = errorViewerController.shouldShowQueue;
 </script>
 
 <template>
-  <div class="error-viewer">
+  <div class="error-viewer" v-show="shouldShowQueue()">
     <span v-for="(errorMesssage, index) in errorQueue" :key="index" class="error">
       {{ errorMesssage }}
     </span>

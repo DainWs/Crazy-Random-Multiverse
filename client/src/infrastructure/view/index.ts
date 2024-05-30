@@ -2,8 +2,9 @@ import IErrorViewer from '@/infrastructure/view/IErrorViewer';
 import INavigator from '@view/INavigator';
 import viewImplementation from '@view/vue';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap';
+import '@assets/styles/main.scss'
+//import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap';
 
 const mountView = () => {
   viewImplementation.mount();

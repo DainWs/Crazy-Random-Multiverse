@@ -1,32 +1,34 @@
 <script lang="ts" setup>
-import AppArrow from '@vue-components/shared/AppArrow.vue';
 import settingsController from '@vue-root/pages/settings/SettingsController';
 const settings = settingsController.getSettings();
 const settingSections = settingsController.getAvailableSettingSections();
-const saveChanges = settingsController.saveChanges;
+const isCurrentSettingSection = settingsController.isCurrentSettingSection;
 const onSettingChange = settingsController.onSettingChange;
 const onSettingSectionClick = settingsController.onSettingSectionClick;
 const onBackClick = settingsController.onBackClick;
-// TODO reemplazar con clases de estilos propias
 </script>
 
 <template>
-  <div class="settings">
-    <div class="settings__container">
-      <div class="settings__navigation col-12 col-md-3">
-        <div class="navigation__item link back">
-          <a @click="onBackClick">
-            <AppArrow direction="left" color="white" /> Back
-          </a>
-        </div>
-        <div v-for="settingSection in settingSections" :key="settingSection" class="navigation__item link">
-          <a @click="onSettingSectionClick(settingSection)">{{ settingSection }}</a>
-        </div>
-      </div>
-      <div class="settings__content col-12 col-md-9">
-        <router-view :settings="settings" @setting-change="onSettingChange" @save-click="saveChanges" />
-      </div>
-    </div>
+  <nav tabindex="-1" class="dws--side-nav__navigation dws--side-nav dws--side-nav--expanded dws--side-nav--ux"
+    aria-label="Side navigation">
+    <ul class="dws--side-nav__items">
+      <li class="dws--side-nav__item back">
+        <button class="dws--btn dws--btn--1xl dws--layout--size-1xl dws--btn--ghost" @click="onBackClick">
+          <p>Back</p>
+          <img src="@assets/images/return.svg" class="dws--btn__icon" />
+        </button>
+      </li>
+
+      <li v-for="settingSection in settingSections" :key="settingSection" class="dws--side-nav__item"
+        :class="{ 'dws--side-nav__item--active': isCurrentSettingSection(settingSection) }">
+        <a class="dws--side-nav__link" tabindex="0" @click="onSettingSectionClick(settingSection)">
+          <span class="dws--side-nav__link-text">{{ settingSection }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="dws--content dws--grid">
+    <router-view :settings="settings" @setting-change="onSettingChange" />
   </div>
 </template>
 

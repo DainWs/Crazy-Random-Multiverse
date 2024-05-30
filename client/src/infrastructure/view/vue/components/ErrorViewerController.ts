@@ -4,6 +4,10 @@ import { ref } from "vue";
 
 const errorQueue = ref(new Array<string>());
 
+const shouldShowQueue = () => {
+  return errorQueue.value.length > 0;
+}
+
 const showGameError = (gameError: GameError): void => {
   console.log(`Game error received [${gameError.code}]: ${gameError.description}`);
   errorQueue.value.push(gameError.description);
@@ -23,5 +27,8 @@ const publicAccess: IErrorViewer = {
   showError
 };
 
-export { getReactiveErrors };
+export { 
+  shouldShowQueue, 
+  getReactiveErrors
+};
 export default publicAccess;

@@ -1,3 +1,40 @@
+.dws {
+  &--title {
+    margin-bottom: 2.5rem;
+  }
+
+  &--tile {
+    height: 100%;
+  }
+
+  &--credits {
+    &__section {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+
+      padding-left: 1rem;
+
+      & > * {
+        margin-bottom: 1rem;
+      }
+    }
+
+    &--close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+
+      width: 32px;
+      height: 32px;
+
+      &:hover {
+        background-color: lighten(#262626, 10%);
+      }
+    }
+  }
+}
+
 .credits {
   overflow: auto;
 

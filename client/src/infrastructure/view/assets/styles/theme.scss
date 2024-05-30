@@ -1,0 +1,27 @@
+@use '@carbon/styles/scss/config' with (
+  $prefix: 'dws'
+);
+@forward '@carbon/styles/scss/spacing';
+@forward '@carbon/styles/scss/colors' hide $white;
+@forward '@carbon/styles/scss/motion';
+@forward '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/themes';
+@use '@carbon/styles/scss/theme' with (
+  $theme: themes.$g100
+);
+
+@use '@carbon/styles/scss/reset';
+@forward '@carbon/styles/scss/fonts';
+@forward '@carbon/styles/scss/grid';
+@forward '@carbon/styles/scss/layer';
+@forward '@carbon/styles/scss/layout';
+@forward '@carbon/styles/scss/zone';
+@use '@carbon/styles/scss/components';
+
+.dws--side-nav--ux {
+  inset-block-start: 0;
+}
+
+.dws--side-nav__item > .dws--layout > .dws--btn {
+  width: 100%;
+}

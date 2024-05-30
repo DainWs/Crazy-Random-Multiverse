@@ -3,17 +3,17 @@ import { Credits } from '@/domain/CreditsRepository';
 const CREDITS: Credits = [
   {
     id: 'section__director',
-    name: 'Director',
+    name: 'Directors',
     people: ['DainWs']
   },
   {
     id: 'section__developer',
-    name: 'Developer',
+    name: 'Developers',
     people: ['DainWs']
   },
   {
     id: 'section__designer',
-    name: 'Designer',
+    name: 'Designers',
     people: ['DainWs']
   }
 ];

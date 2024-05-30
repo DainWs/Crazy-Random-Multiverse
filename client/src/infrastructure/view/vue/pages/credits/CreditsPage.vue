@@ -5,28 +5,18 @@ const onBackClick = creditsController.onBackClick;
 </script>
 
 <template>
-  <div>
-    <div class="credits">
-      <div class="credits__container">
-        <h1 class="credits__title">Credits</h1>
-
-        <div class="credits__section-list">
-          <div v-for="section in credits" :key="section.id" class="credits__section">
-            <h2 class="text-center">{{ section.name }}</h2>
-            <div class="people-list">
-              <span v-for="person in section.people" :key="`${section.id}_${person}`">{{ person }}</span>
-            </div>
-          </div>
+  <div class="dws--content">
+    <div class="dws--tile">
+      <h1 class="dws--title">Credits</h1>
+      <img src="@assets/images/close-large.svg" class="dws--credits--close" @click="onBackClick" />
+      <section class="dws--credits__section">
+        <div v-for="section in credits" :key="section.id">
+          <h3>{{ section.name }}</h3>
+          <p class="people-list">
+            <span v-for="person in section.people" :key="`${section.id}_${person}`">{{ person }}</span>
+          </p>
         </div>
-
-        <div class="credits__footer pb-5 pt-2">
-          <div class="menu">
-            <div class="button button--hover button--left-to-right">
-              <a @click="onBackClick">Back</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>

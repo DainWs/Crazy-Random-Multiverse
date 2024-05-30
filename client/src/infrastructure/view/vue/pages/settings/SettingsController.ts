@@ -2,7 +2,9 @@ import { getSettingSections, getSettings, setSettings } from '@/application/sett
 import { SettingName, SettingValue } from '@/domain/settings/Settings';
 import SettingSection from '@/domain/settings/SettingSection';
 import router from '@vue-root/configuration/router';
+import { ref } from 'vue';
 
+const selectedSection = ref(('general' as SettingSection));
 const changedSettings = new Map<SettingName, SettingValue>();
 
 const getAllSettings = () => {
@@ -13,17 +15,18 @@ const getAvailableSettingSections = () => {
   return getSettingSections();
 };
 
-const saveChanges = () => {
+const isCurrentSettingSection = (settingSection: SettingSection) => {
+  return selectedSection.value == settingSection;
+}
+
+const onSettingChange = (settingName: SettingName, settingValue: SettingValue) => {
+  changedSettings.set(settingName, settingValue);
   setSettings(changedSettings);
   changedSettings.clear();
 };
 
-const onSettingChange = (settingName: SettingName, settingValue: SettingValue) => {
-  console.log(settingValue)
-  changedSettings.set(settingName, settingValue);
-};
-
 const onSettingSectionClick = (settingSection: SettingSection) => {
+  selectedSection.value = settingSection;
   router.push(`/settings/${settingSection}`);
 };
 
@@ -32,7 +35,7 @@ const onBackClick = () => {
 };
 
 export default {
-  saveChanges,
+  isCurrentSettingSection,
   getSettings: getAllSettings,
   getAvailableSettingSections,
   onSettingChange,
