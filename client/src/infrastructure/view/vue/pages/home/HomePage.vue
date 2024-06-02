@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import AppLogo from '@vue-components/shared/AppLogo.vue'
+import AppButton from '@vue-components/shared/AppButton.vue';
 import homeController from '@/infrastructure/view/vue/pages/home/HomeController';
 const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
 const onCreatePartyClick = homeController.onCreatePartyClick;
@@ -19,22 +20,12 @@ const onExitClick = homeController.onExitClick;
           <h1>Crazy Random Multiverses</h1>
         </div>
         <div class="menu">
-          <div class="menu__item button button--hover button--left-to-right">
-            <a @click="onCreatePartyClick">Crear partida</a>
-          </div>
-          <div class="menu__item button button--hover button--left-to-right">
-            <a @click="onJoinPartyClick">Unirse a partida</a>
-          </div>
-          <div class="menu__item button button--hover button--left-to-right">
-            <a @click="onSettingsClick">Ajustes</a>
-          </div>
-          <div class="menu__item button button--hover button--left-to-right">
-            <a @click="onCreditsClick">Creditos</a>
-          </div>
-
-          <div v-if="isNotBrowserPlatform" class="menu__item button button--hover button--left-to-right">
-            <a @click="onExitClick">Salir</a>
-          </div>
+          <AppButton tabindex="1" text="Crear partida" class-name="menu__item" @click="onCreatePartyClick" />
+          <AppButton tabindex="2" text="Unirse a partida" class-name="menu__item" @click="onJoinPartyClick" />
+          <AppButton tabindex="3" text="Ajustes" class-name="menu__item" @click="onSettingsClick" />
+          <AppButton tabindex="4" text="Creditos" class-name="menu__item" @click="onCreditsClick" />
+          <AppButton v-if="isNotBrowserPlatform" tabindex="5" text="Salir" class-name="menu__item"
+            @click="onExitClick" />
         </div>
       </div>
     </nav>

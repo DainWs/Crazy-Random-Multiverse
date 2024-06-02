@@ -6,4 +6,11 @@
   &--horizontal > div {
     margin: 0;
   }
+
+  &__item {
+    margin-bottom: 1rem;
+    
+    width: 100%;
+    max-width: 100%;
+  }
 }

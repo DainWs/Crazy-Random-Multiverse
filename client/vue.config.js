@@ -44,7 +44,7 @@ export default defineConfig({
             })
         ],
         resolve: {
-            extensions: [ '.*', '.js', '.ts', '.vue', '.scss', '.css', '.png'],
+            extensions: [ '.*', '.js', '.ts', '.vue', '.scss', '.css', '.png', '.svg'],
             alias: {
                 "@/*": path.resolve(__dirname, 'src/*'),
                 "@api": path.resolve(__dirname, 'src/infrastructure/api'),

@@ -1,29 +1,23 @@
 <script lang="ts" setup>
-type ExpectedProps = {
+withDefaults(defineProps<{
   text: string,
-  kind: 'primary' | 'secondary',
-  hasIcon?: boolean
-};
-
-const props = withDefaults(defineProps<ExpectedProps>(), {
+  kind: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'ghost',
+  className: string,
+  icon?: string,
+}>(), {
   kind: 'primary',
-  hasIcon: false
+  className: ''
 });
 
-const iconClass = (props.hasIcon) ? 'button--icon' : '';
-
-type EmitEvent = { click: [] };
-defineEmits<EmitEvent>();
+defineEmits<{ click: [] }>();
 </script>
 
 <template>
-  <div :class="`button button--hover button--animations ${iconClass} ${kind}`">
-    <a @click="$emit('click')">
-      <slot name="before"></slot>
-      {{ text }}
-      <slot name="after"></slot>
-    </a>
-  </div>
-</template>
+  <button :class="`dws--btn dws--btn--${kind} ${className}`" @click="$emit('click')" @keyup.enter="$emit('click')">
+    <slot name="before"></slot>
 
-<style lang="scss" scoped></style>
+    <p>{{ text }}</p>
+    <img v-if="icon" :src="icon" class="dws--btn__icon" />
+    <slot name="after"></slot>
+  </button>
+</template>

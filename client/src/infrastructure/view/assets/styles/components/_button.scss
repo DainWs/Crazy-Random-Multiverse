@@ -1,3 +1,5 @@
+@use '../themes/colors' as *;
+
 .button {
   z-index: 1;
   display: flex;
@@ -111,6 +113,61 @@
     &:hover:before,
     &:hover:after {
       width: 100%;
+    }
+  }
+}
+
+
+.dws--btn {
+  font-weight: 300;
+  font-family: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
+
+  cursor: pointer;
+  user-select: none;
+
+  &--primary {
+    color: $golden-darken;
+    background-color: $golden;
+  
+    &:active,
+    &:hover {
+      color: $golden;
+      background-color: $golden-darken;
+    }
+  }
+
+  &--secondary {
+    color: $gray-lighten;
+    background-color: $gray-darken;
+  
+    &:active,
+    &:hover {
+      color: $gray-lighten;
+      background-color: $gray;
+    }
+  }
+
+  &--tertiary {
+    color: $golden;
+    border-color: $golden;
+    background-color: $transparent;
+  
+    &:active,
+    &:hover {
+      color: $golden;
+      border-color: $golden;
+      background-color: $golden-darken;
+    }
+  }
+
+  &--ghost {
+    color: $link;
+    background-color: $transparent;
+  
+    &:active,
+    &:hover {
+      color: $link;
+      background-color: $link-darken;
     }
   }
 }

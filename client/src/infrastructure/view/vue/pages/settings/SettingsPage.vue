@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import ReturnIcon from '@assets/images/return.svg';
 import settingsController from '@vue-root/pages/settings/SettingsController';
+import AppButton from '@vue-components/shared/AppButton.vue';
 const settings = settingsController.getSettings();
 const settingSections = settingsController.getAvailableSettingSections();
 const isCurrentSettingSection = settingsController.isCurrentSettingSection;
@@ -13,10 +15,8 @@ const onBackClick = settingsController.onBackClick;
     aria-label="Side navigation">
     <ul class="dws--side-nav__items">
       <li class="dws--side-nav__item back">
-        <button class="dws--btn dws--btn--1xl dws--layout--size-1xl dws--btn--ghost" @click="onBackClick">
-          <p>Back</p>
-          <img src="@assets/images/return.svg" class="dws--btn__icon" />
-        </button>
+        <AppButton tabindex="1" text="Back" class-name="dws--btn--1xl dws--layout--size-1xl" kind="ghost"
+          :icon="ReturnIcon" @click="onBackClick" />
       </li>
 
       <li v-for="settingSection in settingSections" :key="settingSection" class="dws--side-nav__item"

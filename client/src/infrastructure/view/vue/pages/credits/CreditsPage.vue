@@ -12,7 +12,7 @@ const onBackClick = creditsController.onBackClick;
       <section class="dws--credits__section">
         <div v-for="section in credits" :key="section.id">
           <h3>{{ section.name }}</h3>
-          <p class="people-list">
+          <p class="dws--credits__people">
             <span v-for="person in section.people" :key="`${section.id}_${person}`">{{ person }}</span>
           </p>
         </div>
