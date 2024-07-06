@@ -1,0 +1,49 @@
+@startuml	
+title "Class diagram - Actions"
+
+interface EventTrigger {
+ +setEventPublisher(EventPublisher)
+}
+
+interface ActionContext {
+ +getGame(): Game
+ +getBoard(): Board
+ +getSourcePlayer(): Player
+ +getSourceZone(): Zone
+ +getSourceCoordinate(): Coordinate
+ +getSourceCard(): Card
+ +getTargetPlayer(): Player
+ +getTargetZone(): Zone
+ +getTargetCoordinate(): Coordinate
+ +getTargetCard();: Card
+}
+
+interface Action extends EventTrigger {
+ +perform(ActionContext): void
+}
+
+interface ActionContextFactory {
+ +createContext(ActionContextTemplate): ActionContext
+}
+
+class ActionService {
+ +putCardAction(ActionContextTemplate): void
+ +moveCardAction(ActionContextTemplate): void
+ +attackCardAction(ActionContextTemplate): void
+ +etc(ActionContextTemplate): void
+}
+
+abstract class PlayerTurnAction {
+ +<b>perform(ActionContext): final void</b>
+ #{abstract} performPlayerAction(ActionContext)
+}
+
+ActionService *--> ActionContextFactory
+ActionService --> Action
+Action --> ActionContext
+
+Action <|.. SurrenderAction
+Action <|.. PlayerTurnAction
+PlayerTurnAction <|-- PutCardAction
+PlayerTurnAction <|-- MoveCardAction
+@enduml

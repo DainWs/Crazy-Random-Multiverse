@@ -1,4 +1,5 @@
 @startuml 
+title Websocket connection startup
 
 Client -> Server : Connect
 Client <-- Server

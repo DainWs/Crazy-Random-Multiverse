@@ -40,6 +40,7 @@ Warrior *---> Rarity
 note bottom of Effect
 	An **Effect** is a series of operations 
 	that affect the **Game state** when a 
+	**Event** happen, in this case, when a
 	**Spell** is used
 end note
 

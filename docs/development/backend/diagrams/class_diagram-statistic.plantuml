@@ -1,0 +1,63 @@
+@startuml
+title "Class diagram - Statistic"
+
+abstract class Statistic {
+ #value: double
+ +getValue(): double
+}
+
+class Health extends Statistic {
+ +{static}<b>INFINITE: final Health</b>
+ -maxValue: double
+ -Health(double)
+ -Health(double, double)
+ +getMaxValue(): double
+ +getRemainingHealthAgainst(Damage): Health
+ +isInfinite(): boolean
+ +isZero(): boolean
+ +{static} newInstance(double): Health
+ +{static} newInstance(double, double): Health
+}
+
+class Damage extends Statistic {
+ +{static}<b>NONE: final Damage</b>
+ +{static}<b>INFINITE: final Damage</b>
+ -type: DamageType
+ -Damage(double, DamageType)
+ +getType(): DamageType
+ +isInfinite(): boolean
+ +isType(DamageType): boolean
+ +{static} newInstance(double, DamageType): Damage
+}
+
+enum DamageType {
+ +MAGIC
+ +PHYSICAL
+ +TRUE
+}
+
+class Armor extends Statistic {
+ +{static}<b>NONE: final Armor</b>
+ -type: ArmorType
+ -Armor(double, ArmorType)
+ +canProtectAgainst(DamageType): boolean
+ +getRemainingArmorAgainst(Damage): Armor
+ +getRemainingDamageAgainst(Damage): Damage
+ +getType(): ArmorType
+ +{static} newInstance(double, ArmorType): Armor
+}
+
+enum ArmorType {
+ +MAGIC(DamageType.MAGIC)
+ +PHYSICAL(DamageType.PHYSICAL)
+---
+ -rejectedDamageType: DamageType
+---
+ -ArmorType(DamageType)
+ +canProtectAgainst(DamageType): boolean
+}
+
+Damage *---> DamageType
+Armor *--> ArmorType
+ArmorType *--> DamageType
+@enduml 

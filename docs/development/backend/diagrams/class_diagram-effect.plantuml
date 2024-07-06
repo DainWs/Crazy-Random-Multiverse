@@ -1,0 +1,64 @@
+@startuml	
+title "Class diagram - Effects"
+
+interface EventTrigger {
+ +setEventPublisher(EventPublisher)
+}
+
+interface EffectContext {
+ +getGame(): Game
+ +getBoard(): Board
+ +getSourcePlayer(): Player
+ +getSourceZone(): Zone
+ +getSourceCoordinate(): Coordinate
+ +getSourceCard(): Card
+ +getTargetPlayer(): Player
+ +getTargetZone(): Zone
+ +getTargetCoordinate(): Coordinate
+ +getTargetCard();: Card
+}
+
+interface EffectBook {
+ +findEffect(EffectId): Effect
+ +findDescription(EffectId): EffectDescription
+}
+
+class EffectService implements EventTrigger {
+ +apply(EffectId, EffectContextTemplate);
+}
+
+interface Effect {
+ +getId(): EffectId
+ +perform(EffectContext): void
+}
+
+class EffectDescription {
+ -id: EffectId
+ -name: Text
+ -description: Text 
+}
+
+interface EffectContextFactory {
+ +createContext(EffectContextTemplate): EffectContext
+}
+
+note bottom of EffectDescription
+ The EffectDescription is the effect 
+ help text/description text received
+ by Clients.
+end note
+
+note left of EffectService
+ Can launch events like:
+  - Effect applied
+  - Effect not applied
+end note
+
+EffectService *--> EffectBook
+EffectService *--> EffectContextFactory
+
+EffectBook *--> "1..N" Effect
+EffectBook *--> "1..N" EffectDescription
+
+Effect --> EffectContext
+@enduml

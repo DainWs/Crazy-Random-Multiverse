@@ -1,5 +1,0 @@
-@startuml 
-
-Persona *--> "2" Ojo
-
-@enduml 
