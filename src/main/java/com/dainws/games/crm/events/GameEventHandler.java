@@ -6,11 +6,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
-import com.dainws.games.crm.domain.DealerService;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.exception.GameException;
 import com.dainws.games.crm.domain.models.Game;
+import com.dainws.games.crm.domain.models.dealer.Dealer;
 import com.dainws.games.crm.domain.models.player.Player;
 import com.dainws.games.crm.services.GameService;
 
@@ -18,13 +18,13 @@ import com.dainws.games.crm.services.GameService;
 public class GameEventHandler {
 
 	private CommunicationClient communicationClient;
-	private DealerService dealerService;
+	private Dealer dealer;
 	private GameService gameService;
 
-	public GameEventHandler(CommunicationClient communicationClient, DealerService dealerService,
+	public GameEventHandler(CommunicationClient communicationClient, Dealer dealer,
 			GameService gameService) {
 		this.communicationClient = communicationClient;
-		this.dealerService = dealerService;
+		this.dealer = dealer;
 		this.gameService = gameService;
 	}
 
@@ -38,9 +38,9 @@ public class GameEventHandler {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 
-		// TODO extract this to DealerService? Observer pattern needed
+		// TODO extract this to Dealer? Observer pattern needed
 		Game game = event.getDetails().getGame();
-		this.dealerService.dealCardsToPlayerWithTurn(game);
+		this.dealer.dealCardsToPlayerWithTurn(game);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).GAME_END_WITH_WINNER")
@@ -66,9 +66,9 @@ public class GameEventHandler {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 
-		// TODO extract this to DealerService? Observer pattern needed
+		// TODO extract this to Dealer? Observer pattern needed
 		EventDetails eventDetails = event.getDetails();
-		this.dealerService.dealCardsToPlayerWithTurn(eventDetails.getGame());
+		this.dealer.dealCardsToPlayerWithTurn(eventDetails.getGame());
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).ROUND_CHANGE")

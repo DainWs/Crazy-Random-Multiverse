@@ -6,18 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-class CombatantCardTest {
+import com.dainws.games.crm.domain.models.card.statistics.Armor;
+import com.dainws.games.crm.domain.models.card.statistics.ArmorType;
+import com.dainws.games.crm.domain.models.card.statistics.Damage;
+import com.dainws.games.crm.domain.models.card.statistics.DamageType;
+import com.dainws.games.crm.domain.models.card.statistics.Health;
+
+abstract class CombatantCardTest extends CardTest {
 
 	@Test
-	void testGivenCombatantCardWith0Health_whenIsAlive_thenReturnFalse() {
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withNoneArmor()
-				.withHealth(0)
-				.build();
+	final void testGivenCombatantCardWith0Health_whenIsAlive_thenReturnFalse() {
+		Combatant combatantCard = this.createCombatantWithHealth(Health.newInstance(0));
 
 		boolean result = combatantCard.isAlive();
 
@@ -25,15 +24,9 @@ class CombatantCardTest {
 	}
 
 	@Test
-	void testGivenCombatantCardWith1OrMoreHealth_whenIsAlive_thenReturnTrue() {
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withNoneArmor()
-				.withHealth(1)
-				.build();
+	final void testGivenCombatantCardWith1OrMoreHealth_whenIsAlive_thenReturnTrue() {
+		double health = (Math.random() * 100) + 1;
+		Combatant combatantCard = this.createCombatantWithHealth(Health.newInstance(health));
 
 		boolean result = combatantCard.isAlive();
 
@@ -41,85 +34,103 @@ class CombatantCardTest {
 	}
 
 	@Test
-	void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardDamageIncrement() {
-		double combatantCardDamage = 10;
-		Equipment equipment = getEquipmentWithBuffs();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withPhysicalDamage(combatantCardDamage)
-				.withNoneArmor()
-				.withHealth(1)
-				.build();
+	final void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardDamageIncrement() {
+		Damage combatantCardDamage = Damage.newInstance(10, DamageType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithDamage(combatantCardDamage);
+		Equipment equipment = this.getEquipmentWithBuffs();
 
 		combatantCard.equip(equipment);
 
-		boolean result = combatantCardDamage < combatantCard.getDamage().getValue();
+		boolean result = combatantCardDamage.getValue() < combatantCard.getDamage().getValue();
 		assertTrue(result);
 	}
 
 	@Test
-	void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardArmorIncrement() {
-		double combatantCardArmor = 10;
-		Equipment equipment = getEquipmentWithBuffs();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withPhysicalArmor(combatantCardArmor)
-				.withHealth(1)
-				.build();
+	final void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardArmorIncrement() {
+		Armor combatantCardArmor = Armor.newInstance(10, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor); 
+		Equipment equipment = this.getEquipmentWithBuffs();
 
 		combatantCard.equip(equipment);
 
-		boolean result = combatantCardArmor < combatantCard.getArmor().getValue();
+		boolean result = combatantCardArmor.getValue() < combatantCard.getArmor().getValue();
 		assertTrue(result);
 	}
 
 	@Test
-	void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardHealthIncrement() {
-		double combatantCardHealth = 10;
-		Equipment equipment = getEquipmentWithBuffs();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withNoneArmor()
-				.withHealth(combatantCardHealth)
-				.build();
+	final void testGivenCombatantCardAndEquipmentWithBuffs_whenEquipEquipment_thenCombatantCardHealthIncrement() {
+		Health combatantCardHealth = Health.newInstance(10);
+		Combatant combatantCard = this.createCombatantWithHealth(combatantCardHealth);
+		Equipment equipment = this.getEquipmentWithBuffs();
 
 		combatantCard.equip(equipment);
 
-		boolean result = combatantCardHealth < combatantCard.getHealth().getValue();
+		boolean result = combatantCardHealth.getValue() < combatantCard.getHealth().getValue();
 		assertTrue(result);
 	}
 
 	@Test
-	void testGivenCombatantCardAndEquipmentWithDebuffs_whenEquipEquipment_thenCombatantCardDamageDecrease() {
-		double combatantCardDamage = 10;
-		Equipment equipment = Equipment.builder()
-				.withCode(1L)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description")
-				.withDamageDebuff(10)
-				.build();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withPhysicalDamage(combatantCardDamage)
-				.withNoneArmor()
-				.withHealth(1)
-				.build();
+	final void testGivenCombatantCardAndEquipmentWithDebuffs_whenEquipEquipment_thenCombatantCardDamageDecrease() {
+		Damage combatantCardDamage = Damage.newInstance(10, DamageType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithDamage(combatantCardDamage);
+		Equipment equipment = this.getEquipmentWithDebuffs();
 
 		combatantCard.equip(equipment);
 
-		boolean result = combatantCardDamage > combatantCard.getDamage().getValue();
+		boolean result = combatantCardDamage.getValue() > combatantCard.getDamage().getValue();
 		assertTrue(result);
 	}
+
+	@Test
+	final void testGivenCombatantCardAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardArmorIsReduced() {
+		Armor combatantCardArmor = Armor.newInstance(100, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor);
+		Combatant combatant = this.createCombatantCard();
+
+		combatantCard.receiveDamageFrom(combatant);
+
+		boolean isCombatantCardArmorReduced = combatantCard.getArmor().getValue() < combatantCardArmor.getValue();
+		assertTrue(isCombatantCardArmorReduced);
+	}
+
+	@Test
+	final void testGivenCombatantCardWithLowArmorAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardArmorIs0() {
+		Armor combatantCardArmor = Armor.newInstance(10, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor);
+		Combatant combatant = this.createCombatantCard();
+
+		combatantCard.receiveDamageFrom(combatant);
+
+		assertEquals(0, combatantCard.getArmor().getValue());
+	}
+
+	@Test
+	final void testGivenCombatantCardWithLowArmorAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardHealthHasNotChanged() {
+		Armor combatantCardArmor = Armor.newInstance(10, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor);
+		double expectedCombatantCardHealth = combatantCard.getHealth().getValue();
+		Combatant combatant = this.createCombatantCard();
+
+		combatantCard.receiveDamageFrom(combatant);
+
+		assertEquals(expectedCombatantCardHealth, combatantCard.getHealth().getValue());
+	}
+
+	@Test
+	final void testGivenCombatantCardWithLowHealthAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardDead() {
+		Health combatantCardHealth = Health.newInstance(10);
+		Combatant combatantCard = this.createCombatantWithHealth(combatantCardHealth);
+		Combatant combatant = this.createCombatantCard();
+
+		combatantCard.receiveDamageFrom(combatant);
+
+		assertFalse(combatantCard.isAlive());
+	}
+
+	abstract Combatant createCombatantCard();
+	abstract Combatant createCombatantWithDamage(Damage damage);
+	abstract Combatant createCombatantWithArmor(Armor armor);
+	abstract Combatant createCombatantWithHealth(Health health);
 
 	private Equipment getEquipmentWithBuffs() {
 		return Equipment.builder()
@@ -131,89 +142,15 @@ class CombatantCardTest {
 				.withHealthBuff(10)
 				.build();
 	}
-
-	@Test
-	void testGivenCombatantCardAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardArmorIsReduced() {
-		double combatantCardArmor = 100;
-		Combatant combatant = getCombatantCard();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withPhysicalArmor(combatantCardArmor)
-				.withHealth(100)
-				.build();
-
-		combatantCard.receiveDamageFrom(combatant);
-
-		boolean isCombatantCardArmorReduced = combatantCard.getArmor().getValue() < combatantCardArmor;
-		assertTrue(isCombatantCardArmorReduced);
-	}
-
-	@Test
-	void testGivenCombatantCardWithLowArmorAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardArmorIs0() {
-		double combatantCardArmor = 10;
-		Combatant combatant = getCombatantCard();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withPhysicalArmor(combatantCardArmor)
-				.withHealth(100)
-				.build();
-
-		combatantCard.receiveDamageFrom(combatant);
-
-		assertEquals(0, combatantCard.getArmor().getValue());
-	}
-
-	@Test
-	void testGivenCombatantCardWithLowArmorAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardHealthHasNotChanged() {
-		double combatantCardArmor = 10;
-		double expectedCombatantCardHealth = 100;
-		Combatant combatant = getCombatantCard();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withPhysicalArmor(combatantCardArmor)
-				.withHealth(expectedCombatantCardHealth)
-				.build();
-
-		combatantCard.receiveDamageFrom(combatant);
-
-		assertEquals(expectedCombatantCardHealth, combatantCard.getHealth().getValue());
-	}
-
-	@Test
-	void testGivenCombatantCardWithLowHealthAndCombatant_whenCombatantCardReceiveDamageFromCombatant_thenCombatantCardDead() {
-		double expectedCombatantCardHealth = 30;
-		Combatant combatant = getCombatantCard();
-		Combatant combatantCard = Warrior.rareWarriorBuilder()
-				.withCode(0L)
-				.withName("test-combatantCard")
-				.withDescription("test-combatantCard_description")
-				.withNoneDamage()
-				.withNoneArmor()
-				.withHealth(expectedCombatantCardHealth)
-				.build();
-
-		combatantCard.receiveDamageFrom(combatant);
-
-		assertFalse(combatantCard.isAlive());
-	}
-
-	private Combatant getCombatantCard() {
-		return Warrior.rareWarriorBuilder()
+	
+	private Equipment getEquipmentWithDebuffs() {
+		return Equipment.builder()
 				.withCode(1L)
-				.withName("test-combatant")
-				.withDescription("test-combatant_description")
-				.withPhysicalDamage(50)
-				.withNoneArmor()
-				.withHealth(100)
+				.withName("test-equipment")
+				.withDescription("test-equipment_description")
+				.withDamageDebuff(10)
+				.withArmorDebuff(10)
+				.withHealthDebuff(10)
 				.build();
 	}
 }

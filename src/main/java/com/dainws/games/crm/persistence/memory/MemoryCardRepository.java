@@ -1,9 +1,9 @@
 package com.dainws.games.crm.persistence.memory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.dainws.games.crm.domain.exception.CardNotFoundException;
@@ -71,42 +71,33 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public Warrior drawWarrior(WarriorRarity rarity) {
-		// TODO should use findWarriorsByRarity
 		List<Card> cards = this.findWarriorsByRarity(rarity);
 
-		// TODO Feat: List should be shorted randomly (shuffle) and get top one?
-		int randomCardIndex = this.getRandomCardIndex(cards.size());
-		return (Warrior) cards.get(randomCardIndex);
+	    Collections.shuffle(cards);
+		return (Warrior) cards.get(0);
 	}
 
 	@Override
 	public Equipment drawEquipment() {
 		List<Card> cards = this.findByCardType(CardType.EQUIPMENT);
 
-		// TODO Feat: List should be shorted randomly (shuffle) and get top one?
-		int randomCardIndex = this.getRandomCardIndex(cards.size());
-		return (Equipment) cards.get(randomCardIndex);
+	    Collections.shuffle(cards);
+		return (Equipment) cards.get(0);
 	}
 
 	@Override
 	public Leader drawLeader() {
 		List<Card> cards = this.findByCardType(CardType.LEADER);
 
-		// TODO Feat: List should be shorted randomly (shuffle) and get top one?
-		int randomCardIndex = this.getRandomCardIndex(cards.size());
-		return (Leader) cards.get(randomCardIndex);
+	    Collections.shuffle(cards);
+		return (Leader) cards.get(0);
 	}
 
 	@Override
 	public Spell drawSpell() {
 		List<Card> cards = this.findByCardType(CardType.SPELL);
 
-		// TODO Feat: List should be shorted randomly (shuffle) and get top one?
-		int randomCardIndex = this.getRandomCardIndex(cards.size());
-		return (Spell) cards.get(randomCardIndex);
-	}
-
-	private int getRandomCardIndex(int maxIndex) {
-		return new Random().nextInt(maxIndex);
+	    Collections.shuffle(cards);
+		return (Spell) cards.get(0);
 	}
 }

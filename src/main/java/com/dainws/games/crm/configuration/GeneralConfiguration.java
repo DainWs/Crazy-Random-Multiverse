@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.dainws.games.crm.domain.ActionService;
-import com.dainws.games.crm.domain.DealerService;
 import com.dainws.games.crm.domain.GameStateManager;
 import com.dainws.games.crm.domain.PlayerService;
 import com.dainws.games.crm.domain.RoundService;
 import com.dainws.games.crm.domain.models.action.ActionContextFactory;
+import com.dainws.games.crm.domain.models.dealer.Dealer;
 import com.dainws.games.crm.domain.models.dealer.Deck;
 
 @Configuration
@@ -19,8 +19,8 @@ public class GeneralConfiguration {
 	}
 
 	@Bean
-	public DealerService dealerService(Deck deck) {
-		return new DealerService(deck);
+	public Dealer dealer(Deck deck) {
+		return new Dealer(deck);
 	}
 
 	@Bean

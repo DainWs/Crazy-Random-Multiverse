@@ -33,6 +33,11 @@ public class Warrior extends Combatant {
 		return rarity;
 	}
 
+	public static Builder warriorBuilder(WarriorRarity rarity) {
+		Objects.requireNonNull(rarity);
+		return new Builder(rarity);
+	}
+	
 	public static Builder commonWarriorBuilder() {
 		return new Builder(WarriorRarity.COMMON);
 	}

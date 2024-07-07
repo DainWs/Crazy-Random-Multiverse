@@ -26,7 +26,7 @@ public class PlayerEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_RECEIVE_CARD")
 	public void onPlayerReceiveCard(Event event) throws InterruptedException {
-		// TODO extract this to DealerService
+		// TODO extract this to Dealer
 		EventDetails details = event.getDetails();
 		Player targetPlayer = details.getTargetPlayer();
 		this.sendEventToPlayer(event, targetPlayer);

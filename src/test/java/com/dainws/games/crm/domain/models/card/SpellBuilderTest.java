@@ -6,17 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.domain.builder.DomainCardBuilder;
+
 class SpellBuilderTest {
 
 	Spell.Builder builder;
 
 	@BeforeEach
 	void beforeEach() {
-		this.builder = Spell.builder()
-				.withCode(1)
-				.withEffect(1)
-				.withName("test-spell")
-				.withDescription("test-spell_description");
+		this.builder = new DomainCardBuilder().useSpell()
+				.withCode(0)
+				.withName("test_spell_0_name")
+				.withDescription("test_spell_0_description")
+				.withEffect(0);
 	}
 
 	@Test
@@ -57,4 +59,5 @@ class SpellBuilderTest {
 	void testGivenBuilderWithAllRequiredFields_whenBuild_thenDoNotThrowException() {
 		assertDoesNotThrow(() -> this.builder.build());
 	}
+
 }

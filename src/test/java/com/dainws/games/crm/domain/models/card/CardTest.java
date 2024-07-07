@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-class CardTest {
+abstract class CardTest {
 
 	@Test
-	void testGivenTwoCardWithSameCodeAndDifferentType_whenEquals_thenReturnFalse() {
+	final void testGivenTwoCardWithSameCodeAndDifferentType_whenEquals_thenReturnFalse() {
 		long code = 1;
-		Card cardOne = this.createWarriorCardTypeWithCode(code);
-		Card cardTwo = this.createEquipmentCardTypeWithCode(code);
+		Card cardOne = this.createCardWithCode(code);
+		Card cardTwo = this.createDifferentCardTypeWithCode(code);
 		
 		boolean result = cardOne.equals(cardTwo);
 		
@@ -19,11 +19,11 @@ class CardTest {
 	}
 	
 	@Test
-	void testGivenTwoCardWithSameTypeAndDifferentCode_whenEquals_thenReturnFalse() {
+	final void testGivenTwoCardWithSameTypeAndDifferentCode_whenEquals_thenReturnFalse() {
 		long codeOne = 1;
 		long codeTwo = 2;
-		Card cardOne = this.createWarriorCardTypeWithCode(codeOne);
-		Card cardTwo = this.createWarriorCardTypeWithCode(codeTwo);
+		Card cardOne = this.createCardWithCode(codeOne);
+		Card cardTwo = this.createCardWithCode(codeTwo);
 
 		boolean result = cardOne.equals(cardTwo);
 		
@@ -31,32 +31,16 @@ class CardTest {
 	}
 	
 	@Test
-	void testGivenTwoCardWithSameCodeAndType_whenEquals_thenReturnTrue() {
+	final void testGivenTwoCardWithSameCodeAndType_whenEquals_thenReturnTrue() {
 		long code = 1;
-		Card cardOne = this.createWarriorCardTypeWithCode(code);
-		Card cardTwo = this.createWarriorCardTypeWithCode(code);
+		Card cardOne = this.createCardWithCode(code);
+		Card cardTwo = this.createCardWithCode(code);
 
 		boolean result = cardOne.equals(cardTwo);
 		
 		assertTrue(result);
 	}
 
-	private Card createWarriorCardTypeWithCode(long code) {
-		return Warrior.commonWarriorBuilder()
-				.withCode(code)
-				.withName("test-warrior")
-				.withDescription("test-warrior_description")
-				.withNoneDamage()
-				.withNoneArmor()
-				.withHealth(1)
-				.build();
-	}
-
-	private Card createEquipmentCardTypeWithCode(long code) {
-		return Equipment.builder()
-				.withCode(code)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description")
-				.build();
-	}
+	abstract Card createCardWithCode(long code);
+	abstract Card createDifferentCardTypeWithCode(long code);
 }

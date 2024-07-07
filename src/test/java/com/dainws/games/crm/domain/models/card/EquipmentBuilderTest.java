@@ -13,7 +13,7 @@ class EquipmentBuilderTest {
 	@BeforeEach
 	void beforeEach() {
 		this.builder = Equipment.builder()
-				.withCode(1L)
+				.withCode(0)
 				.withName("test-equipment")
 				.withDescription("test-equipment_description");
 	}

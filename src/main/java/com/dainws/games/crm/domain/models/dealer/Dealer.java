@@ -2,25 +2,60 @@ package com.dainws.games.crm.domain.models.dealer;
 
 import java.util.List;
 
+import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
+import com.dainws.games.crm.domain.event.Event;
+import com.dainws.games.crm.domain.event.EventCode;
+import com.dainws.games.crm.domain.event.EventDetails;
+import com.dainws.games.crm.domain.event.EventPublisher;
+import com.dainws.games.crm.domain.event.EventTrigger;
+import com.dainws.games.crm.domain.models.Game;
 import com.dainws.games.crm.domain.models.card.Card;
+import com.dainws.games.crm.domain.models.player.Hand;
+import com.dainws.games.crm.domain.models.player.Player;
 
-public final class Dealer {
+public class Dealer implements EventTrigger {
 	private Deck deck;
-	private DealStrategy strategy;
+	private DealStrategyFactory dealStrategyFactory;
+	private EventPublisher eventPublisher;
 
 	public Dealer(Deck deck) {
 		this.deck = deck;
+		this.dealStrategyFactory = new ClassicDealStrategyFactory();
+		this.eventPublisher = new ConsoleEventPublisher();
 	}
 
-	public void setStrategy(DealStrategy strategy) {
-		this.strategy = strategy;
+	public void dealCardsToPlayerWithTurn(Game game) {
+		DealStrategy strategy = this.dealStrategyFactory.createStrategy(game.getRound());
+		Player player = game.getPlayerWithTurn();
+
+		this.dealCardsToPlayer(game, player, strategy);
 	}
 
-	public List<Card> dealCards() {
-		return this.strategy.drawFrom(this.deck);
+	public void dealCardsToPlayer(Game game, Player player, DealStrategy dealStrategy) {
+		List<Card> dealedCards = dealStrategy.drawFrom(this.deck);
+
+		Hand playerHand = player.getHand();
+		for (Card card : dealedCards) {
+			playerHand.addCard(card);
+			this.notifyDealedCardToPlayer(game, player, card);
+		}
 	}
-	
-	public List<Card> dealCards(DealStrategy customDealStrategy) {
-		return customDealStrategy.drawFrom(this.deck);
+
+	private void notifyDealedCardToPlayer(Game game, Player player, Card card) {
+		EventDetails details = new EventDetails();
+		details.setGame(game);
+		details.setTargetPlayer(player);
+		details.setTargetCard(card);
+		Event event = new Event(EventCode.PLAYER_RECEIVE_CARD, details);
+		this.eventPublisher.publish(event);
+	}
+
+	public void setDealStrategyFactory(DealStrategyFactory classicDealStrategyFactory) {
+		this.dealStrategyFactory = classicDealStrategyFactory;
+	}
+
+	@Override
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 	}
 }
