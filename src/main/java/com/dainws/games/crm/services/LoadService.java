@@ -16,11 +16,11 @@ import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.event.EventPublisher;
 import com.dainws.games.crm.domain.event.EventTrigger;
+import com.dainws.games.crm.domain.exception.GameNotFoundException;
 import com.dainws.games.crm.domain.models.Game;
 import com.dainws.games.crm.domain.models.GameCode;
 import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.player.PlayerCode;
-import com.dainws.games.crm.persistence.exception.GameNotFoundException;
 
 @Service
 public class LoadService implements EventTrigger {

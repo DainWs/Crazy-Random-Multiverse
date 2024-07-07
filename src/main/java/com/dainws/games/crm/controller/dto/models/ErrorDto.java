@@ -8,9 +8,6 @@ public class ErrorDto {
 
 	@JsonProperty(value = "value")
 	private String value;
-
-	@JsonProperty(value = "language")
-	private String language;
 	
 	public void setKey(String key) {
 		this.key = key;
@@ -26,13 +23,5 @@ public class ErrorDto {
 	
 	public String getValue() {
 		return value;
-	}
-	
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	
-	public String getLanguage() {
-		return language;
 	}
 }

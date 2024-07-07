@@ -14,7 +14,6 @@ public class CommunicationMapper {
 		Text text = error.getText();
 		errorDto.setKey(text.getKey().getValue());
 		errorDto.setValue(text.getValue());
-		errorDto.setLanguage(text.getLanguage().getIsoAlphaTwo());
 		return errorDto;
 	}
 

@@ -53,7 +53,7 @@ public class PutAction extends PlayerTurnAction {
 		}
 
 		if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_SELECTED_CARD_IS_NOT_A_COMBATANT");
+			throw new PlayerActionException(sourcePlayer, "EXCEPTION_SELECTED_CARD_IS_NOT_COMBATANT");
 		}
 
 		if (context.getTargetZone().hasCombatant(context.getTargetCoordinate())) {

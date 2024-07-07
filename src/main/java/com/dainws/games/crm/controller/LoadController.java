@@ -7,12 +7,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.crm.domain.exception.UserNotFoundException;
 import com.dainws.games.crm.domain.models.GameCode;
 import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.UserCode;
 import com.dainws.games.crm.domain.translator.Translatable;
-import com.dainws.games.crm.persistence.exception.GameNotFoundException;
-import com.dainws.games.crm.persistence.exception.UserNotFoundException;
 import com.dainws.games.crm.services.LoadService;
 import com.dainws.games.crm.services.UserService;
 

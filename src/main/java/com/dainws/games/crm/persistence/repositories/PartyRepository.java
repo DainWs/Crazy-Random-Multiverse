@@ -2,10 +2,10 @@ package com.dainws.games.crm.persistence.repositories;
 
 import java.util.List;
 
+import com.dainws.games.crm.domain.exception.PartyNotFoundException;
 import com.dainws.games.crm.domain.models.Party;
 import com.dainws.games.crm.domain.models.PartyCode;
 import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.persistence.exception.PartyNotFoundException;
 
 public interface PartyRepository {
 	void save(Party party);

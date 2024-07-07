@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.exception.PartyException;
+import com.dainws.games.crm.domain.exception.PartyNotFoundException;
 import com.dainws.games.crm.domain.models.Party;
 import com.dainws.games.crm.domain.models.PartyCode;
 import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.persistence.exception.PartyNotFoundException;
 import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 @Service
@@ -23,7 +23,7 @@ public class PartyService {
 
 	public void createParty(User partyOwner) throws PartyException {
 		if (this.partyRepository.hasPartyWhereUserIsPresent(partyOwner)) {
-			throw new PartyException("USER_ALREADY_IN_PARTY");
+			throw new PartyException("EXCEPTION_USER_ALREADY_IN_PARTY");
 		}
 
 		Party party = new Party(partyOwner);
@@ -34,7 +34,7 @@ public class PartyService {
 
 	public void joinParty(PartyCode partyCode, User user) throws PartyException {
 		if (this.partyRepository.hasPartyWhereUserIsPresent(user)) {
-			throw new PartyException("USER_ALREADY_IN_PARTY");
+			throw new PartyException("EXCEPTION_USER_ALREADY_IN_PARTY");
 		}
 
 		Party party = this.partyRepository.find(partyCode);

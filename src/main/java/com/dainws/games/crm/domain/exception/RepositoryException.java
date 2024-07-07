@@ -1,6 +1,5 @@
 package com.dainws.games.crm.domain.exception;
 
-import com.dainws.games.crm.domain.translator.Language;
 import com.dainws.games.crm.domain.translator.Translatable;
 import com.dainws.games.crm.domain.translator.TranslatableKey;
 

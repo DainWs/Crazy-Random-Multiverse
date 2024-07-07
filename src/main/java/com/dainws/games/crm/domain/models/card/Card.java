@@ -2,7 +2,6 @@ package com.dainws.games.crm.domain.models.card;
 
 import java.util.Objects;
 
-import com.dainws.games.crm.domain.translator.Language;
 import com.dainws.games.crm.domain.translator.Text;
 
 public abstract class Card {
@@ -12,8 +11,14 @@ public abstract class Card {
 
 	protected Card(long code, String name, String description) {
 		this.code = new CardCode(code, this.getType());
-		this.name = new Text("CARD_NAME", name);
-		this.description = new Text("CARD_DESCRIPTION", name);
+		
+		String lowercaseType = this.getType().name().toLowerCase();
+		String cardTextCode = "%s.%s".formatted(lowercaseType, code);
+		String cardNameKey = "card_info.%s.name".formatted(cardTextCode);
+		String cardDescriptionKey = "card_info.%s.description".formatted(cardTextCode);
+		
+		this.name = new Text(cardNameKey, name);
+		this.description = new Text(cardDescriptionKey.formatted(cardTextCode), name);
 	}
 
 	public final CardCode getCode() {
