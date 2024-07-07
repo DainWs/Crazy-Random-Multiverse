@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.dainws.games.crm.domain.models.Game;
 import com.dainws.games.crm.domain.models.GameCode;
 import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.ports.GameRepository;
-import com.dainws.games.crm.domain.ports.PartyRepository;
+import com.dainws.games.crm.persistence.repositories.GameRepository;
+import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 @Service
 public class GameService {

@@ -30,9 +30,4 @@ public class RepositoryException extends RuntimeException implements Translatabl
 		return this.getMessage();
 	}
 
-	@Override
-	public Language getLanguage() {
-		return Language.UNKNOWN_LANGUAGE;
-	}
-
 }

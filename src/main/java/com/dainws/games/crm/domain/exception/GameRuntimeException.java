@@ -41,11 +41,6 @@ public class GameRuntimeException extends RuntimeException implements Translatab
 		return this.getMessage();
 	}
 
-	@Override
-	public Language getLanguage() {
-		return Language.UNKNOWN_LANGUAGE;
-	}
-
 	public Error toError() {
 		return new Error(new Text(this.messageKey));
 	}

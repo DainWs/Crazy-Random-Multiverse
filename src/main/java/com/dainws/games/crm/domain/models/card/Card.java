@@ -12,8 +12,8 @@ public abstract class Card {
 
 	protected Card(long code, String name, String description) {
 		this.code = new CardCode(code, this.getType());
-		this.name = new Text("CARD_NAME", name, Language.UNKNOWN_LANGUAGE);
-		this.description = new Text("CARD_DESCRIPTION", name, Language.UNKNOWN_LANGUAGE);
+		this.name = new Text("CARD_NAME", name);
+		this.description = new Text("CARD_DESCRIPTION", name);
 	}
 
 	public final CardCode getCode() {

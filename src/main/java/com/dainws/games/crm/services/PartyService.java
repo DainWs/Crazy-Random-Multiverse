@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.exception.PartyException;
-import com.dainws.games.crm.domain.exception.PartyNotFoundException;
 import com.dainws.games.crm.domain.models.Party;
 import com.dainws.games.crm.domain.models.PartyCode;
 import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.ports.PartyRepository;
+import com.dainws.games.crm.persistence.exception.PartyNotFoundException;
+import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 @Service
 public class PartyService {

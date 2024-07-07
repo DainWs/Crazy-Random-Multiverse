@@ -5,28 +5,23 @@ import java.util.Objects;
 public class Text implements Translatable {
 	private TranslatableKey key;
 	private String value;
-	private Language language;
 
 	public Text(String key) {
 		this.key = new TranslatableKey(key);
-		this.language = Language.UNKNOWN_LANGUAGE;
 	}
 	
 	public Text(TranslatableKey key) {
 		this.key = key;
-		this.language = Language.UNKNOWN_LANGUAGE;
 	}
 	
-	public Text(String key, String value, Language language) {
+	public Text(String key, String value) {
 		this.key = new TranslatableKey(key);
 		this.value = value;
-		this.language = language;
 	}
 	
-	public Text(TranslatableKey key, String value, Language language) {
+	public Text(TranslatableKey key, String value) {
 		this.key = key;
 		this.value = value;
-		this.language = language;
 	}
 
 	@Override
@@ -37,11 +32,6 @@ public class Text implements Translatable {
 	@Override
 	public String getValue() {
 		return value;
-	}
-
-	@Override
-	public Language getLanguage() {
-		return language;
 	}
 
 	@Override

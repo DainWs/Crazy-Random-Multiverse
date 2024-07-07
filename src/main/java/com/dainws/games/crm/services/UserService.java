@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.UserCode;
-import com.dainws.games.crm.domain.ports.UserRepository;
+import com.dainws.games.crm.persistence.repositories.UserRepository;
 
 @Service
 public class UserService {

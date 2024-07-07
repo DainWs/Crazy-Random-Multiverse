@@ -8,7 +8,7 @@ import com.dainws.games.crm.domain.models.Party;
 import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.player.Player;
 import com.dainws.games.crm.domain.models.player.PlayerCode;
-import com.dainws.games.crm.domain.ports.PartyRepository;
+import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 public class GameFactory {
 	private PartyRepository partyRepository;
