@@ -39,19 +39,24 @@ Sorry, this is not implemented yet 😥
 
 ## Requirements
 
-You can find the requirements [here](docs/REQUIREMENTS.md)
+You can find the requirements [here](docs/Requirements.md)
 
 ## Features
 
 Did you think we wouldn't prepare the project to be easy to reuse? We think you were wrong, here you have a list of 
 current and future features that will make the project more ease to reuse:
 
- - [X] Memory persistence implementation (Cards, Games, Parties and Users)
- - [ ] XML File persistence implementation (Cards, Games, Parties and Users)
- - [ ] JSON File persistence implementation (Cards, Games, Parties and Users)
- - [ ] DB persistence implementation (Cards, Games, Parties and Users)
+ - Persistence
+ 	- [X] Memory persistence implementation (Cards, Games, Parties and Users)
+ 	- [ ] XML File persistence implementation (Cards, Games, Parties and Users)
+ 	- [ ] JSON File persistence implementation (Cards, Games, Parties and Users)
+ 	- [ ] DB persistence implementation (Cards, Games, Parties and Users)
 
- - [X] Users custom implementations with **java**.
+ - Languages
+ 	- [ ] Custom language implementations.
+
+ - Coding
+ 	- [X] Users custom implementations with **java**.
 
 but otherwise, we don't plan to implement the following (for now, maybe tomorrow?)
 
