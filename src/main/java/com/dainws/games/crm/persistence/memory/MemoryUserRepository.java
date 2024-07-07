@@ -6,10 +6,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dainws.games.crm.domain.exception.UserNotFoundException;
 import com.dainws.games.crm.domain.models.User;
 import com.dainws.games.crm.domain.models.UserCode;
-import com.dainws.games.crm.domain.ports.UserRepository;
+import com.dainws.games.crm.persistence.exception.UserNotFoundException;
+import com.dainws.games.crm.persistence.repositories.UserRepository;
 
 public class MemoryUserRepository implements UserRepository {
 

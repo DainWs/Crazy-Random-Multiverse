@@ -1,8 +1,8 @@
-package com.dainws.games.crm.domain.ports;
+package com.dainws.games.crm.persistence.repositories;
 
-import com.dainws.games.crm.domain.exception.GameNotFoundException;
 import com.dainws.games.crm.domain.models.Game;
 import com.dainws.games.crm.domain.models.GameCode;
+import com.dainws.games.crm.persistence.exception.GameNotFoundException;
 
 public interface GameRepository {
 	void save(Game game);

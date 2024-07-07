@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.dainws.games.crm.domain.exception.CardError;
+import com.dainws.games.crm.domain.exception.CardException;
 import com.dainws.games.crm.domain.exception.CardNotFoundException;
 import com.dainws.games.crm.domain.models.card.Card;
 import com.dainws.games.crm.domain.models.card.CardCode;
@@ -16,7 +18,7 @@ import com.dainws.games.crm.domain.models.card.Spell;
 import com.dainws.games.crm.domain.models.card.Warrior;
 import com.dainws.games.crm.domain.models.card.WarriorRarity;
 import com.dainws.games.crm.domain.models.dealer.Deck;
-import com.dainws.games.crm.domain.ports.CardRepository;
+import com.dainws.games.crm.persistence.repositories.CardRepository;
 
 public class MemoryCardRepository implements CardRepository, Deck {
 	private Map<CardCode, Card> cards;
@@ -39,12 +41,12 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	}
 
 	@Override
-	public Card find(CardCode cardCode) throws CardNotFoundException {
+	public Card find(CardCode cardCode) throws CardException {
 		if (this.has(cardCode)) {
 			return this.cards.get(cardCode);
 		}
 
-		throw new CardNotFoundException();
+		throw new CardException(CardError.CARD_NOT_FOUND);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.ports;
+package com.dainws.games.crm.persistence.repositories;
 
 import java.util.List;
 
