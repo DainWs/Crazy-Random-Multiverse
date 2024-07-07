@@ -53,7 +53,7 @@ current and future features that will make the project more ease to reuse:
  	- [ ] DB persistence implementation (Cards, Games, Parties and Users)
 
  - Languages
- 	- [ ] Custom language implementations.
+ 	- [X] Custom language implementations.
 
  - Coding
  	- [X] Users custom implementations with **java**.
