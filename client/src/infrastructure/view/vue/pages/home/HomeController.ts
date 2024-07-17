@@ -18,10 +18,20 @@ const onCreditsClick = () => {
   router.push('/credits');
 };
 
+const onPreviewClick = () => {
+  if (isInDevelopment()) {
+    router.push('/preview');
+  }
+};
+
 const onExitClick = () => {
   if (isNotBrowserPlatform()) {
     // TODO interface to close app not defined
   }
+};
+
+const isInDevelopment = () => {
+  return process.env.NODE_ENV === 'development';
 };
 
 const isNotBrowserPlatform = () => {
@@ -29,10 +39,12 @@ const isNotBrowserPlatform = () => {
 };
 
 export default {
+  isInDevelopment,
   isNotBrowserPlatform,
   onCreatePartyClick,
   onJoinPartyClick,
   onSettingsClick,
   onCreditsClick,
+  onPreviewClick,
   onExitClick
 };

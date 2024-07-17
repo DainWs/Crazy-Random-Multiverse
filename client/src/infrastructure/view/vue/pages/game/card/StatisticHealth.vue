@@ -11,7 +11,7 @@ const props = defineProps(['value', 'maxValue']);
 
 <template v-if="value !== undefined">
     <div class="health">
-        {{ value }} <span v-if="maxValue">/ {{ maxValue }}</span>
+        {{ value }} <span v-if="maxValue">/ {{ maxValue }}</span> HP
     </div>
 </template>
 

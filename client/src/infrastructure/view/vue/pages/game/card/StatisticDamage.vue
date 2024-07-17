@@ -11,10 +11,10 @@ const props = defineProps(['value', 'type']);
 
 <template v-if="value !== undefined">
     <div class="damage">
-        {{ value }}
-        <div>
-            {{ type }}
-        </div>
+        {{ value }}&nbsp;
+        <span>
+            {{ type }} DAMAGE
+        </span>
     </div>
 </template>
 

@@ -2,11 +2,13 @@
 import AppLogo from '@vue-components/shared/AppLogo.vue'
 import AppButton from '@vue-components/shared/AppButton.vue';
 import homeController from '@/infrastructure/view/vue/pages/home/HomeController';
+const isInDevelopment = homeController.isInDevelopment();
 const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
 const onCreatePartyClick = homeController.onCreatePartyClick;
 const onJoinPartyClick = homeController.onJoinPartyClick;
 const onSettingsClick = homeController.onSettingsClick;
 const onCreditsClick = homeController.onCreditsClick;
+const onPreviewClick = homeController.onPreviewClick;
 const onExitClick = homeController.onExitClick;
 </script>
 
@@ -24,7 +26,9 @@ const onExitClick = homeController.onExitClick;
           <AppButton tabindex="2" text="Unirse a partida" class-name="menu__item" @click="onJoinPartyClick" />
           <AppButton tabindex="3" text="Ajustes" class-name="menu__item" @click="onSettingsClick" />
           <AppButton tabindex="4" text="Creditos" class-name="menu__item" @click="onCreditsClick" />
-          <AppButton v-if="isNotBrowserPlatform" tabindex="5" text="Salir" class-name="menu__item"
+          <AppButton v-if="isInDevelopment" tabindex="5" text="Preview" class-name="menu__item"
+            @click="onPreviewClick" />
+          <AppButton v-if="isNotBrowserPlatform" tabindex="6" text="Salir" class-name="menu__item"
             @click="onExitClick" />
         </div>
       </div>

@@ -15,10 +15,15 @@ $row-height: calc($card-height / $num-rows);
 .gcard {
   margin: 0;
   padding: 0;
+  border: 1px solid black;
   border-radius: 0.6rem;
   width: $card-width;
   height: $card-height;
-  //aspect-ratio: $card-aspect-ratio-width / $card-aspect-ratio-height;
+
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
 
   background-color: white;
 
@@ -67,24 +72,49 @@ $row-height: calc($card-height / $num-rows);
     grid-column-end: -(math.round(calc($num-columns / 4)));
   }
 
-  &.leader {
+  &__tooltip {
+    visibility: hidden;
+    width: $card-width;
+    height: $card-height;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    left: 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
   }
-  &.equipment {
-  }
-  &.spell {
-  }
+
+  &.leader {}
+
+  &.equipment {}
+
+  &.spell {}
+
   &.warrior {
-    &.common {
-    }
-    &.uncommon {
-    }
-    &.rare {
-    }
-    &.epic {
-    }
-    &.legendary {
-    }
-    &.mithic {
+    &.common {}
+
+    &.uncommon {}
+
+    &.rare {}
+
+    &.epic {}
+
+    &.legendary {}
+
+    &.mithic {}
+  }
+
+  &:hover {
+    z-index: 10000;
+    transform: scale(1.2);
+
+    .gcard__tooltip {
+      visibility: visible;
+      opacity: 1;
     }
   }
 }

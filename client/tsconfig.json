@@ -16,18 +16,18 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@api/*": ["src/infrastructure/api/*"],
-      "@repositories/*": ["src/infrastructure/repositories/*"],
-      "@view/*": ["src/infrastructure/view/*"],
-      "@assets/*": ["src/infrastructure/view/assets/*"],
-      "@vue-root/*": ["src/infrastructure/view/vue/*"],
-      "@vue-pages/*": ["src/infrastructure/view/vue/pages/*"],
       "@vue-components/*": [
         "src/infrastructure/view/vue/components/*",
         "src/infrastructure/view/vue/pages/settings/components/*",
         "src/infrastructure/view/vue/pages/game/components/*"
       ],
+      "@vue-pages/*": ["src/infrastructure/view/vue/pages/*"],
+      "@vue-root/*": ["src/infrastructure/view/vue/*"],
+      "@assets/*": ["src/infrastructure/view/assets/*"],
+      "@view/*": ["src/infrastructure/view/*"],
+      "@repositories/*": ["src/infrastructure/repositories/*"],
+      "@api/*": ["src/infrastructure/api/*"],
+      "@/*": ["src/*"],
 
       "@test/*": ["test/*"]
     },

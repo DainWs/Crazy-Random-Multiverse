@@ -1,0 +1,24 @@
+.dws {
+  &--title {
+    margin-bottom: 2.5rem;
+  }
+
+  &--tile {
+    height: 100%;
+  }
+
+  &__scrollable {
+    max-height: 80%;
+    overflow-y: scroll;
+  }
+
+  &--cards-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > * {
+      margin: 3px;
+      color: black;
+    }
+  }
+}

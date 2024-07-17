@@ -6,6 +6,7 @@ import HomePage from '@vue-pages/home/HomePage.vue';
 import GamePage from '@vue-pages/game/GamePage.vue';
 import PartyPage from '@vue-pages/party/PartyPage.vue';
 import PartyListPage from '@vue-pages/partyList/PartyListPage.vue';
+import PreviewPage from '@vue-pages/preview/PreviewPage.vue';
 import CreditsPage from '@vue-pages/credits/CreditsPage.vue';
 import SettingsPage from '@vue-pages/settings/SettingsPage.vue';
 import GeneralSettings from '@vue-pages/settings/components/GeneralSettings.vue';
@@ -42,6 +43,10 @@ const router = createRouter({
           component: GeneralSettings
         }
       ]
+    },
+    {
+      path: '/preview',
+      component: PreviewPage
     },
     {
       path: '/credits',
