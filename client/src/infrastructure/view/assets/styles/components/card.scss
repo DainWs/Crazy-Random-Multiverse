@@ -112,7 +112,7 @@ $row-height: calc($card-height / $num-rows);
     z-index: 10000;
     transform: scale(1.2);
 
-    .gcard__tooltip {
+    &:not(:active) .gcard__tooltip {
       visibility: visible;
       opacity: 1;
     }

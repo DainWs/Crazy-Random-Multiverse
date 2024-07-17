@@ -8,8 +8,8 @@ const onBackClick = previewController.onBackClick;
 <template>
   <div class="dws--content">
     <div class="dws--tile">
-      <h1 class="dws--title">Credits</h1>
-      <img src="@assets/images/close-large.svg" class="dws--credits--close" @click="onBackClick" />
+      <h1 class="dws--title">Preview</h1>
+      <img src="@assets/images/close-large.svg" class="dws--close" @click="onBackClick" />
       <section class="dws__scrollable dws--cards-list">
         <CardComponent v-for="card in cards" :key="card.code.toString()" :card="card"></CardComponent>
       </section>
