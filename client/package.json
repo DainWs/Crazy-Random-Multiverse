@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
-    "bootstrap": "^5.2.3",
     "vue": "3.4.25",
     "vue-router": "4.0.3"
   },

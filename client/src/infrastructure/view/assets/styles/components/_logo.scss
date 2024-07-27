@@ -1,0 +1,26 @@
+@use '../animations/index' as Animations;
+
+.logo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  margin: 0;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  width: 100px;
+  height: 100px;
+
+  overflow: hidden;
+}
+
+.logo--container {
+  @include Animations.lightningRotation();
+}
+
+.logo--image {
+  border-radius: 50%;
+}

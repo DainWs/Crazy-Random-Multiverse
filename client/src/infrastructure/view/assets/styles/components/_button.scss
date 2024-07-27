@@ -8,6 +8,10 @@
   background-color: rgb(255, 196, 0);
   margin-bottom: 3%;
 
+  &:focus {
+    box-shadow: none;
+  }
+
   &:hover {
     color: rgb(255, 196, 0);
   }
@@ -126,48 +130,48 @@
   user-select: none;
 
   &--primary {
-    color: $golden-darken;
-    background-color: $golden;
+    //color: $golden-darken;
+    //background-color: $golden;
   
     &:active,
     &:hover {
-      color: $golden;
-      background-color: $golden-darken;
+      //color: $golden;
+      //background-color: $golden-darken;
     }
   }
 
   &--secondary {
-    color: $gray-lighten;
-    background-color: $gray-darken;
+    //color: $gray-lighten;
+    //background-color: $gray-darken;
   
     &:active,
     &:hover {
-      color: $gray-lighten;
-      background-color: $gray;
+      //color: $gray-lighten;
+      //background-color: $gray;
     }
   }
 
   &--tertiary {
-    color: $golden;
-    border-color: $golden;
-    background-color: $transparent;
+    //color: $golden;
+    //border-color: $golden;
+    //background-color: $transparent;
   
     &:active,
     &:hover {
-      color: $golden;
-      border-color: $golden;
-      background-color: $golden-darken;
+      //color: $golden;
+      //border-color: $golden;
+      //background-color: $golden-darken;
     }
   }
 
   &--ghost {
-    color: $link;
-    background-color: $transparent;
+    //color: $link;
+    //background-color: $transparent;
   
     &:active,
     &:hover {
-      color: $link;
-      background-color: $link-darken;
+      //color: $link;
+      //background-color: $link-darken;
     }
   }
 }

@@ -1,2 +1,3 @@
-@use 'logo_animations.scss';
-@use 'button_animations.scss';
+@forward 'rotate';
+@forward 'button_animations';
+@forward 'lightning_rotation';

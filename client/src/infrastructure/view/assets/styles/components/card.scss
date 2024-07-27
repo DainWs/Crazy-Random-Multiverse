@@ -109,12 +109,17 @@ $row-height: calc($card-height / $num-rows);
   }
 
   &:hover {
-    z-index: 10000;
-    transform: scale(1.2);
+    &:active {
+      opacity: 50;
+    }
+    &:not(:active) {
+      z-index: 10000;
+      transform: scale(1.2);
 
-    &:not(:active) .gcard__tooltip {
-      visibility: visible;
-      opacity: 1;
+      .gcard__tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
     }
   }
 }

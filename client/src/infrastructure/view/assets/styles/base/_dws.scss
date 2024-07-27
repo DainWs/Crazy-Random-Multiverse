@@ -6,6 +6,10 @@ main {
   height: 100%;
 }
 
-main {
-  background-image: url(@assets/images/background.png);
+.dws--side-nav--ux {
+  inset-block-start: 0;
+}
+
+.dws--btn:focus {
+  box-shadow: none;
 }

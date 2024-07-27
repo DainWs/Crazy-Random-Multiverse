@@ -44,7 +44,7 @@ export default defineConfig({
             })
         ],
         resolve: {
-            extensions: [ '.*', '.js', '.ts', '.vue', '.scss', '.css', '.png', '.svg'],
+            extensions: ['.*', '.js', '.ts', '.vue', '.scss', '.css', '.png', '.svg'],
             alias: {
                 "@/*": path.resolve(__dirname, 'src/*'),
                 "@api": path.resolve(__dirname, 'src/infrastructure/api'),
@@ -66,6 +66,10 @@ export default defineConfig({
 
     // PWA - Progresive Web Application
     pwa: {
-
+        iconPaths: {
+            faviconSVG: 'favicon.svg',
+            favicon32: 'favicon-32x32.png',
+            favicon16: 'favicon-16x16.png',
+        }
     }
 })

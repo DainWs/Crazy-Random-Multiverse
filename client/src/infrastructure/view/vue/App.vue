@@ -4,7 +4,7 @@ import ErrorViewerComponent from './components/ErrorViewerComponent.vue';
 </script>
 
 <template>
-  <main>
+  <main class="dws--green">
     <router-view />
 
     <ErrorViewerComponent />
