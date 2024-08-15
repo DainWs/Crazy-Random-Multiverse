@@ -13,7 +13,8 @@ defineEmits(['grab', 'dragover', 'drop']);
 </script>
 
 <template>
-  <div class="zone-slot" @dragstart="$emit('grab', { slot, card, originalEvent: $event })"
+  <div class="zone-slot"
+    @dragstart="$emit('grab', { slot, card, originalEvent: $event })"
     @dragover="$emit('dragover', { slot, card, originalEvent: $event })"
     @drop="$emit('drop', { slot, card, originalEvent: $event })">
     <CardComponent v-if="card" :card="card" />

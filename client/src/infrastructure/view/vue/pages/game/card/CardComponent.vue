@@ -12,23 +12,25 @@ import StatisticHealth from '@vue-pages/game/card/StatisticHealth.vue';
 
 /** @type {Props} */
 const props = defineProps({ card: { require: true } });
+defineEmits(['click', 'drag', 'drop']);
 
-defineEmits(['click', 'drag', 'drop']);    
 </script>
 
 <template>
     <!-- TODO Colocar imagenes de fondo de los tipos de carta -->
-    <div :class="`gcard ${props.card.type} ${props.card.rarity ?? ''}`.toLowerCase()"
-        @click="$emit('click', $event, card)" @drag="$emit('drag', $event, card)" @drop="$emit('drop', $event, card)"
+    <div :class="`card ${props.card.type} ${props.card.rarity ?? ''}`.toLowerCase()"
+        @click=""
+        @drop="$emit('drop', $event, card)"
         draggable="true">
-        <div class="gcard--type">{{ card.getTypeDescription() }}</div>
-        <div class="gcard--name">{{ card.name }}</div>
 
-        <div class="gcard--image">
+        <div class="card--type">{{ card.getTypeDescription() }}</div>
+        <div class="card--name">{{ card.name }}</div>
+
+        <div class="card--image">
 
         </div>
 
-        <div class="gcard__details">
+        <div class="card__details">
             <slot name="details">
                 <div v-if="card.hasStatistics()">
                     <StatisticHealth :value="card.health" :max-value="card.maxHealth" />
@@ -39,7 +41,7 @@ defineEmits(['click', 'drag', 'drop']);
             </slot>
         </div>
 
-        <div class="gcard__tooltip">
+        <div class="card__tooltip">
             <slot name="tooltip">
                 <CardDescription :description="card.description" />
             </slot>

@@ -2,8 +2,8 @@ import cardFactory from '@test/domain/cardFactory';
 import playerFactory from '@test/domain/playerFactory';
 import positionFactory from '@test/domain/positionFactory';
 
-import ActionTarget from '@/domain/actions/ActionSource';
-import ActionSource from '@/domain/actions/ActionTarget';
+import ActionTarget from '@/domain/actions/ActionTarget';
+import ActionSource from '@/domain/actions/ActionSource';
 import ActionTrigger from '@/domain/actions/ActionTrigger';
 
 const createActionSource = (actionTrigger: ActionTrigger): ActionSource => {

@@ -12,7 +12,7 @@ $column-width: calc($card-width / $num-columns);
 $num-rows: calc(16 * $card-aspect-ratio-height);
 $row-height: calc($card-height / $num-rows);
 
-.gcard {
+.card {
   margin: 0;
   padding: 0;
   border: 1px solid black;
@@ -116,7 +116,7 @@ $row-height: calc($card-height / $num-rows);
       z-index: 10000;
       transform: scale(1.2);
 
-      .gcard__tooltip {
+      .card__tooltip {
         visibility: visible;
         opacity: 1;
       }

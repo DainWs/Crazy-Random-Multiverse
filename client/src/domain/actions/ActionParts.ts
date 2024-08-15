@@ -1,5 +1,5 @@
-import ActionTarget from '@/domain/actions/ActionSource';
-import ActionSource from '@/domain/actions/ActionTarget';
+import ActionTarget from '@/domain/actions/ActionTarget';
+import ActionSource from '@/domain/actions/ActionSource';
 
 type ActionParts = {
   source: ActionSource;

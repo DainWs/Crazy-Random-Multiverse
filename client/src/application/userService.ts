@@ -1,6 +1,6 @@
 import User from '@/domain/models/User';
 import UserEvent from '@/domain/events/UserEvent';
-import { userRepository } from '@/infrastructure/repositories';
+import { gameRepository, userRepository } from '@/infrastructure/repositories';
 import { userEventService } from '@/domain/services/eventService';
 
 const updateLocalUser = (user: User) => {
@@ -17,4 +17,17 @@ const getUser = () => {
   return userRepository.getCurrentUser();
 };
 
-export { updateLocalUser, getUser };
+const getUserAsPlayer = () => {
+  const user = userRepository.getCurrentUser();
+
+  const game = gameRepository.findCurrentGame();
+  const player = game?.getPlayerWithCode(user.code);
+
+  if (player == undefined) {
+    throw new Error("Player could not be found");
+  }
+
+  return player;
+}
+
+export { updateLocalUser, getUser, getUserAsPlayer };

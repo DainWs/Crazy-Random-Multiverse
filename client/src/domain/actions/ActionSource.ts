@@ -3,11 +3,11 @@ import { PlayerCode } from '@/domain/models/Player';
 import Position from '@/domain/models/Position';
 import ActionTrigger from '@/domain/actions/ActionTrigger';
 
-type ActionTarget = {
-  targetTrigger: ActionTrigger;
-  targetPlayer: PlayerCode;
-  targetCard: CardCode;
-  targetPosition: Position;
+type ActionSource = {
+  sourceTrigger: ActionTrigger;
+  sourcePlayer: PlayerCode;
+  sourceCard: CardCode;
+  sourcePosition: Position;
 };
 
-export default ActionTarget;
+export default ActionSource;

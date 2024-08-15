@@ -4,8 +4,8 @@ import { CardCode } from '@/domain/models/Card';
 import { PlayerCode } from '@/domain/models/Player';
 import Position from '@/domain/models/Position';
 import ActionType, { resolveActionType } from '@/domain/actions/ActionType';
-import ActionSource from '@/domain/actions/ActionTarget';
-import ActionTarget from '@/domain/actions/ActionSource';
+import ActionSource from '@/domain/actions/ActionSource';
+import ActionTarget from '@/domain/actions/ActionTarget';
 
 class Action {
   public game: GameCode;
@@ -14,7 +14,7 @@ class Action {
   public sourceCard: CardCode;
   public sourcePosition: Position;
   public targetPlayer: PlayerCode;
-  public targetCard: CardCode;
+  public targetCard?: CardCode;
   public targetPosition: Position;
 
   public constructor(game: Game, source: ActionSource, target: ActionTarget) {

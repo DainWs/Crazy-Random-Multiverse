@@ -8,5 +8,6 @@ export default {
   bracketSpacing: true,
   bracketSameLine: true,
   arrowParens: 'always',
-  printWidth: 160
+  printWidth: 160,
+  singleAttributePerLine: true
 };
