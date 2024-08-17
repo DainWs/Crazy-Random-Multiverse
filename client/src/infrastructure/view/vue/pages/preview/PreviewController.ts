@@ -26,7 +26,7 @@ const generateZone = () => {
   zone.combatants = [];
   zone.combatants[0] = new Array(3);
   zone.combatants[1] = new Array(3);
-  zone.combatants[2] = [ cardFactory.createCard() ];
+  zone.combatants[1][1] = cardFactory.createCard();
   return zone;
 }
 
