@@ -25,6 +25,7 @@ $row-height: calc($card-height / $num-rows);
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 
+  color: black;
   background-color: white;
 
   display: grid;
@@ -108,7 +109,7 @@ $row-height: calc($card-height / $num-rows);
     &.mithic {}
   }
 
-  &:hover {
+  &:hover:not(.follow-mouse) {
     &:active {
       opacity: 50;
     }
@@ -122,4 +123,8 @@ $row-height: calc($card-height / $num-rows);
       }
     }
   }
+}
+
+.zone-slot .card:hover {
+  cursor: grab;
 }

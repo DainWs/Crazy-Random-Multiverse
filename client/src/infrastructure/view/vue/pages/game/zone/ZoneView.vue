@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import Zone from '@/domain/models/Zone';
 import CardComponent from '@vue-pages/game/card/CardComponent.vue';
-import { useZoneSlotAction } from '@vue-pages/game/actions/useZoneSlotAction';
+import { useZoneSlotAction } from '@vue-pages/game/hooks/useZoneSlotAction';
 
 const { zone } = defineProps<{ zone: Zone }>();
-
-const actions = useZoneSlotAction(zone);
+const { grabCard, dropCard } = useZoneSlotAction(zone);
 
 //@dragover="onDropCard({ player: zone.owner, ...$event })"
 </script>
@@ -16,10 +15,10 @@ const actions = useZoneSlotAction(zone);
             <div v-for="(lineColumns, lineIndex) in zone.combatants" :key="`${lineIndex}`" class="line">
                 <div v-for="(card, columnIndex) in lineColumns" :key="`${lineIndex}-${columnIndex}`" class="column">
                     <div class="zone-slot drop-zone"
-                        @drop="actions.dropCard($event, lineIndex, columnIndex, card)"
-                        @mouseup="actions.dropCard($event, lineIndex, columnIndex, card)">
+                        @drop="dropCard($event, lineIndex, columnIndex, card)">
+
                         <CardComponent v-if="card" :card="card"
-                            @dragstart="actions.grabCard($event, lineIndex, columnIndex, card)" />
+                            @mousedown="grabCard($event, lineIndex, columnIndex, card)" />
                     </div>
                 </div>
             </div>
