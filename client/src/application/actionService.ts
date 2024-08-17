@@ -2,8 +2,6 @@ import Player from '@/domain/models/Player';
 import ActionTarget from '@/domain/actions/ActionTarget';
 import ActionSource from '@/domain/actions/ActionSource';
 import ActionBuilder from '@/domain/actions/ActionBuilder';
-import { sendAction } from '@/infrastructure/api/v1';
-import { gameRepository } from '@/infrastructure/repositories';
 
 let currentActionBuilder: ActionBuilder;
 
@@ -21,6 +19,10 @@ const endAction = () => {
   }
 
   return currentActionBuilder.targetActionBuilder();
+}
+
+const cancelAction = () => {
+  currentActionBuilder.cancel();
 }
 
 function onActionSourceComplete(source: ActionSource) {
@@ -41,4 +43,4 @@ function onActionTargetComplete(target: ActionTarget) {
   */
 }
 
-export { startAction, endAction };
+export { startAction, endAction, cancelAction };

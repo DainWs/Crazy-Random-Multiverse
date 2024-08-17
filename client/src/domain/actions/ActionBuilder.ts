@@ -17,7 +17,7 @@ class ActionBuilder {
   private finished: boolean;
 
   public constructor(
-    onCompleteActionSource: OnCompleteActionSource, 
+    onCompleteActionSource: OnCompleteActionSource,
     onCompleteTargetSource: OnCompleteTargetSource
   ) {
     this.onCompleteActionSource = onCompleteActionSource;
@@ -28,7 +28,7 @@ class ActionBuilder {
 
   public sourceActionBuilder(sourcePlayer: Player): ActionSourceBuilder {
     this.throwErrorIfAlreadyFinished();
-    
+
     return new ActionSourceBuilder(this.completeActionSource.bind(this), this.cancel.bind(this), sourcePlayer);
   }
 
@@ -37,7 +37,7 @@ class ActionBuilder {
     console.log(this.onCompleteActionSource)
     this.onCompleteActionSource(source);
   }
-  
+
   public targetActionBuilder(): ActionTargetBuilder {
     this.throwErrorIfAlreadyFinished();
 
@@ -56,12 +56,17 @@ class ActionBuilder {
 
   public build(game: Game): Action {
     this.throwErrorIfAlreadyFinished();
-    
+
     if (this.source == undefined) throw new Error("Source action can't be null");
     if (this.target == undefined) throw new Error("Target action can't be null");
 
     this.finished = true;
-    return new Action(game, this.source, this.target);
+    const action = new Action(game, this.source, this.target);
+
+    // TODO validate action before return
+    // example: You dont need to do an action to move the card to the same position
+
+    return action;
   }
 
   public hasFinish(): boolean {
