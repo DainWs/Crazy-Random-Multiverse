@@ -10,7 +10,7 @@ import com.dainws.games.crm.domain.exception.EmptyCoordinateException;
 public class ZoneWithLeader extends Zone {
 	private static final int HORIZONTAL_DIMENSION = 3;
 	private static final int VERTICAL_DIMENSION = 2;
-	private static final Coordinate LEADER_COORDINATE = new Coordinate(-1, -1);
+	public static final Coordinate LEADER_COORDINATE = new Coordinate(-1, -1);
 
 	private Leader leader;
 

@@ -14,7 +14,6 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.User;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
-import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
@@ -33,7 +32,7 @@ public class LoadService implements EventTrigger {
 	private Logger logger;
 
 	public LoadService(GameService gameService, GameStateManager gameStateManager) {
-		this.eventPublisher = new ConsoleEventPublisher();
+		this.eventPublisher = EventPublisher.NONE;
 		this.gameService = gameService;
 		this.gameStateManager = gameStateManager;
 		this.pendingGames = new HashMap<>();

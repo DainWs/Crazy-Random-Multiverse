@@ -4,9 +4,9 @@ import java.lang.System.Logger;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventPublisher;
+import com.dainws.games.crm.domain.exception.ActionAllowedOnTurnException;
 import com.dainws.games.crm.domain.exception.PlayerActionException;
 
 public abstract class PlayerTurnAction implements Action {
@@ -15,18 +15,18 @@ public abstract class PlayerTurnAction implements Action {
 	protected Logger logger;
 
 	public PlayerTurnAction() {
-		this.eventPublisher = new ConsoleEventPublisher();
+		this.eventPublisher = EventPublisher.NONE;
 		this.logger = System.getLogger(LOGGER_NAME);
 	}
 	
 	@Override
-	public final void perform(ActionContext context) throws PlayerActionException {
+	public final void perform(ActionContext context) throws ActionAllowedOnTurnException, PlayerActionException {
 		Game game = context.getGame();
 		Player playerWithTurn = game.getPlayerWithTurn();
 		Player sourcePlayer = context.getSourcePlayer();
 
 		if (!playerWithTurn.equals(sourcePlayer)) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_ALLOWED_ACTION_ONLY_ON_TURN");
+			throw new ActionAllowedOnTurnException(sourcePlayer);
 		}
 
 		this.performPlayerAction(context);

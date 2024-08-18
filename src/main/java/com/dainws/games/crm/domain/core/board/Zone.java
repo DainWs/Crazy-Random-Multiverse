@@ -74,17 +74,29 @@ public abstract class Zone {
 
 		int row = coordinate.getRow();
 		int prevRow = row - 1;
-		if (row > 0 && !this.isRowFull(prevRow)) {
+		if (row > 0 && !this.isLineFilled(prevRow)) {
 			return false;
 		}
 
 		return true;
 	}
 
-	private boolean isRowFull(int row) {
+	public boolean isLineEmpty(int verticalIndex) {
+		boolean isEmpty = true;
+
+		for (Combatant combatant : this.combatants[verticalIndex]) {
+			if (combatant != null) {
+				isEmpty = false;
+			}
+		}
+
+		return isEmpty;
+	}
+	
+	public boolean isLineFilled(int verticalIndex) {
 		boolean isFull = true;
 
-		for (Combatant combatant : this.combatants[row]) {
+		for (Combatant combatant : this.combatants[verticalIndex]) {
 			if (combatant == null) {
 				isFull = false;
 			}

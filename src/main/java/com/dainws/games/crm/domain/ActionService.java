@@ -10,7 +10,6 @@ import com.dainws.games.crm.domain.core.action.MoveAction;
 import com.dainws.games.crm.domain.core.action.PutAction;
 import com.dainws.games.crm.domain.core.action.SurrenderAction;
 import com.dainws.games.crm.domain.error.ErrorHandler;
-import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.EventPublisher;
 import com.dainws.games.crm.domain.event.EventTrigger;
 import com.dainws.games.crm.domain.exception.PlayerActionException;
@@ -22,7 +21,7 @@ public class ActionService implements EventTrigger {
 
 	public ActionService(ActionContextFactory actionContextFactory) {
 		this.contextFactory = actionContextFactory;
-		this.eventPublisher = new ConsoleEventPublisher();
+		this.eventPublisher = EventPublisher.NONE;
 		this.errorHandler = new ErrorHandler();
 	}
 

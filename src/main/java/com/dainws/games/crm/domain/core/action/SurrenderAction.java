@@ -11,6 +11,10 @@ import com.dainws.games.crm.domain.exception.PlayerActionException;
 public class SurrenderAction implements Action {
 
 	private EventPublisher eventPublisher;
+	
+	public SurrenderAction() {
+		this.eventPublisher = EventPublisher.NONE;
+	}
 
 	@Override
 	public void perform(ActionContext context) throws PlayerActionException {

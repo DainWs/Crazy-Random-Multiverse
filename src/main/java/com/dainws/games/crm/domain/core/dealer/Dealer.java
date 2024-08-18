@@ -6,7 +6,6 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
@@ -21,7 +20,7 @@ public class Dealer implements EventTrigger {
 	public Dealer(Deck deck) {
 		this.deck = deck;
 		this.dealStrategyFactory = new ClassicDealStrategyFactory();
-		this.eventPublisher = new ConsoleEventPublisher();
+		this.eventPublisher = EventPublisher.NONE;
 	}
 
 	public void dealCardsToPlayerWithTurn(Game game) {
