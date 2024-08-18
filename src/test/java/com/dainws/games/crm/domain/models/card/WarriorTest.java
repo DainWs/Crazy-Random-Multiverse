@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.builder.DomainCardBuilder;
+import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Warrior;
@@ -50,7 +50,7 @@ class WarriorTest extends CombatantCardTest {
 
 	@Override
 	Combatant createCombatantCard() {
-		return new DomainCardBuilder().useWarrior()
+		return new CardBuilder().useWarrior()
 				.useRandomRarityWarrior()
 				.withPhysicalDamage(50)
 				.withNoneArmor()
@@ -60,7 +60,7 @@ class WarriorTest extends CombatantCardTest {
 
 	@Override
 	Combatant createCombatantWithDamage(Damage damage) {
-		return new DomainCardBuilder().useWarrior()
+		return new CardBuilder().useWarrior()
 				.useRandomRarityWarrior()
 				.withDamage(damage)
 				.withNoneArmor()
@@ -70,7 +70,7 @@ class WarriorTest extends CombatantCardTest {
 
 	@Override
 	Combatant createCombatantWithArmor(Armor armor) {
-		return new DomainCardBuilder().useWarrior()
+		return new CardBuilder().useWarrior()
 				.useRandomRarityWarrior()
 				.withPhysicalDamage(50)
 				.withArmor(armor)
@@ -80,7 +80,7 @@ class WarriorTest extends CombatantCardTest {
 
 	@Override
 	Combatant createCombatantWithHealth(Health health) {
-		return new DomainCardBuilder().useWarrior()
+		return new CardBuilder().useWarrior()
 				.useRandomRarityWarrior()
 				.withPhysicalDamage(50)
 				.withNoneArmor()
@@ -90,7 +90,7 @@ class WarriorTest extends CombatantCardTest {
 
 	@Override
 	Card createCardWithCode(long code) {
-		return new DomainCardBuilder().useWarrior()
+		return new CardBuilder().useWarrior()
 				.useRandomRarityWarrior()
 				.withCode(code)
 				.build();
@@ -98,7 +98,7 @@ class WarriorTest extends CombatantCardTest {
 	
 	@Override
 	Card createDifferentCardTypeWithCode(long code) {
-		return new DomainCardBuilder().useEquipment()
+		return new CardBuilder().useEquipment()
 				.withCode(code)
 				.withName("test_equipment_"+code+"_name")
 				.withDescription("test_equipment_"+code+"_description")

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.builder.DomainCardBuilder;
+import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.core.card.Spell;
 
 class SpellBuilderTest {
@@ -15,7 +15,7 @@ class SpellBuilderTest {
 
 	@BeforeEach
 	void beforeEach() {
-		this.builder = new DomainCardBuilder().useSpell()
+		this.builder = new CardBuilder().useSpell()
 				.withCode(0)
 				.withName("test_spell_0_name")
 				.withDescription("test_spell_0_description")

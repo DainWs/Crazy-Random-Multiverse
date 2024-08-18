@@ -1,6 +1,6 @@
 package com.dainws.games.crm.domain.models.card;
 
-import com.dainws.games.crm.domain.builder.DomainCardBuilder;
+import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.Equipment;
 
@@ -16,7 +16,7 @@ public class EquipmentTest extends CardTest {
 	
 	@Override
 	Card createDifferentCardTypeWithCode(long code) {
-		return new DomainCardBuilder().useSpell()
+		return new CardBuilder().useSpell()
 			.withCode(code)
 			.withName("test_spell_"+code+"_name")
 			.withDescription("test_spell_"+code+"_description")

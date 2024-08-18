@@ -7,15 +7,15 @@ import java.util.List;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 
-public class DomainWarriorBuilder {
+public class WarriorBuilder {
 
 	private boolean shouldBeValid;
 	
-	public DomainWarriorBuilder() {
+	public WarriorBuilder() {
 		this.shouldBeValid = true;
 	}
 	
-	public DomainWarriorBuilder shouldBeFullValid(boolean should) {
+	public WarriorBuilder shouldBeFullValid(boolean should) {
 		this.shouldBeValid = should;
 		return this;
 	}

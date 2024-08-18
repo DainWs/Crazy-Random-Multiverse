@@ -10,7 +10,7 @@ import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Spell;
 import com.dainws.games.crm.domain.core.card.Warrior;
 
-public class DomainCardBuilder {
+public class CardBuilder {
 	
 	public Leader buildFullValidLeader() {
 		long code = (long)(Math.random() * 10000000);
@@ -20,14 +20,14 @@ public class DomainCardBuilder {
 	}
 	
 	public Warrior buildFullValidWarrior() {
-		return new DomainWarriorBuilder()
+		return new WarriorBuilder()
 				.shouldBeFullValid(true)
 				.useRandomRarityWarrior()
 				.build();
 	}
 	
-	public DomainWarriorBuilder useWarrior() {
-		return new DomainWarriorBuilder();
+	public WarriorBuilder useWarrior() {
+		return new WarriorBuilder();
 	}
 	
 	public Equipment buildFullValidEquipment() {
