@@ -7,9 +7,9 @@ import com.dainws.games.crm.domain.ActionService;
 import com.dainws.games.crm.domain.GameStateManager;
 import com.dainws.games.crm.domain.PlayerService;
 import com.dainws.games.crm.domain.RoundService;
-import com.dainws.games.crm.domain.models.action.ActionContextFactory;
-import com.dainws.games.crm.domain.models.dealer.Dealer;
-import com.dainws.games.crm.domain.models.dealer.Deck;
+import com.dainws.games.crm.domain.core.action.ActionContextFactory;
+import com.dainws.games.crm.domain.core.dealer.Dealer;
+import com.dainws.games.crm.domain.core.dealer.Deck;
 
 @Configuration
 public class GeneralConfiguration {

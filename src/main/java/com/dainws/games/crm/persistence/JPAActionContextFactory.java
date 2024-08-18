@@ -1,9 +1,9 @@
 package com.dainws.games.crm.persistence;
 
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.action.ActionContext;
-import com.dainws.games.crm.domain.models.action.ActionContextFactory;
-import com.dainws.games.crm.domain.models.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.action.ActionContext;
+import com.dainws.games.crm.domain.core.action.ActionContextFactory;
+import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.persistence.repositories.CardRepository;
 import com.dainws.games.crm.persistence.repositories.GameRepository;
 

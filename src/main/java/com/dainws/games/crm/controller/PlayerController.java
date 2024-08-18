@@ -16,7 +16,7 @@ import com.dainws.games.crm.controller.dto.ActionMapper;
 import com.dainws.games.crm.controller.dto.models.ActionDto;
 import com.dainws.games.crm.controller.dto.models.ActionType;
 import com.dainws.games.crm.domain.ActionService;
-import com.dainws.games.crm.domain.models.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.translator.Translatable;
 
 @Controller

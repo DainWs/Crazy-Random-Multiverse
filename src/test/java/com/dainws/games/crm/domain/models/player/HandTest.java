@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.card.CardCode;
-import com.dainws.games.crm.domain.models.card.Equipment;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.CardCode;
+import com.dainws.games.crm.domain.core.card.Equipment;
+import com.dainws.games.crm.domain.core.player.Hand;
 
 class HandTest {
 

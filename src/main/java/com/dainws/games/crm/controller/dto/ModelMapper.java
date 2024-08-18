@@ -11,19 +11,19 @@ import com.dainws.games.crm.controller.dto.models.PartyListDto;
 import com.dainws.games.crm.controller.dto.models.PlayerDto;
 import com.dainws.games.crm.controller.dto.models.PositionDto;
 import com.dainws.games.crm.controller.dto.models.ZoneDto;
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.Party;
-import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.models.board.Board;
-import com.dainws.games.crm.domain.models.board.Coordinate;
-import com.dainws.games.crm.domain.models.board.Zone;
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.card.CardType;
-import com.dainws.games.crm.domain.models.card.Combatant;
-import com.dainws.games.crm.domain.models.card.Equipment;
-import com.dainws.games.crm.domain.models.card.Leader;
-import com.dainws.games.crm.domain.models.card.Warrior;
-import com.dainws.games.crm.domain.models.player.Player;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.Party;
+import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.card.Combatant;
+import com.dainws.games.crm.domain.core.card.Equipment;
+import com.dainws.games.crm.domain.core.card.Leader;
+import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.player.Player;
 
 public class ModelMapper {
 

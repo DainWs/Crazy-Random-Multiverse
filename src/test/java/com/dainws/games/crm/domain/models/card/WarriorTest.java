@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.builder.DomainCardBuilder;
-import com.dainws.games.crm.domain.models.card.statistics.Armor;
-import com.dainws.games.crm.domain.models.card.statistics.Damage;
-import com.dainws.games.crm.domain.models.card.statistics.Health;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.Combatant;
+import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.card.WarriorRarity;
+import com.dainws.games.crm.domain.core.card.statistics.Armor;
+import com.dainws.games.crm.domain.core.card.statistics.Damage;
+import com.dainws.games.crm.domain.core.card.statistics.Health;
 
 class WarriorTest extends CombatantCardTest {
 

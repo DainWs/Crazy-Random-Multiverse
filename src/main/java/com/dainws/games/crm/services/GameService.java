@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.GameCode;
-import com.dainws.games.crm.domain.models.User;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.User;
 import com.dainws.games.crm.persistence.repositories.GameRepository;
 import com.dainws.games.crm.persistence.repositories.PartyRepository;
 

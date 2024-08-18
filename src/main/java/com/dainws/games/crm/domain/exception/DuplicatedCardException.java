@@ -1,6 +1,6 @@
 package com.dainws.games.crm.domain.exception;
 
-import com.dainws.games.crm.domain.models.card.Card;
+import com.dainws.games.crm.domain.core.card.Card;
 
 public class DuplicatedCardException extends RuntimeException {
 

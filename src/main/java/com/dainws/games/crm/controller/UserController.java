@@ -12,9 +12,9 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dainws.games.crm.controller.dto.models.UserDto;
+import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.UserCode;
 import com.dainws.games.crm.domain.exception.UserNotFoundException;
-import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.models.UserCode;
 import com.dainws.games.crm.domain.translator.Translatable;
 import com.dainws.games.crm.services.UserService;
 

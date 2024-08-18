@@ -6,9 +6,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.exception.GameNotFoundException;
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.GameCode;
 import com.dainws.games.crm.persistence.repositories.GameRepository;
 
 public class MemoryGameRepository implements GameRepository {

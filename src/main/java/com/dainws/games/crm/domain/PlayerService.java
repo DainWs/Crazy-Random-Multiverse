@@ -1,14 +1,14 @@
 package com.dainws.games.crm.domain;
 
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.event.EventPublisher;
 import com.dainws.games.crm.domain.event.EventTrigger;
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.board.Board;
-import com.dainws.games.crm.domain.models.player.Player;
 
 public class PlayerService implements EventTrigger {
 

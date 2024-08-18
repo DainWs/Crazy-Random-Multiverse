@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.dainws.games.crm.domain.models.card.Warrior;
-import com.dainws.games.crm.domain.models.card.WarriorRarity;
+import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.card.WarriorRarity;
 
 public class DomainWarriorBuilder {
 

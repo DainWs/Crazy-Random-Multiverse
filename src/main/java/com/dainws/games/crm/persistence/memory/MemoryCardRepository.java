@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.CardCode;
+import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.card.Equipment;
+import com.dainws.games.crm.domain.core.card.Leader;
+import com.dainws.games.crm.domain.core.card.Spell;
+import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.card.WarriorRarity;
+import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.exception.CardNotFoundException;
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.card.CardCode;
-import com.dainws.games.crm.domain.models.card.CardType;
-import com.dainws.games.crm.domain.models.card.Equipment;
-import com.dainws.games.crm.domain.models.card.Leader;
-import com.dainws.games.crm.domain.models.card.Spell;
-import com.dainws.games.crm.domain.models.card.Warrior;
-import com.dainws.games.crm.domain.models.card.WarriorRarity;
-import com.dainws.games.crm.domain.models.dealer.Deck;
 import com.dainws.games.crm.persistence.repositories.CardRepository;
 
 public class MemoryCardRepository implements CardRepository, Deck {

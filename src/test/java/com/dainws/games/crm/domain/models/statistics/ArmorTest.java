@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.models.card.statistics.Armor;
-import com.dainws.games.crm.domain.models.card.statistics.ArmorType;
-import com.dainws.games.crm.domain.models.card.statistics.Damage;
-import com.dainws.games.crm.domain.models.card.statistics.DamageType;
+import com.dainws.games.crm.domain.core.card.statistics.Armor;
+import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
+import com.dainws.games.crm.domain.core.card.statistics.Damage;
+import com.dainws.games.crm.domain.core.card.statistics.DamageType;
 
 class ArmorTest {
 	@Test

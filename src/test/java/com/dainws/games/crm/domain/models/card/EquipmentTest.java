@@ -1,6 +1,8 @@
 package com.dainws.games.crm.domain.models.card;
 
 import com.dainws.games.crm.domain.builder.DomainCardBuilder;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.Equipment;
 
 public class EquipmentTest extends CardTest {
 	@Override

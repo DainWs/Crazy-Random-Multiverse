@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.GameStateManager;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.event.ConsoleEventPublisher;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
@@ -17,10 +21,6 @@ import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.event.EventPublisher;
 import com.dainws.games.crm.domain.event.EventTrigger;
 import com.dainws.games.crm.domain.exception.GameNotFoundException;
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.GameCode;
-import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.models.player.PlayerCode;
 
 @Service
 public class LoadService implements EventTrigger {

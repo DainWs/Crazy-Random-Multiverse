@@ -1,6 +1,6 @@
 package com.dainws.games.crm.controller.dto.models;
 
-import com.dainws.games.crm.domain.models.card.CardType;
+import com.dainws.games.crm.domain.core.card.CardType;
 
 import jakarta.validation.constraints.NotNull;
 

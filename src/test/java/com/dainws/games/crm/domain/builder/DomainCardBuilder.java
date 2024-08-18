@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.card.Equipment;
-import com.dainws.games.crm.domain.models.card.Leader;
-import com.dainws.games.crm.domain.models.card.Spell;
-import com.dainws.games.crm.domain.models.card.Warrior;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.Equipment;
+import com.dainws.games.crm.domain.core.card.Leader;
+import com.dainws.games.crm.domain.core.card.Spell;
+import com.dainws.games.crm.domain.core.card.Warrior;
 
 public class DomainCardBuilder {
 	

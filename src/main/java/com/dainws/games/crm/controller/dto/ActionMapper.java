@@ -3,11 +3,11 @@ package com.dainws.games.crm.controller.dto;
 import com.dainws.games.crm.controller.dto.models.ActionDto;
 import com.dainws.games.crm.controller.dto.models.CardCodeDto;
 import com.dainws.games.crm.controller.dto.models.PositionDto;
-import com.dainws.games.crm.domain.models.GameCode;
-import com.dainws.games.crm.domain.models.action.ActionContextTemplate;
-import com.dainws.games.crm.domain.models.board.Coordinate;
-import com.dainws.games.crm.domain.models.card.CardCode;
-import com.dainws.games.crm.domain.models.player.PlayerCode;
+import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.card.CardCode;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public class ActionMapper {
 

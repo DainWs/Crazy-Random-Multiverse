@@ -1,12 +1,12 @@
 package com.dainws.games.crm.configuration.jpa;
 
+import com.dainws.games.crm.domain.core.card.CardCode;
+import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.card.Equipment;
+import com.dainws.games.crm.domain.core.card.Leader;
+import com.dainws.games.crm.domain.core.card.Spell;
+import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.exception.CardNotFoundException;
-import com.dainws.games.crm.domain.models.card.CardCode;
-import com.dainws.games.crm.domain.models.card.CardType;
-import com.dainws.games.crm.domain.models.card.Equipment;
-import com.dainws.games.crm.domain.models.card.Leader;
-import com.dainws.games.crm.domain.models.card.Spell;
-import com.dainws.games.crm.domain.models.card.Warrior;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 
 public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulator<MemoryCardRepository> {

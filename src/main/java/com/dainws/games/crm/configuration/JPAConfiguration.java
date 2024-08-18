@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.dainws.games.crm.configuration.jpa.MemoryCardRepositoryPopulator;
-import com.dainws.games.crm.domain.models.dealer.Deck;
+import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.persistence.JPAActionContextFactory;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;

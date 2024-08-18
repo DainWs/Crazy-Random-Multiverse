@@ -1,12 +1,12 @@
 package com.dainws.games.crm.persistence;
 
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.action.ActionContext;
-import com.dainws.games.crm.domain.models.board.Board;
-import com.dainws.games.crm.domain.models.board.Coordinate;
-import com.dainws.games.crm.domain.models.board.Zone;
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.player.Player;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.action.ActionContext;
+import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.player.Player;
 
 class JPAActionContext implements ActionContext {
 	private Game game;

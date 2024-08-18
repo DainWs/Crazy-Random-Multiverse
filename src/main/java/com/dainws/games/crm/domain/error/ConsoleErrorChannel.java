@@ -4,7 +4,7 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.util.List;
 
-import com.dainws.games.crm.domain.models.player.Player;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.translator.Text;
 
 public class ConsoleErrorChannel implements ErrorChannel {

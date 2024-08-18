@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.event;
 
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.board.Coordinate;
-import com.dainws.games.crm.domain.models.card.Card;
-import com.dainws.games.crm.domain.models.player.Player;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.player.Player;
 
 public class EventDetails {
 	private Game game;

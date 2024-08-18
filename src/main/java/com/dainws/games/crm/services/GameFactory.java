@@ -3,11 +3,11 @@ package com.dainws.games.crm.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.Party;
-import com.dainws.games.crm.domain.models.User;
-import com.dainws.games.crm.domain.models.player.Player;
-import com.dainws.games.crm.domain.models.player.PlayerCode;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.Party;
+import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 public class GameFactory {

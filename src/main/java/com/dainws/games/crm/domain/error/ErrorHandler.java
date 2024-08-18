@@ -2,7 +2,7 @@ package com.dainws.games.crm.domain.error;
 
 import java.util.List;
 
-import com.dainws.games.crm.domain.models.player.Player;
+import com.dainws.games.crm.domain.core.player.Player;
 
 public class ErrorHandler {
 	private ErrorChannel errorChannel;

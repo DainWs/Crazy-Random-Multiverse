@@ -6,12 +6,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.dealer.Dealer;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.exception.GameException;
-import com.dainws.games.crm.domain.models.Game;
-import com.dainws.games.crm.domain.models.dealer.Dealer;
-import com.dainws.games.crm.domain.models.player.Player;
 import com.dainws.games.crm.services.GameService;
 
 @Controller
