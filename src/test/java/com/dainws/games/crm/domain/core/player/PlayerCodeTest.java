@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.models.player;
+package com.dainws.games.crm.domain.core.player;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;

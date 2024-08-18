@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.models.card;
+package com.dainws.games.crm.domain.core.card;
 
 import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.core.card.Card;

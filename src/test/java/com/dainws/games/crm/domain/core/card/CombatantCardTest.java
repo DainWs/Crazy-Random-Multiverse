@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.models.card;
+package com.dainws.games.crm.domain.core.card;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
