@@ -1,7 +1,6 @@
 package com.dainws.games.crm.domain.core.card;
 
 import com.dainws.games.crm.domain.builder.CardBuilder;
-import com.dainws.games.crm.domain.core.card.Card;
 
 public class SpellTest extends CardTest {
 

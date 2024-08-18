@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.core.card.Equipment;
-
 class EquipmentBuilderTest {
 
 	Equipment.Builder builder;

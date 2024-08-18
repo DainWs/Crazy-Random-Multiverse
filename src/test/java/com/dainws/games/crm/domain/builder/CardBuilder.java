@@ -1,5 +1,6 @@
 package com.dainws.games.crm.domain.builder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -61,12 +62,11 @@ public class CardBuilder {
 	}
 	
 	public Card buildRandomFullValidCard() {
-		List<Supplier<Card>> cardSuppliers = List.of(
-				this::buildFullValidLeader,
-				this::buildFullValidWarrior,
-				this::buildFullValidEquipment,
-				this::buildFullValidSpell
-			);
+		List<Supplier<Card>> cardSuppliers = new ArrayList<>();
+		cardSuppliers.add(this::buildFullValidLeader);
+		cardSuppliers.add(this::buildFullValidWarrior);
+		cardSuppliers.add(this::buildFullValidEquipment);
+		cardSuppliers.add(this::buildFullValidSpell);
 
 		Collections.shuffle(cardSuppliers);
 		return cardSuppliers.get(0).get();
