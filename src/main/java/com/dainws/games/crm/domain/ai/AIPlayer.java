@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.core.ai;
+package com.dainws.games.crm.domain.ai;
 
 import java.util.UUID;
 
@@ -7,15 +7,15 @@ import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public class AIPlayer extends Player {
 	
-	private AIBehavior behavior;
+	private Behavior behavior;
 
-	public AIPlayer(AIBehavior behavior, String name) {
+	public AIPlayer(Behavior behavior, String name) {
 		this(behavior, name, UUID.randomUUID().toString());
 	}
 	
-	public AIPlayer(AIBehavior behavior, String name, String uuid) {
+	public AIPlayer(Behavior behavior, String name, String uuid) {
 		super(PlayerCode.from(uuid), "%s (AI)".formatted(name));
-		this.behavior = AIBehavior.NONE;
+		this.behavior = behavior;
 	}
 	
 	public void performBehavior() {
