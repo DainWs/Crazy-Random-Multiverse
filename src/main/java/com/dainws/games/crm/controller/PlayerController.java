@@ -15,18 +15,18 @@ import org.springframework.stereotype.Controller;
 import com.dainws.games.crm.controller.dto.ActionMapper;
 import com.dainws.games.crm.controller.dto.models.ActionDto;
 import com.dainws.games.crm.controller.dto.models.ActionType;
-import com.dainws.games.crm.domain.ActionFacade;
+import com.dainws.games.crm.domain.PlayerActionFacade;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.translator.Translatable;
 
 @Controller
 public class PlayerController {
 
-	private ActionFacade actionFacade;
+	private PlayerActionFacade playerActionFacade;
 	private Map<ActionType, Consumer<ActionDto>> actionResolver;
 
-	public PlayerController(ActionFacade actionFacade) {
-		this.actionFacade = actionFacade;
+	public PlayerController(PlayerActionFacade playerActionFacade) {
+		this.playerActionFacade = playerActionFacade;
 		this.actionResolver = new EnumMap<>(ActionType.class);
 		this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 		this.actionResolver.put(ActionType.MOVE_ACTION, this::moveAction);
@@ -53,17 +53,17 @@ public class PlayerController {
 	
 	private void putAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = new ActionMapper().mapPutActionDto(actionDto);
-		this.actionFacade.playerPutCard(contextTemplate);
+		this.playerActionFacade.playerPutCard(contextTemplate);
 	}
 	
 	private void moveAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = new ActionMapper().mapMoveActionDto(actionDto);
-		this.actionFacade.playerMoveCard(contextTemplate);
+		this.playerActionFacade.playerMoveCard(contextTemplate);
 	}
 	
 	private void attackAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = new ActionMapper().mapAttackActionDto(actionDto);
-		this.actionFacade.playerAttackCard(contextTemplate);
+		this.playerActionFacade.playerAttackCard(contextTemplate);
 	}
 	
 	@Deprecated
@@ -77,7 +77,7 @@ public class PlayerController {
 		actionDto.setSourcePlayerCode(agentCode);
 		
 		ActionContextTemplate contextTemplate = new ActionMapper().mapEquipActionDto(actionDto);
-		this.actionFacade.playerEquipCard(contextTemplate);
+		this.playerActionFacade.playerEquipCard(contextTemplate);
 	}
 	
 	@Deprecated
@@ -91,7 +91,7 @@ public class PlayerController {
 		actionDto.setSourcePlayerCode(agentCode);
 		
 		ActionContextTemplate contextTemplate = new ActionMapper().mapSurrenderActionDto(actionDto);
-		this.actionFacade.playerSurrender(contextTemplate);
+		this.playerActionFacade.playerSurrender(contextTemplate);
 	}
 	
 	@MessageExceptionHandler

@@ -1,6 +1,6 @@
 package com.dainws.games.crm.controller.dto.models;
 
-import com.dainws.games.crm.domain.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EventDto {

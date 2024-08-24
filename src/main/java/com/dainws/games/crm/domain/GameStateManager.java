@@ -1,5 +1,6 @@
-package com.dainws.games.crm.domain.core;
+package com.dainws.games.crm.domain;
 
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;

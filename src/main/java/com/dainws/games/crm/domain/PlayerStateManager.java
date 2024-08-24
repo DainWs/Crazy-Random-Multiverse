@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.core.player;
+package com.dainws.games.crm.domain;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Board;
@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.event.EventTrigger;
+import com.dainws.games.crm.domain.core.player.Player;
 
 public class PlayerStateManager implements EventTrigger {
 

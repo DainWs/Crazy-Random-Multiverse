@@ -17,9 +17,9 @@ import com.dainws.games.crm.controller.dto.models.PartyDto;
 import com.dainws.games.crm.controller.dto.models.PartyListDto;
 import com.dainws.games.crm.domain.core.Party;
 import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.error.Error;
-import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.services.UserClient;
 
 public class CommunicationClient implements UserClient {

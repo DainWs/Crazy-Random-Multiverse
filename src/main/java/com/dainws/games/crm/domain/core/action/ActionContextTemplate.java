@@ -5,6 +5,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
+// TODO tal vez no deberia estar aqui
 public class ActionContextTemplate {
 	private GameCode gameCode;
 

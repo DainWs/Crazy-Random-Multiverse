@@ -4,8 +4,8 @@ import java.util.Objects;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.dainws.games.crm.domain.event.Event;
-import com.dainws.games.crm.domain.event.EventCode;
+import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
 
 public class GameEvent extends ApplicationEvent {
 

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.event;
+package com.dainws.games.crm.domain.core.event;
 
 public class Event {
 	private EventCode code;

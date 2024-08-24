@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.event;
+package com.dainws.games.crm.domain.core.event;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;

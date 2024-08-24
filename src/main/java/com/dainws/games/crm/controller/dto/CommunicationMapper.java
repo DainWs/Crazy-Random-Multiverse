@@ -3,9 +3,9 @@ package com.dainws.games.crm.controller.dto;
 import com.dainws.games.crm.controller.dto.models.ErrorDto;
 import com.dainws.games.crm.controller.dto.models.EventDetailsDto;
 import com.dainws.games.crm.controller.dto.models.EventDto;
+import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.error.Error;
-import com.dainws.games.crm.domain.event.Event;
-import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.translator.Text;
 
 public class CommunicationMapper {

@@ -13,12 +13,12 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
+import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
-import com.dainws.games.crm.domain.event.Event;
-import com.dainws.games.crm.domain.event.EventCode;
-import com.dainws.games.crm.domain.event.EventDetails;
-import com.dainws.games.crm.domain.event.EventPublisher;
-import com.dainws.games.crm.domain.event.EventTrigger;
 import com.dainws.games.crm.domain.exception.GameNotFoundException;
 
 @Service

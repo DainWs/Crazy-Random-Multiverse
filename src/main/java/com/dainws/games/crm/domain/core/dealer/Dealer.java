@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
+import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.event.Event;
-import com.dainws.games.crm.domain.event.EventCode;
-import com.dainws.games.crm.domain.event.EventDetails;
-import com.dainws.games.crm.domain.event.EventPublisher;
-import com.dainws.games.crm.domain.event.EventTrigger;
 
 public class Dealer implements EventTrigger {
 	private Deck deck;
