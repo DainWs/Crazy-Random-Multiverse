@@ -1,22 +1,18 @@
 @startuml 
 title "Domain Model - Card"
 
-class Card {}
-class Spell {}
-class Equipment {}
-class Combatant {}
-class Leader {}
-class Warrior {}
-class Rarity {
- Rarity can be one of these:
----
- Common
- Uncommon
- Rare
- Epic
- Legendary
- Mithic
-}
+rectangle Card
+rectangle Spell
+rectangle Equipment
+rectangle Combatant
+rectangle Leader
+rectangle Warrior
+rectangle Rarity
+rectangle Cooldown
+rectangle Statistic
+rectangle Name
+rectangle Effect
+rectangle Description
 
 Card *--> Name
 Card *--> Description
@@ -57,6 +53,17 @@ end note
 note bottom of Cooldown
 	**Number of rounds** to wait before 
 	you can use this **Combatant**
+end note
+
+note right of Rarity
+ Rarity can be one of these:
+....
+ Common
+ Uncommon
+ Rare
+ Epic
+ Legendary
+ Mithic
 end note
 
 @enduml

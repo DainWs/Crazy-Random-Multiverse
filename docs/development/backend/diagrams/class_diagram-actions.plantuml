@@ -26,11 +26,8 @@ interface ActionContextFactory {
  +createContext(ActionContextTemplate): ActionContext
 }
 
-class ActionService {
- +putCardAction(ActionContextTemplate): void
- +moveCardAction(ActionContextTemplate): void
- +attackCardAction(ActionContextTemplate): void
- +etc(ActionContextTemplate): void
+interface ActionExecutor {
+ +execute(Action, ActionContextTemplate): void
 }
 
 abstract class PlayerTurnAction {
@@ -38,8 +35,10 @@ abstract class PlayerTurnAction {
  #{abstract} performPlayerAction(ActionContext)
 }
 
-ActionService *--> ActionContextFactory
-ActionService --> Action
+EventTrigger <|.. ActionExecutor
+
+ActionExecutor *--> ActionContextFactory
+ActionExecutor --> Action
 Action --> ActionContext
 
 Action <|.. SurrenderAction

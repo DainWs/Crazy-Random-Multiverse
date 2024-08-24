@@ -1,12 +1,15 @@
 @startuml
 title "Domain Model - Game"
 
-class Game {}
-class Player {}
-class Action {}
-class Dealer {}
-class Board {}
-class Card {}
+rectangle Game
+rectangle Player
+rectangle Action
+rectangle Dealer
+rectangle Board
+rectangle Card
+
+rectangle Round
+rectangle Turn
 
 Game *--> Turn
 Game *--> Round

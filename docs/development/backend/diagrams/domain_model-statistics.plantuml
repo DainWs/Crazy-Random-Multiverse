@@ -1,40 +1,23 @@
 @startuml
 title "Domain Model - Statistics"
 
-class Statistic
-class Damage {
- Damage cant be negative
-}
+rectangle Statistic
 
-class TrueDamage as "True" {
- Ignore armor types:
----
- Physical
- Magical
-}
+rectangle Damage
+rectangle TrueDamage
+rectangle PhysicalDamage
+rectangle MagicalDamage
+rectangle InfiniteDamage
 
-class PhysicalDamage as "Physical" {
- Ignore armor types:
----
- Magical
-}
+rectangle Health
+rectangle InfiniteHealth
+rectangle MaxValue
 
-class MagicalDamage as "Magical" {
- Ignore armor types:
----
- Physical
-}
+rectangle Armor
+rectangle PhysicalArmor
+rectangle MagicalArmor
 
-class InfiniteDamage as "InfiniteValue" {
- Ignore infinite Health
-}
-
-class Health
-class InfiniteHealth as "InfiniteValue"
-
-class Armor
-class PhysicalArmor as "Physical"
-class MagicalArmor as "Magical"
+rectangle Value
 
 Statistic *--> Value
 Statistic <|-- Damage
@@ -53,12 +36,23 @@ Health o--> "0..1" InfiniteHealth
 Armor <|-- PhysicalArmor
 Armor <|-- MagicalArmor
 
-note left of Armor
+note as DamageNote
+ Damage cant be negative
+ 
+ - **PhysicalDamage** ignores Magical armor.
+	- **MagicalDamage** ignores Physical armor.
+	- **TrueDamage** ignores Physical and Magical armor.
+	- **InfiniteDamage** ignores all type of armor and Infinite health.
+end note
+Damage ... DamageNote
+
+note as ArmorNote 
 	It will defend against an **attack** 
 	**of the same type**, but its value 
 	will be **permanently reduced** by 
 	the value of the **defended attack**
 end note
+Armor ... ArmorNote
 
 note as HealthNote
 	When Health reaches 0 or less, 
@@ -69,6 +63,6 @@ note as HealthNote
 	**reaches a value of 0**,
 	or with **True damage** 
 end note
-Health .. HealthNote
+Health ... HealthNote
 
 @enduml

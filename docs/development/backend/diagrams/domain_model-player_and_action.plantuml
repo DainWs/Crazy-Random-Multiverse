@@ -1,8 +1,17 @@
 @startuml
 title "Domain Model - Player"
 
-class Game {}
-class Player {}
+rectangle Game
+rectangle Player
+rectangle Name
+rectangle Hand
+rectangle Action
+rectangle Card
+rectangle Surrender
+rectangle TurnAction
+rectangle Board
+rectangle PutCard
+rectangle AttackCard
 
 Game *--> "2..N" Player
 

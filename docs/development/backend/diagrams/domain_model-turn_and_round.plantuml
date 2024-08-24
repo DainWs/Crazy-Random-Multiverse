@@ -1,6 +1,11 @@
 @startuml
 title "Domain model - Turn and Round"
 
+rectangle Game
+rectangle Player
+rectangle Turn
+rectangle Round
+
 Game *--> "2..N" Player
 Game *--> Turn
 Game *--> Round

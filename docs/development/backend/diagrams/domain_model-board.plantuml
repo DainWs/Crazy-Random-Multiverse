@@ -1,10 +1,18 @@
 @startuml
 title "Domain Model - Board"
 
-class OthersZone {
- NoLeaderZone
- ...
-} 
+rectangle Game
+rectangle Board
+rectangle Zone
+rectangle BaseZone
+rectangle OthersZone
+rectangle Player
+rectangle Row
+rectangle LeaderRow
+rectangle LeaderSquare
+rectangle Square
+rectangle Card
+rectangle Leader
 
 Game *--> Board
 Board *--> "1..N" Zone
@@ -38,5 +46,10 @@ note left of BaseZone
 	where cards protecting the **Leader** in the 3rd row
 	will be placed. Only the **Leader** can be in the 3rd row
 end note 
+
+note bottom of OthersZone
+ NoLeaderZone
+ ...
+end note
 
 @enduml

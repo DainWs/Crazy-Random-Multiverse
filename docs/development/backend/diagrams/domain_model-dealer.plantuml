@@ -1,11 +1,12 @@
 @startuml
 title "Domain Model - Dealer"
 
-class Dealer {}
-class Round {}
-class Deck {}
-class Card {}
-class DealtCard {} 
+rectangle Game
+rectangle Dealer
+rectangle Round
+rectangle Deck
+rectangle Card
+rectangle DealtCard
 
 Game *--> Dealer 
 Dealer --> Round
