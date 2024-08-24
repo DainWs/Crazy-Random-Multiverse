@@ -6,9 +6,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
-import com.dainws.games.crm.domain.PlayerService;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.player.PlayerStateManager;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
@@ -17,11 +17,11 @@ import com.dainws.games.crm.domain.event.EventDetails;
 public class PlayerEventHandler {
 
 	private CommunicationClient communicationClient;
-	private PlayerService playerService;
+	private PlayerStateManager playerStateManager;
 
-	public PlayerEventHandler(CommunicationClient communicationClient, PlayerService playerService) {
+	public PlayerEventHandler(CommunicationClient communicationClient, PlayerStateManager playerStateManager) {
 		this.communicationClient = communicationClient;
-		this.playerService = playerService;
+		this.playerStateManager = playerStateManager;
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_RECEIVE_CARD")
@@ -48,9 +48,9 @@ public class PlayerEventHandler {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 		
-		// TODO extract this to PlayerService? Observer pattern needed
+		// TODO extract this to PlayerStateManager? Observer pattern needed
 		EventDetails eventDetails = event.getDetails();
-		this.playerService.updateAlivePlayersOf(eventDetails.getGame());
+		this.playerStateManager.updateAlivePlayersOf(eventDetails.getGame());
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.event.EventCode).PLAYER_PUT_CARD")

@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.crm.domain.GameStateManager;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.User;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.event.Event;
