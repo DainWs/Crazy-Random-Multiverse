@@ -4,7 +4,6 @@ import java.lang.System.Logger.Level;
 
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
-import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.exception.PlayerActionException;
 
@@ -29,8 +28,6 @@ public class AttackAction extends PlayerTurnAction {
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
-
-		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, context);
 	}
 	
 	private Combatant getSourceCombatantFrom(ActionContext context) {

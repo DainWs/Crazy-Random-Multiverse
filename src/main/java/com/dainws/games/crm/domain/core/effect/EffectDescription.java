@@ -2,6 +2,7 @@ package com.dainws.games.crm.domain.core.effect;
 
 import com.dainws.games.crm.domain.translator.Text;
 
+// TODO this class should not know translator.Text
 public class EffectDescription {
 	private EffectId id;
 	private Text name;

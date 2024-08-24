@@ -1,7 +1,6 @@
 package com.dainws.games.crm.domain.event;
 
 public class Event {
-
 	private EventCode code;
 	private EventDetails details;
 
@@ -20,9 +19,5 @@ public class Event {
 
 	public EventDetails getDetails() {
 		return details;
-	}
-	
-	protected void setDetails(EventDetails details) {
-		this.details = details;
 	}
 }

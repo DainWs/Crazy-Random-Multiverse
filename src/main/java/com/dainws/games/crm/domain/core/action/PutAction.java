@@ -10,7 +10,6 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.exception.PlayerActionException;
 
@@ -18,8 +17,6 @@ public class PutAction extends PlayerTurnAction {
 
 	@Override
 	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.eventPublisher != null);
-
 		this.validate(context);
 
 		try {
@@ -33,8 +30,6 @@ public class PutAction extends PlayerTurnAction {
 		} catch (GameRuntimeException e) {
 			throw new PlayerActionException(context.getSourcePlayer(), e);
 		}
-
-		this.notifyActionEvent(EventCode.PLAYER_PUT_CARD, context);
 	}
 	
 	private Combatant grabCombatantFromHand(ActionContext context) {
