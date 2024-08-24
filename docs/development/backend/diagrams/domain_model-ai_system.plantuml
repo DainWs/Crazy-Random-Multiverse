@@ -1,0 +1,29 @@
+@startuml
+title "Domain Model - AI System"
+
+rectangle Player
+rectangle Action
+rectangle AIPlayer
+rectangle Behavior
+rectangle Decision
+rectangle Goal
+
+Player <|-- AIPlayer
+AIPlayer *--> Behavior
+AIPlayer --> "1..N" Goal
+
+Behavior ..> Goal: "seeks            \nsatisfy            "
+Behavior ..> Action: perform 
+Behavior --> Decision: make
+
+Decision --> Action : "select    "
+Decision ..> Goal : "to       \nsatisfy"
+
+note as DecisionNote
+ The **Decision** is made using a **scoring system** 
+ that evaluates how well each **action** aligns 
+ with and contributes to the overall **goals**.
+end note
+Decision ..d. DecisionNote
+
+@enduml

@@ -1,0 +1,67 @@
+@startuml	
+title "Class diagram - Actions"
+
+class AIPlayer extends Player {
+ +addGoal(Goal): void
+ +removeGoal(Goal): void
+ +getGoals(): List<Goal>
+ +getSatisfiedGoals(): List<Goal>
+ +getInsatisfiedGoals(): List<Goal>
+ +performBehavior(): void
+}
+
+class Behavior {
+	+{static} NONE: Behavior
+	-decisionEngine: DecisionEngine
+	-Behavior()
+	+Behavior(ActionExecutor)
+	+perform(): void
+	+setGoalManager(GoalManager)
+	+setActionManager(ActionManager)
+}
+
+interface GoalManager {
+ +getGoals(Game): List<Goal>
+ +updateGoals(Goal, Game);
+}
+
+interface ActionManager {
+ +getAIActions(Game): List<AIAction>
+}
+
+interface DecisionEngine {
+ +decideBestAction(Game, Goals, AIActions): AIAction
+}
+
+interface ActionExecutor {
+ +execute(AIAction): boolean
+}
+
+class AIAction {
+ -action: Action
+ -actionContext: ActionContext
+ +AIAction(Action, ActionContext)
+ +alignedWith(Goal): boolean;
+ +getAction(): Action
+ +getActionContext()
+}
+
+interface Goal {
+ +getName(): String
+ +getPriority(): Number
+ +isAchieved(Game): boolean
+}
+
+AIPlayer *--> Behavior
+
+Behavior *--> GoalManager
+Behavior *--> ActionManager
+Behavior *--> DecisionEngine
+Behavior *--> ActionExecutor
+
+GoalManager o--> "0..N" Goal
+ActionManager --> AIAction : create
+
+
+
+@enduml
