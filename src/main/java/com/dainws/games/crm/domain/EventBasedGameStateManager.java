@@ -1,43 +1,25 @@
 package com.dainws.games.crm.domain;
 
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.event.Event;
 import com.dainws.games.crm.domain.event.EventCode;
 import com.dainws.games.crm.domain.event.EventDetails;
 import com.dainws.games.crm.domain.event.EventPublisher;
 import com.dainws.games.crm.domain.event.EventTrigger;
 
-public class GameStateManager implements EventTrigger {
+public class EventBasedGameStateManager extends GameStateManager implements EventTrigger {
 	private EventPublisher eventPublisher;
 
-	public GameStateManager() {
+	public EventBasedGameStateManager() {
 		this.eventPublisher = EventPublisher.NONE;
 	}
-
-	public void next(Game game) {
-		if (this.isGameInStartState(game)) {
-			this.doStartStateProcess(game);
-		}
-
-		if (this.isGameInEndState(game)) {
-			this.doEndStateProcess(game);
-		}
-	}
-
-	private boolean isGameInStartState(Game game) {
-		return game.getRound() < 0;
-	}
-
-	private void doStartStateProcess(Game game) {
+	
+	protected void doStartStateProcess(Game game) {
 		this.publishGameEvent(EventCode.GAME_START, game);
 	}
-
-	private boolean isGameInEndState(Game game) {
-		return this.getCountOfAlivePlayersIn(game) <= 1;
-	}
-
-	private void doEndStateProcess(Game game) {
+	
+	protected void doEndStateProcess(Game game) {
 		int alivePlayersCount = this.getCountOfAlivePlayersIn(game);
 
 		if (alivePlayersCount == 1) {
@@ -46,18 +28,7 @@ public class GameStateManager implements EventTrigger {
 
 		this.publishGameEvent(EventCode.GAME_END_WITH_TIE, game);
 	}
-
-	private int getCountOfAlivePlayersIn(Game game) {
-		int alivePlayersCount = 0;
-		for (Player player : game.getPlayers()) {
-			if (!player.isSpectator()) {
-				alivePlayersCount++;
-			}
-		}
-
-		return alivePlayersCount;
-	}
-
+	
 	private void publishGameEvent(EventCode eventCode, Game game) {
 		EventDetails details = new EventDetails();
 		details.setGame(game);
@@ -69,19 +40,9 @@ public class GameStateManager implements EventTrigger {
 		this.eventPublisher.publish(new Event(eventCode, details));
 	}
 
-	private Player getWinnerIn(Game game) {
-		Player winner = null;
-		for (Player player : game.getPlayers()) {
-			if (!player.isSpectator()) {
-				winner = player;
-			}
-		}
-
-		return winner;
-	}
-
 	@Override
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
+
 }
