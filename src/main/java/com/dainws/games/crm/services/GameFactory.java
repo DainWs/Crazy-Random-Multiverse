@@ -3,11 +3,11 @@ package com.dainws.games.crm.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.Party;
-import com.dainws.games.crm.domain.core.User;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.persistence.repositories.PartyRepository;
 
 public class GameFactory {
@@ -34,10 +34,9 @@ public class GameFactory {
 	private List<Player> createPlayersFrom(List<User> users) {
 		List<Player> players = new ArrayList<>();
 		for (User user : users) {
-			PlayerCode playerCode = PlayerCode.from(user.getCode().getValue());
-			players.add(new Player(playerCode, user.getName()));
+			players.add(new UserPlayer(user));
 		}
-
+		
 		return players;
 	}
 }

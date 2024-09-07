@@ -6,8 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dainws.games.crm.domain.core.User;
-import com.dainws.games.crm.domain.core.UserCode;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.exception.UserNotFoundException;
 import com.dainws.games.crm.persistence.repositories.UserRepository;
 

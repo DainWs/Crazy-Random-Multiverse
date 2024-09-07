@@ -1,4 +1,4 @@
-	package com.dainws.games.crm.controller;
+package com.dainws.games.crm.controller;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
@@ -12,17 +12,18 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dainws.games.crm.controller.dto.models.UserDto;
-import com.dainws.games.crm.domain.core.User;
-import com.dainws.games.crm.domain.core.UserCode;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
+import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.exception.UserNotFoundException;
 import com.dainws.games.crm.domain.translator.Translatable;
 import com.dainws.games.crm.services.UserService;
 
 @Controller
-public class UserController {
+public class WebUserController {
 	private UserService userService;
 
-	public UserController(UserService userService) {
+	public WebUserController(UserService userService) {
 		this.userService = userService;
 	}
 
@@ -36,7 +37,7 @@ public class UserController {
 			username = headers.getFirstNativeHeader("username");
 		}
 
-		User user = new User(sessionId, username);
+		User user = new User(sessionId, username, UserPlatform.WEB);
 		this.userService.create(user);
 	}
 
@@ -49,7 +50,7 @@ public class UserController {
 	@MessageMapping("/user/update")
 	public void updateAccount(@Payload UserDto userDto, @Header("simpSessionId") String sessionId)
 			throws UserNotFoundException {
-		User user = new User(sessionId, userDto.getUsername());
+		User user = new User(sessionId, userDto.getUsername(), UserPlatform.WEB);
 		this.userService.update(user);
 	}
 
@@ -62,12 +63,12 @@ public class UserController {
 		userDto.setUsername(user.getName());
 		return userDto;
 	}
-	
+
 	@MessageExceptionHandler
 	@SendToUser("/topic/error")
 	public String handleException(Throwable exception) {
 		if (exception instanceof Translatable) {
-			return ((Translatable)exception).getKey().getValue();
+			return ((Translatable) exception).getKey().getValue();
 		}
 
 		return exception.getMessage();

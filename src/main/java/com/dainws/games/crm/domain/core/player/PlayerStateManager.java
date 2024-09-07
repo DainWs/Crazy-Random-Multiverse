@@ -19,7 +19,7 @@ public class PlayerStateManager implements EventTrigger {
 	public void updateAlivePlayersOf(Game game) {
 		for (Player player : game.getPlayers()) {
 			if (this.shouldPlayerDie(game, player)) {
-				player.die();
+				player.changeToSpectator();
 				this.publishPlayerEvent(EventCode.PLAYER_DIE, game, player);
 			}
 		}

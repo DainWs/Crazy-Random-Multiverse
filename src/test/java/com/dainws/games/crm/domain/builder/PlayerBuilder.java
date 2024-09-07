@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.player.DummyPlayer;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
@@ -79,11 +80,16 @@ public class PlayerBuilder {
 		Objects.requireNonNull(this.playerCode);
 		Objects.requireNonNull(this.name);
 
+		DummyPlayer dummyPlayer = new DummyPlayer(this.playerCode, this.name);
 		if (this.isSpectator) {
-			return new Player(this.playerCode, this.name, this.isSpectator); 
+			dummyPlayer.changeToSpectator(); 
 		}
 		
-		return new Player(this.playerCode, this.name, this.hand);
+		if (this.hand != null) {
+			dummyPlayer.setHand(this.hand);
+		}
+		
+		return dummyPlayer;
 	}
 	
 }

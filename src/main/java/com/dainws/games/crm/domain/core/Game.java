@@ -3,6 +3,7 @@ package com.dainws.games.crm.domain.core;
 import java.util.List;
 
 import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.exception.PlayerNotFoundException;
@@ -63,6 +64,14 @@ public class Game {
 	public boolean hasPlayer(PlayerCode playerCode) {
 		return this.players.stream()
 			.anyMatch(player -> player.getPlayerCode().equals(playerCode));
+	}
+
+	public Zone getBoardZoneOf(Player player) {
+		return this.board.getZone(player);
+	}
+	
+	public Zone getBoardZoneOf(PlayerCode playerCode) {
+		return this.board.getZone(playerCode);
 	}
 
 	public Board getBoard() {

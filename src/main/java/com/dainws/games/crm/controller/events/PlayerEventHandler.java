@@ -45,7 +45,7 @@ public class PlayerEventHandler {
 	
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_ATTACK_CARD")
 	public void onPlayerAttackCard(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event);
+		this.sendEventToEveryPlayerClient(event);
 		this.delayInSeconds(2);
 		
 		// TODO extract this to PlayerStateManager? Observer pattern needed
@@ -55,34 +55,34 @@ public class PlayerEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_PUT_CARD")
 	public void onPlayerPutCard(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event);
+		this.sendEventToEveryPlayerClient(event);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_MOVE_CARD")
 	public void onPlayerMoveCard(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event);
+		this.sendEventToEveryPlayerClient(event);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_EQUIP_CARD")
 	public void onPlayerEquipCard(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event);
+		this.sendEventToEveryPlayerClient(event);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_USE_SPELL")
 	public void onPlayerUseSpell(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event); // TODO pending
+		this.sendEventToEveryPlayerClient(event); // TODO pending
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_DIE")
 	public void onPlayerDie(Event event) throws InterruptedException {
-		this.sendEventToEveryPlayer(event);
+		this.sendEventToEveryPlayerClient(event);
 	}
 
 	private void delayInSeconds(int seconds) throws InterruptedException {
 		TimeUnit.SECONDS.sleep(seconds);
 	}
 
-	private void sendEventToEveryPlayer(Event event) {
+	private void sendEventToEveryPlayerClient(Event event) {
 		Game game = event.getDetails().getGame();
 		for (Player player : game.getPlayers()) {
 			this.sendEventToPlayer(event, player);

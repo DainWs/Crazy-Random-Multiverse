@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.core;
+package com.dainws.games.crm.domain;
 
 import java.util.Objects;
 import java.util.UUID;

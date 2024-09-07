@@ -2,8 +2,8 @@ package com.dainws.games.crm.services;
 
 import org.springframework.stereotype.Service;
 
-import com.dainws.games.crm.domain.core.User;
-import com.dainws.games.crm.domain.core.UserCode;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.persistence.repositories.UserRepository;
 
 @Service

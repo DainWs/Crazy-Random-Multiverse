@@ -1,7 +1,7 @@
 package com.dainws.games.crm.persistence.repositories;
 
-import com.dainws.games.crm.domain.core.User;
-import com.dainws.games.crm.domain.core.UserCode;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.exception.UserNotFoundException;
 
 public interface UserRepository {

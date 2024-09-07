@@ -9,7 +9,7 @@ import com.dainws.games.crm.domain.error.Error;
 import com.dainws.games.crm.domain.translator.Text;
 
 public class CommunicationMapper {
-	public ErrorDto mapErrorToDto(Error error) {
+	public ErrorDto mapToDto(Error error) {
 		ErrorDto errorDto = new ErrorDto();
 		Text text = error.getText();
 		errorDto.setKey(text.getKey().getValue());
@@ -17,7 +17,7 @@ public class CommunicationMapper {
 		return errorDto;
 	}
 
-	public EventDto mapEventToDto(Event event) {
+	public EventDto mapToDto(Event event) {
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());
 		EventDetails details = event.getDetails();

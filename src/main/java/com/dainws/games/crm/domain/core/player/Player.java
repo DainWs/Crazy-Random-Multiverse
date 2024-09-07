@@ -2,33 +2,28 @@ package com.dainws.games.crm.domain.core.player;
 
 import java.util.Objects;
 
-public class Player {
+public abstract class Player {
 
 	private PlayerCode playerCode;
 	private String name;
 	private Hand hand;
 	private boolean isSpectator;
 
-	public Player(PlayerCode code, String name) {
+	protected Player(PlayerCode code, String name) {
 		this.playerCode = code;
 		this.name = name;
 		this.hand = new Hand();
 		this.isSpectator = false;
 	}
 
-	public Player(PlayerCode code, String name, boolean isSpectator) {
-		this.playerCode = code;
-		this.name = name;
-		this.isSpectator = isSpectator;
+	public void changeToSpectator() {
+		this.isSpectator = true;
 	}
-
-	public Player(PlayerCode code, String name, Hand hand) {
-		this.playerCode = code;
-		this.name = name;
-		this.hand = hand;
-		this.isSpectator = false;
+	
+	public boolean isSpectator() {
+		return this.isSpectator;
 	}
-
+	
 	public PlayerCode getPlayerCode() {
 		return this.playerCode;
 	}
@@ -44,13 +39,9 @@ public class Player {
 	public Hand getHand() {
 		return hand;
 	}
-
-	public boolean isSpectator() {
-		return this.isSpectator;
-	}
 	
-	public void die() {
-		this.isSpectator = true;
+	public void setHand(Hand hand) {
+		this.hand = hand;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.Equipment;
-import com.dainws.games.crm.domain.core.player.Hand;
 
 class HandTest {
 

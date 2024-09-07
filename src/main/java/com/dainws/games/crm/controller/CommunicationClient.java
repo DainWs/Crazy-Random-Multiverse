@@ -15,8 +15,10 @@ import com.dainws.games.crm.controller.dto.models.ErrorDto;
 import com.dainws.games.crm.controller.dto.models.EventDto;
 import com.dainws.games.crm.controller.dto.models.PartyDto;
 import com.dainws.games.crm.controller.dto.models.PartyListDto;
-import com.dainws.games.crm.domain.core.Party;
-import com.dainws.games.crm.domain.core.User;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.error.Error;
@@ -33,19 +35,31 @@ public class CommunicationClient implements UserClient {
 	}
 
 	public void sendError(Player player, Error error) {
-		this.logger.trace("Enviando error {}, al cliente {}", error.getText(), player.getName());
+		if (this.canSendTo(player)) {
+			this.logger.trace("Enviando error {}, al cliente {}", error.getText(), player.getName());
 
-		String sessionId = player.getCode();
-		ErrorDto errorDto = new CommunicationMapper().mapErrorToDto(error);
-		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
+			String sessionId = player.getCode();
+			ErrorDto errorDto = new CommunicationMapper().mapToDto(error);
+			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
+		}
 	}
 
 	public void sendEvent(Player player, Event event) {
-		this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
+		if (this.canSendTo(player)) {
+			this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
 
-		String sessionId = player.getCode();
-		EventDto eventDto = new CommunicationMapper().mapEventToDto(event);
-		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
+			String sessionId = player.getCode();
+			EventDto eventDto = new CommunicationMapper().mapToDto(event);
+			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
+		}
+	}
+
+	private boolean canSendTo(Player player) {
+		if (player instanceof UserPlayer userPlayer) {
+			return userPlayer.isPlayingOn(UserPlatform.WEB);
+		}
+
+		return false;
 	}
 
 	@Override
@@ -63,9 +77,10 @@ public class CommunicationClient implements UserClient {
 
 		String sessionId = to.getCode().getValue();
 		PartyListDto partyListDto = new ModelMapper().mapPartiesToPartyList(party);
-		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/list", partyListDto, createHeaders(sessionId));
+		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/list", partyListDto,
+				createHeaders(sessionId));
 	}
-	
+
 	private MessageHeaders createHeaders(String sessionId) {
 		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
 		headerAccessor.setSessionId(sessionId);
