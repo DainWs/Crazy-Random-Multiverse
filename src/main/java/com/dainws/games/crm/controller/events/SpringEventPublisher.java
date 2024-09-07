@@ -1,4 +1,4 @@
-package com.dainws.games.crm.events;
+package com.dainws.games.crm.controller.events;
 
 import org.springframework.context.ApplicationEventPublisher;
 

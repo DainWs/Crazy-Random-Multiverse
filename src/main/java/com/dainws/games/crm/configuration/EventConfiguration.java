@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 
+import com.dainws.games.crm.controller.events.SpringEventPublisher;
 import com.dainws.games.crm.domain.core.event.EventTrigger;
-import com.dainws.games.crm.events.SpringEventPublisher;
 
 @Configuration
 public class EventConfiguration {
