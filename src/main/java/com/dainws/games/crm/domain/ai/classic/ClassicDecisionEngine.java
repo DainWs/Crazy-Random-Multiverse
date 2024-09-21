@@ -1,7 +1,11 @@
-package com.dainws.games.crm.domain.ai;
+package com.dainws.games.crm.domain.ai.classic;
 
 import java.util.List;
 import java.util.Random;
+
+import com.dainws.games.crm.domain.ai.AIAction;
+import com.dainws.games.crm.domain.ai.DecisionEngine;
+import com.dainws.games.crm.domain.ai.Goal;
 
 public class ClassicDecisionEngine implements DecisionEngine {
 
