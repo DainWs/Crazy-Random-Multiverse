@@ -91,12 +91,12 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 	}
 	
 	protected final Zone getZoneOfPlayer(Game game, Player player) {
-		return game.getBoard().getZone(player);
+		return game.getBoard().getZoneOf(player);
 	}
 	
 	protected final Coordinate getAvaibleCoordinateOnPlayerZone(Game game, Player player) {
 		Board board = game.getBoard();
-		Zone zone = board.getZone(player);
+		Zone zone = board.getZoneOf(player);
 		
 		int verticalIndex = this.getFirstLineWithAvaibleSpace(zone);
 		int horizontalIndex = this.getFirstLineEmptySpace(zone, verticalIndex);

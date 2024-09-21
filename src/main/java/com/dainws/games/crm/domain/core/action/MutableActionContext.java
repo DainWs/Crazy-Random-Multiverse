@@ -1,14 +1,13 @@
-package com.dainws.games.crm.persistence;
+package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.player.Player;
 
-class JPAActionContext implements ActionContext {
+public class MutableActionContext implements ActionContext {
 	private Game game;
 
 	private Player sourcePlayer;
@@ -19,7 +18,7 @@ class JPAActionContext implements ActionContext {
 	private Coordinate targetCoordinate;
 	private Card targetCard;
 
-	public JPAActionContext() {}
+	public MutableActionContext() {}
 	
 	public void setGame(Game game) {
 		this.game = game;
@@ -47,7 +46,7 @@ class JPAActionContext implements ActionContext {
 	@Override
 	public Zone getSourceZone() {
 		Board board = this.getBoard();
-		return board.getZone(this.sourcePlayer.getPlayerCode());
+		return board.getZoneOf(this.sourcePlayer.getPlayerCode());
 	}
 
 	public void setSourceCard(Card sourceCard) {
@@ -80,7 +79,7 @@ class JPAActionContext implements ActionContext {
 	@Override
 	public Zone getTargetZone() {
 		Board board = this.getBoard();
-		return board.getZone(this.targetPlayer.getPlayerCode());
+		return board.getZoneOf(this.targetPlayer.getPlayerCode());
 	}
 
 	public void setTargetCard(Card targetCard) {

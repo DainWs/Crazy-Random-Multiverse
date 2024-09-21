@@ -27,6 +27,10 @@ public abstract class Player {
 	public PlayerCode getPlayerCode() {
 		return this.playerCode;
 	}
+	
+	public boolean isCode(PlayerCode code) {
+		return this.playerCode.equals(code);
+	}
 
 	public String getCode() {
 		return this.playerCode.getCode();

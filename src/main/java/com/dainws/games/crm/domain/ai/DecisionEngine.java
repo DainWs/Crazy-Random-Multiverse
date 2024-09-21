@@ -3,9 +3,14 @@ package com.dainws.games.crm.domain.ai;
 import java.util.List;
 
 import com.dainws.games.crm.domain.ai.classic.ClassicDecisionEngine;
+import com.dainws.games.crm.domain.ai.goals.Goal;
+import com.dainws.games.crm.domain.core.Game;
 
 public interface DecisionEngine {
-	AIAction decideBestAction(List<Goal> goals, List<AIAction> aiActions);
+
+	void applySelfAwareness(Game game, AIPlayer meAsAPlayer);
+	
+	AIAction decideBestAction(List<Goal> goals, List<AIActionTemplate> aiActionTemplates);
 	
 	static DecisionEngine getDefault() {
 		return new ClassicDecisionEngine();

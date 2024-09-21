@@ -83,7 +83,60 @@ public class ZoneWithLeader extends Zone {
 			super.removeCombatant(coordinate);
 		}
 	}
+	
+	@Override
+	public boolean isEmpty() {
+		if (this.hasCombatant(LEADER_COORDINATE)) {
+			return false;
+		}
+		
+		return super.isEmpty();
+	}
+	
+	@Override
+	public boolean isLineEmpty(int verticalIndex) {
+		if (verticalIndex == LEADER_COORDINATE.getRow()) {
+			return !this.hasCombatant(LEADER_COORDINATE);
+		}
 
+		return super.isLineEmpty(verticalIndex);
+	}
+	
+	@Override
+	public boolean isLineFilled(int verticalIndex) {
+		if (verticalIndex == LEADER_COORDINATE.getRow()) {
+			return this.hasCombatant(LEADER_COORDINATE);
+		}
+
+		return super.isLineFilled(verticalIndex);
+	}
+
+	@Override
+	public int countCombatants() {
+		int count = super.countCombatants();
+		if (this.hasCombatant(LEADER_COORDINATE)) {
+			count++;
+		}
+		
+		return count;
+	}
+	
+	@Override
+	public int countCombatantsInLine(int verticalIndex) {
+		if (verticalIndex == -1 && this.hasCombatant(LEADER_COORDINATE)) {
+			return 1;
+		}
+		
+		return super.countCombatantsInLine(verticalIndex);
+	}
+	
+	@Override
+	public int getCapacity() {
+		int capacity = super.getCapacity();
+		int leaderSpot = 1;
+		return capacity + leaderSpot;
+	}
+	
 	public Leader getLeader() {
 		return this.leader;
 	}

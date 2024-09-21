@@ -84,6 +84,10 @@ public class Hand {
 		return searchedCards;
 	}
 
+	public boolean isEmpty() {
+		return this.cards.isEmpty();
+	}
+	
 	public List<Card> getCards() {
 		return cards;
 	}

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.builder;
+package com.dainws.games.crm.tools.domain.builder;
 
 import java.util.List;
 import java.util.Objects;
@@ -92,4 +92,16 @@ public class PlayerBuilder {
 		return dummyPlayer;
 	}
 	
+	public static Player dummyPlayer() {
+		String random = String.valueOf(Math.random() * 1000000);
+		PlayerCode code = PlayerCode.from(random);
+		return new DummyPlayer(code, "player_"+random);
+	}
+	
+	public static PlayerBuilder dummyBuilder() {
+		String random = String.valueOf(Math.random() * 1000000);
+		return new PlayerBuilder()
+				.withCode(random)
+				.withName("bplayer_"+random);
+	}
 }

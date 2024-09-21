@@ -80,6 +80,18 @@ public abstract class Zone {
 
 		return true;
 	}
+	
+	public boolean isEmpty() {
+		boolean isEmpty = true;
+		
+		for (int i = 0; i < this.verticalDimension; i++) {
+			if (!this.isLineEmpty(i)) {
+				isEmpty = false;
+			}
+		}
+		
+		return isEmpty;
+	}
 
 	public boolean isLineEmpty(int verticalIndex) {
 		boolean isEmpty = true;
@@ -91,6 +103,18 @@ public abstract class Zone {
 		}
 
 		return isEmpty;
+	}
+	
+	public boolean isFilled() {
+		boolean isFilled = true;
+		
+		for (int i = 0; i < this.verticalDimension; i++) {
+			if (!this.isLineFilled(i)) {
+				isFilled = false;
+			}
+		}
+		
+		return isFilled;
 	}
 	
 	public boolean isLineFilled(int verticalIndex) {
@@ -116,6 +140,30 @@ public abstract class Zone {
 
 		boolean isColumnOutOfRange = (0 > column || column >= this.horizontalDimension);
 		return !isColumnOutOfRange;
+	}
+	
+	public int countCombatants() {
+		int count = 0;
+		
+		for (int i = 0; i < this.verticalDimension; i++) {
+			count += this.countCombatantsInLine(i);
+		}
+		
+		return count;
+	}
+	
+	public int countCombatantsInLine(int verticalIndex) {
+		int count = 0;
+
+		for (Combatant combatant : this.combatants[verticalIndex]) {
+			if (combatant != null) count++;
+		}
+
+		return count;
+	}
+	
+	public int getCapacity() {
+		return this.horizontalDimension * this.verticalDimension;
 	}
 
 	public Combatant[][] getCombatants() {

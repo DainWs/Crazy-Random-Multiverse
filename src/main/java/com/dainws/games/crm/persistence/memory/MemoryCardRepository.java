@@ -51,14 +51,14 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	public List<Card> findAll() {
 		return this.cards.values().stream()
 				.distinct()
-				.collect(Collectors.toUnmodifiableList());
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Card> findByCardType(CardType cardType) {
 		return this.findAll().stream()
 				.filter(card -> card.isType(cardType))
-				.collect(Collectors.toUnmodifiableList());
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class MemoryCardRepository implements CardRepository, Deck {
 		return this.findByCardType(CardType.WARRIOR).stream()
 				.map(warriorCard -> (Warrior) warriorCard)
 				.filter(warrior -> warrior.isRarity(rarity))
-				.collect(Collectors.toUnmodifiableList());
+				.collect(Collectors.toList());
 	}
 
 	@Override

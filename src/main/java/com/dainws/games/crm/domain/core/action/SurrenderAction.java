@@ -24,7 +24,7 @@ public class SurrenderAction implements Action {
 
 		Board board = context.getBoard();
 		Player sourcePlayer = context.getSourcePlayer();
-		Zone zone = board.getZone(sourcePlayer);
+		Zone zone = board.getZoneOf(sourcePlayer);
 		
 		this.removeAllCombatantsFrom(zone);
 

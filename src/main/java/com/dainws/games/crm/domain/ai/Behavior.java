@@ -2,7 +2,11 @@ package com.dainws.games.crm.domain.ai;
 
 import java.util.List;
 
+import com.dainws.games.crm.domain.ai.goals.Goal;
+import com.dainws.games.crm.domain.core.Game;
+
 public class Behavior {
+	private AIPlayer me;
 	private GoalManager goalManager;
 	private ActionExecutor actionExecutor;
 	private ActionManager actionManager;
@@ -18,24 +22,33 @@ public class Behavior {
 		this.goalManager = GoalManager.getDefault();
 		this.decisionEngine = DecisionEngine.getDefault();
 	}
+	
+	void setSelfAwareness(AIPlayer player) {
+		this.me = player;
+		this.goalManager.applySelfAwareness(this.me);
+		this.actionManager.applySelfAwareness(this.me);
+	}
 
-	void performBehavior() {
-		this.goalManager.defineGoals();
+	void performBehavior(Game game) {
+		this.goalManager.defineGoals(game);
+		this.actionManager.defineActions(game);
+		this.decisionEngine.applySelfAwareness(game, this.me);
 
-		AIAction bestAction = null;
+		AIAction bestAction;
 		do {
 			bestAction = this.getBestAction();
+			
 			if (bestAction != null) {
 				this.executeAction(bestAction);
 			}
-			
-		} while(!this.goalManager.hasSatisfiedAllGoals() && bestAction != null);
+		} while(bestAction != null);
 	}
 	
 	private AIAction getBestAction() {
 		List<Goal> goals = this.goalManager.getGoals();
-		List<AIAction> actions = this.actionManager.getActions();
-		return this.decisionEngine.decideBestAction(goals, actions);
+		List<AIActionTemplate> actions = this.actionManager.getAvailableActions();
+		AIAction bestAction = this.decisionEngine.decideBestAction(goals, actions);
+		return bestAction;
 	}
 	
 	private void executeAction(AIAction action) {

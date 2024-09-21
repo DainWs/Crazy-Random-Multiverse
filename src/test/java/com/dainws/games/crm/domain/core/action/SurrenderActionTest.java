@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.builder.CardBuilder;
-import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.exception.PlayerActionException;
+import com.dainws.games.crm.tools.domain.builder.CardBuilder;
+import com.dainws.games.crm.tools.domain.builder.GameBuilder;
 
 public class SurrenderActionTest implements ActionTest {
 
@@ -46,7 +46,7 @@ public class SurrenderActionTest implements ActionTest {
 		Game game = new GameBuilder().withNRandomPlayers(5).build();
 
 		Player player = game.getPlayers().get(3);
-		Zone zone = game.getBoard().getZone(player);
+		Zone zone = game.getBoard().getZoneOf(player);
 		Leader leader = new CardBuilder().buildFullValidLeader();
 		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
 

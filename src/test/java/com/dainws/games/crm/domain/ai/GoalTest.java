@@ -1,0 +1,11 @@
+package com.dainws.games.crm.domain.ai;
+
+public interface GoalTest {
+	void testGivenGoalWithAchievableCondition_whenContextMeetsCondition_thenGoalIsAchieved();
+
+	void testGivenGoalWithUnachievableCondition_whenContextDoesNotMeetCondition_thenGoalIsNotAchieved();
+
+	void testGivenGoalWithMultipleConditions_whenAllConditionsAreMet_thenGoalIsAchieved();
+
+	void testGivenGoalWithMultipleConditions_whenOneConditionFails_thenGoalIsNotAchieved();
+}

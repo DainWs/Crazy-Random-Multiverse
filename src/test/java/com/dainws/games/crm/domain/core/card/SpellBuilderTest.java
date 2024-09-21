@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.builder.CardBuilder;
+import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 
 class SpellBuilderTest {
 

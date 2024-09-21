@@ -28,11 +28,19 @@ public class Board {
 		this.zones.put(player.getPlayerCode(), zone);
 	}
 	
-	public Zone getZone(Player player) {
-		return this.getZone(player.getPlayerCode());
+	public boolean hasZoneOf(Player player) {
+		return this.hasZoneOf(player.getPlayerCode());
 	}
 	
-	public Zone getZone(PlayerCode code) {
+	public boolean hasZoneOf(PlayerCode code) {
+		return this.zones.containsKey(code);
+	}
+	
+	public Zone getZoneOf(Player player) {
+		return this.getZoneOf(player.getPlayerCode());
+	}
+	
+	public Zone getZoneOf(PlayerCode code) {
 		if (this.zones.containsKey(code)) {
 			return this.zones.get(code);
 		}
@@ -41,6 +49,6 @@ public class Board {
 	}
 	
 	public boolean isZoneAlive(PlayerCode code) {
-		return this.getZone(code).isAlive();
+		return this.getZoneOf(code).isAlive();
 	}
 }

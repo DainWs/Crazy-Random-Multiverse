@@ -4,6 +4,7 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.action.MutableActionContext;
 import com.dainws.games.crm.persistence.repositories.CardRepository;
 import com.dainws.games.crm.persistence.repositories.GameRepository;
 
@@ -20,7 +21,7 @@ public class JPAActionContextFactory implements ActionContextFactory {
 	@Override
 	public ActionContext createContextFromTemplate(ActionContextTemplate contextTemplate) {
 		Game game = this.gameRepository.find(contextTemplate.getGameCode());
-		JPAActionContext context = new JPAActionContext();
+		MutableActionContext context = new MutableActionContext();
 		context.setGame(game);
 
 		if (contextTemplate.isSourcePlayerRequired()) {

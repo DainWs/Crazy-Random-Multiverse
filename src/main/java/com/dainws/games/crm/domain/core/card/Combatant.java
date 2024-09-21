@@ -81,7 +81,11 @@ public abstract class Combatant extends Card {
 
 	@Override
 	public String toString() {
+		String equipmentName = "";
+		if (this.equipment != null) {
+			equipmentName = this.equipment.getName().toString();
+		}
 		return "%s[DMG=%s,ARM=%s,HP=%s,EQUIPMENT=%s]"
-				.formatted(this.getName(), this.damage, this.armor, this.health, this.equipment.getName());
+				.formatted(this.getName(), this.damage, this.armor, this.health, equipmentName);
 	}
 }

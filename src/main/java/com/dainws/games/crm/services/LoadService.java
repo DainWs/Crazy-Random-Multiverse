@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.GameState;
 import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -75,7 +76,7 @@ public class LoadService implements EventTrigger {
 		this.logger.debug("Todos los jugadores del juego {} estan listos para comenzar", game.getCode());
 		this.preparedPlayers.remove(game.getCode());
 
-		Game.prepareGameToStart(game);
+		game.setState(GameState.BEFORE_START);
 		this.gameStateManager.next(game);
 	}
 	

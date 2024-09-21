@@ -2,6 +2,7 @@ package com.dainws.games.crm.domain.ai;
 
 import java.util.UUID;
 
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
@@ -16,10 +17,11 @@ public class AIPlayer extends Player {
 	public AIPlayer(Behavior behavior, String name, String uuid) {
 		super(PlayerCode.from(uuid), "%s (AI)".formatted(name));
 		this.behavior = behavior;
+		this.behavior.setSelfAwareness(this);
 	}
 	
-	public void performBehavior() {
-		this.behavior.performBehavior();
+	public void performBehavior(Game game) {
+		this.behavior.performBehavior(game);
 	}
 	
 	@Override

@@ -17,15 +17,17 @@ public class GameStateManager implements EventTrigger {
 	public void next(Game game) {
 		if (this.isGameInStartState(game)) {
 			this.doStartStateProcess(game);
+			game.setState(GameState.IN_PROGRESS);
 		}
 
 		if (this.isGameInEndState(game)) {
+			game.setState(GameState.AFTER_END);
 			this.doEndStateProcess(game);
 		}
 	}
 
 	private boolean isGameInStartState(Game game) {
-		return game.getRound() < 0;
+		return game.inState(GameState.BEFORE_START);
 	}
 
 	private void doStartStateProcess(Game game) {
@@ -33,28 +35,19 @@ public class GameStateManager implements EventTrigger {
 	}
 
 	private boolean isGameInEndState(Game game) {
-		return this.getCountOfAlivePlayersIn(game) <= 1;
+		if (!game.inState(GameState.IN_PROGRESS)) {
+			return false;
+		}
+
+		return game.getAlivePlayers().size() <= 1;
 	}
 
 	private void doEndStateProcess(Game game) {
-		int alivePlayersCount = this.getCountOfAlivePlayersIn(game);
-
-		if (alivePlayersCount == 1) {
+		if (game.getAlivePlayers().size() == 1) {
 			this.publishGameEvent(EventCode.GAME_END_WITH_WINNER, game);
+		} else {
+			this.publishGameEvent(EventCode.GAME_END_WITH_TIE, game);			
 		}
-
-		this.publishGameEvent(EventCode.GAME_END_WITH_TIE, game);
-	}
-
-	private int getCountOfAlivePlayersIn(Game game) {
-		int alivePlayersCount = 0;
-		for (Player player : game.getPlayers()) {
-			if (!player.isSpectator()) {
-				alivePlayersCount++;
-			}
-		}
-
-		return alivePlayersCount;
 	}
 
 	private void publishGameEvent(EventCode eventCode, Game game) {

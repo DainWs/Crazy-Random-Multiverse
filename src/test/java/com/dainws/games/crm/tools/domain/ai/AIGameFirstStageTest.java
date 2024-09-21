@@ -1,0 +1,73 @@
+package com.dainws.games.crm.tools.domain.ai;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.dainws.games.crm.domain.ai.AIPlayer;
+import com.dainws.games.crm.domain.ai.Behavior;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameState;
+import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.tools.domain.GameStageTest;
+import com.dainws.games.crm.tools.domain.builder.AIPlayerBuilder;
+
+public abstract class AIGameFirstStageTest extends GameStageTest {
+
+	private final int countOfNonAIPlayers;
+	protected final ActionExecutorMonitor actionExecutorMonitor;
+	protected List<Player> nonAIPlayers;
+	protected AIPlayer aiPlayer;
+
+	protected AIGameFirstStageTest() {
+		this(1);
+	}
+	
+	protected AIGameFirstStageTest(int countOfNonAIPlayers) {
+		super(countOfNonAIPlayers + 1);
+		this.nonAIPlayers = new ArrayList<>();
+		this.countOfNonAIPlayers = countOfNonAIPlayers;
+		this.actionExecutorMonitor = new ActionExecutorMonitor();
+	}
+
+	protected final Player createPlayer() {
+		if (this.nonAIPlayers.size() < this.countOfNonAIPlayers) {
+			Player player = this.createNonAIPlayer();
+			this.nonAIPlayers.add(player);
+			return player;
+		}
+
+		Behavior behavior = this.createBehavior();
+		AIPlayer aiPlayer = this.createAIPlayer(behavior);
+		this.aiPlayer = aiPlayer;
+		return aiPlayer;
+	}
+
+	protected Player createNonAIPlayer() {
+		return super.createPlayer();
+	}
+
+	protected AIPlayer createAIPlayer(Behavior behavior) {
+		return AIPlayerBuilder.customAIPlayer(behavior); 
+	}
+
+	protected Behavior createBehavior() {
+		return new Behavior(this.actionExecutorMonitor);
+	}
+	
+	@Override
+	protected void prepareGame(Game game) {
+		super.prepareGame(game);
+		
+		this.game.setState(GameState.IN_PROGRESS);
+		Player playerWithTurn = this.game.getPlayerWithTurn();
+		while(!playerWithTurn.equals(this.aiPlayer)) {
+			this.dealer.dealCardsToPlayerWithTurn(game);
+			
+			int turn = this.game.getTurn();
+			this.game.setTurn(turn + 1);
+			playerWithTurn = this.game.getPlayerWithTurn();
+		}
+
+		this.dealer.dealCardsToPlayerWithTurn(game);
+	}
+}

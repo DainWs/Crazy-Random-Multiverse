@@ -66,7 +66,7 @@ public class ModelMapper {
 		Board board = game.getBoard();
 		List<ZoneDto> playerZones = new ArrayList<>();
 		for (Player player : game.getPlayers()) {
-			Zone playerZone = board.getZone(player);
+			Zone playerZone = board.getZoneOf(player);
 			if (playerZone.isAlive()) {
 				playerZones.add(this.mapPlayerZoneToDto(playerZone, player));
 			}

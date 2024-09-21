@@ -48,7 +48,7 @@ public class CustomActionContext implements ActionContext {
 	@Override
 	public Zone getSourceZone() {
 		Board board = this.getBoard();
-		return board.getZone(this.sourcePlayer.getPlayerCode());
+		return board.getZoneOf(this.sourcePlayer.getPlayerCode());
 	}
 
 	public void setSourceCard(Card sourceCard) {
@@ -81,7 +81,7 @@ public class CustomActionContext implements ActionContext {
 	@Override
 	public Zone getTargetZone() {
 		Board board = this.getBoard();
-		return board.getZone(this.targetPlayer.getPlayerCode());
+		return board.getZoneOf(this.targetPlayer.getPlayerCode());
 	}
 
 	public void setTargetCard(Card targetCard) {
