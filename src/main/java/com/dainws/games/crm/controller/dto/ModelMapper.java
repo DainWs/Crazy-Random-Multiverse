@@ -81,13 +81,12 @@ public class ModelMapper {
 		zoneDto.setOwner(this.mapPlayerToDto(player));
 		zoneDto.setHealth(playerZone.getZoneHealth().getValue());
 		zoneDto.setMaxHealth(playerZone.getZoneHealth().getMaxValue());
-		
-		int verticalDimension = playerZone.getVerticalDimension();
-		int horizontalDimension = playerZone.getHorizontalDimension();
 
-		CardDto[][] combatantDtos = new CardDto[verticalDimension][horizontalDimension]; 
-		for (int rowIndex = 0; rowIndex < verticalDimension; rowIndex++) {
-			for (int columnIndex = 0; columnIndex < horizontalDimension; columnIndex++) {
+		Combatant[][] combatants = playerZone.getCombatants();
+		CardDto[][] combatantDtos = new CardDto[combatants.length][];
+		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
+			combatantDtos[rowIndex] = new CardDto[combatants[rowIndex].length];
+			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
 				
 				if (playerZone.hasCombatant(coordinate)) {
@@ -127,8 +126,10 @@ public class ModelMapper {
 		cardCodeDto.setCode(card.getCode().getCode());
 		cardCodeDto.setType(card.getCode().getType());
 		cardDto.setCode(cardCodeDto);
-		cardDto.setNameKey(card.getName().getKey().getValue());
-		cardDto.setDescriptionKey(card.getDescription().getKey().getValue());
+		
+		// TODO pendiente de hacer traduccion
+		cardDto.setNameKey("card.%s.name".formatted(card.getCode()));
+		cardDto.setDescriptionKey("card.%s.description".formatted(card.getCode()));
 		cardDto.setType(card.getType());
 
 		if (card.isType(CardType.EQUIPMENT)) {

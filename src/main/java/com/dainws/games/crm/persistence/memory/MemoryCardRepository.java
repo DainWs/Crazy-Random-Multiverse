@@ -15,8 +15,8 @@ import com.dainws.games.crm.domain.core.card.Spell;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 import com.dainws.games.crm.domain.core.dealer.Deck;
-import com.dainws.games.crm.domain.exception.CardNotFoundException;
-import com.dainws.games.crm.persistence.repositories.CardRepository;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
+import com.dainws.games.crm.domain.repositories.CardRepository;
 
 public class MemoryCardRepository implements CardRepository, Deck {
 	private Map<CardCode, Card> cards;
@@ -39,12 +39,12 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	}
 
 	@Override
-	public Card find(CardCode cardCode) throws CardNotFoundException {
+	public Card find(CardCode cardCode) throws NotFoundException {
 		if (this.has(cardCode)) {
 			return this.cards.get(cardCode);
 		}
 
-		throw new CardNotFoundException();
+		throw NotFoundException.cardNotFound();
 	}
 
 	@Override

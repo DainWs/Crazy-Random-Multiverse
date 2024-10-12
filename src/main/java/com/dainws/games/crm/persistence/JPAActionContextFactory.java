@@ -5,8 +5,8 @@ import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.action.MutableActionContext;
-import com.dainws.games.crm.persistence.repositories.CardRepository;
-import com.dainws.games.crm.persistence.repositories.GameRepository;
+import com.dainws.games.crm.domain.repositories.CardRepository;
+import com.dainws.games.crm.domain.repositories.GameRepository;
 
 public class JPAActionContextFactory implements ActionContextFactory {
 

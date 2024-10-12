@@ -15,9 +15,9 @@ import com.dainws.games.crm.controller.dto.models.UserDto;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.UserPlatform;
-import com.dainws.games.crm.domain.exception.UserNotFoundException;
+import com.dainws.games.crm.domain.UserService;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.translator.Translatable;
-import com.dainws.games.crm.services.UserService;
 
 @Controller
 public class WebUserController {
@@ -49,14 +49,14 @@ public class WebUserController {
 
 	@MessageMapping("/user/update")
 	public void updateAccount(@Payload UserDto userDto, @Header("simpSessionId") String sessionId)
-			throws UserNotFoundException {
+			throws NotFoundException {
 		User user = new User(sessionId, userDto.getUsername(), UserPlatform.WEB);
 		this.userService.update(user);
 	}
 
 	@MessageMapping("/user/info")
 	@SendToUser("/topic/user/info")
-	public UserDto info(@Header("simpSessionId") String sessionId) throws UserNotFoundException {
+	public UserDto info(@Header("simpSessionId") String sessionId) throws NotFoundException {
 		User user = this.getUser(sessionId);
 		UserDto userDto = new UserDto();
 		userDto.setUid(sessionId);
@@ -74,7 +74,7 @@ public class WebUserController {
 		return exception.getMessage();
 	}
 
-	private User getUser(String sessionId) throws UserNotFoundException {
+	private User getUser(String sessionId) throws NotFoundException {
 		return this.userService.findUser(UserCode.fromString(sessionId));
 	}
 }

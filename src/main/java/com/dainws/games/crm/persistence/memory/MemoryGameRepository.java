@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.exception.GameNotFoundException;
-import com.dainws.games.crm.persistence.repositories.GameRepository;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
+import com.dainws.games.crm.domain.repositories.GameRepository;
 
 public class MemoryGameRepository implements GameRepository {
 	private Map<GameCode, Game> games;
@@ -38,11 +38,11 @@ public class MemoryGameRepository implements GameRepository {
 	}
 
 	@Override
-	public Game find(GameCode gameCode) throws GameNotFoundException {
+	public Game find(GameCode gameCode) throws NotFoundException {
 		if (this.has(gameCode)) {
 			return this.games.get(gameCode);
 		}
 
-		throw new GameNotFoundException();
+		throw NotFoundException.gameNotFound();
 	}
 }

@@ -2,7 +2,6 @@ package com.dainws.games.crm.domain.core.action;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +40,16 @@ public class SurrenderActionTest implements ActionTest {
 
 		Zone zone = actionContext.getSourceZone();
 		assertFalse(zone.isAlive());
+	}
+	
+	@Test
+	public void testGivenContext_whenPerform_thenPlayerZoneHasNoneCombatant() throws PlayerActionException {
+		CustomActionContext actionContext = this.createActionContext();
+
+		this.action.perform(actionContext);
+
+		Zone zone = actionContext.getSourceZone();
+		assertFalse(zone.hasCombatants());
 	}
 
 	private CustomActionContext createActionContext() {

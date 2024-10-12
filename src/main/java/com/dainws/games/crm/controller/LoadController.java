@@ -7,28 +7,29 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
+import com.dainws.games.crm.domain.UserService;
 import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.exception.UserNotFoundException;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.translator.Translatable;
-import com.dainws.games.crm.services.LoadService;
-import com.dainws.games.crm.services.UserService;
 
 @Controller
 public class LoadController {
-	private LoadService loadService;
-	private UserService userService;
 
-	public LoadController(LoadService loadService, UserService userService) {
-		this.loadService = loadService;
+	private UserService userService;
+	private PartyService partyService;
+
+	public LoadController(UserService userService, PartyService partyService) {
 		this.userService = userService;
+		this.partyService = partyService;
 	}
 
 	@MessageMapping("/game/create")
 	public void createGameFromParty(@Header("simpSessionId") String sessionId) {
 		User user = this.getUser(sessionId);
-		this.loadService.loadGameOfPartyOwner(user);
+		this.partyService.loadGame(user);
 	}
 	
 	@MessageMapping("/game/{gameCode}/ready")
@@ -37,7 +38,7 @@ public class LoadController {
 			@DestinationVariable(value = "gameCode") String gameCodeAsString
 	) throws IllegalAccessException {
 		User user = this.getUser(sessionId);
-		this.loadService.setUserReady(GameCode.fromString(gameCodeAsString), user);
+		this.partyService.setUserReady(GameCode.fromString(gameCodeAsString), user);
 	}
 	
 	@MessageExceptionHandler
@@ -51,7 +52,7 @@ public class LoadController {
 		return exception.getMessage();
 	}
 
-	private User getUser(String sessionId) throws UserNotFoundException {
+	private User getUser(String sessionId) throws NotFoundException {
 		return this.userService.findUser(UserCode.fromString(sessionId));
 	}
 }

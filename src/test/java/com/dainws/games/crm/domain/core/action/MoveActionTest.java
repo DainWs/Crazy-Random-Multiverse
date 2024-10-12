@@ -80,7 +80,6 @@ class MoveActionTest extends PlayerTurnActionTest {
 		zone.putCombatant(coordinate, warriorCard);
 		
 		Coordinate targetCoordinate = this.getAvaibleCoordinateOnPlayerZone(game, playerWithTurn);
-		
 		CustomActionContext actionContext = new CustomActionContext();
 		actionContext.setGame(game);
 		actionContext.setSourcePlayer(playerWithTurn);

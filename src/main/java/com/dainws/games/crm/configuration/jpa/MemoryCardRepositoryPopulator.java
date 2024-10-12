@@ -6,7 +6,7 @@ import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Spell;
 import com.dainws.games.crm.domain.core.card.Warrior;
-import com.dainws.games.crm.domain.exception.CardNotFoundException;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 
 public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulator<MemoryCardRepository> {
@@ -51,7 +51,7 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 				.build());
 	}
 
-	private void addWarriors(MemoryCardRepository cardRepository) throws CardNotFoundException {
+	private void addWarriors(MemoryCardRepository cardRepository) throws NotFoundException {
 		cardRepository.set(Warrior.commonWarriorBuilder()
 				.withCode(0)
 				.withName("Hugo")

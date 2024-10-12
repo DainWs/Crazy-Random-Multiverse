@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.domain.exception.UserNotFoundException;
-import com.dainws.games.crm.persistence.repositories.UserRepository;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
+import com.dainws.games.crm.domain.repositories.UserRepository;
 
 public class MemoryUserRepository implements UserRepository {
 
@@ -35,12 +35,12 @@ public class MemoryUserRepository implements UserRepository {
 	}
 
 	@Override
-	public User find(UserCode userCode) throws UserNotFoundException {
+	public User find(UserCode userCode) throws NotFoundException {
 		if (this.has(userCode)) {
 			return this.users.get(userCode);
 		}
 
-		throw new UserNotFoundException();
+		throw new NotFoundException("user");
 	}
 
 	@Override

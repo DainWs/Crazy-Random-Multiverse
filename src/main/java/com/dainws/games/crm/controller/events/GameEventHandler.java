@@ -6,26 +6,25 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
+import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
+import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.GameException;
-import com.dainws.games.crm.services.GameService;
 
 @Controller
 public class GameEventHandler {
 
 	private CommunicationClient communicationClient;
+	private PartyService partyService;
 	private Dealer dealer;
-	private GameService gameService;
 
-	public GameEventHandler(CommunicationClient communicationClient, Dealer dealer,
-			GameService gameService) {
+	public GameEventHandler(CommunicationClient communicationClient, PartyService gameService) {
 		this.communicationClient = communicationClient;
-		this.dealer = dealer;
-		this.gameService = gameService;
+		this.partyService = gameService;
+		this.dealer = null;
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_CREATED")
@@ -49,7 +48,7 @@ public class GameEventHandler {
 		this.delayInSeconds(4);
 		
 		Game game = event.getDetails().getGame();
-		this.gameService.delete(game.getCode());
+		this.partyService.loadPartyFromGame(game.getCode());
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_END_WITH_TIE")
@@ -58,7 +57,7 @@ public class GameEventHandler {
 		this.delayInSeconds(4);
 		
 		Game game = event.getDetails().getGame();
-		this.gameService.delete(game.getCode());
+		this.partyService.loadPartyFromGame(game.getCode());
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).TURN_CHANGE")
@@ -85,5 +84,9 @@ public class GameEventHandler {
 		for (Player player : game.getPlayers()) {
 			this.communicationClient.sendEvent(player, event);
 		}
+	}
+	
+	public void setDealer(Dealer dealer) {
+		this.dealer = dealer;
 	}
 }

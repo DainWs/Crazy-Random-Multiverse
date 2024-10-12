@@ -8,11 +8,11 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.domain.PartyCode;
+import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
+import com.dainws.games.crm.domain.UserService;
 import com.dainws.games.crm.domain.translator.Translatable;
-import com.dainws.games.crm.services.PartyService;
-import com.dainws.games.crm.services.UserService;
 
 @Controller
 public class PartyController {
