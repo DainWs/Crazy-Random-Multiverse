@@ -11,8 +11,8 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 import com.dainws.games.crm.tools.domain.builder.GameBuilder;
 

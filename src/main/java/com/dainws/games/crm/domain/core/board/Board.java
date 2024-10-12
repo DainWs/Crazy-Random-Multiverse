@@ -4,20 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
-import com.dainws.games.crm.domain.exception.ZoneNotFoundException;
 
 public class Board {
 
 	private Map<PlayerCode, Zone> zones;
 	
 	public Board(List<Player> players) {
+		this(ZoneWithLeader::new, players);
+	}
+	
+	public Board(ZoneFactory zoneFactory, List<Player> players) {
 		this.zones = new HashMap<>();
 		
 		for (Player player : players) {
 			if (!player.isSpectator()) {
-				this.setZone(player, new ZoneWithLeader());
+				this.setZone(player, zoneFactory.create());
 			}
 		}
 	}
@@ -40,12 +44,12 @@ public class Board {
 		return this.getZoneOf(player.getPlayerCode());
 	}
 	
-	public Zone getZoneOf(PlayerCode code) {
+	public Zone getZoneOf(PlayerCode code) throws NotFoundException {
 		if (this.zones.containsKey(code)) {
 			return this.zones.get(code);
 		}
 
-		throw new ZoneNotFoundException();
+		throw NotFoundException.zoneNotFound();
 	}
 	
 	public boolean isZoneAlive(PlayerCode code) {

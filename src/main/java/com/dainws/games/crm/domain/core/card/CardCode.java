@@ -42,6 +42,7 @@ public final class CardCode {
 
 	@Override
 	public String toString() {
-		return "%s#%s".formatted(this.type, this.code);
+		String typeLowercase = this.type.name().toLowerCase();
+		return "%s.%s".formatted(typeLowercase, this.code);
 	}
 }

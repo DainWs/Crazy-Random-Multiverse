@@ -4,77 +4,61 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.exception.CoordinateNotAllowedException;
-import com.dainws.games.crm.domain.exception.EmptyCoordinateException;
+import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 
 public class ZoneWithLeader extends Zone {
-	private static final int HORIZONTAL_DIMENSION = 3;
-	private static final int VERTICAL_DIMENSION = 2;
-	public static final Coordinate LEADER_COORDINATE = new Coordinate(-1, -1);
-
-	private Leader leader;
+	private static final int DEFAULT_HORIZONTAL_DIMENSION = 3;
+	private static final int DEFAULT_VERTICAL_DIMENSION = 2;
+	public static final Coordinate LEADER_COORDINATE = new Coordinate(0, 0);
 
 	public ZoneWithLeader() {
-		super(HORIZONTAL_DIMENSION, VERTICAL_DIMENSION);
-		this.leader = null;
+		this(DEFAULT_HORIZONTAL_DIMENSION, DEFAULT_VERTICAL_DIMENSION);
+	}
+
+	public ZoneWithLeader(int horizontalDimension, int verticalDimension) {
+		super(horizontalDimension, verticalDimension);
+	}
+
+	@Override
+	protected Combatant[][] createCombatantsMatrix(int horizontalDimension, int verticalDimension) {
+		Combatant[][] combatants = new Combatant[verticalDimension + 1][];
+		combatants[0] = new Combatant[1];
+
+		for (int rowIndex = 1; rowIndex < combatants.length; rowIndex++) {
+			combatants[rowIndex] = new Combatant[horizontalDimension];
+		}
+
+		return combatants;
 	}
 
 	@Override
 	public boolean isAlive() {
-		if (this.leader == null) {
+		Leader leader = this.getLeader();
+		if (leader == NONE) {
 			return true;
 		}
 
-		return this.leader.isAlive();
+		return leader.isAlive();
 	}
 
 	@Override
 	public Health getZoneHealth() {
-		if (this.leader == null) {
+		Leader leader = this.getLeader();
+		if (leader == NONE) {
 			return Health.INFINITE;
 		}
 
-		Health leaderHealth = this.leader.getHealth();
+		Health leaderHealth = leader.getHealth();
 		return Health.newInstance(leaderHealth.getValue(), leaderHealth.getMaxValue());
 	}
 
 	@Override
-	public boolean hasCombatant(Coordinate coordinate) {
-		if (LEADER_COORDINATE.equals(coordinate)) {
-			return this.leader != null;
+	public void putCombatant(Coordinate coordinate, Combatant combatant) throws OperationNotAllowedException {
+		if (LEADER_COORDINATE.equals(coordinate) && !combatant.isType(CardType.LEADER)) {
+			throw new OperationNotAllowedException("EXCEPTION_COORDINATE_REQUIRES_LEADER");
 		}
 
-		return super.hasCombatant(coordinate);
-	}
-
-	@Override
-	public Combatant getCombatant(Coordinate coordinate) throws EmptyCoordinateException {
-		if (LEADER_COORDINATE.equals(coordinate)) {
-			return this.leader;
-		}
-
-		return super.getCombatant(coordinate);
-	}
-
-	@Override
-	public void putCombatant(Coordinate coordinate, Combatant combatant) throws CoordinateNotAllowedException {
-		if (LEADER_COORDINATE.equals(coordinate)) {
-			this.putLeader(combatant);
-		} else {
-			super.putCombatant(coordinate, combatant);
-		}
-	}
-
-	private void putLeader(Combatant combatant) throws CoordinateNotAllowedException {
-		if (this.leader != null) {
-			throw new CoordinateNotAllowedException("EXCEPTION_COORDINATE_NOT_EMPTY");
-		}
-
-		if (!combatant.getType().equals(CardType.LEADER)) {
-			throw new CoordinateNotAllowedException("EXCEPTION_COORDINATE_REQUIRES_LEADER");
-		}
-
-		this.leader = (Leader) combatant;
+		super.putCombatant(coordinate, combatant);
 	}
 
 	@Override
@@ -83,61 +67,8 @@ public class ZoneWithLeader extends Zone {
 			super.removeCombatant(coordinate);
 		}
 	}
-	
-	@Override
-	public boolean isEmpty() {
-		if (this.hasCombatant(LEADER_COORDINATE)) {
-			return false;
-		}
-		
-		return super.isEmpty();
-	}
-	
-	@Override
-	public boolean isLineEmpty(int verticalIndex) {
-		if (verticalIndex == LEADER_COORDINATE.getRow()) {
-			return !this.hasCombatant(LEADER_COORDINATE);
-		}
 
-		return super.isLineEmpty(verticalIndex);
-	}
-	
-	@Override
-	public boolean isLineFilled(int verticalIndex) {
-		if (verticalIndex == LEADER_COORDINATE.getRow()) {
-			return this.hasCombatant(LEADER_COORDINATE);
-		}
-
-		return super.isLineFilled(verticalIndex);
-	}
-
-	@Override
-	public int countCombatants() {
-		int count = super.countCombatants();
-		if (this.hasCombatant(LEADER_COORDINATE)) {
-			count++;
-		}
-		
-		return count;
-	}
-	
-	@Override
-	public int countCombatantsInLine(int verticalIndex) {
-		if (verticalIndex == -1 && this.hasCombatant(LEADER_COORDINATE)) {
-			return 1;
-		}
-		
-		return super.countCombatantsInLine(verticalIndex);
-	}
-	
-	@Override
-	public int getCapacity() {
-		int capacity = super.getCapacity();
-		int leaderSpot = 1;
-		return capacity + leaderSpot;
-	}
-	
 	public Leader getLeader() {
-		return this.leader;
+		return (Leader) this.getCombatant(LEADER_COORDINATE);
 	}
 }

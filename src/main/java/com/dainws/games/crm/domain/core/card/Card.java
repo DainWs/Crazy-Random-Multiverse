@@ -2,35 +2,15 @@ package com.dainws.games.crm.domain.core.card;
 
 import java.util.Objects;
 
-import com.dainws.games.crm.domain.translator.Text;
-
 public abstract class Card {
 	private CardCode code;
-	private Text name;
-	private Text description;
 
 	protected Card(long code, String name, String description) {
 		this.code = new CardCode(code, this.getType());
-		
-		String lowercaseType = this.getType().name().toLowerCase();
-		String cardTextCode = "%s.%s".formatted(lowercaseType, code);
-		String cardNameKey = "card_info.%s.name".formatted(cardTextCode);
-		String cardDescriptionKey = "card_info.%s.description".formatted(cardTextCode);
-		
-		this.name = new Text(cardNameKey, name);
-		this.description = new Text(cardDescriptionKey.formatted(cardTextCode), name);
 	}
 
 	public final CardCode getCode() {
 		return code;
-	}
-
-	public final Text getName() {
-		return name;
-	}
-
-	public final Text getDescription() {
-		return description;
 	}
 
 	public abstract CardType getType();
@@ -60,6 +40,6 @@ public abstract class Card {
 
 	@Override
 	public String toString() {
-		return "%s".formatted(this.getName());
+		return this.code.toString();
 	}
 }

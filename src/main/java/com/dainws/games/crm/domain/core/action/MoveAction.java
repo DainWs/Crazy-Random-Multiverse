@@ -6,9 +6,9 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.GameRuntimeException;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
 
 public class MoveAction extends PlayerTurnAction {
 
@@ -30,7 +30,7 @@ public class MoveAction extends PlayerTurnAction {
 
 			this.logger.log(Level.TRACE, "%s ha sido movido desde %s a %s", combatant, fromCoordinate, toCoordinate);
 		} catch (GameRuntimeException e) {
-			throw new PlayerActionException(context.getSourcePlayer(), e);
+			throw new PlayerActionException(e, context.getSourcePlayer());
 		}
 
 		this.notifyActionEvent(EventCode.PLAYER_MOVE_CARD, context);
@@ -45,11 +45,11 @@ public class MoveAction extends PlayerTurnAction {
 		Player sourcePlayer = context.getSourcePlayer();
 
 		if (!context.getSourceZone().hasCombatant(context.getSourceCoordinate())) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_NONE_COMBATANT_IN_TARGET_POSITION");
+			throw new PlayerActionException("selected_source_position_has_none_combatant", sourcePlayer);
 		}
 
 		if (context.getTargetZone().hasCombatant(context.getTargetCoordinate())) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_TARGET_POSITION_IS_OCCUPIED");
+			throw new PlayerActionException("selected_target_position_already_has_combatant", sourcePlayer);
 		}
 	}
 }

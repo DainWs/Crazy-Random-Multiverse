@@ -1,6 +1,6 @@
 package com.dainws.games.crm.domain.core.effect;
 
-import com.dainws.games.crm.domain.exception.EffectException;
+import com.dainws.games.crm.domain.core.exception.EffectException;
 
 // TODO esto va a crecer mucho debido a la variedad y posibilidades de los effectos
 public interface Effect {

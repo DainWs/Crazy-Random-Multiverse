@@ -33,7 +33,8 @@ public class Equipment extends Card {
 
 	@Override
 	public String toString() {
-		return "%s[DMG=%s,ARM=%s,HP=%s]".formatted(this.getName(), this.damage, this.armor, this.health);
+		String cardAsString = super.toString();
+		return "%s[DMG=%s,ARM=%s,HP=%s]".formatted(cardAsString, this.damage, this.armor, this.health);
 	}
 
 	public static Builder builder() {

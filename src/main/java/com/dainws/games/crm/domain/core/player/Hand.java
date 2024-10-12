@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.domain.exception.CardNotFoundException;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 
 public class Hand {
 
@@ -41,7 +41,7 @@ public class Hand {
 		this.cards.remove(card);
 	}
 
-	public void remove(CardCode code) throws CardNotFoundException {
+	public void remove(CardCode code) throws NotFoundException {
 		Card card = this.getCard(code);
 		this.cards.remove(card);
 	}
@@ -50,13 +50,13 @@ public class Hand {
 		this.cards.removeIf(card -> card.isType(type));
 	}
 
-	public Card grab(CardCode code) throws CardNotFoundException {
+	public Card grab(CardCode code) throws NotFoundException {
 		Card card = this.getCard(code);
 		this.cards.remove(card);
 		return card;
 	}
 
-	public Card getCard(CardCode code) throws CardNotFoundException {
+	public Card getCard(CardCode code) throws NotFoundException {
 		Optional<Card> optionalCard = Optional.empty();
 
 		for (Card card : this.cards) {
@@ -66,7 +66,7 @@ public class Hand {
 		}
 
 		if (optionalCard.isEmpty()) {
-			throw new CardNotFoundException();
+			throw NotFoundException.cardNotFound();
 		}
 
 		return optionalCard.get();

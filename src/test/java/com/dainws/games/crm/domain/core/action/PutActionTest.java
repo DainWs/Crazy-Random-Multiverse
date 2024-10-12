@@ -12,10 +12,11 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 import com.dainws.games.crm.tools.domain.builder.GameBuilder;
+import com.dainws.games.crm.tools.domain.core.board.DummyZone;
 
 class PutActionTest extends PlayerTurnActionTest {
 
@@ -67,6 +68,7 @@ class PutActionTest extends PlayerTurnActionTest {
 		playerWithTurn.getHand().addCard(new CardBuilder().buildFullValidWarrior());
 		Card warriorCard = this.getAnyPlayerCard(playerWithTurn, CardType.WARRIOR);
 		Coordinate targetCoordinate = this.getAvaibleCoordinateOnPlayerZone(game, playerWithTurn);
+		game.getBoard().setZone(playerWithTurn, new DummyZone());
 
 		CustomActionContext actionContext = new CustomActionContext();
 		actionContext.setGame(game);

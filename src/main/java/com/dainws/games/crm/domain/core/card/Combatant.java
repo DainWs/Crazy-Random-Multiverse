@@ -81,11 +81,12 @@ public abstract class Combatant extends Card {
 
 	@Override
 	public String toString() {
+		String cardAsString = super.toString();
 		String equipmentName = "";
 		if (this.equipment != null) {
-			equipmentName = this.equipment.getName().toString();
+			equipmentName = this.equipment.getCode().toString();
 		}
 		return "%s[DMG=%s,ARM=%s,HP=%s,EQUIPMENT=%s]"
-				.formatted(this.getName(), this.damage, this.armor, this.health, equipmentName);
+				.formatted(cardAsString, this.damage, this.armor, this.health, equipmentName);
 	}
 }

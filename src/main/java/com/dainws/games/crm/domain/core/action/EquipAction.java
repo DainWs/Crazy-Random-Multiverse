@@ -8,10 +8,10 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.GameRuntimeException;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
 
 public class EquipAction extends PlayerTurnAction {
 
@@ -28,7 +28,7 @@ public class EquipAction extends PlayerTurnAction {
 
 			this.logger.log(Level.TRACE, "%s ha sido equipado en el combatiente %s", equipment, combatant);
 		} catch (GameRuntimeException e) {
-			throw new PlayerActionException(context.getSourcePlayer(), e);
+			throw new PlayerActionException(e, context.getSourcePlayer());
 		}
 
 		this.notifyActionEvent(EventCode.PLAYER_EQUIP_CARD, context);
@@ -45,11 +45,11 @@ public class EquipAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_SELECTED_CARD_NOT_FOUND");
+			throw new PlayerActionException("selected_card_not_found", sourcePlayer);
 		}
 
 		if (!card.isType(CardType.EQUIPMENT)) {
-			throw new PlayerActionException(sourcePlayer, "EXCEPTION_SELECTED_CARD_IS_NOT_EQUIPMENT");
+			throw new PlayerActionException("selected_card_is_not_equipment", sourcePlayer);
 		}
 	}
 }

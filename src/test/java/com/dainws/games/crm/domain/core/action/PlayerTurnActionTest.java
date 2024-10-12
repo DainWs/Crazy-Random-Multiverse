@@ -11,8 +11,8 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.exception.PlayerActionTurnRequiredException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.ActionAllowedOnTurnException;
 
 public abstract class PlayerTurnActionTest implements ActionTest {
 	
@@ -32,7 +32,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		Player playerWithoutTurn = this.getPlayerWithoutTurn(actionContext);
 		actionContext.setSourcePlayer(playerWithoutTurn);
 		
-		assertThrows(ActionAllowedOnTurnException.class, () -> turnAction.perform(actionContext));
+		assertThrows(PlayerActionTurnRequiredException.class, () -> turnAction.perform(actionContext));
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		
 		int verticalIndex = this.getFirstLineWithAvaibleSpace(zone);
 		int horizontalIndex = this.getFirstLineEmptySpace(zone, verticalIndex);
-		
+
 		return new Coordinate(verticalIndex, horizontalIndex);
 	}
 	
@@ -110,7 +110,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 
 		do {
 			verticalIndex++;
-			lineIsFilled = zone.isLineFilled(verticalIndex);
+			lineIsFilled = zone.isFilledAt(verticalIndex);
 		} 
 		while(lineIsFilled && verticalIndex < zone.getVerticalDimension());
 
@@ -121,15 +121,15 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		return verticalIndex;
 	}
 	
-	protected final int getFirstLineEmptySpace(Zone zone, int lineIndex) {
+	protected final int getFirstLineEmptySpace(Zone zone, int rowIndex) {
 		int horizontalIndex = -1;
 		boolean hasCombatant = false;
 
 		do {
 			horizontalIndex++;
-			hasCombatant = zone.hasCombatant(new Coordinate(lineIndex, horizontalIndex));
+			hasCombatant = zone.hasCombatant(new Coordinate(rowIndex, horizontalIndex));
 		} 
-		while(hasCombatant && horizontalIndex < zone.getHorizontalDimension());
+		while(hasCombatant && horizontalIndex < zone.getHorizontalDimension(rowIndex));
 
 		if (hasCombatant) {
 			throw new RuntimeException("None avaible space on line");

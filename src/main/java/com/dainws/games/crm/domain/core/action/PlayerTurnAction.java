@@ -7,9 +7,9 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionTurnRequiredException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.exception.ActionAllowedOnTurnException;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
 
 public abstract class PlayerTurnAction implements Action {
 
@@ -22,13 +22,13 @@ public abstract class PlayerTurnAction implements Action {
 	}
 	
 	@Override
-	public final void perform(ActionContext context) throws ActionAllowedOnTurnException, PlayerActionException {
+	public final void perform(ActionContext context) throws PlayerActionTurnRequiredException, PlayerActionException {
 		Game game = context.getGame();
 		Player playerWithTurn = game.getPlayerWithTurn();
 		Player sourcePlayer = context.getSourcePlayer();
 
 		if (!playerWithTurn.equals(sourcePlayer)) {
-			throw new ActionAllowedOnTurnException(sourcePlayer);
+			throw new PlayerActionTurnRequiredException(sourcePlayer);
 		}
 
 		this.performPlayerAction(context);

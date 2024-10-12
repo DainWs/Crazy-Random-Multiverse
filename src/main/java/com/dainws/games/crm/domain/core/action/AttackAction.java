@@ -5,8 +5,8 @@ import java.lang.System.Logger.Level;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.exception.GameRuntimeException;
-import com.dainws.games.crm.domain.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 
 public class AttackAction extends PlayerTurnAction {
 
@@ -23,11 +23,11 @@ public class AttackAction extends PlayerTurnAction {
 			this.logger.log(Level.TRACE, "El resultado ha sido: %s", targetCombatant);
 
 			if (!targetCombatant.isAlive()) {
-				this.logger.log(Level.TRACE, "La carta %s ha muerto", targetCombatant.getName());
+				this.logger.log(Level.TRACE, "La carta %s ha muerto", targetCombatant.getCode());
 				this.removeDeadTargetFromZone(context);
 			}			
 		} catch (GameRuntimeException e) {
-			throw new PlayerActionException(context.getSourcePlayer(), e);
+			throw new PlayerActionException(e, context.getSourcePlayer());
 		}
 
 		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, context);
