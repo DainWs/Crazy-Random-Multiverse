@@ -1,8 +1,8 @@
-package com.dainws.games.crm.persistence.repositories;
+package com.dainws.games.crm.domain.repositories;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.exception.GameNotFoundException;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 
 public interface GameRepository {
 	void save(Game game);
@@ -11,5 +11,5 @@ public interface GameRepository {
 	
 	boolean has(GameCode gameCode);
 	
-	Game find(GameCode gameCode) throws GameNotFoundException;
+	Game find(GameCode gameCode) throws NotFoundException;
 }

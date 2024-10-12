@@ -4,32 +4,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dainws.games.crm.domain.exception.PartyException;
+import com.dainws.games.crm.domain.core.GameMode;
+import com.dainws.games.crm.domain.core.StandardGameMode;
+import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 
 public class Party {
 	private PartyCode partyCode;
 	private UserCode ownerCode;
+	private GameMode gameMode;
 	private boolean isLocked;
 	private Map<UserCode, User> users;
 
 	public Party(User partyOwner) {
 		this.partyCode = new PartyCode();
 		this.ownerCode = partyOwner.getCode();
+		this.gameMode = StandardGameMode.CLASSIC;
 		this.users = new HashMap<>();
 		this.users.put(partyOwner.getCode(), partyOwner);
 	}
+	
+	public void changeMode(GameMode gameMode) {
+		this.gameMode = gameMode;
+	}
 
-	public void add(User user) throws PartyException {
+	public void add(User user) throws OperationNotAllowedException {
 		if (this.isLocked) {
-			throw new PartyException("EXCEPTION_PARTY_LOCKED");
+			throw new OperationNotAllowedException("party_locked");
 		}
 
 		this.users.put(user.getCode(), user);
 	}
 
-	public void remove(User user) throws PartyException {
+	public void remove(User user) throws OperationNotAllowedException {
 		if (this.isLocked) {
-			throw new PartyException("EXCEPTION_PARTY_LOCKED");
+			throw new OperationNotAllowedException("party_locked");
 		}
 		
 		UserCode userCode = user.getCode();
@@ -47,6 +55,10 @@ public class Party {
 
 	public User getOwner() {
 		return this.users.get(this.ownerCode);
+	}
+	
+	public GameMode getGameMode() {
+		return gameMode;
 	}
 	
 	public boolean isEmpty() {

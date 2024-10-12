@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.ai.AIActionTemplate;
 import com.dainws.games.crm.domain.ai.goals.Goal;
-import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
@@ -36,6 +35,9 @@ public class AttackDecisionEngine extends ContextDecisionEngine {
 		return playerWithLowerHealth;
 	}
 
+	// TODO completar esto
+	// TODO acabar con los tests de entorno? https://chatgpt.com/share/66ef0064-04d8-8012-80c8-a873b86ad87d
+	
 	@Override
 	public Card decideSourceCard(AIActionTemplate actionTemplate, Goal goal) {
 		// TODO Auto-generated method stub

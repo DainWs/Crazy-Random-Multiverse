@@ -24,7 +24,7 @@ public class AttackPlayerActionTemplate implements AIActionTemplate {
 	@Override
 	public boolean canPerformWith(ActionContext actionContext) {
 		Zone zone = actionContext.getTargetZone();
-		return zone.isAlive() && !zone.isEmpty();
+		return zone.isAlive() && zone.hasCombatants();
 	}
 
 	@Override

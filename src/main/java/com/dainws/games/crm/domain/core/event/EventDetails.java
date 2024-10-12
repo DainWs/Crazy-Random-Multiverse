@@ -16,6 +16,12 @@ public class EventDetails {
 	private Card targetCard;
 	private Coordinate targetCoordinate;
 	
+	public EventDetails() {}
+	
+	public EventDetails(Game game) {
+		this.game = game;
+	}
+	
 	public Game getGame() {
 		return game;
 	}

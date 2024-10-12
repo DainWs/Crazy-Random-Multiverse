@@ -23,5 +23,8 @@ public class UserPlayer extends Player {
 	public boolean isPlayingOn(UserPlatform platform) {
 		return this.user.isPlayingFrom(platform);
 	}
-
+	
+	public User toUser() {
+		return user;
+	}
 }

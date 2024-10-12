@@ -1,12 +1,7 @@
-package com.dainws.games.crm.services;
+package com.dainws.games.crm.domain;
 
-import org.springframework.stereotype.Service;
+import com.dainws.games.crm.domain.repositories.UserRepository;
 
-import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.persistence.repositories.UserRepository;
-
-@Service
 public class UserService {
 	private UserRepository userRepository;
 	private PartyService partyService;

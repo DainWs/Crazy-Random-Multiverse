@@ -11,22 +11,22 @@ import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.GameStageTest;
 import com.dainws.games.crm.tools.domain.builder.AIPlayerBuilder;
 
-public abstract class AIGameFirstStageTest extends GameStageTest {
+public abstract class AIGameStageTest extends GameStageTest {
 
 	private final int countOfNonAIPlayers;
-	protected final ActionExecutorMonitor actionExecutorMonitor;
+	protected final PlayerActionExecutorMonitor actionExecutorMonitor;
 	protected List<Player> nonAIPlayers;
 	protected AIPlayer aiPlayer;
 
-	protected AIGameFirstStageTest() {
+	protected AIGameStageTest() {
 		this(1);
 	}
 	
-	protected AIGameFirstStageTest(int countOfNonAIPlayers) {
+	protected AIGameStageTest(int countOfNonAIPlayers) {
 		super(countOfNonAIPlayers + 1);
 		this.nonAIPlayers = new ArrayList<>();
 		this.countOfNonAIPlayers = countOfNonAIPlayers;
-		this.actionExecutorMonitor = new ActionExecutorMonitor();
+		this.actionExecutorMonitor = new PlayerActionExecutorMonitor();
 	}
 
 	protected final Player createPlayer() {
@@ -61,11 +61,7 @@ public abstract class AIGameFirstStageTest extends GameStageTest {
 		this.game.setState(GameState.IN_PROGRESS);
 		Player playerWithTurn = this.game.getPlayerWithTurn();
 		while(!playerWithTurn.equals(this.aiPlayer)) {
-			this.dealer.dealCardsToPlayerWithTurn(game);
-			
-			int turn = this.game.getTurn();
-			this.game.setTurn(turn + 1);
-			playerWithTurn = this.game.getPlayerWithTurn();
+			this.playTurnOfCurrentPlayer();
 		}
 
 		this.dealer.dealCardsToPlayerWithTurn(game);

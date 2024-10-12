@@ -9,7 +9,7 @@ import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
-public class Game {
+public abstract class Game {
 	private GameCode code;
 	private GameState state;
 	private int playerIndexWithTurn;
@@ -17,12 +17,12 @@ public class Game {
 
 	private Board board;
 	private List<Player> players;
-
-	public Game(List<Player> players) {
+	
+	protected Game(List<Player> players) {
 		this(new Board(players), players);
 	}
 	
-	public Game(Board board, List<Player> players) {
+	protected Game(Board board, List<Player> players) {
 		this.code = new GameCode();
 		this.state = GameState.BEFORE_START;
 		this.round = 0;

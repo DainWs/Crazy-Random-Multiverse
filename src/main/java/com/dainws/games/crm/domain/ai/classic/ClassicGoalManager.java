@@ -50,13 +50,13 @@ public class ClassicGoalManager implements GoalManager {
 		if (onlyHeAndMeArePlaying) {
 			return List.of(BaseGoals.createAttackWithAllCardsToPlayer(player));
 		}
-		
+
 		int capacityOf50percert = zone.getCapacity() / 2;
 		if (zone.countCombatants() > capacityOf50percert) {
 			return List.of(BaseGoals.createAttackWithAllCardsToPlayer(player));
 		}
 
-		if (!zone.isEmpty()) {
+		if (zone.hasCombatants()) {
 			return List.of(BaseGoals.createAttackPlayerOneTime(player));
 		}
 
