@@ -8,23 +8,33 @@ import org.junit.jupiter.api.BeforeEach;
 import com.dainws.games.crm.domain.core.DummyGame;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameState;
+import com.dainws.games.crm.domain.core.GameStateManager;
+import com.dainws.games.crm.domain.core.GameTimeManager;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
+import com.dainws.games.crm.domain.core.dealer.DealStrategyFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
 import com.dainws.games.crm.tools.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.tools.domain.core.dealer.MemoryDeckPopulator;
 
 public abstract class GameStageTest {
 	private final int countOfPlayers;
+	
+	protected GameStateManager gameStateManager;
+	protected GameTimeManager gameTimeManager;
+	
 	protected Dealer dealer;
 	protected Game game;
 
 	protected GameStageTest(int countOfPlayers) {
+		this.gameStateManager = new GameStateManager();
+		this.gameTimeManager = new GameTimeManager();
 		this.countOfPlayers = countOfPlayers;
 	}
 
@@ -42,15 +52,24 @@ public abstract class GameStageTest {
 
 	private List<Player> createAllPlayers() {
 		List<Player> players = new ArrayList<>();
+		System.out.println(this.countOfPlayers);
 		for (int i = 0; i < this.countOfPlayers; i++) {
-			players.add(this.createPlayer());
+			Player player = this.createPlayer();
+			System.out.println(i + " " + player.getClass());
+			players.add(player);
 		}
 		return players;
 	}
 
 	protected Dealer createDealer() {
 		Deck deck = new MemoryDeckPopulator().populate();
-		return new Dealer(deck);
+		Dealer dealer = new Dealer(deck);
+		dealer.setDealStrategyFactory(this.createDealStrategyFactory());
+		return dealer;
+	}
+	
+	protected DealStrategyFactory createDealStrategyFactory() {
+		return new ClassicDealStrategyFactory();
 	}
 	
 	protected Game createGame(List<Player> players) {
@@ -59,6 +78,7 @@ public abstract class GameStageTest {
 	
 	protected void prepareGame(Game game) {
 		game.setState(GameState.BEFORE_START);
+		this.gameStateManager.next(game);
 	}
 	
 	protected Player createPlayer() {
@@ -70,8 +90,7 @@ public abstract class GameStageTest {
 		this.putCardInHandOnBoard();
 		this.attackWithCardsInBoard();
 		
-		int turn = this.game.getTurn();
-		this.game.setTurn(turn + 1);
+		this.gameTimeManager.nextTurnOf(this.game);
 	}
 
 	protected void putCardInHandOnBoard() {
@@ -89,7 +108,7 @@ public abstract class GameStageTest {
 			return (Combatant) hand.getCardsOf(CardType.LEADER).get(0);
 		}
 
-		return (Combatant) hand.getCardsOf(CardType.LEADER).get(0);
+		return (Combatant) hand.getCardsOf(CardType.WARRIOR).get(0);
 	}
 
 	protected void attackWithCardsInBoard() {

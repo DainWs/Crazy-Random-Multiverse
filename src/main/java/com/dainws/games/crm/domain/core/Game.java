@@ -31,6 +31,8 @@ public abstract class Game {
 		this.board = board;
 	}
 
+	public abstract GameMode getMode();
+	
 	public void resetTime() {
 		this.round = 0;
 		this.playerIndexWithTurn = 0;

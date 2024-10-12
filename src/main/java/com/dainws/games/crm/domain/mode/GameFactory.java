@@ -1,9 +1,10 @@
-package com.dainws.games.crm.domain;
+package com.dainws.games.crm.domain.mode;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;

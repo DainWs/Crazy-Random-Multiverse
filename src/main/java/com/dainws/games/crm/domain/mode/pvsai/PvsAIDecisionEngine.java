@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.ai.classic;
+package com.dainws.games.crm.domain.mode.pvsai;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +17,13 @@ import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.MutableActionContext;
 
-public class ClassicDecisionEngine implements DecisionEngine {
+public class PvsAIDecisionEngine implements DecisionEngine {
 	
 	private Game game;
 	private AIPlayer me;
 	private Map<Class<? extends Action>, ActionContext> cache;
 
-	public ClassicDecisionEngine() {
+	public PvsAIDecisionEngine() {
 		this.cache = new HashMap<>();
 	}
 

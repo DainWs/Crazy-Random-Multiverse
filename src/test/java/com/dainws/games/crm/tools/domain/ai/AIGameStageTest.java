@@ -57,11 +57,11 @@ public abstract class AIGameStageTest extends GameStageTest {
 	@Override
 	protected void prepareGame(Game game) {
 		super.prepareGame(game);
-		
-		this.game.setState(GameState.IN_PROGRESS);
+
 		Player playerWithTurn = this.game.getPlayerWithTurn();
 		while(!playerWithTurn.equals(this.aiPlayer)) {
 			this.playTurnOfCurrentPlayer();
+			playerWithTurn = this.game.getPlayerWithTurn();
 		}
 
 		this.dealer.dealCardsToPlayerWithTurn(game);

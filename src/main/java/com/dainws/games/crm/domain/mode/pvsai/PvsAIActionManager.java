@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.ai.classic;
+package com.dainws.games.crm.domain.mode.pvsai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.player.Hand;
 
-public class ClassicActionManager implements ActionManager {
+public class PvsAIActionManager implements ActionManager {
 
 	private AIPlayer meAsAPlayer;
 	private List<AIActionTemplate> aiActionTemplates;

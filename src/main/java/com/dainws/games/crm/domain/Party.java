@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.dainws.games.crm.domain.core.GameMode;
-import com.dainws.games.crm.domain.core.StandardGameMode;
 import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 
 public class Party {
@@ -18,7 +17,7 @@ public class Party {
 	public Party(User partyOwner) {
 		this.partyCode = new PartyCode();
 		this.ownerCode = partyOwner.getCode();
-		this.gameMode = StandardGameMode.CLASSIC;
+		this.gameMode = new GameMode("CLASSIC");
 		this.users = new HashMap<>();
 		this.users.put(partyOwner.getCode(), partyOwner);
 	}

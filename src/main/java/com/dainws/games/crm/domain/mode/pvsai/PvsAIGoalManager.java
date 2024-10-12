@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.ai.classic;
+package com.dainws.games.crm.domain.mode.pvsai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
-public class ClassicGoalManager implements GoalManager {
+public class PvsAIGoalManager implements GoalManager {
 
 	private PlayerCode myPlayerCode;
 	private List<Goal> goals;
 	
-	public ClassicGoalManager() {
+	public PvsAIGoalManager() {
 		this.goals = new ArrayList<>();
 	}
 	

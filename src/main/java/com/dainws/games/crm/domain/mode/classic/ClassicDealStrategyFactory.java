@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.core.dealer;
+package com.dainws.games.crm.domain.mode.classic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
+import com.dainws.games.crm.domain.core.dealer.ComposedStrategy;
+import com.dainws.games.crm.domain.core.dealer.DealStrategy;
+import com.dainws.games.crm.domain.core.dealer.DealStrategyFactory;
+import com.dainws.games.crm.domain.core.dealer.LeaderStrategy;
+import com.dainws.games.crm.domain.core.dealer.SpellStrategy;
+import com.dainws.games.crm.domain.core.dealer.WarriorStrategy;
 
 public class ClassicDealStrategyFactory implements DealStrategyFactory {
 	private Map<Integer, DealStrategy> dealStrategyByRound;

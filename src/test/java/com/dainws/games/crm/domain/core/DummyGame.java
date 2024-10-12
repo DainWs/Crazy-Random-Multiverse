@@ -14,5 +14,10 @@ public class DummyGame extends Game {
 	public DummyGame(Board board, List<Player> players) {
 		super(board, players);
 	}
+
+	@Override
+	public GameMode getMode() {
+		return new GameMode("DUMMY");
+	}
 	
 }
