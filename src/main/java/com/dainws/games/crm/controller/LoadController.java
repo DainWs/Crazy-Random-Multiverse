@@ -38,7 +38,7 @@ public class LoadController {
 			@DestinationVariable(value = "gameCode") String gameCodeAsString
 	) throws IllegalAccessException {
 		User user = this.getUser(sessionId);
-		this.partyService.setUserReady(GameCode.fromString(gameCodeAsString), user);
+		this.partyService.markUserAsReady(GameCode.fromString(gameCodeAsString), user);
 	}
 	
 	@MessageExceptionHandler

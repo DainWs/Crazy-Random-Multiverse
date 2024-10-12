@@ -54,7 +54,7 @@ public class PartyService implements EventTrigger {
 		this.eventPublisher.publish(event);
 	}
 
-	public void setUserReady(GameCode gameCode, User user) {
+	public void markUserAsReady(GameCode gameCode, User user) {
 		PlayerCode playerCode = PlayerCode.from(user.getCode().getValue());
 		this.gameLoader.tryMarkPlayerAsReady(gameCode, playerCode);
 	}
