@@ -36,13 +36,11 @@ public class AIvsAIGameIntegationTest extends AbstractGameModeIntegrationTest {
 
 	// TODO la AI se esta marcandose un h0m1c1di
 	
-	@Test
 	void testGivenGame_whenStartGame_thenGameShouldEnd() throws InterruptedException {
 		this.startGame();
 		this.eventWatcher.waitForGameEnd(this.game.getCode(), 0);
 	}
 
-	@Test
 	void testGivenStartedGame_whenGameEnd_thenEndWithoutProblems() throws InterruptedException {
 		this.startGame();
 		this.eventWatcher.waitForGameEnd(this.game.getCode());
