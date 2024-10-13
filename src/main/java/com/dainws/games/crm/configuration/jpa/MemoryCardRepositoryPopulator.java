@@ -52,8 +52,9 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 	}
 
 	private void addWarriors(MemoryCardRepository cardRepository) throws NotFoundException {
+		int code = 0;
 		cardRepository.set(Warrior.commonWarriorBuilder()
-				.withCode(0)
+				.withCode(code++)
 				.withName("Hugo")
 				.withDescription("Un Humano")
 				.withNoneArmor()
@@ -62,7 +63,7 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 				.build());
 
 		cardRepository.set(Warrior.uncommonWarriorBuilder()
-				.withCode(1)
+				.withCode(code++)
 				.withName("Perro")
 				.withDescription("Un animal fiero y fiel")
 				.withNoneArmor()
@@ -71,7 +72,7 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 				.build());
 
 		cardRepository.set(Warrior.uncommonWarriorBuilder()
-				.withCode(2)
+				.withCode(code++)
 				.withName("Policía")
 				.withDescription("Un Humano que se encarga de mantener el orden")
 				.withNoneArmor()
@@ -81,9 +82,45 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 				.build());
 
 		cardRepository.set(Warrior.commonWarriorBuilder()
-				.withCode(3)
+				.withCode(code++)
 				.withName("Jose")
 				.withDescription("Un Humano")
+				.withNoneArmor()
+				.withPhysicalDamage(5)
+				.withHealth(15)
+				.build());
+		
+		cardRepository.set(Warrior.rareWarriorBuilder()
+				.withCode(code++)
+				.withName("Zombie")
+				.withDescription("Un muerto viviente")
+				.withPhysicalArmor(5)
+				.withPhysicalDamage(10)
+				.withHealth(10)
+				.build());
+		
+		cardRepository.set(Warrior.epicWarriorBuilder()
+				.withCode(code++)
+				.withName("Alien")
+				.withDescription("Un extraterrestre que ha venido a visitarnos desde otro planeta.")
+				.withNoneArmor()
+				.withPhysicalDamage(5)
+				.withHealth(15)
+				.build());
+		
+		cardRepository.set(Warrior.legendaryWarriorBuilder()
+				.withCode(code++)
+				.withName("Argoth")
+				.withDescription("Argoth es un guerrero imponente, conocido en todo el reino por su estatura colosal y su armadura forjada en el fuego de las montañas sagradas. Su armadura negra reluce con inscripciones antiguas, cargadas de poder ancestral. En su pecho lleva grabado el símbolo de un trueno, un recordatorio de su vínculo con las fuerzas de la naturaleza.")
+				.withNoneArmor()
+				.withPhysicalDamage(5)
+				.withHealth(15)
+				.build());
+		
+		cardRepository.set(Warrior.mithicWarriorBuilder()
+				.withCode(code++)
+				.withName("Odin")
+				.withDescription("Un dios de la mitología nórdica")
 				.withNoneArmor()
 				.withPhysicalDamage(5)
 				.withHealth(15)

@@ -6,6 +6,8 @@ import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
+import com.dainws.games.crm.domain.core.action.MutableActionContext;
+import com.dainws.games.crm.domain.core.action.PassTurnAction;
 import com.dainws.games.crm.domain.core.player.PlayerActionExecutor;
 
 public class Behavior {
@@ -41,10 +43,12 @@ public class Behavior {
 		do {
 			bestAction = this.getBestAction();
 
-			if (bestAction != null) {
+			if (bestAction != DecisionEngine.PASSTURN_ACTION) {
 				this.executeAction(bestAction);
 			}
-		} while (bestAction != null);
+		} while (bestAction != DecisionEngine.PASSTURN_ACTION);
+		
+		this.passTurn(game);
 	}
 
 	private AIAction getBestAction() {
@@ -53,6 +57,7 @@ public class Behavior {
 		List<AIActionTemplate> actions = this.actionManager.getAvailableActions();
 		System.out.println(actions.size());
 		AIAction bestAction = this.decisionEngine.decideBestAction(goals, actions);
+		System.out.println(bestAction);
 		return bestAction;
 	}
 
@@ -64,6 +69,14 @@ public class Behavior {
 		if (isSucess) {
 			this.goalManager.updateGoalAlignedWith(aiAction);
 		}
+	}
+	
+	private void passTurn(Game game) {
+		MutableActionContext actionContext = new MutableActionContext();
+		actionContext.setGame(game);
+		actionContext.setSourcePlayer(this.me);
+		
+		this.actionExecutor.execute(new PassTurnAction(), actionContext);
 	}
 
 	public void setActionExecutor(PlayerActionExecutor actionExecutor) {

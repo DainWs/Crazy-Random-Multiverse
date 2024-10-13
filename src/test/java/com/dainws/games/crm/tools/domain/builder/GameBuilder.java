@@ -3,16 +3,18 @@ package com.dainws.games.crm.tools.domain.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dainws.games.crm.domain.core.DummyGame;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameState;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
+import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.tools.domain.core.DummyGame;
 import com.dainws.games.crm.tools.domain.core.board.DummyZone;
 
 public class GameBuilder {
 	private ZoneFactory zoneFactory;
+	private Dealer dealer;
 	private List<Player> players;
 	private Player playerTurn;
 	private int currentTurn;
@@ -28,6 +30,11 @@ public class GameBuilder {
 	
 	public GameBuilder withZoneFactory(ZoneFactory zoneFactory) {
 		this.zoneFactory = zoneFactory;
+		return this;
+	}
+	
+	public GameBuilder withDealer(Dealer dealer) {
+		this.dealer = dealer;
 		return this;
 	}
 	
@@ -93,8 +100,8 @@ public class GameBuilder {
 	}
 	
 	public Game build() {
-		Board board = new Board(this.zoneFactory, players);
-		Game game = new DummyGame(board, this.players);
+		Board board = new Board(this.zoneFactory, this.players);
+		Game game = new DummyGame(board, this.dealer, this.players);
 		game.setState(GameState.IN_PROGRESS);
 		game.setRound(this.currentRound);
 		game.setTurn(this.currentTurn);

@@ -26,14 +26,14 @@ public class PutAction extends PlayerTurnAction {
 		try {
 			Coordinate targetCoordinate = context.getTargetCoordinate();
 			Zone targetZone = context.getTargetZone();
-			
+
 			Combatant combatant = this.grabCombatantFromHand(context);
 			if (targetCoordinate == NEXT_EMPTY_COORDINATE) {
 				targetZone.addCombatant(combatant);
 				this.logger.log(Level.TRACE, "La carta %s ha sido colocada en el tablero", combatant);
 			} else {
 				targetZone.putCombatant(targetCoordinate, combatant);
-				this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, targetCoordinate);				
+				this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, targetCoordinate);
 			}
 
 		} catch (GameRuntimeException e) {
@@ -42,7 +42,7 @@ public class PutAction extends PlayerTurnAction {
 
 		this.notifyActionEvent(EventCode.PLAYER_PUT_CARD, context);
 	}
-	
+
 	private Combatant grabCombatantFromHand(ActionContext context) {
 		CardCode cardCode = context.getTargetCard().getCode();
 		Hand hand = context.getTargetPlayer().getHand();
@@ -62,8 +62,18 @@ public class PutAction extends PlayerTurnAction {
 			throw new PlayerActionException("selected_card_is_not_combatant", sourcePlayer);
 		}
 
-		if (context.getTargetZone().hasCombatant(context.getTargetCoordinate())) {
+		if (this.isTargetPositionNotEmpty(context)) {
 			throw new PlayerActionException("selected_target_position_already_has_combatant", sourcePlayer);
 		}
+	}
+	
+	private boolean isTargetPositionNotEmpty(ActionContext context) {
+		Coordinate targetCoordinate = context.getTargetCoordinate();
+		
+		if (targetCoordinate == NEXT_EMPTY_COORDINATE) {
+			return false;
+		}
+		
+		return context.getTargetZone().hasCombatant(targetCoordinate);
 	}
 }

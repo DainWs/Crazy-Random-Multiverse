@@ -21,7 +21,13 @@ public class AIPlayer extends Player {
 	}
 	
 	public void performBehavior(Game game) {
-		this.behavior.performBehavior(game);
+		try {
+			System.out.println("performing");
+			System.out.println(this.getHand().getCards().size());
+			this.behavior.performBehavior(game);
+		} catch (Throwable e) {
+			System.exit(0);
+		}
 	}
 	
 	@Override

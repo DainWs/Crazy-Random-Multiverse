@@ -16,8 +16,8 @@ public class GameStateManager implements EventTrigger {
 
 	public void next(Game game) {
 		if (this.isGameInStartState(game)) {
-			this.doStartStateProcess(game);
 			game.setState(GameState.IN_PROGRESS);
+			this.doStartStateProcess(game);
 		}
 
 		if (this.isGameInEndState(game)) {

@@ -9,7 +9,6 @@ import com.dainws.games.crm.domain.core.player.Player;
 
 public class GameTimeManager implements EventTrigger {
 
-	// This first turn and first round is for classic game
 	private static final int FIRST_TURN = 0;
 	private static final int FIRST_ROUND = 1;
 

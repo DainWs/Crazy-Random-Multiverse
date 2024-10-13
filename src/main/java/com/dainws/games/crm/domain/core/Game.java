@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -16,18 +17,20 @@ public abstract class Game {
 	private int round;
 
 	private Board board;
+	private Dealer dealer;
 	private List<Player> players;
 	
-	protected Game(List<Player> players) {
-		this(new Board(players), players);
+	protected Game(Dealer dealer, List<Player> players) {
+		this(new Board(players), dealer, players);
 	}
 	
-	protected Game(Board board, List<Player> players) {
+	protected Game(Board board, Dealer dealer, List<Player> players) {
 		this.code = new GameCode();
 		this.state = GameState.BEFORE_START;
 		this.round = 0;
 		this.playerIndexWithTurn = 0;
 		this.players = players;
+		this.dealer = dealer;
 		this.board = board;
 	}
 
@@ -126,6 +129,10 @@ public abstract class Game {
 		return false;
 	}
 
+	public Dealer getDealer() {
+		return dealer;
+	}
+	
 	public Board getBoard() {
 		return board;
 	}

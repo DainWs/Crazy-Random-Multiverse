@@ -42,37 +42,32 @@ public class GeneralConfiguration {
 	}
 	
 	@Bean("availableGameModes")
-	public List<GameMode> availableGameModes() {
+	List<GameMode> availableGameModes() {
 		return this.availableGameModes;
 	}
 	
 	@Bean
-	public PlayerActionFacade playerActionFacade(ActionContextFactory actionContextFactory) {
+	PlayerActionFacade playerActionFacade(ActionContextFactory actionContextFactory) {
 		return new PlayerActionFacade(actionContextFactory);
 	}
 
 	@Bean
-	public Dealer dealer(Deck deck) {
-		return new Dealer(deck);
-	}
-	
-	@Bean
-	public GameStateManager gameStateManager() {
+	GameStateManager gameStateManager() {
 		return new GameStateManager();
 	}
 
 	@Bean
-	public GameTimeManager gameTimeManager() {
+	GameTimeManager gameTimeManager() {
 		return new GameTimeManager();
 	}
 
 	@Bean
-	public PlayerStateManager playerStateManager() {
+	PlayerStateManager playerStateManager() {
 		return new PlayerStateManager();
 	}
 
 	@Bean
-	public PartyService partyService(GameRepository gameRepository, PartyRepository partyRepository) {
+	PartyService partyService(GameRepository gameRepository, PartyRepository partyRepository) {
 		PartyService partyService = new PartyService(gameRepository, partyRepository);
 		partyService.setGameStateManager(this.gameStateManager());
 		partyService.setUserClient(this.userClient);
@@ -81,7 +76,7 @@ public class GeneralConfiguration {
 	}
 
 	@Bean
-	public UserService userService(UserRepository userRepository, PartyService partyService) {
+	UserService userService(UserRepository userRepository, PartyService partyService) {
 		return new UserService(userRepository, partyService);
 	}
 }

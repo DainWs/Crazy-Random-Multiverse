@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.mode.pvsai;
+package com.dainws.games.crm.domain.mode.aivsai;
 
 import java.util.List;
 
@@ -8,18 +8,14 @@ import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.mode.classic.ClassicGame;
 
-public class PvsAIGame extends ClassicGame {
+public class AIvsAIGame extends ClassicGame {
 
-	protected PvsAIGame(Dealer dealer, List<Player> players) {
-		super(dealer, players);
-	}
-	
-	protected PvsAIGame(Board board, Dealer dealer, List<Player> players) {
+	AIvsAIGame(Board board, Dealer dealer, List<Player> players) {
 		super(board, dealer, players);
 	}
 	
 	@Override
 	public GameMode getMode() {
-		return new GameMode("PLAYER_VS_AI");
+		return new GameMode("AI_VS_AI");
 	}
 }

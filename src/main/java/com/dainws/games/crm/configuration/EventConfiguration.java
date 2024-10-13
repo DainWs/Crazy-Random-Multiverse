@@ -13,7 +13,7 @@ import com.dainws.games.crm.domain.core.event.EventTrigger;
 public class EventConfiguration {
 	
 	@Autowired
-	public void setEventPublisher(List<EventTrigger> eventTriggers, ApplicationEventPublisher eventPublisher) {
+	void setEventPublisher(List<EventTrigger> eventTriggers, ApplicationEventPublisher eventPublisher) {
 		SpringEventPublisher springEventPublisher = new SpringEventPublisher(eventPublisher);
 		
 		for (EventTrigger eventTrigger : eventTriggers) {

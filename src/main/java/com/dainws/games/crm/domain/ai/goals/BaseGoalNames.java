@@ -1,6 +1,7 @@
 package com.dainws.games.crm.domain.ai.goals;
 
 public enum BaseGoalNames implements GoalName {
+	NONE,
 	PUT_CARD,
 	ATTACK_PLAYER;
 	

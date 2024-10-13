@@ -35,7 +35,13 @@ public class PutCardActionTemplate implements AIActionTemplate {
 		}
 		
 		Hand hand = context.getSourcePlayer().getHand();
-		return !hand.isEmpty();
+		if (hand.isEmpty()) {
+			return false;
+		}
+		
+		boolean noneSourceCard = (context.getSourceCard() == null);
+		boolean noneTargetCard = (context.getTargetCard() == null);
+		return (!noneSourceCard && !noneTargetCard);
 	}
 
 	@Override

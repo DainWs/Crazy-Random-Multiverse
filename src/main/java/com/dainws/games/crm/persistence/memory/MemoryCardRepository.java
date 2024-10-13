@@ -56,6 +56,7 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public List<Card> findByCardType(CardType cardType) {
+	    System.out.println(cardType);
 		return this.findAll().stream()
 				.filter(card -> card.isType(cardType))
 				.collect(Collectors.toList());
@@ -71,9 +72,11 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public Warrior drawWarrior(WarriorRarity rarity) {
+	    System.out.println(rarity);
 		List<Card> cards = this.findWarriorsByRarity(rarity);
 
 	    Collections.shuffle(cards);
+	    System.out.println(cards.size());
 		return (Warrior) cards.get(0);
 	}
 

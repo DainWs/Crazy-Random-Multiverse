@@ -29,10 +29,12 @@ public class PvsAIActionManager implements ActionManager {
 		this.aiActionTemplates = new ArrayList<>();
 
 		if (this.shouldDefinePutCardAction(game)) {
+			System.out.println("should put card");
 			this.aiActionTemplates.add(new PutCardActionTemplate());
 		}
 
 		if (this.shouldDefineAttackCardAction(game)) {
+			System.out.println("should attack card");
 			this.aiActionTemplates.add(new AttackPlayerActionTemplate());
 		}
 		
@@ -46,13 +48,16 @@ public class PvsAIActionManager implements ActionManager {
 	private boolean shouldDefinePutCardAction(Game game) {
 		Hand hand = this.meAsAPlayer.getHand();
 		boolean leaderInHand = hand.contains(CardType.LEADER);
+		System.out.println("leaderInHand " + leaderInHand);
 		boolean warriorsInHand = hand.contains(CardType.WARRIOR);
+		System.out.println("warriorsInHand " + warriorsInHand);
 		return (leaderInHand || warriorsInHand);
 	}
 	
 	private boolean shouldDefineAttackCardAction(Game game) {
 		Board board = game.getBoard();
 		Zone zone = board.getZoneOf(this.meAsAPlayer);
+		System.out.println("enemy zone combatants " + zone.hasCombatants());
 		return zone.hasCombatants();
 	}
 

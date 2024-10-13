@@ -155,6 +155,7 @@ public abstract class Zone {
 			throw new OperationNotAllowedException("zone.row.already_filled");
 		}
 
+		System.out.println("Selected " + rowIndex + " col: " + columnIndex);
 		this.combatants[rowIndex][columnIndex] = combatant;
 	}
 
@@ -260,6 +261,18 @@ public abstract class Zone {
 		}
 
 		return this.combatants[rowIndex].length;
+	}
+	
+	public int getMaxHorizontalDimension() {
+		int maxHorizontalDimension = 0;
+		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {
+			int rowHorizontalDimension = this.combatants[rowIndex].length;
+			if (rowHorizontalDimension > maxHorizontalDimension) {
+				maxHorizontalDimension = rowHorizontalDimension;
+			}
+		}
+
+		return maxHorizontalDimension;
 	}
 
 	public int getVerticalDimension() {

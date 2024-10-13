@@ -45,7 +45,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 	}
 	
 	@Bean
-	public CommunicationClient communicationChannel(SimpMessagingTemplate messagingTemplate) {
+	CommunicationClient communicationChannel(SimpMessagingTemplate messagingTemplate) {
 		return new CommunicationClient(messagingTemplate);
 	}
 }

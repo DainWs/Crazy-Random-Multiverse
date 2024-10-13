@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.mode.pvsai.PvsAIDecisionEngine;
 
 public interface DecisionEngine {
+	static final AIAction PASSTURN_ACTION = null;
 
 	void applySelfAwareness(Game game, AIPlayer meAsAPlayer);
 	

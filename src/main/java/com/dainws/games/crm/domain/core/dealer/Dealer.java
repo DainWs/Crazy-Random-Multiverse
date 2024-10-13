@@ -11,7 +11,6 @@ import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
 
 public class Dealer implements EventTrigger {
 	private Deck deck;

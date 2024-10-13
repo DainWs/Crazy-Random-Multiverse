@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.domain.core.player.DummyPlayer;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
+import com.dainws.games.crm.tools.domain.core.player.DummyPlayer;
 
 public class PlayerBuilder {
 

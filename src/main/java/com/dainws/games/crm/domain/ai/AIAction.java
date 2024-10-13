@@ -19,5 +19,4 @@ public class AIAction {
 	public ActionContext getContext() {
 		return context;
 	}
-
 }

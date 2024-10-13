@@ -16,6 +16,7 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.MutableActionContext;
+import com.dainws.games.crm.domain.core.action.PassTurnAction;
 
 public class PvsAIDecisionEngine implements DecisionEngine {
 	
@@ -63,7 +64,8 @@ public class PvsAIDecisionEngine implements DecisionEngine {
 			
 			return topAction.createAction(context);			
 		}
-		return null;
+
+		return DecisionEngine.PASSTURN_ACTION;
 	}
 
 	private boolean shouldChange(int topScore, int score) {
@@ -99,7 +101,8 @@ public class PvsAIDecisionEngine implements DecisionEngine {
 		context.setSourceCoordinate(engine.decideSourceCoordinate(action, goal));
 		context.setTargetCoordinate(engine.decideTargetCoordinate(action, goal));
 
-		if (action.canPerformWith(context)) {
+		boolean canPerform = action.canPerformWith(context); 
+		if (canPerform) {
 			System.out.println("---------------------------------------");
 			System.out.println("type " + action.getActionType());
 			System.out.println("a " + context.getGame());
@@ -111,9 +114,8 @@ public class PvsAIDecisionEngine implements DecisionEngine {
 			System.out.println("g " + context.getTargetCoordinate());
 			System.out.println("---------------------------------------");
 			this.cache.put(action.getActionType(), context);
-			return true;
 		}
-		return false;
+		return canPerform;
 	}
 
 	private MutableActionContext createMutableActionContext() {

@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.action.AttackAction;
 import com.dainws.games.crm.domain.core.action.EquipAction;
 import com.dainws.games.crm.domain.core.action.MoveAction;
+import com.dainws.games.crm.domain.core.action.PassTurnAction;
 import com.dainws.games.crm.domain.core.action.PutAction;
 import com.dainws.games.crm.domain.core.action.SurrenderAction;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
@@ -45,6 +46,10 @@ public class PlayerActionFacade {
 		return this.execute(new SurrenderAction(), contextTemplate);
 	}
 
+	public boolean playerPassTurn(ActionContextTemplate contextTemplate) {
+		return this.execute(new PassTurnAction(), contextTemplate);
+	}
+
 	private ActionContext createContext(ActionContextTemplate contextTemplate) {
 		return this.contextFactory.createContextFromTemplate(contextTemplate);
 	}
@@ -52,11 +57,11 @@ public class PlayerActionFacade {
 	private boolean execute(Action action, ActionContextTemplate contextTemplate) {
 		return this.actionExecutor.execute(action, this.createContext(contextTemplate));
 	}
-	
+
 	public void setExceptionHandler(GameExceptionHandler exceptionHandler) {
 		this.actionExecutor.setExceptionHandler(exceptionHandler);
 	}
-	
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.actionExecutor.setEventPublisher(eventPublisher);
 	}

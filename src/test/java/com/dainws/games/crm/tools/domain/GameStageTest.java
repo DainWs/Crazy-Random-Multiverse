@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import com.dainws.games.crm.domain.core.DummyGame;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameState;
 import com.dainws.games.crm.domain.core.GameStateManager;
@@ -21,6 +20,7 @@ import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
 import com.dainws.games.crm.tools.domain.builder.PlayerBuilder;
+import com.dainws.games.crm.tools.domain.core.DummyGame;
 import com.dainws.games.crm.tools.domain.core.dealer.MemoryDeckPopulator;
 
 public abstract class GameStageTest {
@@ -42,7 +42,7 @@ public abstract class GameStageTest {
 	final void abstractBeforeEach() {
 		List<Player> players = this.createAllPlayers();
 		this.dealer = this.createDealer();
-		this.game = this.createGame(players);
+		this.game = this.createGame(this.dealer, players);
 		this.prepareGame(this.game);
 
 		this.beforeEach();
@@ -72,8 +72,8 @@ public abstract class GameStageTest {
 		return new ClassicDealStrategyFactory();
 	}
 	
-	protected Game createGame(List<Player> players) {
-		return new DummyGame(players);
+	protected Game createGame(Dealer dealer, List<Player> players) {
+		return new DummyGame(dealer, players);
 	}
 	
 	protected void prepareGame(Game game) {

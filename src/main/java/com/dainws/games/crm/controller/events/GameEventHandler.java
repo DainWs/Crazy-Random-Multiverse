@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
 import com.dainws.games.crm.domain.PartyService;
+import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.Event;
@@ -19,12 +20,11 @@ public class GameEventHandler {
 
 	private CommunicationClient communicationClient;
 	private PartyService partyService;
-	private Dealer dealer;
 
 	public GameEventHandler(CommunicationClient communicationClient, PartyService gameService) {
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		this.communicationClient = communicationClient;
 		this.partyService = gameService;
-		this.dealer = null;
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_CREATED")
@@ -34,12 +34,18 @@ public class GameEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_START")
 	public void onGameStart(Event event) throws InterruptedException, GameException {
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 
-		// TODO extract this to Dealer? Observer pattern needed
 		Game game = event.getDetails().getGame();
-		this.dealer.dealCardsToPlayerWithTurn(game);
+		Dealer dealer = game.getDealer();
+		dealer.dealCardsToPlayerWithTurn(game);
+		
+		Player playerWithTurn = game.getPlayerWithTurn();
+		if (playerWithTurn instanceof AIPlayer aiPlayer) {
+			aiPlayer.performBehavior(game);
+		}
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_END_WITH_WINNER")
@@ -67,7 +73,15 @@ public class GameEventHandler {
 
 		// TODO extract this to Dealer? Observer pattern needed
 		EventDetails eventDetails = event.getDetails();
-		this.dealer.dealCardsToPlayerWithTurn(eventDetails.getGame());
+		Game game = eventDetails.getGame();
+		Dealer dealer = game.getDealer();
+		dealer.dealCardsToPlayerWithTurn(game);
+		
+		Player playerWithTurn = game.getPlayerWithTurn();
+		System.out.println(playerWithTurn.getClass());
+		if (playerWithTurn instanceof AIPlayer aiPlayer) {
+			aiPlayer.performBehavior(game);
+		}
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).ROUND_CHANGE")
@@ -84,9 +98,5 @@ public class GameEventHandler {
 		for (Player player : game.getPlayers()) {
 			this.communicationClient.sendEvent(player, event);
 		}
-	}
-	
-	public void setDealer(Dealer dealer) {
-		this.dealer = dealer;
 	}
 }

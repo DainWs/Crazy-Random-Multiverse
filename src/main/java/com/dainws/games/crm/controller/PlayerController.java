@@ -44,7 +44,7 @@ public class PlayerController {
 		}
 		
 		if (!agentCode.contentEquals(actionDto.getSourcePlayerCode())) {
-			throw new IllegalAccessException("Acceso denegado - intento de suplantación de indentidad");
+			throw new IllegalAccessException("Acceso denegado - intento de suplantación de indentidad detectado");
 		}
 		
 		this.actionResolver.get(actionDto.getType())
