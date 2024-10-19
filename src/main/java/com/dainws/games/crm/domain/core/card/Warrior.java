@@ -13,7 +13,7 @@ public class Warrior extends Combatant {
 	private WarriorRarity rarity;
 
 	protected Warrior(Builder builder) {
-		super(builder.id, builder.name, builder.description);
+		super(builder.id);
 		this.rarity = builder.rarity;
 		this.damage = builder.damage;
 		this.armor = builder.armor;
@@ -37,7 +37,7 @@ public class Warrior extends Combatant {
 		Objects.requireNonNull(rarity);
 		return new Builder(rarity);
 	}
-	
+
 	public static Builder commonWarriorBuilder() {
 		return new Builder(WarriorRarity.COMMON);
 	}
@@ -64,8 +64,6 @@ public class Warrior extends Combatant {
 
 	public static class Builder {
 		private Long id;
-		private String name;
-		private String description;
 		private WarriorRarity rarity;
 		private Damage damage;
 		private Armor armor;
@@ -78,16 +76,6 @@ public class Warrior extends Combatant {
 
 		public Builder withCode(long id) {
 			this.id = id;
-			return this;
-		}
-
-		public Builder withName(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public Builder withDescription(String description) {
-			this.description = description;
 			return this;
 		}
 
@@ -171,7 +159,6 @@ public class Warrior extends Combatant {
 
 		public Warrior build() {
 			Objects.requireNonNull(this.id);
-			Objects.requireNonNull(this.name);
 			Objects.requireNonNull(this.damage);
 			Objects.requireNonNull(this.armor);
 			Objects.requireNonNull(this.health);

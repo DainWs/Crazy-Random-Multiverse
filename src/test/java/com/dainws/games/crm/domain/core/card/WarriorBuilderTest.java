@@ -14,8 +14,6 @@ class WarriorBuilderTest {
 	void beforeEach() {
 		this.builder = Warrior.commonWarriorBuilder()
 				.withCode(1L)
-				.withName("test-warrior")
-				.withDescription("test-warrior_description")
 				.withNoneDamage()
 				.withNoneArmor()
 				.withHealth(100);
@@ -24,18 +22,9 @@ class WarriorBuilderTest {
 	@Test
 	void testGivenNoneCode_whenBuild_thenThrowNullPointerException() {
 		this.builder = Warrior.commonWarriorBuilder()
-				.withName("test-warrior")
-				.withDescription("test-warrior_description")
 				.withNoneDamage()
 				.withNoneArmor()
 				.withHealth(100);
-
-		assertThrows(NullPointerException.class, () -> this.builder.build());
-	}
-
-	@Test
-	void testGivenNoneName_whenBuild_thenThrowNullPointerException() {
-		this.builder.withName(null);
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}

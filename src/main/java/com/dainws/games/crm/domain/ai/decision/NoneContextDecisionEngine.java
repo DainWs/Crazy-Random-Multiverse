@@ -6,7 +6,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.player.Player;
 
-public class NoneDecisionEngine extends ContextDecisionEngine {
+public class NoneContextDecisionEngine extends ContextDecisionEngine {
 	
 	@Override
 	public Player decideTargetPlayer(AIActionTemplate actionTemplate, Goal goal) {

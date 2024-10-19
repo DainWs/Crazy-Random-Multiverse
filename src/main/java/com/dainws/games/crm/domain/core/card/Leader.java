@@ -7,9 +7,9 @@ import com.dainws.games.crm.domain.core.card.statistics.Health;
 
 public class Leader extends Combatant {
 
-	public Leader(long code, String name, String description) {
-		super(code, name, description);
-		this.damage = Damage.newInstance(100, DamageType.PHYSICAL);
+	public Leader(long code) {
+		super(code);
+		this.damage = Damage.newInstance(10, DamageType.PHYSICAL);
 		this.health = Health.newInstance(100);
 		this.armor = Armor.NONE;
 	}

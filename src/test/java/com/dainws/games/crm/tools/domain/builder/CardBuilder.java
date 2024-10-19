@@ -15,9 +15,7 @@ public class CardBuilder {
 	
 	public Leader buildFullValidLeader() {
 		long code = (long)(Math.random() * 10000000);
-		String name = "test_leader_"+code;
-		String description = "test_leader_"+code+"_description";
-		return new Leader(code, name, description);
+		return new Leader(code);
 	}
 	
 	public Warrior buildFullValidWarrior() {
@@ -35,8 +33,6 @@ public class CardBuilder {
 		long code = (long)(Math.random() * 10000000);
 		return Equipment.builder()
 				.withCode(code)
-				.withName("test_equipment_"+code)
-				.withDescription("test_equipment_"+code+"_description")
 				.withDamageBuff(Math.random() * 20)
 				.withArmorDebuff(Math.random() * 25)
 				.build();
@@ -49,16 +45,7 @@ public class CardBuilder {
 	public Spell buildFullValidSpell() {
 		long code = (long)(Math.random() * 10000000);
 		long effectId = (long)(Math.random() * 10);
-		return Spell.builder()
-				.withCode(code)
-				.withName("test_equipment_"+code)
-				.withDescription("test_equipment_"+code+"_description")
-				.withEffect(effectId)
-				.build();
-	}
-	
-	public Spell.Builder useSpell() {
-		return Spell.builder();
+		return Spell.newIntance(code, effectId);
 	}
 	
 	public Card buildRandomFullValidCard() {

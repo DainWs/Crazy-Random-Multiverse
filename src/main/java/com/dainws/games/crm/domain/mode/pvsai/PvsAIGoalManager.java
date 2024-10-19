@@ -9,6 +9,7 @@ import com.dainws.games.crm.domain.ai.GoalManager;
 import com.dainws.games.crm.domain.ai.goals.BaseGoals;
 import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameState;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -28,9 +29,13 @@ public class PvsAIGoalManager implements GoalManager {
 	}
 	
 	@Override
-	public void defineGoals(Game game) {
+	public void defineGoals(Game game) {		
 		for (Player player : game.getPlayers()) {
 			this.defineGoalsForPlayer(game, player);
+		}
+		
+		if (game.inState(GameState.AFTER_END)) {
+			this.goals.clear();
 		}
 	}
 

@@ -14,8 +14,8 @@ public class ContextDecisionEngineFactory {
 	
 	public ContextDecisionEngineFactory() {
 		this.contextEngines = new HashMap<>();
-		this.contextEngines.put(AttackAction.class, new AttackDecisionEngine());
-		this.contextEngines.put(PutAction.class, new PutDecisionEngine());
+		this.contextEngines.put(AttackAction.class, new AttackContextDecisionEngine());
+		this.contextEngines.put(PutAction.class, new PutContextDecisionEngine());
 	}
 	
 	public ContextDecisionEngine createContextDecisionEngine(AIActionTemplate actionTemplate) {
@@ -23,6 +23,6 @@ public class ContextDecisionEngineFactory {
 			return this.contextEngines.get(actionTemplate.getActionType());
 		}
 		
-		return new NoneDecisionEngine();
+		return new NoneContextDecisionEngine();
 	}
 }

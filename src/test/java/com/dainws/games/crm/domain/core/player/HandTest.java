@@ -20,8 +20,6 @@ class HandTest {
 		this.hand = new Hand();
 		this.testCard = Equipment.builder()
 				.withCode(00023L)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description")
 				.build();
 	}
 	

@@ -14,8 +14,6 @@ import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.GameTimeManager;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
-import com.dainws.games.crm.domain.core.dealer.Dealer;
-import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.domain.core.player.PlayerStateManager;
 import com.dainws.games.crm.domain.mode.GameFactory;

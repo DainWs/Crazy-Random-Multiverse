@@ -135,8 +135,6 @@ abstract class CombatantCardTest extends CardTest {
 	private Equipment getEquipmentWithBuffs() {
 		return Equipment.builder()
 				.withCode(1L)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description")
 				.withDamageBuff(10)
 				.withArmorBuff(10)
 				.withHealthBuff(10)
@@ -146,8 +144,6 @@ abstract class CombatantCardTest extends CardTest {
 	private Equipment getEquipmentWithDebuffs() {
 		return Equipment.builder()
 				.withCode(1L)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description")
 				.withDamageDebuff(10)
 				.withArmorDebuff(10)
 				.withHealthDebuff(10)

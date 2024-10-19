@@ -90,8 +90,6 @@ public class WarriorBuilder {
 	private void makeItValid(Warrior.Builder builder) {
 		long code = (long)(Math.random() * 10000000);
 		builder.withCode(code)
-			.withName("test_warrior_"+code)
-			.withDescription("test_warrior_"+code+"_description")
 			.withPhysicalDamage(Math.random() * 20)
 			.withPhysicalArmor(Math.random() * 25)
 			.withHealth(Math.random() * 100)

@@ -13,30 +13,12 @@ class EquipmentBuilderTest {
 	@BeforeEach
 	void beforeEach() {
 		this.builder = Equipment.builder()
-				.withCode(0)
-				.withName("test-equipment")
-				.withDescription("test-equipment_description");
+				.withCode(0);
 	}
 
 	@Test
 	void testGivenNoneCode_whenBuild_thenThrowNullPointerException() {
-		this.builder = Equipment.builder()
-				.withName("test-equipment")
-				.withDescription("test-equipment_description");
-
-		assertThrows(NullPointerException.class, () -> this.builder.build());
-	}
-
-	@Test
-	void testGivenNoneName_whenBuild_thenThrowNullPointerException() {
-		this.builder.withName(null);
-
-		assertThrows(NullPointerException.class, () -> this.builder.build());
-	}
-
-	@Test
-	void testGivenNoneDescription_whenBuild_thenThrowNullPointerException() {
-		this.builder.withDescription(null);
+		this.builder = Equipment.builder();
 
 		assertThrows(NullPointerException.class, () -> this.builder.build());
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.GameTimeManager;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -20,11 +21,13 @@ public class PlayerEventHandler {
 
 	private CommunicationClient communicationClient;
 	private PlayerStateManager playerStateManager;
+	private GameStateManager gameStateManager;
 	private GameTimeManager gameTimeManager;
 
 	public PlayerEventHandler(CommunicationClient communicationClient) {
 		this.communicationClient = communicationClient;
 		this.playerStateManager = new PlayerStateManager();
+		this.gameStateManager = new GameStateManager();
 		this.gameTimeManager = new GameTimeManager();
 	}
 
@@ -85,6 +88,9 @@ public class PlayerEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_DIE")
 	public void onPlayerDie(Event event) throws InterruptedException {
+		EventDetails details = event.getDetails();
+		this.gameStateManager.next(details.getGame());
+
 		this.sendEventToEveryPlayerClient(event);
 	}
 
@@ -106,6 +112,11 @@ public class PlayerEventHandler {
 	@Autowired
 	public void setPlayerStateManager(PlayerStateManager playerStateManager) {
 		this.playerStateManager = playerStateManager;
+	}
+
+	@Autowired
+	public void setGameStateManager(GameStateManager gameStateManager) {
+		this.gameStateManager = gameStateManager;
 	}
 
 	@Autowired

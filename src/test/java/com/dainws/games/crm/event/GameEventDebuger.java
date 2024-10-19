@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -22,7 +23,29 @@ public class GameEventDebuger implements ApplicationListener<PayloadApplicationE
 	public void onApplicationEvent(PayloadApplicationEvent<Event> payloadEvent) {
 		Event event = payloadEvent.getPayload();
 		Game game = event.getDetails().getGame();
-		this.debugGame(event.getCode(), game);
+		if (this.shouldDebug(event)) {
+			this.debugGame(event.getCode(), game);
+		}
+	}
+	
+	private boolean shouldDebug(Event event) {	
+		EventCode eventCode = event.getCode();
+		if (EventCode.GAME_START.equals(eventCode)) {
+			return true;
+		}
+
+		if (EventCode.TURN_CHANGE.equals(eventCode)) {
+			return true;
+		}
+		
+		if (EventCode.GAME_END_WITH_TIE.equals(eventCode)) {
+			return true;
+		}
+
+		if (EventCode.GAME_END_WITH_WINNER.equals(eventCode)) {
+			return true;
+		}		
+		return false;
 	}
 
 	private void debugGame(EventCode code, Game game) {
@@ -53,7 +76,7 @@ public class GameEventDebuger implements ApplicationListener<PayloadApplicationE
 		}
 		System.out.println("||-Zone");
 		System.out.println("|||- Health: " + zone.getZoneHealth());
-		System.out.println("|||- Capacity: " + zone.getZoneHealth());
+		System.out.println("|||- Capacity: " + zone.getCapacity());
 		this.debugZoneCoordinates(zone);
 		this.debugZoneCombatants(zone);
 	}

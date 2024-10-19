@@ -14,7 +14,7 @@ public abstract class Zone {
 	protected Zone(int horizontalDimension, int verticalDimension) {
 		this.combatants = this.createCombatantsMatrix(horizontalDimension, verticalDimension);
 		this.capacity = 0;
-		
+
 		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {
 			this.capacity += this.combatants[rowIndex].length;
 		}
@@ -57,7 +57,7 @@ public abstract class Zone {
 	public boolean hasCombatants() {
 		boolean hasCombatants = false;
 		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {
-			if (this.hasCombatantsAt(rowIndex)) {
+			if (this.hasCombatantAt(rowIndex)) {
 				hasCombatants = true;
 			}
 		}
@@ -65,7 +65,7 @@ public abstract class Zone {
 		return hasCombatants;
 	}
 
-	public boolean hasCombatantsAt(int rowIndex) {
+	public boolean hasCombatantAt(int rowIndex) {
 		if (!this.validate(rowIndex)) {
 			return false;
 		}
@@ -92,6 +92,14 @@ public abstract class Zone {
 		return this.combatants[rowIndex][columnIndex] != NONE;
 	}
 
+	public Combatant[] getVisibleCombatants() {
+		int currentRowIndex = this.combatants.length - 1;
+		while (!this.hasCombatantAt(currentRowIndex) && currentRowIndex > 0) {
+			currentRowIndex--;
+		}
+		return this.getCombatantAt(currentRowIndex);
+	}
+
 	public Combatant[][] getCombatants() {
 		return this.combatants.clone();
 	}
@@ -114,7 +122,7 @@ public abstract class Zone {
 		return this.combatants[row][column];
 	}
 
-	public void addCombatant(Combatant combatant)  {
+	public void addCombatant(Combatant combatant) {
 		int rowIndex = 0;
 		int selectedRowIndex = -1;
 		while (rowIndex < this.combatants.length && selectedRowIndex == -1) {
@@ -176,26 +184,17 @@ public abstract class Zone {
 		this.combatants[coordinate.getRow()][coordinate.getColumn()] = combatant;
 	}
 
-	private boolean validatePrevRow(int currentRow) {
-		if (currentRow == 0) {
-			return true;
-		}
-
-		int prevRowIndex = currentRow - 1;
-		return (!this.isFilledAt(prevRowIndex));
-	}
-	
 	public void removeAllCombatants() {
 		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {
 			this.removeCombatantsAt(rowIndex);
 		}
 	}
-	
+
 	public void removeCombatantsAt(int rowIndex) {
 		if (!this.validate(rowIndex)) {
 			throw new CoordinateOutOfBoundsException();
 		}
-		
+
 		for (int columnIndex = 0; columnIndex < this.combatants[rowIndex].length; columnIndex++) {
 			this.combatants[rowIndex][columnIndex] = NONE;
 		}
@@ -235,6 +234,15 @@ public abstract class Zone {
 		return count;
 	}
 
+	private boolean validatePrevRow(int currentRow) {
+		if (currentRow == 0) {
+			return true;
+		}
+
+		int prevRowIndex = currentRow - 1;
+		return (!this.isFilledAt(prevRowIndex));
+	}
+
 	protected boolean validate(Coordinate coordinate) {
 		return this.validate(coordinate.getRow(), coordinate.getColumn());
 	}
@@ -254,7 +262,7 @@ public abstract class Zone {
 	public int getCapacity() {
 		return this.capacity;
 	}
-	
+
 	public int getHorizontalDimension(int rowIndex) {
 		if (!this.validate(rowIndex)) {
 			return 0;
@@ -262,7 +270,7 @@ public abstract class Zone {
 
 		return this.combatants[rowIndex].length;
 	}
-	
+
 	public int getMaxHorizontalDimension() {
 		int maxHorizontalDimension = 0;
 		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {

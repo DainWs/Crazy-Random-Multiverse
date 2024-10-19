@@ -5,7 +5,7 @@ import java.util.Objects;
 public abstract class Card {
 	private CardCode code;
 
-	protected Card(long code, String name, String description) {
+	protected Card(long code) {
 		this.code = new CardCode(code, this.getType());
 	}
 

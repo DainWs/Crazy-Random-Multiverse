@@ -41,10 +41,28 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	@Override
 	public Card find(CardCode cardCode) throws NotFoundException {
 		if (this.has(cardCode)) {
-			return this.cards.get(cardCode);
+			return this.findCopyOf(cardCode);
 		}
 
 		throw NotFoundException.cardNotFound();
+	}
+	
+	private Card findCopyOf(CardCode cardCode) throws NotFoundException {
+		Card card = this.cards.get(cardCode);
+
+		if (cardCode.isType(CardType.WARRIOR)) {
+			return this.cloneWarrior(card);
+		}
+
+		if (cardCode.isType(CardType.SPELL)) {
+			return this.cloneSpell(card);
+		}
+
+		if (cardCode.isType(CardType.EQUIPMENT)) {
+			return this.cloneEquipment(card);
+		}
+
+		return this.cloneLeader(card);
 	}
 
 	@Override
@@ -56,7 +74,6 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public List<Card> findByCardType(CardType cardType) {
-	    System.out.println(cardType);
 		return this.findAll().stream()
 				.filter(card -> card.isType(cardType))
 				.collect(Collectors.toList());
@@ -72,35 +89,66 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public Warrior drawWarrior(WarriorRarity rarity) {
-	    System.out.println(rarity);
 		List<Card> cards = this.findWarriorsByRarity(rarity);
 
-	    Collections.shuffle(cards);
-	    System.out.println(cards.size());
-		return (Warrior) cards.get(0);
+		Collections.shuffle(cards);
+		return this.cloneWarrior(cards.get(0));
 	}
 
 	@Override
 	public Equipment drawEquipment() {
 		List<Card> cards = this.findByCardType(CardType.EQUIPMENT);
 
-	    Collections.shuffle(cards);
-		return (Equipment) cards.get(0);
+		Collections.shuffle(cards);
+		return this.cloneEquipment(cards.get(0));
 	}
 
 	@Override
 	public Leader drawLeader() {
 		List<Card> cards = this.findByCardType(CardType.LEADER);
 
-	    Collections.shuffle(cards);
-		return (Leader) cards.get(0);
+		Collections.shuffle(cards);
+		return this.cloneLeader(cards.get(0));
 	}
 
 	@Override
 	public Spell drawSpell() {
 		List<Card> cards = this.findByCardType(CardType.SPELL);
 
-	    Collections.shuffle(cards);
-		return (Spell) cards.get(0);
+		Collections.shuffle(cards);
+		return this.cloneSpell(cards.get(0));
+	}
+
+	private Spell cloneSpell(Card card) {
+		Spell prototype = (Spell) card;
+		CardCode cardCode = prototype.getCode();
+		return Spell.newIntance(cardCode.code(), prototype.getEffectId());
+	}
+
+	private Equipment cloneEquipment(Card card) {
+		Equipment prototype = (Equipment) card;
+		CardCode cardCode = prototype.getCode();
+		return Equipment.builder()
+				.withCode(cardCode.code())
+				.withDamage(prototype.getDamageValue())
+				.withArmor(prototype.getArmorValue())
+				.withHealth(prototype.getHealthValue())
+				.build();
+	}
+
+	private Leader cloneLeader(Card card) {
+		return new Leader(card.getCode().code());
+	}
+
+	private Warrior cloneWarrior(Card card) {
+		Warrior prototype = (Warrior) card;
+		CardCode cardCode = prototype.getCode();
+		return Warrior.warriorBuilder(prototype.getRarity())
+				.withCode(cardCode.code())
+				.withDamage(prototype.getDamage())
+				.withArmor(prototype.getArmor())
+				.withHealth(prototype.getHealth())
+				.withEquipment(prototype.getEquipment())
+				.build();
 	}
 }

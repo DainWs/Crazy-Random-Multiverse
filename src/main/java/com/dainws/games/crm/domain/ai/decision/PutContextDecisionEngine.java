@@ -13,7 +13,7 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
-public class PutDecisionEngine extends ContextDecisionEngine {
+public class PutContextDecisionEngine extends ContextDecisionEngine {
 
 	@Override
 	public Player decideTargetPlayer(AIActionTemplate actionTemplate, Goal goal) {

@@ -16,8 +16,6 @@ class WarriorTest extends CombatantCardTest {
 	void testGivenCommonWarrior_whenIsRarityUncommon_thenReturnFalse() {
 		Warrior warrior = Warrior.commonWarriorBuilder()
 				.withCode(0L)
-				.withName("test-warrior")
-				.withDescription("test-warrior_description")
 				.withNoneDamage()
 				.withNoneArmor()
 				.withHealth(1)
@@ -32,8 +30,6 @@ class WarriorTest extends CombatantCardTest {
 	void testGivenCommonWarrior_whenIsRarityCommon_thenReturnTrue() {
 		Warrior warrior = Warrior.commonWarriorBuilder()
 				.withCode(0L)
-				.withName("test-warrior")
-				.withDescription("test-warrior_description")
 				.withNoneDamage()
 				.withNoneArmor()
 				.withHealth(1)
@@ -96,8 +92,6 @@ class WarriorTest extends CombatantCardTest {
 	Card createDifferentCardTypeWithCode(long code) {
 		return new CardBuilder().useEquipment()
 				.withCode(code)
-				.withName("test_equipment_"+code+"_name")
-				.withDescription("test_equipment_"+code+"_description")
 				.build();
 	}
 }

@@ -31,7 +31,7 @@ public class PlayerStateManager implements EventTrigger {
 		}
 
 		Board board = game.getBoard();
-		return board.isZoneAlive(player.getPlayerCode());
+		return !board.isZoneAlive(player.getPlayerCode());
 	}
 
 	private void publishPlayerEvent(EventCode eventCode, Game game, Player player) {

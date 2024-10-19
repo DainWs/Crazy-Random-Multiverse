@@ -11,11 +11,11 @@ public final class CardCode {
 		this.type = type;
 	}
 
-	public long getCode() {
+	public long code() {
 		return this.code;
 	}
 	
-	public CardType getType() {
+	public CardType type() {
 		return type;
 	}
 	

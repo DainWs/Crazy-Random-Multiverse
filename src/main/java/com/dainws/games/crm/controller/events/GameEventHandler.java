@@ -34,7 +34,6 @@ public class GameEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_START")
 	public void onGameStart(Event event) throws InterruptedException, GameException {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 
@@ -78,7 +77,6 @@ public class GameEventHandler {
 		dealer.dealCardsToPlayerWithTurn(game);
 		
 		Player playerWithTurn = game.getPlayerWithTurn();
-		System.out.println(playerWithTurn.getClass());
 		if (playerWithTurn instanceof AIPlayer aiPlayer) {
 			aiPlayer.performBehavior(game);
 		}

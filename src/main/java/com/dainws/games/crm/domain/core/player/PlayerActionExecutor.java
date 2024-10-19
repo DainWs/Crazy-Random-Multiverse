@@ -18,7 +18,6 @@ public class PlayerActionExecutor implements EventTrigger {
 
 	public boolean execute(Action action, ActionContext actionContext) {
 		try {
-			System.out.println("executing");
 			action.setEventPublisher(this.eventPublisher);
 			action.perform(actionContext);
 			return true;

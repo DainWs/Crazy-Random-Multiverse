@@ -15,6 +15,7 @@ import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
@@ -62,10 +63,18 @@ public class PartyService implements EventTrigger {
 	public void loadPartyFromGame(GameCode gameCode) {
 		this.logger.log(Level.INFO, "Devolviendo a los jugadores del juego %s la sala de espera", gameCode);
 		Game game = this.gameRepository.find(gameCode);
-		User user = this.findUserPlayer(game).toUser();
-		Party party = this.partyRepository.findPartyWhereUserIsPresent(user);
-		this.unlockParty(party);
+
+		if (this.canLoadPartyFromGame(game)) {
+			User user = this.findUserPlayer(game).toUser();
+			Party party = this.partyRepository.findPartyWhereUserIsPresent(user);
+			this.unlockParty(party);
+		}
 		this.gameRepository.delete(gameCode);
+	}
+	
+	private boolean canLoadPartyFromGame(Game game) {
+		return game.getPlayers().stream()
+				.anyMatch(player -> player instanceof UserPlayer);
 	}
 	
 	private UserPlayer findUserPlayer(Game game) {

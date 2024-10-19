@@ -123,8 +123,8 @@ public class ModelMapper {
 	public CardDto mapCardToDto(Card card) {
 		CardDto cardDto = new CardDto();
 		CardCodeDto cardCodeDto = new CardCodeDto();
-		cardCodeDto.setCode(card.getCode().getCode());
-		cardCodeDto.setType(card.getCode().getType());
+		cardCodeDto.setCode(card.getCode().code());
+		cardCodeDto.setType(card.getCode().type());
 		cardDto.setCode(cardCodeDto);
 		
 		// TODO pendiente de hacer traduccion

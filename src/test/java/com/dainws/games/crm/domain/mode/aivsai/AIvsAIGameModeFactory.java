@@ -6,6 +6,7 @@ import java.util.List;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.ai.Behavior;
+import com.dainws.games.crm.domain.ai.decision.ScoreBasedDecisionEngine;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.board.Board;
@@ -18,7 +19,6 @@ import com.dainws.games.crm.domain.core.player.PlayerActionExecutor;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
 import com.dainws.games.crm.domain.mode.pvsai.PvsAIActionManager;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIDecisionEngine;
 import com.dainws.games.crm.domain.mode.pvsai.PvsAIGoalManager;
 
 public class AIvsAIGameModeFactory implements GameModeFactory {
@@ -65,7 +65,7 @@ public class AIvsAIGameModeFactory implements GameModeFactory {
 	private Behavior createBehavior() {
 		Behavior behavior = new Behavior(this.actionExecutor);
 		behavior.setActionManager(new PvsAIActionManager());
-		behavior.setDecisionEngine(new PvsAIDecisionEngine());
+		behavior.setDecisionEngine(new ScoreBasedDecisionEngine());
 		behavior.setGoalManager(new PvsAIGoalManager());
 		return behavior;
 	}

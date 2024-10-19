@@ -10,8 +10,11 @@ public abstract class Combatant extends Card {
 	protected Health health;
 	protected Equipment equipment;
 
-	protected Combatant(long code, String name, String description) {
-		super(code, name, description);
+	protected Combatant(long code) {
+		super(code);
+		this.damage = Damage.NONE;
+		this.armor = Armor.NONE;
+		this.health = Health.NONE;
 	}
 
 	public void receiveDamageFrom(Combatant combatant) {

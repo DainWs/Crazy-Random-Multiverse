@@ -3,43 +3,36 @@ package com.dainws.games.crm.domain.ai.decision;
 import java.util.List;
 
 import com.dainws.games.crm.domain.ai.AIActionTemplate;
+import com.dainws.games.crm.domain.ai.decision.score.PlayerScoreCalculator;
+import com.dainws.games.crm.domain.ai.decision.score.Score;
 import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.Combatant;
-import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.player.Player;
 
-public class AttackDecisionEngine extends ContextDecisionEngine {
-
-	private Player targetPlayer;
-	private Card sourceCard;
-	private Coordinate sourceCoordinate;
-	private Card targetCard;
-	private Coordinate targetCoordinate;
+public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	
 	@Override
 	public Player decideTargetPlayer(AIActionTemplate actionTemplate, Goal goal) {
 		List<Player> players = this.getPlayersExceptMe();
-		if (players.size() == 1) {
-			this.targetPlayer = players.get(0); 
-			return this.targetPlayer;
-		}
 
-		Board board = this.game.getBoard();
-		double lowerHealth = Integer.MAX_VALUE;
+		PlayerScoreCalculator calculator = new PlayerScoreCalculator();
+		calculator.enableEnemyPriority();
 
+		Player playerWithHighestScore = null;
+		Score highestScore = new Score();
 		for (Player player : players) {
-			Zone zone = board.getZoneOf(player);
-			Health health = zone.getZoneHealth();
-			if (health.getValue() < lowerHealth) {
-				this.targetPlayer = player;
-				lowerHealth = health.getValue();
+			Score score = calculator.calculate(game, player);
+			if (score.isBiggerOrEqual(highestScore)) {
+				playerWithHighestScore = player;
+				highestScore = score;
 			}
 		}
-		return this.targetPlayer;
+		
+		return playerWithHighestScore;
 	}
 
 	// TODO so stupid ai, increase card decision logic

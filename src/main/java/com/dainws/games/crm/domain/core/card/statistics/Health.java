@@ -5,6 +5,7 @@ public class Health extends Statistic {
 	private static final double INFINITE_HEALTH = Double.POSITIVE_INFINITY;
 
 	public static final Health INFINITE = new Health(INFINITE_HEALTH);
+	public static final Health NONE = new Health(0);
 
 	private double maxValue;
 

@@ -46,18 +46,15 @@ public class Behavior {
 			if (bestAction != DecisionEngine.PASSTURN_ACTION) {
 				this.executeAction(bestAction);
 			}
-		} while (bestAction != DecisionEngine.PASSTURN_ACTION);
+		} while(this.shouldContinue(game, bestAction));
 		
 		this.passTurn(game);
 	}
 
 	private AIAction getBestAction() {
 		List<Goal> goals = this.goalManager.getGoals();
-		System.out.println(goals.size());
 		List<AIActionTemplate> actions = this.actionManager.getAvailableActions();
-		System.out.println(actions.size());
 		AIAction bestAction = this.decisionEngine.decideBestAction(goals, actions);
-		System.out.println(bestAction);
 		return bestAction;
 	}
 
@@ -69,6 +66,14 @@ public class Behavior {
 		if (isSucess) {
 			this.goalManager.updateGoalAlignedWith(aiAction);
 		}
+	}
+	
+	private boolean shouldContinue(Game game, AIAction bestAction) {
+		if (bestAction == DecisionEngine.PASSTURN_ACTION) {
+			return false;
+		}
+		
+		return (game.getAlivePlayers().size() > 1);
 	}
 	
 	private void passTurn(Game game) {

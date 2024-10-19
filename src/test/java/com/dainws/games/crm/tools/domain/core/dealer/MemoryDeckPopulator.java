@@ -27,29 +27,23 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 	}
 
 	private void addLeaders(MemoryCardRepository cardRepository) {
-		cardRepository.set(new Leader(0, "JaDicter", "Un lider alto y delgado"));
-		cardRepository.set(new Leader(1, "JaChin", "Un lider bajito y gordito"));
+		cardRepository.set(new Leader(0));
+		cardRepository.set(new Leader(1));
 	}
 
 	private void addEquipments(MemoryCardRepository cardRepository) {
 		cardRepository.set(Equipment.builder()
 				.withCode(0)
-				.withName("Pistolón")
-				.withDescription("Arma a distancia")
 				.withDamageBuff(15)
 				.build());
 
 		cardRepository.set(Equipment.builder()
 				.withCode(1)
-				.withName("Espada")
-				.withDescription("Arma a cuerpo a cuerpo")
 				.withDamageBuff(5)
 				.build());
 
 		cardRepository.set(Equipment.builder()
 				.withCode(2)
-				.withName("Armadura de hierro")
-				.withDescription("Armadura de calidad media")
 				.withArmorBuff(5)
 				.build());
 	}
@@ -57,8 +51,6 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 	private void addWarriors(MemoryCardRepository cardRepository) throws NotFoundException {
 		cardRepository.set(Warrior.commonWarriorBuilder()
 				.withCode(0)
-				.withName("Hugo")
-				.withDescription("Un Humano")
 				.withNoneArmor()
 				.withPhysicalDamage(5)
 				.withHealth(5)
@@ -66,8 +58,6 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 
 		cardRepository.set(Warrior.uncommonWarriorBuilder()
 				.withCode(1)
-				.withName("Perro")
-				.withDescription("Un animal fiero y fiel")
 				.withNoneArmor()
 				.withPhysicalDamage(10)
 				.withHealth(10)
@@ -75,8 +65,6 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 
 		cardRepository.set(Warrior.uncommonWarriorBuilder()
 				.withCode(2)
-				.withName("Policía")
-				.withDescription("Un Humano que se encarga de mantener el orden")
 				.withNoneArmor()
 				.withPhysicalDamage(5)
 				.withHealth(10)
@@ -85,8 +73,6 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 
 		cardRepository.set(Warrior.commonWarriorBuilder()
 				.withCode(3)
-				.withName("Jose")
-				.withDescription("Un Humano")
 				.withNoneArmor()
 				.withPhysicalDamage(5)
 				.withHealth(15)
@@ -94,19 +80,8 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 	}
 
 	private void addSpells(MemoryCardRepository cardRepository) {
-		cardRepository.set(Spell.builder()
-				.withCode(0)
-				.withName("Cartas")
-				.withDescription("Recibes 1 carta común")
-				.withEffect(1)
-				.build());
-
-		cardRepository.set(Spell.builder()
-				.withCode(1)
-				.withName("Cartas")
-				.withDescription("Recibes 1 carta poco común")
-				.withEffect(2)
-				.build());
+		cardRepository.set(Spell.newIntance(0l, 1l));
+		cardRepository.set(Spell.newIntance(1l, 2l));
 	}
 
 }

@@ -8,7 +8,7 @@ public class Equipment extends Card {
 	private double health;
 
 	private Equipment(Builder builder) {
-		super(builder.code, builder.name, builder.description);
+		super(builder.code);
 		this.damage = builder.damage;
 		this.armor = builder.armor;
 		this.health = builder.health;
@@ -43,8 +43,6 @@ public class Equipment extends Card {
 
 	public static class Builder {
 		private Long code;
-		private String name;
-		private String description;
 		private double damage;
 		private double armor;
 		private double health;
@@ -57,13 +55,8 @@ public class Equipment extends Card {
 			return this;
 		}
 
-		public Builder withName(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public Builder withDescription(String description) {
-			this.description = description;
+		public Builder withDamage(double damage) {
+			this.damage = damage;
 			return this;
 		}
 
@@ -81,6 +74,11 @@ public class Equipment extends Card {
 			return this;
 		}
 
+		public Builder withArmor(double armor) {
+			this.armor = armor;
+			return this;
+		}
+
 		public Builder withArmorBuff(double amount) {
 			this.checkStatAmount(amount);
 
@@ -92,6 +90,11 @@ public class Equipment extends Card {
 			this.checkStatAmount(amount);
 
 			this.armor = -amount;
+			return this;
+		}
+
+		public Builder withHealth(double health) {
+			this.health = health;
 			return this;
 		}
 
@@ -117,8 +120,6 @@ public class Equipment extends Card {
 
 		public Equipment build() {
 			Objects.requireNonNull(this.code);
-			Objects.requireNonNull(this.name);
-			Objects.requireNonNull(this.description);
 			return new Equipment(this);
 		}
 	}
