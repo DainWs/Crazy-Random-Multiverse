@@ -11,11 +11,8 @@ import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.UserClient;
 import com.dainws.games.crm.domain.UserService;
 import com.dainws.games.crm.domain.core.GameMode;
-import com.dainws.games.crm.domain.core.GameStateManager;
-import com.dainws.games.crm.domain.core.GameTimeManager;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
-import com.dainws.games.crm.domain.core.player.PlayerStateManager;
 import com.dainws.games.crm.domain.mode.GameFactory;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
@@ -50,24 +47,8 @@ public class GeneralConfiguration {
 	}
 
 	@Bean
-	GameStateManager gameStateManager() {
-		return new GameStateManager();
-	}
-
-	@Bean
-	GameTimeManager gameTimeManager() {
-		return new GameTimeManager();
-	}
-
-	@Bean
-	PlayerStateManager playerStateManager() {
-		return new PlayerStateManager();
-	}
-
-	@Bean
 	PartyService partyService(GameRepository gameRepository, PartyRepository partyRepository) {
 		PartyService partyService = new PartyService(gameRepository, partyRepository);
-		partyService.setGameStateManager(this.gameStateManager());
 		partyService.setUserClient(this.userClient);
 		partyService.setGameFactory(this.gameFactory);
 		return partyService;

@@ -7,7 +7,6 @@ import java.util.List;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLoader;
-import com.dainws.games.crm.domain.core.GameStateManager;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
@@ -15,7 +14,6 @@ import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
-import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
@@ -51,7 +49,7 @@ public class PartyService implements EventTrigger {
 		this.gameLoader.load(game);
 
 		EventDetails details = new EventDetails(game);
-		Event event = new Event(EventCode.GAME_CREATED, details);
+		Event event = new Event(EventCode.GAME_STARTING, details);
 		this.eventPublisher.publish(event);
 	}
 
@@ -106,7 +104,7 @@ public class PartyService implements EventTrigger {
 		this.sendPartyInfoTo(party.getUsers(), party);
 	}
 
-	public void leaveParty(User user) throws NotFoundException {
+	public void leaveParty(User user) throws NotFoundException, OperationNotAllowedException {
 		Party party = this.partyRepository.findPartyWhereUserIsPresent(user);
 		party.remove(user);
 
@@ -118,9 +116,11 @@ public class PartyService implements EventTrigger {
 	}
 
 	public void tryLeaveParty(User user) {
-		if (this.partyRepository.hasPartyWhereUserIsPresent(user)) {
-			this.leaveParty(user);
-		}
+		try {
+			if (this.partyRepository.hasPartyWhereUserIsPresent(user)) {
+				this.leaveParty(user);
+			}
+		} catch (NotFoundException | OperationNotAllowedException e) {}
 	}
 
 	public void updatePartyListOf(User user) {
@@ -151,10 +151,6 @@ public class PartyService implements EventTrigger {
 	@Override
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
-	}
-
-	public void setGameStateManager(GameStateManager gameStateManager) {
-		this.gameLoader.setGameStateManager(gameStateManager);
 	}
 
 	public void setGameFactory(GameFactory gameFactory) {

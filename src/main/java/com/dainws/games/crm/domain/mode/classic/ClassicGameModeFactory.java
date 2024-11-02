@@ -26,7 +26,7 @@ public class ClassicGameModeFactory implements GameModeFactory {
 	
 	@Override
 	public GameMode getMode() {
-		return new GameMode("CLASSIC");
+		return ClassicGame.CLASSIC_GAME_MODE;
 	}
 
 	@Override
@@ -37,7 +37,9 @@ public class ClassicGameModeFactory implements GameModeFactory {
 		}
 
 		Board board = new Board(this::createZoneWithLeader, players);
-		return new ClassicGame(board, this.createDealer(), players);
+		ClassicGame game = new ClassicGame(this.createDealer(), players);
+		game.setBoard(board);
+		return game;
 	}
 
 	private Dealer createDealer() {

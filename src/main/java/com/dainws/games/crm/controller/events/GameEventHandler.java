@@ -9,6 +9,7 @@ import com.dainws.games.crm.controller.CommunicationClient;
 import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
@@ -22,7 +23,6 @@ public class GameEventHandler {
 	private PartyService partyService;
 
 	public GameEventHandler(CommunicationClient communicationClient, PartyService gameService) {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		this.communicationClient = communicationClient;
 		this.partyService = gameService;
 	}
@@ -35,7 +35,6 @@ public class GameEventHandler {
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_START")
 	public void onGameStart(Event event) throws InterruptedException, GameException {
 		this.sendEventToEveryPlayer(event);
-		this.delayInSeconds(2);
 
 		Game game = event.getDetails().getGame();
 		Dealer dealer = game.getDealer();
@@ -52,25 +51,27 @@ public class GameEventHandler {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(4);
 		
-		Game game = event.getDetails().getGame();
-		this.partyService.loadPartyFromGame(game.getCode());
+		// TODO Buscar un sitio
+		GameCode gameCode = event.getDetails().getGameCode();
+		this.partyService.loadPartyFromGame(gameCode);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_END_WITH_TIE")
 	public void onGameEndWithTie(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(4);
-		
-		Game game = event.getDetails().getGame();
-		this.partyService.loadPartyFromGame(game.getCode());
+
+		// TODO Buscar un sitio
+		GameCode gameCode = event.getDetails().getGameCode();
+		this.partyService.loadPartyFromGame(gameCode);
 	}
 
+	// TODO valio realmente la pena el cambio en vez de agregar mas eventos?
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).TURN_CHANGE")
 	public void onTurnChange(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayer(event);
 		this.delayInSeconds(2);
 
-		// TODO extract this to Dealer? Observer pattern needed
 		EventDetails eventDetails = event.getDetails();
 		Game game = eventDetails.getGame();
 		Dealer dealer = game.getDealer();
