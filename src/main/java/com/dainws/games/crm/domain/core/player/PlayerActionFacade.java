@@ -10,16 +10,12 @@ import com.dainws.games.crm.domain.core.action.MoveAction;
 import com.dainws.games.crm.domain.core.action.PassTurnAction;
 import com.dainws.games.crm.domain.core.action.PutAction;
 import com.dainws.games.crm.domain.core.action.SurrenderAction;
-import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.GameExceptionHandler;
 
 public class PlayerActionFacade {
 	private ActionContextFactory contextFactory;
-	private PlayerActionExecutor actionExecutor;
 
 	public PlayerActionFacade(ActionContextFactory actionContextFactory) {
 		this.contextFactory = actionContextFactory;
-		this.actionExecutor = new PlayerActionExecutor();
 	}
 
 	public boolean playerPutCard(ActionContextTemplate contextTemplate) {
@@ -55,14 +51,6 @@ public class PlayerActionFacade {
 	}
 
 	private boolean execute(Action action, ActionContextTemplate contextTemplate) {
-		return this.actionExecutor.execute(action, this.createContext(contextTemplate));
-	}
-
-	public void setExceptionHandler(GameExceptionHandler exceptionHandler) {
-		this.actionExecutor.setExceptionHandler(exceptionHandler);
-	}
-
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.actionExecutor.setEventPublisher(eventPublisher);
+		return action.perform(this.createContext(contextTemplate));
 	}
 }

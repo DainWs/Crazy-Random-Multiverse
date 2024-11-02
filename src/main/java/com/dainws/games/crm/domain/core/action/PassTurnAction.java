@@ -6,10 +6,17 @@ import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 
 public class PassTurnAction extends PlayerTurnAction {
 	@Override
-	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		Game game = context.getGame();
-		if (game.getAlivePlayers().size() > 1) {
+	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
+		if (this.canPassTurn(context)) {
 			this.notifyActionEvent(EventCode.PLAYER_PASS_TURN, context);
+			return true;
 		}
+
+		return false;
+	}
+	
+	private boolean canPassTurn(ActionContext actionContext) {
+		Game game = actionContext.getGame();
+		return game.countAlivePlayers() > 1; 
 	}
 }

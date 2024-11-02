@@ -4,57 +4,52 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.card.Card;
-import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.event.EventTrigger;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
-public class Dealer implements EventTrigger {
+public class Dealer {
 	private Deck deck;
 	private DealStrategyFactory dealStrategyFactory;
-	private EventPublisher eventPublisher;
 
 	public Dealer(Deck deck) {
 		this.deck = deck;
 		this.dealStrategyFactory = new RandomDealStrategyFactory();
-		this.eventPublisher = EventPublisher.NONE;
 	}
 
 	public void dealCardsToPlayerWithTurn(Game game) {
-		DealStrategy strategy = this.dealStrategyFactory.createStrategy(game.getRound());
-		Player player = game.getPlayerWithTurn();
+		this.dealCardsToPlayer(game, game.getPlayerWithTurn());
+	}
 
+	public void dealCardsToPlayer(Game game, Player player) {
+		DealStrategy strategy = this.dealStrategyFactory.createStrategy(game.getRoundNumber());
 		this.dealCardsToPlayer(game, player, strategy);
 	}
 
 	public void dealCardsToPlayer(Game game, Player player, DealStrategy dealStrategy) {
 		List<Card> dealedCards = dealStrategy.drawFrom(this.deck);
 
-		Hand playerHand = player.getHand();
 		for (Card card : dealedCards) {
-			playerHand.addCard(card);
-			this.notifyDealedCardToPlayer(game, player, card);
+			this.addCardToPlayerHand(game, player, card);
 		}
 	}
 
+	private void addCardToPlayerHand(Game game, Player player, Card card) {
+		Hand hand = player.getHand();
+		hand.addCard(card);
+
+		this.notifyDealedCardToPlayer(game, player, card);
+	}
+
 	private void notifyDealedCardToPlayer(Game game, Player player, Card card) {
-		EventDetails details = new EventDetails();
-		details.setGame(game);
+		EventDetails details = new EventDetails(game);
 		details.setTargetPlayer(player);
 		details.setTargetCard(card);
-		Event event = new Event(EventCode.PLAYER_RECEIVE_CARD, details);
-		this.eventPublisher.publish(event);
+		game.publishEvent(EventCode.PLAYER_RECEIVE_CARD, details);
 	}
 
 	public void setDealStrategyFactory(DealStrategyFactory classicDealStrategyFactory) {
 		this.dealStrategyFactory = classicDealStrategyFactory;
-	}
-
-	@Override
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
 	}
 }

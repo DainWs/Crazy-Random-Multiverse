@@ -1,14 +1,11 @@
 package com.dainws.games.crm.domain.core.action;
 
-import java.lang.System.Logger.Level;
-
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -16,22 +13,16 @@ import com.dainws.games.crm.domain.core.player.Player;
 public class EquipAction extends PlayerTurnAction {
 
 	@Override
-	protected void performPlayerAction(ActionContext context) throws PlayerActionException {
-		assert (this.eventPublisher != null);
+	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
+		this.checkContext(context);
 
-		this.validate(context);
+		Combatant combatant = this.getTargetCombatantFrom(context);
+		Equipment equipment = (Equipment) context.getSourceCard();
+		combatant.equip(equipment);
 
-		try {
-			Combatant combatant = this.getTargetCombatantFrom(context);
-			Equipment equipment = (Equipment) context.getSourceCard();
-			combatant.equip(equipment);
-
-			this.logger.log(Level.TRACE, "%s ha sido equipado en el combatiente %s", equipment, combatant);
-		} catch (GameRuntimeException e) {
-			throw new PlayerActionException(e, context.getSourcePlayer());
-		}
-
+		this.logTrace("%s ha sido equipado en el combatiente %s", equipment, combatant);
 		this.notifyActionEvent(EventCode.PLAYER_EQUIP_CARD, context);
+		return true;
 	}
 	
 	private Combatant getTargetCombatantFrom(ActionContext context) {
@@ -39,7 +30,7 @@ public class EquipAction extends PlayerTurnAction {
 		return targetZone.getCombatant(context.getTargetCoordinate());
 	}
 
-	private void validate(ActionContext context) throws PlayerActionException {
+	private void checkContext(ActionContext context) throws PlayerActionException {
 		Player sourcePlayer = context.getSourcePlayer();
 		Hand playerHand = sourcePlayer.getHand();
 		Card card = context.getSourceCard();

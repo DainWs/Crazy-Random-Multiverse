@@ -1,6 +1,6 @@
 package com.dainws.games.crm.domain.core.exception;
 
-public class OperationNotAllowedException extends GameRuntimeException {
+public class OperationNotAllowedException extends GameException {
 
 	private static final long serialVersionUID = -3976807989940833143L;
 

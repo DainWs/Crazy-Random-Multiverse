@@ -7,27 +7,45 @@ public abstract class Player {
 	private PlayerCode playerCode;
 	private String name;
 	private Hand hand;
+	private boolean isAlive;
 	private boolean isSpectator;
 
 	protected Player(PlayerCode code, String name) {
 		this.playerCode = code;
 		this.name = name;
 		this.hand = new Hand();
+		this.isAlive = true;
 		this.isSpectator = false;
+	}
+
+	public void die() {
+		this.isAlive = false;
+	}
+
+	public boolean isAlive() {
+		return this.isAlive;
+	}
+
+	public boolean isDeath() {
+		return !this.isAlive;
 	}
 
 	public void changeToSpectator() {
 		this.isSpectator = true;
 	}
-	
+
 	public boolean isSpectator() {
 		return this.isSpectator;
 	}
-	
+
+	public boolean isNotSpectator() {
+		return !this.isSpectator;
+	}
+
 	public PlayerCode getPlayerCode() {
 		return this.playerCode;
 	}
-	
+
 	public boolean isCode(PlayerCode code) {
 		return this.playerCode.equals(code);
 	}
@@ -43,7 +61,7 @@ public abstract class Player {
 	public Hand getHand() {
 		return hand;
 	}
-	
+
 	public void setHand(Hand hand) {
 		this.hand = hand;
 	}

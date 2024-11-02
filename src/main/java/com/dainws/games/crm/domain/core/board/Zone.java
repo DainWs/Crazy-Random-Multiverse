@@ -2,7 +2,6 @@ package com.dainws.games.crm.domain.core.board;
 
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.core.exception.CoordinateOutOfBoundsException;
 import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
 
 public abstract class Zone {
@@ -97,6 +96,7 @@ public abstract class Zone {
 		while (!this.hasCombatantAt(currentRowIndex) && currentRowIndex > 0) {
 			currentRowIndex--;
 		}
+		
 		return this.getCombatantAt(currentRowIndex);
 	}
 
@@ -106,7 +106,7 @@ public abstract class Zone {
 
 	public Combatant[] getCombatantAt(int rowIndex) {
 		if (!this.validate(rowIndex)) {
-			throw new CoordinateOutOfBoundsException();
+			return new Combatant[0];
 		}
 
 		return this.combatants[rowIndex].clone();
@@ -114,7 +114,7 @@ public abstract class Zone {
 
 	public Combatant getCombatant(Coordinate coordinate) {
 		if (!this.validate(coordinate)) {
-			throw new CoordinateOutOfBoundsException();
+			return null;
 		}
 
 		int row = coordinate.getRow();
@@ -122,7 +122,7 @@ public abstract class Zone {
 		return this.combatants[row][column];
 	}
 
-	public void addCombatant(Combatant combatant) {
+	public void addCombatant(Combatant combatant) throws OperationNotAllowedException {
 		int rowIndex = 0;
 		int selectedRowIndex = -1;
 		while (rowIndex < this.combatants.length && selectedRowIndex == -1) {
@@ -140,9 +140,9 @@ public abstract class Zone {
 		this.addCombatantAt(rowIndex, combatant);
 	}
 
-	public void addCombatantAt(int rowIndex, Combatant combatant) {
+	public void addCombatantAt(int rowIndex, Combatant combatant) throws OperationNotAllowedException {
 		if (!this.validate(rowIndex)) {
-			throw new CoordinateOutOfBoundsException();
+			throw new OperationNotAllowedException("zone.coordinate.out_of_bounds");
 		}
 
 		if (!this.validatePrevRow(rowIndex)) {
@@ -168,9 +168,9 @@ public abstract class Zone {
 	}
 
 	public void putCombatant(Coordinate coordinate, Combatant combatant)
-			throws CoordinateOutOfBoundsException, OperationNotAllowedException {
+			throws OperationNotAllowedException {
 		if (!this.validate(coordinate)) {
-			throw new CoordinateOutOfBoundsException();
+			throw new OperationNotAllowedException("zone.coordinate.out_of_bounds");
 		}
 
 		if (this.hasCombatant(coordinate)) {
@@ -191,20 +191,24 @@ public abstract class Zone {
 	}
 
 	public void removeCombatantsAt(int rowIndex) {
-		if (!this.validate(rowIndex)) {
-			throw new CoordinateOutOfBoundsException();
+		if (this.validate(rowIndex)) {
+			this.removeCombatantsSafetlyAt(rowIndex);
 		}
-
+	}
+	
+	private void removeCombatantsSafetlyAt(int rowIndex) {
 		for (int columnIndex = 0; columnIndex < this.combatants[rowIndex].length; columnIndex++) {
 			this.combatants[rowIndex][columnIndex] = NONE;
 		}
 	}
 
 	public void removeCombatant(Coordinate coordinate) {
-		if (!this.validate(coordinate)) {
-			throw new CoordinateOutOfBoundsException();
+		if (this.validate(coordinate)) {
+			this.removeCombatantSafetly(coordinate);
 		}
-
+	}
+	
+	private void removeCombatantSafetly(Coordinate coordinate) {
 		int row = coordinate.getRow();
 		int column = coordinate.getColumn();
 		this.combatants[row][column] = NONE;

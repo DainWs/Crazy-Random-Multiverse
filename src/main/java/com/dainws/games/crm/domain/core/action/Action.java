@@ -1,10 +1,7 @@
 package com.dainws.games.crm.domain.core.action;
 
-import com.dainws.games.crm.domain.core.event.EventTrigger;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
-
-public interface Action extends EventTrigger {
+public interface Action {
 	static final String LOGGER_NAME = "ActionLogger";
 	
-	void perform(ActionContext context) throws PlayerActionException;
+	boolean perform(ActionContext context);
 }

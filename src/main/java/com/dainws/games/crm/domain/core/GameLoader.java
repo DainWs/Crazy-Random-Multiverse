@@ -6,20 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
+// TODO make abstract
 public class GameLoader {
 	private Logger logger;
 	private Map<GameCode, Game> loadingGames;
 	private Map<GameCode, List<Player>> waitingForPlayers;
-	private GameStateManager gameStateManager;
 
 	public GameLoader() {
 		this.logger = System.getLogger("GameLoader");
 		this.loadingGames = new HashMap<>();
 		this.waitingForPlayers = new HashMap<>();
-		this.gameStateManager = new GameStateManager();
 	}
 
 	public void load(Game game) {
@@ -34,7 +34,7 @@ public class GameLoader {
 			this.markPlayerAsReady(gameCode, playerCode);
 		}
 	}
-	
+
 	private void markPlayerAsReady(GameCode gameCode, PlayerCode playerCode) {
 		this.removePlayerWithCode(gameCode, playerCode);
 
@@ -66,16 +66,11 @@ public class GameLoader {
 
 	private void startGame(GameCode gameCode) {
 		this.logger.log(Level.DEBUG, "Todos los jugadores del juego %s estan listos para comenzar", gameCode);
-		
+
 		Game game = this.loadingGames.get(gameCode);
 		this.loadingGames.remove(gameCode);
 		this.waitingForPlayers.remove(gameCode);
 
-		game.setState(GameState.BEFORE_START);
-		this.gameStateManager.next(game);
-	}
-	
-	public void setGameStateManager(GameStateManager gameStateManager) {
-		this.gameStateManager = gameStateManager;
+		game.publishEvent(EventCode.GAME_START);
 	}
 }

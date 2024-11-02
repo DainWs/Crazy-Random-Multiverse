@@ -1,7 +1,7 @@
 package com.dainws.games.crm.domain.core.board;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
@@ -12,11 +12,11 @@ public class Board {
 
 	private Map<PlayerCode, Zone> zones;
 	
-	public Board(List<Player> players) {
+	public Board(Collection<Player> players) {
 		this(ZoneWithLeader::new, players);
 	}
 	
-	public Board(ZoneFactory zoneFactory, List<Player> players) {
+	public Board(ZoneFactory zoneFactory, Collection<Player> players) {
 		this.zones = new HashMap<>();
 		
 		for (Player player : players) {
