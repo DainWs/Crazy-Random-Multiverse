@@ -1,10 +1,9 @@
-package com.dainws.games.crm.domain.ai.decision.score;
+package com.dainws.games.crm.domain.ai.score;
 
-import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 
-public class ZoneScoreCalculator implements ScoreCalculator<Zone> {
+public class ZoneScoreCalculator {
 
 	private static final int CAPACITY_LIMIT = 7;
 
@@ -26,8 +25,7 @@ public class ZoneScoreCalculator implements ScoreCalculator<Zone> {
 		this.includeLowCapacityPriority = true;
 	}
 
-	@Override
-	public Score calculate(Game game, Zone zone) {
+	public Score calculate(Zone zone) {
 		Score score = new Score();
 		if (this.includeLowCapacityPriority) {
 			score.increase(this.calculateLowCapacityPriority(zone.getCapacity()));

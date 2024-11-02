@@ -6,7 +6,9 @@ import java.util.List;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.ai.Behavior;
-import com.dainws.games.crm.domain.ai.decision.ScoreBasedDecisionEngine;
+import com.dainws.games.crm.domain.ai.goals.BaseGoalManager;
+import com.dainws.games.crm.domain.ai.score.ScoreBasedActionManager;
+import com.dainws.games.crm.domain.ai.score.ScoreBasedDecisionEngine;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.board.Board;
@@ -15,25 +17,16 @@ import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.core.player.PlayerActionExecutor;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIActionManager;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIGoalManager;
 
 public class AIvsAIGameModeFactory implements GameModeFactory {
 	private int numOfPlayers;
 	private Deck deck;
-	private PlayerActionExecutor actionExecutor;
 
 	public AIvsAIGameModeFactory(Deck deck) {
-		this(deck, new PlayerActionExecutor());
-	}
-
-	public AIvsAIGameModeFactory(Deck deck, PlayerActionExecutor actionExecutor) {
 		this.numOfPlayers = 2;
 		this.deck = deck;
-		this.actionExecutor = actionExecutor;
 	}
 
 	@Override
@@ -59,14 +52,16 @@ public class AIvsAIGameModeFactory implements GameModeFactory {
 		}
 
 		Board board = new Board(this::createZoneWithLeader, players);
-		return new AIvsAIGame(board, this.createDealer(), players);
+		AIvsAIGame game = new AIvsAIGame(this.createDealer(), players);
+		game.setBoard(board);
+		return game;
 	}
 
 	private Behavior createBehavior() {
-		Behavior behavior = new Behavior(this.actionExecutor);
-		behavior.setActionManager(new PvsAIActionManager());
+		Behavior behavior = new Behavior();
+		behavior.setActionManager(new ScoreBasedActionManager());
 		behavior.setDecisionEngine(new ScoreBasedDecisionEngine());
-		behavior.setGoalManager(new PvsAIGoalManager());
+		behavior.setGoalManager(new BaseGoalManager());
 		return behavior;
 	}
 	
@@ -78,9 +73,5 @@ public class AIvsAIGameModeFactory implements GameModeFactory {
 
 	private Zone createZoneWithLeader() {
 		return new ZoneWithLeader();
-	}
-
-	public void setActionExecutor(PlayerActionExecutor actionExecutor) {
-		this.actionExecutor = actionExecutor;
 	}
 }

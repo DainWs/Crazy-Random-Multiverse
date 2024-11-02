@@ -6,7 +6,6 @@ import java.util.List;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.ai.Behavior;
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.GameState;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.GameStageTest;
 import com.dainws.games.crm.tools.domain.builder.AIPlayerBuilder;
@@ -51,7 +50,7 @@ public abstract class AIGameStageTest extends GameStageTest {
 	}
 
 	protected Behavior createBehavior() {
-		return new Behavior(this.actionExecutorMonitor);
+		return new Behavior();
 	}
 	
 	@Override

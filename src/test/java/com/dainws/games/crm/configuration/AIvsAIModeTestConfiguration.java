@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import com.dainws.games.crm.domain.core.dealer.Deck;
-import com.dainws.games.crm.domain.core.player.PlayerActionExecutor;
 import com.dainws.games.crm.domain.mode.aivsai.AIvsAIGameModeFactory;
 
 @TestConfiguration
@@ -13,7 +12,7 @@ import com.dainws.games.crm.domain.mode.aivsai.AIvsAIGameModeFactory;
 public class AIvsAIModeTestConfiguration {
 
 	@Bean
-	AIvsAIGameModeFactory aivsaiGameModeFactory(Deck deck, PlayerActionExecutor actionExecutor) {
-		return new AIvsAIGameModeFactory(deck, actionExecutor);
+	AIvsAIGameModeFactory aivsaiGameModeFactory(Deck deck) {
+		return new AIvsAIGameModeFactory(deck);
 	}
 }

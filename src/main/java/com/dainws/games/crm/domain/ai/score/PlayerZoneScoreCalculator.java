@@ -1,56 +1,50 @@
-package com.dainws.games.crm.domain.ai.decision.score;
+package com.dainws.games.crm.domain.ai.score;
 
-import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.core.player.Player;
 
-public class PlayerScoreCalculator implements ScoreCalculator<Player> {
+public class PlayerZoneScoreCalculator {
 
 	private boolean enableEnemyPriority;
-	
-	public PlayerScoreCalculator() {
+
+	public PlayerZoneScoreCalculator() {
 		this.enableEnemyPriority = false;
 	}
-	
+
 	public void enableEnemyPriority() {
 		this.enableEnemyPriority = true;
 	}
-	
-	@Override
-	public Score calculate(Game game, Player player) {
+
+	public Score calculate(Zone playerZone) {
 		Score score = new Score();
 
-		if (player == null) {
+		if (playerZone == null) {
 			score.decrease(Integer.MAX_VALUE);
 			return score;
 		}
 
-		Board board = game.getBoard();
-		Zone zone = board.getZoneOf(player);
-		score.increase(this.calculatePlayerZoneScore(game, zone));
+		score.increase(this.calculatePlayerZoneScore(playerZone));
 		return score;
 	}
-	
-	private Score calculatePlayerZoneScore(Game game, Zone zone) {
+
+	private Score calculatePlayerZoneScore(Zone playerZone) {
 		Score score = new Score();
-		score.increase(this.calculatePlayerZoneHealthScore(zone));
-		
+		score.increase(this.calculatePlayerZoneHealthScore(playerZone));
+
 		ZoneScoreCalculator zoneScoreCalculator = new ZoneScoreCalculator();
 		if (this.enableEnemyPriority) {
 			zoneScoreCalculator.onlyVisibleCombatants();
 			zoneScoreCalculator.includeLowCapacityPriority();
 		}
-		
-		score.increase(zoneScoreCalculator.calculate(game, zone));
+
+		score.increase(zoneScoreCalculator.calculate(playerZone));
 		return score;
 	}
-	
-	private Score calculatePlayerZoneHealthScore(Zone zone) {
+
+	private Score calculatePlayerZoneHealthScore(Zone playerZone) {
 		Score score = new Score();
 
-		Health health = zone.getZoneHealth();
+		Health health = playerZone.getZoneHealth();
 		if (!this.enableEnemyPriority) {
 			Double healthValue = health.getValue();
 			score.increase(healthValue.intValue());
@@ -59,7 +53,7 @@ public class PlayerScoreCalculator implements ScoreCalculator<Player> {
 
 		Double healthMaxValue = health.getMaxValue();
 		Double healthValue = health.getValue();
-		
+
 		Double lossHealth = healthMaxValue - healthValue;
 		score.increase(lossHealth.intValue());
 		return score;

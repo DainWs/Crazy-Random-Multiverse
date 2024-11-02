@@ -1,4 +1,4 @@
-package com.dainws.games.crm.domain.ai.decision.score;
+package com.dainws.games.crm.domain.ai.score;
 
 import java.util.Objects;
 
@@ -15,6 +15,10 @@ public final class Score implements Comparable<Score> {
 	
 	public String text() {
 		return String.valueOf(this.value);
+	}
+	
+	public boolean isZero() {
+		return this.value == 0;
 	}
 
 	public void set(int amount) {
@@ -91,5 +95,11 @@ public final class Score implements Comparable<Score> {
 	@Override
 	public String toString() {
 		return this.text();
+	}
+	
+	public static final Score of(int value) {
+		Score score = new Score();
+		score.set(value);
+		return score;
 	}
 }

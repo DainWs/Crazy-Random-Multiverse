@@ -1,9 +1,8 @@
-package com.dainws.games.crm.domain.ai.decision.score;
+package com.dainws.games.crm.domain.ai.score;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
@@ -12,10 +11,10 @@ import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 
-public class CardScoreCalculator implements ScoreCalculator<Card> {
+public class CardScoreCalculator {
 
 	private Map<WarriorRarity, Integer> rarityScoreMap;
-	
+
 	public CardScoreCalculator() {
 		this.rarityScoreMap = new EnumMap<>(WarriorRarity.class);
 		this.rarityScoreMap.put(WarriorRarity.COMMON, 1);
@@ -26,8 +25,7 @@ public class CardScoreCalculator implements ScoreCalculator<Card> {
 		this.rarityScoreMap.put(WarriorRarity.MITHIC, 4);
 	}
 
-	@Override
-	public Score calculate(Game game, Card card) {
+	public Score calculate(Card card) {
 		Score score = new Score();
 
 		if (card == null) {
@@ -56,7 +54,7 @@ public class CardScoreCalculator implements ScoreCalculator<Card> {
 
 		return score;
 	}
-	
+
 	public Score calculateWarriorScore(Warrior warrior) {
 		Score score = new Score();
 

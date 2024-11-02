@@ -2,17 +2,14 @@ package com.dainws.games.crm.domain.ai;
 
 import java.util.List;
 
-import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIActionManager;
+import com.dainws.games.crm.domain.ai.score.ScoreBasedActionManager;
 
-public interface ActionManager {
-	void applySelfAwareness(AIPlayer meAsAPlayer);
-	
-	void defineActions(Game game);
+public interface ActionManager {	
+	void defineActions(AIContext context);
 
-	List<AIActionTemplate> getAvailableActions();
+	List<AIAction> getAvailableActions();
 
 	static ActionManager getDefault() {
-		return new PvsAIActionManager();
+		return new ScoreBasedActionManager();
 	}
 }

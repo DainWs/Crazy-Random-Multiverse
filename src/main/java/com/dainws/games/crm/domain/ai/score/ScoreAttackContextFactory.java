@@ -1,31 +1,28 @@
-package com.dainws.games.crm.domain.ai.decision;
+package com.dainws.games.crm.domain.ai.score;
 
 import java.util.List;
 
 import com.dainws.games.crm.domain.ai.AIActionTemplate;
-import com.dainws.games.crm.domain.ai.decision.score.PlayerScoreCalculator;
-import com.dainws.games.crm.domain.ai.decision.score.Score;
-import com.dainws.games.crm.domain.ai.goals.Goal;
-import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.player.Player;
 
-public class AttackContextDecisionEngine extends ContextDecisionEngine {
+class ScoreAttackContextFactory extends ActionContextFactory {
 	
 	@Override
-	public Player decideTargetPlayer(AIActionTemplate actionTemplate, Goal goal) {
+	public Player decideTargetPlayer(AIActionTemplate actionTemplate) {
 		List<Player> players = this.getPlayersExceptMe();
 
-		PlayerScoreCalculator calculator = new PlayerScoreCalculator();
+		PlayerZoneScoreCalculator calculator = new PlayerZoneScoreCalculator();
 		calculator.enableEnemyPriority();
 
 		Player playerWithHighestScore = null;
 		Score highestScore = new Score();
 		for (Player player : players) {
-			Score score = calculator.calculate(game, player);
+			Zone playerZone = this.getZoneOf(player);
+			Score score = calculator.calculate(playerZone);
 			if (score.isBiggerOrEqual(highestScore)) {
 				playerWithHighestScore = player;
 				highestScore = score;
@@ -35,9 +32,8 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 		return playerWithHighestScore;
 	}
 
-	// TODO so stupid ai, increase card decision logic
 	@Override
-	public Card decideSourceCard(AIActionTemplate actionTemplate, Goal goal) {
+	public Card decideSourceCard(AIActionTemplate actionTemplate) {
 		if (this.sourceCard == null) {
 			this.decideSource();
 		}
@@ -46,7 +42,7 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	}
 
 	@Override
-	public Card decideTargetCard(AIActionTemplate actionTemplate, Goal goal) {
+	public Card decideTargetCard(AIActionTemplate actionTemplate) {
 		if (this.targetCard == null) {
 			this.decideTarget();
 		}
@@ -55,7 +51,7 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	}
 
 	@Override
-	public Coordinate decideSourceCoordinate(AIActionTemplate actionTemplate, Goal goal) {
+	public Coordinate decideSourceCoordinate(AIActionTemplate actionTemplate) {
 		if (this.sourceCoordinate == null) {
 			this.decideSource();
 		}
@@ -64,7 +60,7 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	}
 
 	@Override
-	public Coordinate decideTargetCoordinate(AIActionTemplate actionTemplate, Goal goal) {
+	public Coordinate decideTargetCoordinate(AIActionTemplate actionTemplate) {
 		if (this.targetCoordinate == null) {
 			this.decideTarget();
 		}
@@ -73,7 +69,7 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	}
 
 	private void decideSource() {
-		Combatant[][] combatants = this.myZone.getCombatants();
+		Combatant[][] combatants = this.getMyZone().getCombatants();
 		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Combatant combatant = combatants[rowIndex][columnIndex];
@@ -86,8 +82,7 @@ public class AttackContextDecisionEngine extends ContextDecisionEngine {
 	}
 	
 	private void decideTarget() {
-		Board board = this.game.getBoard();
-		Zone zone = board.getZoneOf(this.targetPlayer);
+		Zone zone = this.getZoneOf(this.targetPlayer);
 		Combatant[][] combatants = zone.getCombatants();
 		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
