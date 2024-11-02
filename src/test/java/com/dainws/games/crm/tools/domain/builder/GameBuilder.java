@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.GameState;
+import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
@@ -101,10 +101,10 @@ public class GameBuilder {
 	
 	public Game build() {
 		Board board = new Board(this.zoneFactory, this.players);
-		Game game = new DummyGame(board, this.dealer, this.players);
-		game.setState(GameState.IN_PROGRESS);
-		game.setRound(this.currentRound);
-		game.setTurn(this.currentTurn);
+		DummyGame game = new DummyGame(this.dealer, this.players);
+		game.setTurn(new Turn(this.currentTurn, this.currentRound));
+		game.setBoard(board);
+
 		if (this.playerTurn != null) {
 			game.setTurn(this.getPlayerTurnIndex());
 		}
@@ -112,13 +112,13 @@ public class GameBuilder {
 		return game;
 	}
 	
-	private int getPlayerTurnIndex() {
+	private Turn getPlayerTurnIndex() {
 		int playerTurnIndex = this.players.indexOf(this.playerTurn);
 		
 		if (playerTurnIndex == -1) {
 			throw new IllegalArgumentException("Player with turn does not exist among the players");
 		}
 		
-		return playerTurnIndex;
+		return new Turn(this.players, this.playerTurn, playerTurnIndex);
 	}
 }

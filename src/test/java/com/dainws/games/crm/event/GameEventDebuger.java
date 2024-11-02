@@ -11,7 +11,6 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -51,17 +50,16 @@ public class GameEventDebuger implements ApplicationListener<PayloadApplicationE
 	private void debugGame(EventCode code, Game game) {
 		System.out.println("-".repeat(100));
 		System.out.println("Event code: " + code);
-		System.out.println("Game code: " + game.getCode());
-		System.out.println("Game mode: " + game.getMode());
-		System.out.println("Game round: " + game.getRound());
-		System.out.println("Game turn: " + game.getTurn());
-		System.out.println("Game alive players: " + game.getAlivePlayers().size());
+		System.out.println("CardsGame code: " + game.getCode());
+		System.out.println("CardsGame mode: " + game.getMode());
+		System.out.println("CardsGame turn: " + game.getTurn());
+		System.out.println("CardsGame alive players: " + game.getAlivePlayers().size());
 		for (Player player : game.getAlivePlayers()) {
 			System.out.println("|_ ");
 			System.out.println("||-" + player.getName());
 			this.debugPlayer(player, game.getBoard().getZoneOf(player));
 		}
-		System.out.println("Game death players: " + game.getDeathPlayers().size());
+		System.out.println("CardsGame death players: " + game.getDeathPlayers().size());
 		for (Player player : game.getDeathPlayers()) {
 			System.out.println(" - " + player.getName());
 			this.debugPlayer(player, game.getBoard().getZoneOf(player));

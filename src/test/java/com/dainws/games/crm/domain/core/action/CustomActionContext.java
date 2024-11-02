@@ -5,6 +5,8 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.GameExceptionHandler;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class CustomActionContext implements ActionContext {
@@ -18,10 +20,14 @@ public class CustomActionContext implements ActionContext {
 	private Coordinate targetCoordinate;
 	private Card targetCard;
 
+	private EventPublisher eventPublisher;
+	private GameExceptionHandler exceptionHandler;
+
 	public CustomActionContext() {
-		
+		this.eventPublisher = EventPublisher.NONE;
+		this.exceptionHandler = GameExceptionHandler.NONE;
 	}
-	
+
 	public void setGame(Game game) {
 		this.game = game;
 	}
@@ -30,7 +36,7 @@ public class CustomActionContext implements ActionContext {
 	public Game getGame() {
 		return game;
 	}
-	
+
 	@Override
 	public Board getBoard() {
 		return this.game.getBoard();
@@ -100,5 +106,23 @@ public class CustomActionContext implements ActionContext {
 	@Override
 	public Coordinate getTargetCoordinate() {
 		return targetCoordinate;
+	}
+
+	public void setEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
+
+	@Override
+	public EventPublisher getEventPublisher() {
+		return eventPublisher;
+	}
+
+	public void setExceptionHandler(GameExceptionHandler exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
+	}
+
+	@Override
+	public GameExceptionHandler getGameExceptionHandler() {
+		return exceptionHandler;
 	}
 }

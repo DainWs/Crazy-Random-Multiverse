@@ -35,7 +35,6 @@ public abstract class AbstractGameModeIntegrationTest {
 	protected abstract GameModeFactory createGameModeFactory();
 	
 	protected final void startGame() {
-		this.game.setState(GameState.BEFORE_START);
 		this.gameStateManager.next(this.game);
 	}
 }

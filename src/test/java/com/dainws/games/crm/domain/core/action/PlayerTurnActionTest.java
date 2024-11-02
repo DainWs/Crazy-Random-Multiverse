@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionTurnRequiredException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -18,7 +19,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 	
 	@Test
 	@Override
-	public void testGivenContext_whenPerform_thenActionIsPerformed() {
+	public void testGivenContext_whenPerform_thenActionIsPerformed() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 				
@@ -26,7 +27,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 	}
 	
 	@Test
-	void testGivenPlayerWithoutTurn_whenPerform_thenThrowActionAllowedOnTurnException() {
+	void testGivenPlayerWithoutTurn_whenPerform_thenThrowActionAllowedOnTurnException() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Player playerWithoutTurn = this.getPlayerWithoutTurn(actionContext);
@@ -36,7 +37,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 	}
 	
 	@Test
-	void testGivenPlayerWithTurn_whenPerform_thenActionIsPerformed() {
+	void testGivenPlayerWithTurn_whenPerform_thenActionIsPerformed() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Player playerWithTurn = this.getPlayerWithTurn(actionContext);
@@ -45,7 +46,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		assertDoesNotThrow(() -> turnAction.perform(actionContext));
 	}
 	
-	protected abstract CustomActionContext createActionContext();
+	protected abstract CustomActionContext createActionContext() throws GameException;
 	protected abstract PlayerTurnAction createPlayerTurnAction();
 	
 	private Player getPlayerWithTurn(CustomActionContext actionContext) {

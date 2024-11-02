@@ -10,7 +10,7 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Leader;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 import com.dainws.games.crm.tools.domain.builder.GameBuilder;
@@ -26,14 +26,14 @@ public class SurrenderActionTest implements ActionTest {
 	
 	@Test
 	@Override
-	public void testGivenContext_whenPerform_thenActionIsPerformed() {
+	public void testGivenContext_whenPerform_thenActionIsPerformed() throws GameException {
 		CustomActionContext actionContext = this.createActionContext();
 
 		assertDoesNotThrow(() -> this.action.perform(actionContext));
 	}
 	
 	@Test
-	public void testGivenContext_whenPerform_thenPlayerZoneIsDead() throws PlayerActionException {
+	public void testGivenContext_whenPerform_thenPlayerZoneIsDead() throws GameException {
 		CustomActionContext actionContext = this.createActionContext();
 
 		this.action.perform(actionContext);
@@ -43,7 +43,7 @@ public class SurrenderActionTest implements ActionTest {
 	}
 	
 	@Test
-	public void testGivenContext_whenPerform_thenPlayerZoneHasNoneCombatant() throws PlayerActionException {
+	public void testGivenContext_whenPerform_thenPlayerZoneHasNoneCombatant() throws GameException {
 		CustomActionContext actionContext = this.createActionContext();
 
 		this.action.perform(actionContext);
@@ -52,7 +52,7 @@ public class SurrenderActionTest implements ActionTest {
 		assertFalse(zone.hasCombatants());
 	}
 
-	private CustomActionContext createActionContext() {
+	private CustomActionContext createActionContext() throws GameException {
 		Game game = new GameBuilder().withNRandomPlayers(5).build();
 
 		Player player = game.getPlayers().get(3);

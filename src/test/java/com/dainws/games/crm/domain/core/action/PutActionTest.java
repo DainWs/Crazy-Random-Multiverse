@@ -12,6 +12,7 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
@@ -21,7 +22,7 @@ import com.dainws.games.crm.tools.domain.core.board.DummyZone;
 class PutActionTest extends PlayerTurnActionTest {
 
 	@Test
-	void testGivenContext_whenPerform_thenCoordinateNowHasCombatant() throws PlayerActionException {
+	void testGivenContext_whenPerform_thenCoordinateNowHasCombatant() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 
@@ -32,7 +33,7 @@ class PutActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
-	void testGivenContext_whenPerform_thenPutCardInCoordinate() throws PlayerActionException {
+	void testGivenContext_whenPerform_thenPutCardInCoordinate() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 
@@ -44,7 +45,7 @@ class PutActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
-	void testGivenContextWithFilledCoordinate_whenPerform_thenThrowPlayerActionException() {
+	void testGivenContextWithFilledCoordinate_whenPerform_thenThrowPlayerActionException() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Warrior filledWithCard = new CardBuilder().buildFullValidWarrior();
