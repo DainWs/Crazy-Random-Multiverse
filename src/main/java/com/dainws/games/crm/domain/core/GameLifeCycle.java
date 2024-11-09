@@ -9,9 +9,6 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
-// TODO resvisar las responsabilidades de GameLifeCycle y ClassicGameFlow, teniendo en cuenta que
-// GameLifeCycle se encarga del ciclo de vida del juego y flow de las acciones desencadenasdos de
-// las acciones del usuario
 public class GameLifeCycle {
 
 	private Logger logger;
