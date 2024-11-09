@@ -1,15 +1,11 @@
 package com.dainws.games.crm.domain.core.event;
 
 public interface EventPublisher {
-	static final EventPublisher NONE = new EventPublisher() {}; 
+	static final EventPublisher NONE = new NoneEventPublisher(); 
 	
-	default void publish(EventCode code) {
-		this.publish(code, new EventDetails(null));
-	}
+	void publish(EventCode code);
 	
-	default void publish(EventCode code, EventDetails details) {
-		this.publish(new Event(code, details));
-	}
+	void publish(EventCode code, EventDetails details);
 	
-	default void publish(Event event) {};
+	void publish(Event event);
 }

@@ -29,7 +29,7 @@ public class EventDetails {
 		return game.getCode();
 	}
 
-	public void setGameContext(Game game) {
+	public void setGame(Game game) {
 		this.game = game;
 	}
 

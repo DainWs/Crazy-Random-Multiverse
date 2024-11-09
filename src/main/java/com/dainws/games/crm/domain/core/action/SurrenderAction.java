@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.core.action;
 
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.event.EventPublisher;
 
 public class SurrenderAction implements Action {
 
@@ -19,8 +19,8 @@ public class SurrenderAction implements Action {
 	private void notifyPlayerSurrenderAction(ActionContext context) {
 		EventDetails details = this.createEventDetailsFrom(context);
 
-		EventPublisher eventPublisher = context.getEventPublisher();
-		eventPublisher.publish(EventCode.PLAYER_SURRENDER, details);
+		Game game = context.getGame();
+		game.publishEvent(EventCode.PLAYER_SURRENDER, details);
 	}
 
 	private EventDetails createEventDetailsFrom(ActionContext context) {

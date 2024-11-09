@@ -5,14 +5,10 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
-import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.GameExceptionHandler;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class MutableActionContext implements ActionContext {
 	private Game game;
-	private EventPublisher eventPublisher;
-	private GameExceptionHandler exceptionHandler;
 
 	private Player sourcePlayer;
 	private Coordinate sourceCoordinate;
@@ -32,24 +28,6 @@ public class MutableActionContext implements ActionContext {
 	@Override
 	public Game getGame() {
 		return game;
-	}
-
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
-
-	@Override
-	public EventPublisher getEventPublisher() {
-		return this.eventPublisher;
-	}
-	
-	public void setGameExceptionHandler(GameExceptionHandler exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
-	}
-	
-	@Override
-	public GameExceptionHandler getGameExceptionHandler() {
-		return this.exceptionHandler;
 	}
 
 	@Override
