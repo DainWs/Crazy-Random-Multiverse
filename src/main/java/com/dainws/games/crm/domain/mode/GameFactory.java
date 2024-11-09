@@ -8,15 +8,18 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
+import com.dainws.games.crm.domain.repositories.GameRepository;
 
 public class GameFactory {
+	private GameRepository gameRepository;
 	private Map<GameMode, GameModeFactory> gameModeFactories;
 
-	public GameFactory() {
-		this(List.of());
+	public GameFactory(GameRepository gameRepository) {
+		this(gameRepository, List.of());
 	}
 
-	public GameFactory(List<GameModeFactory> factories) {
+	public GameFactory(GameRepository gameRepository, List<GameModeFactory> factories) {
+		this.gameRepository = gameRepository;
 		this.gameModeFactories = new HashMap<>();
 
 		for (GameModeFactory gameModeFactory : factories) {
@@ -37,7 +40,10 @@ public class GameFactory {
 			throw new NotFoundException("game_mode");
 		}
 
-		return this.gameModeFactories.get(gameMode).createGame(party);
+		GameModeFactory gameModeFactory = this.gameModeFactories.get(gameMode);
+		Game game = gameModeFactory.createGame(party);
+		this.gameRepository.save(game);
+		return game;
 	}
 
 }

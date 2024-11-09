@@ -1,7 +1,9 @@
 package com.dainws.games.crm.domain.mode.classic;
 
-import com.dainws.games.crm.domain.core.GameFlowService;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.Turn;
+import com.dainws.games.crm.domain.core.TurnManager;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -9,31 +11,29 @@ import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
-public class ClassicGameFlowService implements GameFlowService<ClassicGame> {
+public class ClassicGameFlow implements GameFlow {
 
 	private TurnManager turnManager;
 
-	public ClassicGameFlowService() {
+	public ClassicGameFlow() {
 		this.turnManager = new TurnManager();
 	}
 
 	@Override
-	public void resetGame(ClassicGame game) {
+	public void onRestartGame(Game game) {
 		PlayerStorage playerStorage = game.getPlayers(Player::isNotSpectator);
 		game.setTurn(new Turn(playerStorage));
 		game.setBoard(new Board(playerStorage));
 	}
 
 	@Override
-	public void startGame(ClassicGame game) {
+	public void onStartGame(Game game) {
 		Dealer dealer = game.getDealer();
 		dealer.dealCardsToPlayer(game, game.getPlayerWithTurn());
 	}
 
 	@Override
-	public void endGame(ClassicGame game) {
-		game.stopRunning();
-
+	public void onEndGame(Game game) {
 		PlayerStorage alivePlayers = game.getAlivePlayers();
 
 		EventCode eventCode = EventCode.GAME_END_WITH_TIE;
@@ -47,8 +47,8 @@ public class ClassicGameFlowService implements GameFlowService<ClassicGame> {
 	}
 
 	@Override
-	public void nextTurn(ClassicGame game) {
-		if (!this.tryEndGame(game)) {
+	public void onNextTurn(Game game) {
+		if (game.isRunning()) {
 			this.turnManager.nextTurn(game);
 
 			Dealer dealer = game.getDealer();
@@ -57,22 +57,20 @@ public class ClassicGameFlowService implements GameFlowService<ClassicGame> {
 	}
 
 	@Override
-	public void prevTurn(ClassicGame game) {
-		if (!this.tryEndGame(game)) {
+	public void onPrevTurn(Game game) {
+		if (game.isRunning()) {
 			this.turnManager.prevTurn(game);
 		}
 	}
 
 	@Override
-	public void updateGame(ClassicGame game) {
+	public void updateGame(Game game) {
 		for (Player player : game.getAlivePlayers()) {
 			this.updatePlayer(game, player);
 		}
-
-		this.tryEndGame(game);
 	}
 
-	private void updatePlayer(ClassicGame game, Player player) {
+	private void updatePlayer(Game game, Player player) {
 		if (this.shouldPlayerDie(game, player)) {
 			player.die();
 
@@ -82,20 +80,12 @@ public class ClassicGameFlowService implements GameFlowService<ClassicGame> {
 		}
 	}
 
-	private boolean shouldPlayerDie(ClassicGame game, Player player) {
+	private boolean shouldPlayerDie(Game game, Player player) {
 		if (player.isSpectator()) {
 			return false;
 		}
 
 		Board board = game.getBoard();
 		return !board.isZoneAlive(player.getPlayerCode());
-	}
-
-	private boolean tryEndGame(ClassicGame game) {
-		if (game.countAlivePlayers() <= 1) {
-			this.endGame(game);
-			return true;
-		}
-		return false;
 	}
 }
