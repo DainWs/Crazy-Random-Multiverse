@@ -9,7 +9,7 @@ public interface GameRepository {
 
 	void delete(GameCode gameCode);
 	
-	boolean has(GameCode gameCode);
+	boolean exists(GameCode gameCode);
 	
 	Game find(GameCode gameCode) throws NotFoundException;
 }

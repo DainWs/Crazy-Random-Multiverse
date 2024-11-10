@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
+import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -17,6 +18,8 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	};
 
 	private GameFlow gameFlow;
+	private GameLifeCycle lifeCycle;
+
 	private Map<EventCode, Consumer<Event>> eventConsumers;
 
 	public ClassicEventDispatcher() {
@@ -45,7 +48,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 
 	@Override
 	public GameMode getGameMode() {
-		return ClassicGameStrategy.CLASSIC_MODE;
+		return ClassicModeStrategy.CLASSIC_MODE;
 	}
 
 	@Override
@@ -72,11 +75,13 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	private void handlePlayerDie(Event event) {
 		Game game = this.getGameFromEvent(event);
 		this.gameFlow.updateGame(game);
+		this.lifeCycle.updateGameProgress(game);
 	}
 
 	private void handlePlayerSurrender(Event event) {
 		Game game = this.getGameFromEvent(event);
 		this.gameFlow.updateGame(game);
+		this.lifeCycle.updateGameProgress(game);
 	}
 
 	private void handlePlayerAttackCard(Event event) {

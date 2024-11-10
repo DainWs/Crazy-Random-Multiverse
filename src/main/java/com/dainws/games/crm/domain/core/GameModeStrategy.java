@@ -6,7 +6,7 @@ import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
-public interface GameStrategy {
+public interface GameModeStrategy {
 	GameMode getGameMode();
 
 	Dealer createDealer();

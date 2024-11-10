@@ -22,7 +22,7 @@ public class ClassicGameModeFactory implements GameModeFactory {
 
 	@Override
 	public GameMode getMode() {
-		return ClassicGameStrategy.CLASSIC_MODE;
+		return ClassicModeStrategy.CLASSIC_MODE;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ClassicGameModeFactory implements GameModeFactory {
 	
 	@Override
 	public Game createGame(Party party, Deck deck) {
-		ClassicGameStrategy strategy = new ClassicGameStrategy(party, deck);
+		ClassicModeStrategy strategy = new ClassicModeStrategy(party, deck);
 		strategy.setEventPublisher(this.eventPublisher);
 		strategy.setExceptionPublisher(this.exceptionPublisher);
 

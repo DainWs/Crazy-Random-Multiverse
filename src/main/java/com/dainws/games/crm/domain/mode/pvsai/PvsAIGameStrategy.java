@@ -11,9 +11,9 @@ import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
-import com.dainws.games.crm.domain.mode.classic.ClassicGameStrategy;
+import com.dainws.games.crm.domain.mode.classic.ClassicModeStrategy;
 
-public class PvsAIGameStrategy extends ClassicGameStrategy {
+public class PvsAIGameStrategy extends ClassicModeStrategy {
 	public static final GameMode PVSAI_MODE = new GameMode("PLAYER_VS_AI");
 
 	public PvsAIGameStrategy(Party party, Deck deck) {

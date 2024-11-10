@@ -2,7 +2,6 @@ package com.dainws.games.crm.domain.mode.classic;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
-import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.TurnManager;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
@@ -20,10 +19,7 @@ public class ClassicGameFlow implements GameFlow {
 	}
 
 	@Override
-	public void onRestartGame(Game game) {
-		PlayerStorage playerStorage = game.getPlayers(Player::isNotSpectator);
-		game.setTurn(new Turn(playerStorage));
-		game.setBoard(new Board(playerStorage));
+	public void onRestartGame(Game game) { // TODO need GameLifeCycle or remove it
 	}
 
 	@Override

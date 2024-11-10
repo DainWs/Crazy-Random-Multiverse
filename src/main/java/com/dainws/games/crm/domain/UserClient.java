@@ -2,6 +2,8 @@ package com.dainws.games.crm.domain;
 
 import java.util.List;
 
+
+// TODO adapt this interface
 public interface UserClient {
 	static final UserClient NONE = new UserClient() {};
 	

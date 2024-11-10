@@ -5,6 +5,7 @@ import java.util.List;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 
 public interface PartyRepository {
@@ -23,4 +24,6 @@ public interface PartyRepository {
 	Party findPartyWhereUserIsPresent(User user) throws NotFoundException;
 	
 	List<Party> findAll();
+	
+	List<Party> findPartiesInGame(GameCode code);
 }

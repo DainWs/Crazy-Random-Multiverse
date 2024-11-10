@@ -3,6 +3,7 @@ package com.dainws.games.crm.domain.core;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
@@ -19,6 +20,7 @@ import com.dainws.games.crm.domain.core.player.PlayerStorage;
 public final class Game {
 	private GameCode code;
 	private GameMode gameMode;
+	private Status status;
 
 	private boolean isRunning;
 	private Turn turn;
@@ -28,12 +30,13 @@ public final class Game {
 	private EventPublisher eventPublisher;
 	private ExceptionPublisher exceptionPublisher;
 
-	public Game(GameStrategy strategy) {
+	public Game(GameModeStrategy strategy) {
 		this(new GameCode(), strategy);
 	}
 
-	public Game(GameCode code, GameStrategy strategy) {
+	public Game(GameCode code, GameModeStrategy strategy) {
 		this.code = code;
+		this.status = Status.NONE;
 		this.gameMode = strategy.getGameMode();
 		this.isRunning = true;
 
@@ -46,6 +49,26 @@ public final class Game {
 		this.exceptionPublisher = strategy.createExceptionPublisher(this);
 	}
 
+	void reset() { // TODO review
+		this.turn = new Turn(this.getAlivePlayers());
+	}
+	
+	public boolean inStatus(Status status) {
+		return this.status.equals(status);
+	}
+
+	public boolean hasStarted() {
+		if (this.hasEnded()) {
+			return true;
+		}
+
+		return this.inStatus(Status.IN_PROGRESS);
+	}
+
+	public boolean hasEnded() {
+		return this.inStatus(Status.ENDED);
+	}
+
 	public void publishEvent(EventCode code) {
 		EventDetails details = new EventDetails(this);
 		this.eventPublisher.publish(code, details);
@@ -55,11 +78,11 @@ public final class Game {
 		details.setGame(this);
 		this.eventPublisher.publish(code, details);
 	}
-	
+
 	public void publishException(GameExceptionCode exceptionCode) {
 		this.exceptionPublisher.publish(this.players, exceptionCode);
 	}
-	
+
 	public void publishException(Player player, GameExceptionCode exceptionCode) {
 		if (!this.players.contains(player)) {
 			throw NotFoundException.playerNotFound();
@@ -72,7 +95,7 @@ public final class Game {
 		this.isRunning = false;
 	}
 
-	public boolean isRunning() {
+	public boolean isRunning() { // TODO possible alternative with status
 		return this.isRunning;
 	}
 
@@ -131,8 +154,8 @@ public final class Game {
 	public Zone getPlayerZone(Player player) {
 		return this.board.getZoneOf(player);
 	}
-
-	public void setTurn(Turn turn) {
+	
+	void setTurn(Turn turn) {
 		this.turn = turn;
 	}
 
@@ -150,5 +173,9 @@ public final class Game {
 
 	public GameCode getCode() {
 		return this.code;
+	}
+	
+	void setStatus(Status status) {
+		this.status = status;
 	}
 }

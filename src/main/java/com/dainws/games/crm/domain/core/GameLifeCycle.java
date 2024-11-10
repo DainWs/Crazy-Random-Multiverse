@@ -2,7 +2,10 @@ package com.dainws.games.crm.domain.core;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -11,107 +14,113 @@ import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public class GameLifeCycle {
 
+	public enum Status {
+		NONE, CREATED, LOADING, IN_PROGRESS, ENDED;
+	}
+
 	private Logger logger;
+	private Map<GameCode, List<Player>> loadingPlayers;
 
-	private Game game;
-
-	private GameLifeCycleStatus status;
-
-	private List<Player> loadingPlayers;
-
-	public GameLifeCycle(Game game) {
-		this(game, Player::isAlive);
-	}
-	
-	public GameLifeCycle(Game game, Predicate<Player> loadingFilter) {
+	public GameLifeCycle() {
 		this.logger = System.getLogger("GameLifeCycle");
-
-		this.game = game;
-		this.loadingPlayers = game.getPlayers(loadingFilter).toList();
-
-		this.status = GameLifeCycleStatus.CREATED;
-		this.game.publishEvent(EventCode.GAME_CREATED);
+		this.loadingPlayers = new HashMap<>();
 	}
 
-	public boolean isGame(GameCode gameCode) {
-		return this.game.getCode().equals(gameCode);
-	}
-
-	public boolean isInStatus(GameLifeCycleStatus status) {
-		return this.status.equals(status);
-	}
-
-	public boolean restart() {
-		if (this.isInStatus(GameLifeCycleStatus.CREATED)) {
-			this.startLoading();
-			return true;
-		}
-		
-		if (this.isInStatus(GameLifeCycleStatus.LOADING)) {
+	public boolean register(Game game, Predicate<Player> playerLoadingFilter) {
+		if (!this.loadingPlayers.containsKey(game.getCode())) {
+			this.logger.log(Level.WARNING, "That game is already registered");
 			return false;
 		}
 
-		this.status = GameLifeCycleStatus.IN_PROGRESS;
-		this.game.publishEvent(EventCode.GAME_RESTART);
+		List<Player> players = game.getPlayers(playerLoadingFilter).toList();
+		this.loadingPlayers.put(game.getCode(), players);
+
+		game.setStatus(Status.CREATED);
+		game.publishEvent(EventCode.GAME_CREATED);
 		return true;
 	}
-	
-	public void startLoading() {
-		if (!this.isInStatus(GameLifeCycleStatus.CREATED)) {
-			throw new IllegalStateException("The match mush be in CREATED state to start Loading process");
-		}
 
-		this.status = GameLifeCycleStatus.LOADING;
-		this.game.publishEvent(EventCode.GAME_LOADING);
-		
-		if (this.loadingPlayers.isEmpty()) {
-			this.startGame();
-		}
-	}
-
-	public void loadCompleteFor(PlayerCode code) {
-		boolean wasRemoved = this.loadingPlayers.removeIf(player -> player.isCode(code));
-
-		if (wasRemoved) {
-			int totalPlayers = this.game.countPlayers();
-			int readyPlayers = totalPlayers - this.loadingPlayers.size();
-			this.logger.log(Level.DEBUG, "[%s/%s] The player %s is ready", readyPlayers, totalPlayers, code);
-		}
-
-		if (this.isInStatus(GameLifeCycleStatus.LOADING) && this.loadingPlayers.isEmpty()) {
-			this.startGame();
-		}
-	}
-	
-	private void startGame() {
-		this.logger.log(Level.DEBUG, "All players in the game %s are ready to start", this.game.getCode());
-		this.loadingPlayers.clear();
-
-		this.status = GameLifeCycleStatus.IN_PROGRESS;
-		this.game.publishEvent(EventCode.GAME_START);
-	}
-
-	public void updateGameProgress() {
-		if (!this.isInStatus(GameLifeCycleStatus.IN_PROGRESS)) {
-			throw new IllegalStateException("The match mush be in IN_PROGRESS state to update game progress");
-		}
-
-		if (this.game.countAlivePlayers() <= 1) {
-			this.status = GameLifeCycleStatus.ENDED;
-			this.game.stopRunning();
-			this.game.publishEvent(EventCode.GAME_END);
-		}
-	}
-
-	public boolean isGameAlreadyStarted() {
-		if (this.isGameAlreadyEnded()) {
+	public boolean restart(Game game) {
+		if (game.inStatus(Status.CREATED)) {
+			this.startLoading(game);
 			return true;
 		}
 
-		return this.isInStatus(GameLifeCycleStatus.IN_PROGRESS);
+		if (game.inStatus(Status.LOADING)) {
+			this.logger.log(Level.WARNING, "You cannot restart a game that is being loaded");
+			return false;
+		}
+
+		game.reset();
+		game.setStatus(Status.IN_PROGRESS);
+		game.publishEvent(EventCode.GAME_RESTART);
+		return true;
 	}
 
-	public boolean isGameAlreadyEnded() {
-		return this.isInStatus(GameLifeCycleStatus.ENDED);
+	public boolean startLoading(Game game) {
+		if (!game.inStatus(Status.CREATED)) {
+			this.logger.log(Level.WARNING, "The game mush be in CREATED state to start Loading process");
+			return false;
+		}
+
+		this.logger.log(Level.DEBUG, "Loading game with code %s", game.getCode());
+		this.logger.log(Level.DEBUG, "Waiting for all players in game %s to be ready.", game.getCode());
+		game.setStatus(Status.LOADING);
+		game.publishEvent(EventCode.GAME_LOADING);
+		return true;
+	}
+
+	public void loadCompleteFor(Game game, PlayerCode code) {
+		boolean wasRemoved = this.removePlayerFromLoadingList(game, code);
+		int loadingPlayersCount = this.countLoadingPlayersFrom(game);
+
+		if (wasRemoved) {
+			int totalPlayers = game.countPlayers();
+			int readyPlayers = totalPlayers - loadingPlayersCount;
+			this.logger.log(Level.DEBUG, "[%s/%s] The player %s is ready", readyPlayers, totalPlayers, code);
+		}
+
+		if (game.inStatus(Status.LOADING) && loadingPlayersCount == 0) {
+			this.startGame(game);
+		}
+	}
+
+	private boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
+		List<Player> gameLoadingPlayers = this.getLoadingPlayersOf(game);
+		boolean wasRemoved = gameLoadingPlayers.removeIf(player -> player.isCode(code));
+		this.setLoadingPlayersOf(game, gameLoadingPlayers);
+		return wasRemoved;
+	}
+
+	private int countLoadingPlayersFrom(Game game) {
+		return this.getLoadingPlayersOf(game).size();
+	}
+
+	private void startGame(Game game) {
+		this.logger.log(Level.DEBUG, "All players in the game %s are ready to start", game.getCode());
+		this.loadingPlayers.remove(game.getCode());
+
+		game.setStatus(Status.IN_PROGRESS);
+		game.publishEvent(EventCode.GAME_START);
+	}
+
+	public void updateGameProgress(Game game) {
+		if (!game.inStatus(Status.IN_PROGRESS)) {
+			throw new IllegalStateException("The match mush be in IN_PROGRESS state to update game progress");
+		}
+
+		if (game.countAlivePlayers() <= 1) {
+			game.stopRunning();
+			game.setStatus(Status.ENDED);
+			game.publishEvent(EventCode.GAME_END);
+		}
+	}
+
+	private List<Player> getLoadingPlayersOf(Game game) {
+		return this.loadingPlayers.getOrDefault(game.getCode(), new ArrayList<>());
+	}
+
+	private void setLoadingPlayersOf(Game game, List<Player> players) {
+		this.loadingPlayers.put(game.getCode(), players);
 	}
 }

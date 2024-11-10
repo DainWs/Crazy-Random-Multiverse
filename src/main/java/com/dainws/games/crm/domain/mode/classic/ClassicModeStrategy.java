@@ -8,7 +8,7 @@ import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
-import com.dainws.games.crm.domain.core.GameStrategy;
+import com.dainws.games.crm.domain.core.GameModeStrategy;
 import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
@@ -19,7 +19,7 @@ import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
-public class ClassicGameStrategy implements GameStrategy {
+public class ClassicModeStrategy implements GameModeStrategy {
 
 	public static final GameMode CLASSIC_MODE = new GameMode("CLASSIC_MODE");
 
@@ -28,7 +28,7 @@ public class ClassicGameStrategy implements GameStrategy {
 	private EventPublisher eventPublisher;
 	private ExceptionPublisher exceptionPublisher;
 
-	public ClassicGameStrategy(Party party, Deck deck) {
+	public ClassicModeStrategy(Party party, Deck deck) {
 		this.party = party;
 		this.selectedDeck = deck;
 	}
