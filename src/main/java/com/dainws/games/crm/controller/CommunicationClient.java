@@ -11,8 +11,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
-import com.dainws.games.crm.controller.dto.models.ErrorDto;
 import com.dainws.games.crm.controller.dto.models.EventDto;
+import com.dainws.games.crm.controller.dto.models.ExceptionCodeDto;
 import com.dainws.games.crm.controller.dto.models.PartyDto;
 import com.dainws.games.crm.controller.dto.models.PartyListDto;
 import com.dainws.games.crm.domain.Party;
@@ -21,10 +21,11 @@ import com.dainws.games.crm.domain.UserClient;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
+import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.domain.error.Error;
 
-public class CommunicationClient implements UserClient {
+public class CommunicationClient implements UserClient, ExceptionPublisher {
 
 	private SimpMessagingTemplate messagingTemplate;
 	private Logger logger;
@@ -34,13 +35,25 @@ public class CommunicationClient implements UserClient {
 		this.logger = LoggerFactory.getLogger(CommunicationClient.class.getCanonicalName());
 	}
 
-	public void sendError(Player player, Error error) {
+	@Override
+	public void publish(List<Player> to, GameExceptionCode exceptionCode) {
+		for (Player player : to) {
+			this.sendExceptionCode(player, exceptionCode);
+		}
+	}
+	
+	@Override
+	public void publish(Player to, GameExceptionCode exceptionCode) {
+		this.sendExceptionCode(to, exceptionCode);
+	}
+	
+	public void sendExceptionCode(Player player, GameExceptionCode code) {
 		if (this.canSendTo(player)) {
-			this.logger.trace("Enviando error {}, al cliente {}", error.getText(), player.getName());
+			this.logger.trace("Enviando error {}, al cliente {}", code, player.getName());
 
 			String sessionId = player.getCode();
-			ErrorDto errorDto = new CommunicationMapper().mapToDto(error);
-			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", errorDto, createHeaders(sessionId));
+			ExceptionCodeDto dto = new ExceptionCodeDto(code.value());
+			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", dto, createHeaders(sessionId));
 		}
 	}
 

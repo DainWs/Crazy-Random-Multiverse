@@ -7,29 +7,34 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.dainws.games.crm.domain.PartyCode;
+import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.translator.Translatable;
-import com.dainws.games.crm.services.PartyService;
+import com.dainws.games.crm.services.PartyOwnerService;
 import com.dainws.games.crm.services.UserService;
 
+import jakarta.websocket.server.PathParam;
+
 @Controller
-public class LoadController {
+public class PartyOwnerController implements PartyOwnerControllerInterface {
 
 	private UserService userService;
-	private PartyService partyService;
+	private PartyOwnerService partyOwnerService;
 
-	public LoadController(UserService userService, PartyService partyService) {
+	public PartyOwnerController(UserService userService, PartyOwnerService partyService) {
 		this.userService = userService;
-		this.partyService = partyService;
+		this.partyOwnerService = partyService;
 	}
 
-	@MessageMapping("/game/create") // TODO to /game/start
-	public void createGameFromParty(@Header("simpSessionId") String sessionId) {
+	@Override
+	public void startPartyGame(String sessionId, String partyCodeAsString) {
 		User user = this.getUser(sessionId);
-		this.partyService.loadGame(user);
+		PartyCode partyCode = PartyCode.fromString(partyCodeAsString);
+		this.partyOwnerService.startPartyGame(user, partyCode);
 	}
 	
 	@MessageMapping("/game/{gameCode}/ready")
@@ -38,7 +43,7 @@ public class LoadController {
 			@DestinationVariable(value = "gameCode") String gameCodeAsString
 	) throws IllegalAccessException {
 		User user = this.getUser(sessionId);
-		this.partyService.markUserAsReady(GameCode.fromString(gameCodeAsString), user);
+		this.partyOwnerService.markUserAsReady(GameCode.fromString(gameCodeAsString), user);
 	}
 	
 	@MessageExceptionHandler

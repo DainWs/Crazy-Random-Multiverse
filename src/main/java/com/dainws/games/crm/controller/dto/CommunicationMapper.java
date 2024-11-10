@@ -1,21 +1,11 @@
 package com.dainws.games.crm.controller.dto;
 
-import com.dainws.games.crm.controller.dto.models.ErrorDto;
 import com.dainws.games.crm.controller.dto.models.EventDetailsDto;
 import com.dainws.games.crm.controller.dto.models.EventDto;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.error.Error;
-import com.dainws.games.crm.domain.translator.Text;
 
 public class CommunicationMapper {
-	public ErrorDto mapToDto(Error error) {
-		ErrorDto errorDto = new ErrorDto();
-		Text text = error.getText();
-		errorDto.setKey(text.getKey().getValue());
-		errorDto.setValue(text.getValue());
-		return errorDto;
-	}
 
 	public EventDto mapToDto(Event event) {
 		EventDto eventDto = new EventDto();

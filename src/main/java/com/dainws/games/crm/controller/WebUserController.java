@@ -15,9 +15,9 @@ import com.dainws.games.crm.controller.dto.models.UserDto;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.UserPlatform;
-import com.dainws.games.crm.domain.UserService;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.translator.Translatable;
+import com.dainws.games.crm.services.UserService;
 
 @Controller
 public class WebUserController {

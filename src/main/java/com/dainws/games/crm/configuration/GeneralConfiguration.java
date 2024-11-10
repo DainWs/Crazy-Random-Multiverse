@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.UserClient;
-import com.dainws.games.crm.domain.UserService;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
@@ -18,6 +17,7 @@ import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
 import com.dainws.games.crm.domain.repositories.UserRepository;
+import com.dainws.games.crm.services.UserService;
 
 @Configuration
 public class GeneralConfiguration {

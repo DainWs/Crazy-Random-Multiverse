@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.error.Error;
-import com.dainws.games.crm.domain.error.ErrorHandler;
+import com.dainws.games.crm.domain.error.GameErrorHandler;
 
-public class ErrorHandlerMonitor extends ErrorHandler {
+public class ErrorHandlerMonitor extends GameErrorHandler {
 
 	private List<Error> handledErrors;
 

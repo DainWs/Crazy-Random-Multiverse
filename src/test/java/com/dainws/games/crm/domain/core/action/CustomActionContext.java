@@ -6,7 +6,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.GameExceptionHandler;
+import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class CustomActionContext implements ActionContext {
@@ -21,11 +21,11 @@ public class CustomActionContext implements ActionContext {
 	private Card targetCard;
 
 	private EventPublisher eventPublisher;
-	private GameExceptionHandler exceptionHandler;
+	private ExceptionPublisher exceptionHandler;
 
 	public CustomActionContext() {
 		this.eventPublisher = EventPublisher.NONE;
-		this.exceptionHandler = GameExceptionHandler.NONE;
+		this.exceptionHandler = ExceptionPublisher.NONE;
 	}
 
 	public void setGame(Game game) {
@@ -117,12 +117,12 @@ public class CustomActionContext implements ActionContext {
 		return eventPublisher;
 	}
 
-	public void setExceptionHandler(GameExceptionHandler exceptionHandler) {
+	public void setExceptionHandler(ExceptionPublisher exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 	}
 
 	@Override
-	public GameExceptionHandler getGameExceptionHandler() {
+	public ExceptionPublisher getGameExceptionHandler() {
 		return exceptionHandler;
 	}
 }
