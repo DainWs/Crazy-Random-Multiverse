@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
 
@@ -74,6 +75,13 @@ public class MemoryPartyRepository implements PartyRepository {
 	@Override
 	public List<Party> findAll() {
 		return List.copyOf(this.parties.values());
+	}
+	
+	@Override
+	public List<Party> findPartiesInGame(GameCode code) {
+		return this.parties.values().stream()
+			.filter(party -> party.isCurrentGame(code))
+			.toList();
 	}
 
 }

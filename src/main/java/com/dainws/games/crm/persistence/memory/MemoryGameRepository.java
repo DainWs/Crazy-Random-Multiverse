@@ -33,13 +33,13 @@ public class MemoryGameRepository implements GameRepository {
 	}
 
 	@Override
-	public boolean has(GameCode gameCode) {
+	public boolean exists(GameCode gameCode) {
 		return this.games.containsKey(gameCode);
 	}
 
 	@Override
 	public Game find(GameCode gameCode) throws NotFoundException {
-		if (this.has(gameCode)) {
+		if (this.exists(gameCode)) {
 			return this.games.get(gameCode);
 		}
 
