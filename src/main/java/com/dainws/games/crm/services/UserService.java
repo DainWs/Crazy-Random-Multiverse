@@ -1,5 +1,7 @@
-package com.dainws.games.crm.domain;
+package com.dainws.games.crm.services;
 
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.repositories.UserRepository;
 
 public class UserService {
