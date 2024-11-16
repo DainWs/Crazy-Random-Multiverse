@@ -1,0 +1,47 @@
+@startuml 
+title "Activity - Player actions"
+!pragma useVerticalIf on
+
+start
+switch (Player perform a subaction)
+case (\n\n **Grab** card from **Hand**)
+
+	switch (Player perform a subaction)
+	case ( **Drop** card in his\nown **ZoneSlot**)
+		:Perform **PutAction**;
+	case (\n\n\n\n **Drop** card on\nenemy **ZoneSlot**)
+		if (**ZoneSlot** has card and\ndropped card is **AppliableCard**) then (yes)
+			:Perform **UseAppliableCardAction**;
+		else (no)
+		endif
+	case (Other)
+	endswitch
+	
+case (\n\n\n **Grab** card from **ZoneSlot**)
+	if (is his own zone) then (yes)
+		:Perform **MoveAction**;
+	else (no)
+	endif
+case (\n **Left click** on **Card**)
+
+	switch (Player perform\na subaction)
+	case (\n **Second Left click**\n on **Enemy card**)
+		:Perform **AttackAction**;
+	case (Other)
+	endswitch
+
+case (\n **Left click** on\n**Pass turn button**)
+	:Start **PassTurnAction**;
+case (\n **Left click** on\n**Surrender button**)
+	if (**Left click** on\n**confirm button**) then (yes)
+		:Start **SurrenderAction**;
+	else (no)
+	endif
+endswitch
+
+
+
+
+
+stop
+@enduml

@@ -1,8 +1,0 @@
-@startuml
-title "Usecase - Actions"
-left to right direction
-
-:Player: --> (Put card) : **drag** Card from\n**Hand** to **ZoneSlot**
-:Player: --> (Move card) : **drag** Card from\n**ZoneSlot** to other **ZoneSlot**
-:Player: --> (Attack card) : \n**click** Card and\nthen **click** on **Enemy Card**
-@enduml

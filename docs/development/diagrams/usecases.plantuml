@@ -1,0 +1,37 @@
+@startuml 
+title "Usecases"
+left to right direction
+
+actor Spectator
+actor PlayerWithTurn
+actor Player 
+actor PartyOwner
+actor PartyMember
+actor User
+
+:Player: <|-r- :PlayerWithTurn:
+:PartyMember: <|-r- :PartyOwner:
+
+:User: --> (Create party)
+:User: --> (Join party)
+:User: --> (View party list)
+:User: --> (Change account settings)
+
+:PartyMember: --> (View party info)
+:PartyMember: --> (Leave party)
+
+:PartyOwner: --> (Manage party)
+:PartyOwner: --> (Start game)
+
+:Spectator: --> (Exit game)
+:Spectator: --> (View game)
+
+:Player: --> (Surrender)
+:Player: --> (View game)
+
+:PlayerWithTurn: --> (Put card)
+:PlayerWithTurn: --> (Move card)
+:PlayerWithTurn: --> (Attack card)
+:PlayerWithTurn: --> (Use spell)
+:PlayerWithTurn: --> (Pass turn)
+@enduml 
