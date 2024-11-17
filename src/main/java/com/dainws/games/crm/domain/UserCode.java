@@ -2,6 +2,8 @@ package com.dainws.games.crm.domain;
 
 import java.util.Objects;
 
+import com.dainws.games.crm.domain.core.player.PlayerCode;
+
 public class UserCode {
 	private String uuid;
 
@@ -9,8 +11,12 @@ public class UserCode {
 		this.uuid = uuid;
 	}
 
-	public String getValue() {
+	public String text() {
 		return this.uuid;
+	}
+	
+	public PlayerCode toPlayerCode() {
+		return PlayerCode.from(this.uuid);
 	}
 
 	@Override
@@ -33,7 +39,7 @@ public class UserCode {
 		return this.uuid;
 	}
 
-	public static UserCode fromString(String uuid) {
+	public static UserCode from(String uuid) {
 		if (uuid == null) {
 			throw new NullPointerException("El UUID indicado es nulo");
 		}

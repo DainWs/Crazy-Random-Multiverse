@@ -5,9 +5,15 @@ import java.util.List;
 
 // TODO adapt this interface
 public interface UserClient {
-	static final UserClient NONE = new UserClient() {};
-	
-	default void sendPartyInfo(User to, Party party) {};
+	static final UserClient NONE = new NoneUserClient();
 
-	default void sendPartyList(User to, List<Party> party) {};
+	default void sendPartyInfo(Party party) {
+		for (User user : party.getUsers()) {
+			this.sendPartyInfo(user, party);
+		}
+	};
+
+	void sendPartyInfo(User to, Party party);
+
+	void sendPartyList(User to, List<Party> party);
 }

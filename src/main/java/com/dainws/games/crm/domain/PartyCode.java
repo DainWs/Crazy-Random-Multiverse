@@ -10,7 +10,7 @@ public class PartyCode {
 		this.uuid = UUID.randomUUID();
 	}
 
-	public String getValue() {
+	public String text() {
 		return this.uuid.toString();
 	}
 
@@ -34,7 +34,7 @@ public class PartyCode {
 		return this.uuid.toString();
 	}
 
-	public static PartyCode fromString(String uuid) {
+	public static PartyCode from(String uuid) {
 		if (uuid == null) {
 			throw new NullPointerException("El UUID indicado es nulo");
 		}

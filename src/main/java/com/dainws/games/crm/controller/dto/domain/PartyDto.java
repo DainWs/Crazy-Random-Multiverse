@@ -1,10 +1,11 @@
-package com.dainws.games.crm.controller.dto.models;
+package com.dainws.games.crm.controller.dto.domain;
 
 import java.util.List;
 
 public class PartyDto {
 	private String code;
 	private String name;
+	private GameModeDto gameMode;
 	private int userCount;
 	private int maxUsers;
 	private String owner;
@@ -28,6 +29,14 @@ public class PartyDto {
 	
 	public String getName() {
 		return name;
+	}
+
+	public void setGameMode(GameModeDto gameMode) {
+		this.gameMode = gameMode;
+	}
+	
+	public GameModeDto getGameMode() {
+		return gameMode;
 	}
 	
 	public void setUserCount(int userCount) {

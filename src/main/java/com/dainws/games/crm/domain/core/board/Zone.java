@@ -2,7 +2,7 @@ package com.dainws.games.crm.domain.core.board;
 
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 
 public abstract class Zone {
 	protected static final Combatant NONE = null;
@@ -122,7 +122,7 @@ public abstract class Zone {
 		return this.combatants[row][column];
 	}
 
-	public void addCombatant(Combatant combatant) throws OperationNotAllowedException {
+	public void addCombatant(Combatant combatant) throws NotAllowedException {
 		int rowIndex = 0;
 		int selectedRowIndex = -1;
 		while (rowIndex < this.combatants.length && selectedRowIndex == -1) {
@@ -134,19 +134,19 @@ public abstract class Zone {
 		}
 
 		if (selectedRowIndex == -1) {
-			throw new OperationNotAllowedException("zone.already_filled");
+			throw new NotAllowedException("zone.already_filled");
 		}
 
 		this.addCombatantAt(rowIndex, combatant);
 	}
 
-	public void addCombatantAt(int rowIndex, Combatant combatant) throws OperationNotAllowedException {
+	public void addCombatantAt(int rowIndex, Combatant combatant) throws NotAllowedException {
 		if (!this.validate(rowIndex)) {
-			throw new OperationNotAllowedException("zone.coordinate.out_of_bounds");
+			throw new NotAllowedException("zone.coordinate.out_of_bounds");
 		}
 
 		if (!this.validatePrevRow(rowIndex)) {
-			throw new OperationNotAllowedException("zone.row.previous_need_to_be_filled");
+			throw new NotAllowedException("zone.row.previous_need_to_be_filled");
 		}
 
 		int columnIndex = 0;
@@ -160,7 +160,7 @@ public abstract class Zone {
 		}
 
 		if (selectedColumnIndex == -1) {
-			throw new OperationNotAllowedException("zone.row.already_filled");
+			throw new NotAllowedException("zone.row.already_filled");
 		}
 
 		System.out.println("Selected " + rowIndex + " col: " + columnIndex);
@@ -168,17 +168,17 @@ public abstract class Zone {
 	}
 
 	public void putCombatant(Coordinate coordinate, Combatant combatant)
-			throws OperationNotAllowedException {
+			throws NotAllowedException {
 		if (!this.validate(coordinate)) {
-			throw new OperationNotAllowedException("zone.coordinate.out_of_bounds");
+			throw new NotAllowedException("zone.coordinate.out_of_bounds");
 		}
 
 		if (this.hasCombatant(coordinate)) {
-			throw new OperationNotAllowedException("zone.coordinate.already_filled");
+			throw new NotAllowedException("zone.coordinate.already_filled");
 		}
 
 		if (!this.validatePrevRow(coordinate.getRow())) {
-			throw new OperationNotAllowedException("zone.row.already_filled");
+			throw new NotAllowedException("zone.row.already_filled");
 		}
 
 		this.combatants[coordinate.getRow()][coordinate.getColumn()] = combatant;

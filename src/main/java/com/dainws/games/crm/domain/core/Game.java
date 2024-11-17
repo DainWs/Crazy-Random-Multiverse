@@ -11,13 +11,13 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
-import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
+import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
-public final class Game {
+public class Game {
 	private GameCode code;
 	private GameMode gameMode;
 	private Status status;
@@ -79,11 +79,11 @@ public final class Game {
 		this.eventPublisher.publish(code, details);
 	}
 
-	public void publishException(GameExceptionCode exceptionCode) {
+	public void publishException(ExceptionCode exceptionCode) {
 		this.exceptionPublisher.publish(this.players, exceptionCode);
 	}
 
-	public void publishException(Player player, GameExceptionCode exceptionCode) {
+	public void publishException(Player player, ExceptionCode exceptionCode) {
 		if (!this.players.contains(player)) {
 			throw NotFoundException.playerNotFound();
 		}

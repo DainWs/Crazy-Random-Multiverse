@@ -10,11 +10,11 @@ class NoneExceptionPublisher implements ExceptionPublisher {
 	}
 
 	@Override
-	public void publish(List<Player> to, GameExceptionCode exceptionCode) {
+	public void publish(List<Player> to, ExceptionCode exceptionCode) {
 	}
 
 	@Override
-	public void publish(Player to, GameExceptionCode exceptionCode) {
+	public void publish(Player to, ExceptionCode exceptionCode) {
 	}
 
 }

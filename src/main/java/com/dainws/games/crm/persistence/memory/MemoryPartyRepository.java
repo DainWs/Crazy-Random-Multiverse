@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
@@ -42,7 +43,7 @@ public class MemoryPartyRepository implements PartyRepository {
 	}
 	
 	@Override
-	public boolean hasPartyWhereUserIsPresent(User user) {
+	public boolean hasPartyWhereUserIsMember(User user) {
 		return this.parties.values().stream()
 				.anyMatch(party -> party.has(user));
 	}
@@ -57,17 +58,17 @@ public class MemoryPartyRepository implements PartyRepository {
 	}
 	
 	@Override
-	public Party findPartyWhereUserIsOwner(User user) throws NotFoundException {
+	public Party findPartyWhereUserIsOwner(UserCode userCode) throws NotFoundException {
 		return this.parties.values().stream()
-			.filter(party -> party.getOwner().equals(user))
+			.filter(party -> party.isOwner(userCode))
 			.findFirst()
 			.orElseThrow(() -> new NotFoundException("party"));
 	}
 	
 	@Override
-	public Party findPartyWhereUserIsPresent(User user) throws NotFoundException {
+	public Party findPartyWhereUserIsMember(UserCode userCode) throws NotFoundException {
 		return this.parties.values().stream()
-			.filter(party -> party.has(user))
+			.filter(party -> party.has(userCode))
 			.findFirst()
 			.orElseThrow(() -> new NotFoundException("party"));
 	}

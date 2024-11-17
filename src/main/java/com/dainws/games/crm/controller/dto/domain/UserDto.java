@@ -1,21 +1,21 @@
-package com.dainws.games.crm.controller.dto.models;
+package com.dainws.games.crm.controller.dto.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDto {
 	
-	@JsonProperty(value = "uid", required = false)
-	private String uid;
+	@JsonProperty(value = "id", required = false)
+	private String id;
 
 	@JsonProperty(value = "username", required = true)
 	private String username;
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setId(String uid) {
+		this.id = uid;
 	}
 
-	public String getUid() {
-		return uid;
+	public String getId() {
+		return id;
 	}
 	
 	public String getUsername() {

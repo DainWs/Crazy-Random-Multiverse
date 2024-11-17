@@ -6,7 +6,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
-import com.dainws.games.crm.domain.PartyService;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
@@ -15,16 +14,17 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.services.PartyEventService;
 
 @Controller
 public class GameEventHandler {
 
 	private CommunicationClient communicationClient;
-	private PartyService partyService;
+	private PartyEventService eventService;
 
-	public GameEventHandler(CommunicationClient communicationClient, PartyService gameService) {
+	public GameEventHandler(CommunicationClient communicationClient, PartyEventService eventService) {
 		this.communicationClient = communicationClient;
-		this.partyService = gameService;
+		this.eventService = eventService;
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_CREATED")
@@ -53,7 +53,7 @@ public class GameEventHandler {
 		
 		// TODO Buscar un sitio
 		GameCode gameCode = event.getDetails().getGameCode();
-		this.partyService.loadPartyFromGame(gameCode);
+		this.eventService.releaseGameParties(gameCode);
 	}
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_END_WITH_TIE")
@@ -63,7 +63,7 @@ public class GameEventHandler {
 
 		// TODO Buscar un sitio
 		GameCode gameCode = event.getDetails().getGameCode();
-		this.partyService.loadPartyFromGame(gameCode);
+		this.eventService.releaseGameParties(gameCode);
 	}
 
 	// TODO valio realmente la pena el cambio en vez de agregar mas eventos?

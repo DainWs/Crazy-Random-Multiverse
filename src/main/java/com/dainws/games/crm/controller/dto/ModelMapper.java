@@ -3,14 +3,14 @@ package com.dainws.games.crm.controller.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dainws.games.crm.controller.dto.models.CardCodeDto;
-import com.dainws.games.crm.controller.dto.models.CardDto;
-import com.dainws.games.crm.controller.dto.models.GameDto;
-import com.dainws.games.crm.controller.dto.models.PartyDto;
-import com.dainws.games.crm.controller.dto.models.PartyListDto;
-import com.dainws.games.crm.controller.dto.models.PlayerDto;
-import com.dainws.games.crm.controller.dto.models.PositionDto;
-import com.dainws.games.crm.controller.dto.models.ZoneDto;
+import com.dainws.games.crm.controller.dto.domain.CardCodeDto;
+import com.dainws.games.crm.controller.dto.domain.CardDto;
+import com.dainws.games.crm.controller.dto.domain.GameDto;
+import com.dainws.games.crm.controller.dto.domain.PartyDto;
+import com.dainws.games.crm.controller.dto.domain.PartyListDto;
+import com.dainws.games.crm.controller.dto.domain.PlayerDto;
+import com.dainws.games.crm.controller.dto.domain.PositionDto;
+import com.dainws.games.crm.controller.dto.domain.ZoneDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.Game;
@@ -27,10 +27,10 @@ import com.dainws.games.crm.domain.core.player.Player;
 
 public class ModelMapper {
 
-	public PartyListDto mapPartiesToPartyList(List<Party> parties) {
+	public static PartyListDto toPartyListDto(List<Party> parties) {
 		List<PartyDto> partyDtos = new ArrayList<>();
 		for (Party party : parties) {
-			PartyDto partyDto = this.mapPartyToPartyDto(party);
+			PartyDto partyDto = toPartyDto(party);
 			partyDto.setUsers(new ArrayList<>());
 			partyDtos.add(partyDto);
 		}
@@ -40,11 +40,11 @@ public class ModelMapper {
 		return partyList;
 	}
 	
-	public PartyDto mapPartyToPartyDto(Party party) {
+	public static PartyDto toPartyDto(Party party) {
 		String ownerName = party.getOwner().getName();
 		
 		PartyDto partyDto = new PartyDto();
-		partyDto.setCode(party.getCode().getValue());
+		partyDto.setCode(party.getCode().text());
 		partyDto.setName("Party of " + ownerName);
 		partyDto.setUserCount(party.getUsers().size());
 		partyDto.setOwner(ownerName);

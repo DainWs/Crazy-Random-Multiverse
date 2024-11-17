@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.core.exception;
 
-public class GameExceptionCode {
+public class ExceptionCode {
 	private String value;
 
-	public GameExceptionCode(String value) {
+	public ExceptionCode(String value) {
 		this.value = "exception." + value;
 
 		if (value.startsWith("exception.")) {

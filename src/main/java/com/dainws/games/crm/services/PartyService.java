@@ -2,90 +2,80 @@ package com.dainws.games.crm.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserClient;
-import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.core.exception.NotFoundException;
-import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
+import com.dainws.games.crm.domain.core.exception.GameException;
+import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
+import com.dainws.games.crm.services.exception.PartyException;
 
+@Service
 public class PartyService {
 
 	private UserClient userClient;
 	private PartyRepository repository;
-	
+
 	public PartyService(PartyRepository repository) {
 		this.repository = repository;
 	}
-	
-	public void releaseGameParties(GameCode code) {
-		List<Party> parties =  this.repository.findPartiesInGame(code);
-		
-		for (Party party : parties) {
-			party.setNoneCurrentGame();
-			party.unlock();
-			this.repository.save(party);
-		}
-	}
 
-	public void createParty(User partyOwner) throws OperationNotAllowedException {
-		if (this.repository.hasPartyWhereUserIsPresent(partyOwner)) {
-			throw new OperationNotAllowedException("user_already_in_party");
+	public void createParty(User partyOwner, Party party) throws PartyException {
+		if (this.repository.hasPartyWhereUserIsMember(partyOwner)) {
+			throw PartyException.userAlreadyInParty();
 		}
 
-		Party party = new Party(partyOwner);
 		this.repository.save(party);
-
-		this.sendPartyInfoTo(partyOwner, party);
 	}
 
-	public void joinParty(PartyCode partyCode, User user) throws OperationNotAllowedException {
-		if (this.repository.hasPartyWhereUserIsPresent(user)) {
-			throw new OperationNotAllowedException("user_already_in_party");
+	public Party joinParty(PartyCode partyCode, User user) throws PartyException {
+		if (this.repository.hasPartyWhereUserIsMember(user)) {
+			throw PartyException.userAlreadyInParty();
 		}
 
-		Party party = this.repository.find(partyCode);
-		party.add(user);
-
-		this.sendPartyInfoTo(party.getUsers(), party);
-	}
-
-	public void leaveParty(User user) throws NotFoundException, OperationNotAllowedException {
-		Party party = this.repository.findPartyWhereUserIsPresent(user);
-		party.remove(user);
-
-		this.sendPartyInfoTo(party.getUsers(), party);
-
-		if (party.isEmpty()) {
-			this.repository.delete(party.getCode());
-		}
-	}
-
-	public void tryLeaveParty(User user) {
 		try {
-			if (this.repository.hasPartyWhereUserIsPresent(user)) {
-				this.leaveParty(user);
+			Party party = this.repository.find(partyCode);
+			party.add(user);
+			this.repository.save(party);
+			return party;
+		} catch (NotAllowedException e) {
+			throw new PartyException(e.getCode(), e);
+		}
+
+	}
+
+	public void leaveParty(User user) throws PartyException {
+		Party party = this.repository.findPartyWhereUserIsMember(user.getCode());
+		this.leaveParty(party.getCode(), user);
+	}
+
+	public void leaveParty(PartyCode partyCode, User user) throws PartyException {
+		try {
+			Party party = this.repository.find(partyCode);
+			party.remove(user);
+
+			if (party.isEmpty()) {
+				this.repository.delete(party.getCode());
+			} else {
+				this.userClient.sendPartyInfo(party);
 			}
-		} catch (NotFoundException | OperationNotAllowedException e) {}
-	}
-
-	public void updatePartyListOf(User user) {
-		List<Party> parties = this.repository.findAll();
-		this.userClient.sendPartyList(user, parties);
-	}
-
-	private void sendPartyInfoTo(List<User> users, Party party) {
-		for (User user : users) {
-			this.sendPartyInfoTo(user, party);
+		} catch (GameException e) {
+			throw new PartyException(e.getCode(), e);
+		} catch (GameRuntimeException e) {
+			throw new PartyException(e.getCode(), e);
 		}
 	}
-	
-	private void sendPartyInfoTo(User user, Party party) {
-		this.userClient.sendPartyInfo(user, party);
+
+	public List<Party> getParties() {
+		return this.repository.findAll();
 	}
 
+	@Autowired
 	public void setUserClient(UserClient userClient) {
 		this.userClient = userClient;
 	}

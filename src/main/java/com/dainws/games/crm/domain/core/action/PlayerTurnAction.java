@@ -8,7 +8,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.GameException;
-import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
+import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -59,7 +59,7 @@ public abstract class PlayerTurnAction implements Action {
 
 	private void notifyThatSourcePlayerRequiresTurn(ActionContext context) {
 		String codeAsText = "exception.player-action.allowed_only_on_turn";
-		GameExceptionCode exceptionCode = new GameExceptionCode(codeAsText);
+		ExceptionCode exceptionCode = new ExceptionCode(codeAsText);
 		this.publishException(exceptionCode, context);
 	}
 
@@ -72,7 +72,7 @@ public abstract class PlayerTurnAction implements Action {
 		}
 	}
 
-	protected final void publishException(GameExceptionCode exceptionCode, ActionContext context) {
+	protected final void publishException(ExceptionCode exceptionCode, ActionContext context) {
 		Game game = context.getGame();
 		game.publishException(context.getSourcePlayer(), exceptionCode);
 	}

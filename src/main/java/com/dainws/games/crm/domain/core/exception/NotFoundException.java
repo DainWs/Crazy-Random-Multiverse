@@ -5,7 +5,7 @@ public class NotFoundException extends GameRuntimeException {
 	private static final long serialVersionUID = 1392950877789673225L;
 
 	public NotFoundException(String whatNotFound) {
-		super(new GameExceptionCode(whatNotFound+".not-found"));
+		super(new ExceptionCode(whatNotFound+".not_found"));
 	}
 	
 	public static NotFoundException gameNotFound() {

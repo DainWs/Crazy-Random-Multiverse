@@ -1,8 +1,8 @@
 package com.dainws.games.crm.controller.dto;
 
-import com.dainws.games.crm.controller.dto.models.ActionDto;
-import com.dainws.games.crm.controller.dto.models.CardCodeDto;
-import com.dainws.games.crm.controller.dto.models.PositionDto;
+import com.dainws.games.crm.controller.dto.domain.ActionDto;
+import com.dainws.games.crm.controller.dto.domain.CardCodeDto;
+import com.dainws.games.crm.controller.dto.domain.PositionDto;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.board.Coordinate;
@@ -68,7 +68,7 @@ public class ActionMapper {
 	}
 
 	private GameCode mapGameCodeDto(String gameCodeDto) {
-		return GameCode.fromString(gameCodeDto);
+		return GameCode.from(gameCodeDto);
 	}
 	
 	private PlayerCode mapPlayerCodeDto(String playerCodeDto) {

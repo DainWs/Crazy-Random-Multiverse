@@ -1,80 +1,118 @@
 package com.dainws.games.crm.controller;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import java.util.List;
 
-import com.dainws.games.crm.controller.dto.models.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.session.SessionDestroyedEvent;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dainws.games.crm.controller.dto.ModelMapper;
+import com.dainws.games.crm.controller.dto.domain.PartyDto;
+import com.dainws.games.crm.controller.dto.domain.PartyListDto;
+import com.dainws.games.crm.controller.dto.domain.UserDto;
+import com.dainws.games.crm.controller.dto.models.CreatePartyRequest;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.domain.UserPlatform;
-import com.dainws.games.crm.domain.core.exception.NotFoundException;
-import com.dainws.games.crm.domain.translator.Translatable;
+import com.dainws.games.crm.domain.core.GameMode;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.services.UserService;
 
-@Controller
-public class WebUserController {
+@RestController
+public class WebUserController implements UserController {
+	private User userSession;
 	private UserService userService;
 
 	public WebUserController(UserService userService) {
 		this.userService = userService;
 	}
 
-	@EventListener
-	public void onUserConnect(SessionConnectEvent connectEvent) {
-		StompHeaderAccessor headers = StompHeaderAccessor.wrap(connectEvent.getMessage());
+	@Override
+	@PostMapping("/register")
+	public UserDto register() {
+		this.userService.create(this.userSession);
 
-		String sessionId = headers.getSessionId();
-		String username = "User-" + sessionId.substring(0, 5).toUpperCase();
-		if (headers.containsNativeHeader("username")) {
-			username = headers.getFirstNativeHeader("username");
-		}
-
-		User user = new User(sessionId, username, UserPlatform.WEB);
-		this.userService.create(user);
-	}
-
-	@EventListener
-	public void deleteUser(SessionDisconnectEvent disconnectEvent) {
-		UserCode userCode = UserCode.fromString(disconnectEvent.getSessionId());
-		this.userService.delete(userCode);
-	}
-
-	@MessageMapping("/user/update")
-	public void updateAccount(@Payload UserDto userDto, @Header("simpSessionId") String sessionId)
-			throws NotFoundException {
-		User user = new User(sessionId, userDto.getUsername(), UserPlatform.WEB);
-		this.userService.update(user);
-	}
-
-	@MessageMapping("/user/info")
-	@SendToUser("/topic/user/info")
-	public UserDto info(@Header("simpSessionId") String sessionId) throws NotFoundException {
-		User user = this.getUser(sessionId);
 		UserDto userDto = new UserDto();
-		userDto.setUid(sessionId);
-		userDto.setUsername(user.getName());
+		userDto.setId(this.userSession.getCode().text());
+		userDto.setUsername(this.userSession.getName());
 		return userDto;
 	}
 
-	@MessageExceptionHandler
-	@SendToUser("/topic/error")
-	public String handleException(Throwable exception) {
-		if (exception instanceof Translatable) {
-			return ((Translatable) exception).getKey().getValue();
-		}
+	@Override
+	@PostMapping("/login")
+	public UserDto login(@RequestHeader(HttpHeaders.AUTHORIZATION) String username) {
+		this.userSession.setName(username);
+		this.userService.create(this.userSession);
 
-		return exception.getMessage();
+		UserDto userDto = new UserDto();
+		userDto.setId(this.userSession.getCode().text());
+		userDto.setUsername(this.userSession.getName());
+		return userDto;
 	}
 
-	private User getUser(String sessionId) throws NotFoundException {
-		return this.userService.findUser(UserCode.fromString(sessionId));
+	@Override
+	@PutMapping("/user")
+	public void setAccount(@RequestBody UserDto userDto) {
+		UserCode specifiedCode = UserCode.from(userDto.getId()); 
+		if (this.userSession.isCode(specifiedCode)) {
+			this.userSession.setName(userDto.getUsername());
+			this.userService.update(this.userSession);
+		}
+	}
+
+	@Override
+	@GetMapping("/user")
+	public UserDto getAccount() {
+		UserDto userDto = new UserDto();
+		userDto.setId(this.userSession.getCode().text());
+		userDto.setUsername(this.userSession.getName());
+		return userDto;
+	}
+
+	@Override
+	@PostMapping("/party")
+	public PartyDto createParty(CreatePartyRequest request) throws NotAllowedException {
+		GameMode gameMode = request.getGameMode().getDomainGameMode();
+		
+		Party party = new Party(this.userSession, gameMode);
+		party.setMaxUsers(request.getMaxPlayers());
+		
+		this.userService.createParty(this.userSession, party);
+		return ModelMapper.toPartyDto(party);
+	}
+	
+	@Override
+	@PostMapping("/party/{partyCode}/join")
+	public PartyDto joinParty(@PathVariable("partyCode") String partyCodeAsString) throws NotAllowedException {
+		PartyCode partyCode = PartyCode.from(partyCodeAsString);
+		Party party = this.userService.joinParty(partyCode, this.userSession);
+		return ModelMapper.toPartyDto(party);
+	}
+	
+	@Override
+	@GetMapping("/party/list")
+	public PartyListDto getPartyList() {
+		List<Party> parties = this.userService.getParties();
+		return ModelMapper.toPartyListDto(parties);
+	}
+	
+	@EventListener
+	public void onSessionDestroyed(SessionDestroyedEvent event) {
+		UserCode userCode = UserCode.from(event.getId());
+		this.userService.delete(userCode);
+	}
+	
+	@Autowired
+	public void setUserSession(User userSession) {
+		this.userSession = userSession;
 	}
 }

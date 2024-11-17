@@ -4,14 +4,24 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class GameCode {
+	public static final GameCode NONE = new GameCode(null);
+	
 	private UUID uuid;
 
 	public GameCode() {
 		this.uuid = UUID.randomUUID();
 	}
+	
+	private GameCode(UUID uuid) {
+		this.uuid = uuid;
+	}
 
-	public String getValue() {
+	public String text() {
 		return this.uuid.toString();
+	}
+	
+	public boolean isNone() {
+		return this.equals(NONE);
 	}
 
 	@Override
@@ -34,13 +44,10 @@ public class GameCode {
 		return this.uuid.toString();
 	}
 
-	public static GameCode fromString(String uuid) {
-		if (uuid == null) {
-			throw new NullPointerException("El UUID indicado es nulo");
-		}
+	public static GameCode from(String uuidAsString) {
+		Objects.requireNonNull(uuidAsString);
 
-		GameCode gameCode = new GameCode();
-		gameCode.uuid = UUID.fromString(uuid);
-		return gameCode;
+		UUID uuid = UUID.fromString(uuidAsString);
+		return new GameCode(uuid);
 	}
 }

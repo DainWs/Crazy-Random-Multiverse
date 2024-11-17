@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.core.exception.CompositeExceptionPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
-import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
+import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
@@ -21,7 +21,7 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	}
 
 	@Override
-	public void publish(List<Player> to, GameExceptionCode exceptionCode) {
+	public void publish(List<Player> to, ExceptionCode exceptionCode) {
 		List<Player> nonAIPlayers = new ArrayList<>();
 		
 		for (Player player : to) {
@@ -36,7 +36,7 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	}
 
 	@Override
-	public void publish(Player to, GameExceptionCode exceptionCode) {
+	public void publish(Player to, ExceptionCode exceptionCode) {
 		if (this.isNotAIPlayer(to)) {
 			super.publish(to, exceptionCode);
 		} else {
@@ -48,7 +48,7 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 		return !(player instanceof AIPlayer);
 	}
 	
-	private void logAIExceptionCode(Player aiPlayer, GameExceptionCode exceptionCode) {
+	private void logAIExceptionCode(Player aiPlayer, ExceptionCode exceptionCode) {
 		this.logger.log(Level.SEVERE, "AI Exception handled: %s", exceptionCode.value());
 	}
 }

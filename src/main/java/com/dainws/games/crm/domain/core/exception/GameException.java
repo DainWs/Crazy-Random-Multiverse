@@ -4,18 +4,18 @@ public abstract class GameException extends Exception {
 
 	private static final long serialVersionUID = -2063427620165885793L;
 
-	private GameExceptionCode code;
+	private ExceptionCode code;
 	
-	protected GameException(GameExceptionCode code) {
+	protected GameException(ExceptionCode code) {
 		this.code = code;
 	}
 
-	protected GameException(GameExceptionCode code, Throwable throwable) {
+	protected GameException(ExceptionCode code, Throwable throwable) {
 		super(throwable);
 		this.code = code;
 	}
 
-	public GameExceptionCode getCode() {
+	public ExceptionCode getCode() {
 		return code;
 	}
 	

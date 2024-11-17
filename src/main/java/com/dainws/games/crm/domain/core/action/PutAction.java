@@ -9,7 +9,7 @@ import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -19,7 +19,7 @@ public class PutAction extends PlayerTurnAction {
 
 	@Override
 	protected boolean performPlayerAction(ActionContext context)
-			throws PlayerActionException, OperationNotAllowedException {
+			throws PlayerActionException, NotAllowedException {
 		this.checkContext(context);
 
 		Coordinate targetCoordinate = context.getTargetCoordinate();
@@ -32,7 +32,7 @@ public class PutAction extends PlayerTurnAction {
 	}
 
 	private void placeCombatant(Zone zone, Coordinate coordinate, Combatant combatant)
-			throws OperationNotAllowedException {
+			throws NotAllowedException {
 		if (coordinate == NEXT_EMPTY_COORDINATE) {
 			zone.addCombatant(combatant);
 			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en el tablero", combatant);

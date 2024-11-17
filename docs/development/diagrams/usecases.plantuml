@@ -15,7 +15,7 @@ actor User
 :User: --> (Create party)
 :User: --> (Join party)
 :User: --> (View party list)
-:User: --> (Change account settings)
+:User: --> (Manage account)
 
 :PartyMember: --> (View party info)
 :PartyMember: --> (Leave party)

@@ -8,7 +8,7 @@ public class UserPlayer extends Player {
 	private User user;
 	
 	public UserPlayer(User user) {
-		super(PlayerCode.from(user.getCode().getValue()), user.getName());
+		super(PlayerCode.from(user.getCode().text()), user.getName());
 		this.user = user;
 	}
 	

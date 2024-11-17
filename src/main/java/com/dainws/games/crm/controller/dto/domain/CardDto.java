@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.models;
+package com.dainws.games.crm.controller.dto.domain;
 
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;

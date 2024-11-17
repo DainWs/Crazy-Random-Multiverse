@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class PlayerStorage extends ArrayList<Player> {
 
 	private static final long serialVersionUID = -8717689704466633308L;
-
+	
 	public PlayerStorage(Collection<Player> players) {
 		super(players);
 	}

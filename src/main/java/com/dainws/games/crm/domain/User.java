@@ -1,20 +1,23 @@
 package com.dainws.games.crm.domain;
 
-import java.security.Principal;
 import java.util.Locale;
 import java.util.Objects;
 
-public class User implements Principal {
-	private UserCode userCode;
-	private UserPlatform platform;
+public class User {
 	private String name;
 	private Locale locale;
+	private UserCode userCode;
+	private UserPlatform platform;
 
 	public User(String code, String name, UserPlatform platform) {
-		this.userCode = UserCode.fromString(code);
-		this.platform = platform;
 		this.name = name;
 		this.locale = Locale.getDefault();
+		this.userCode = UserCode.from(code);
+		this.platform = platform;
+	}
+
+	public boolean isCode(UserCode code) {
+		return this.userCode.equals(code);
 	}
 
 	public boolean isPlayingFrom(UserPlatform platform) {
@@ -45,7 +48,6 @@ public class User implements Principal {
 		return locale;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}

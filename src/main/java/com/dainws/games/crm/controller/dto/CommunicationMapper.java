@@ -1,7 +1,7 @@
 package com.dainws.games.crm.controller.dto;
 
-import com.dainws.games.crm.controller.dto.models.EventDetailsDto;
-import com.dainws.games.crm.controller.dto.models.EventDto;
+import com.dainws.games.crm.controller.dto.domain.EventDetailsDto;
+import com.dainws.games.crm.controller.dto.domain.EventDto;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 

@@ -6,7 +6,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -14,7 +14,7 @@ public class MoveAction extends PlayerTurnAction {
 
 	@Override
 	protected boolean performPlayerAction(ActionContext context)
-			throws PlayerActionException, OperationNotAllowedException {
+			throws PlayerActionException, NotAllowedException {
 		this.checkContext(context);
 
 		Coordinate fromCoordinate = context.getSourceCoordinate();
