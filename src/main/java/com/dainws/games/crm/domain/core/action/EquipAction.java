@@ -20,7 +20,7 @@ public class EquipAction extends PlayerTurnAction {
 		Equipment equipment = (Equipment) context.getSourceCard();
 		combatant.equip(equipment);
 
-		this.logTrace("%s ha sido equipado en el combatiente %s", equipment, combatant);
+		this.logTrace("{0} ha sido equipado en el combatiente {1}", equipment, combatant);
 		this.notifyActionEvent(EventCode.PLAYER_EQUIP_CARD, context);
 		return true;
 	}

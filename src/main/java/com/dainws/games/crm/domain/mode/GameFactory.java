@@ -23,6 +23,7 @@ public class GameFactory {
 		this.gameModeFactories = new HashMap<>();
 
 		for (GameModeFactory gameModeFactory : factories) {
+			System.out.println(gameModeFactory.getMode());
 			this.registre(gameModeFactory);
 		}
 	}
@@ -35,7 +36,6 @@ public class GameFactory {
 
 	public Game createGame(Party party) {
 		GameMode gameMode = party.getGameMode();
-
 		if (!this.gameModeFactories.containsKey(gameMode)) {
 			throw new NotFoundException("game_mode");
 		}

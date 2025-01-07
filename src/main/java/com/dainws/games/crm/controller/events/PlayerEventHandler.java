@@ -60,7 +60,7 @@ public class PlayerEventHandler {
 		this.sendEventToEveryPlayerClient(event);
 	}
 
-	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_USE_SPELL")
+	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).PLAYER_USE_CARD")
 	public void onPlayerUseSpell(Event event) throws InterruptedException {
 		this.sendEventToEveryPlayerClient(event);
 	}

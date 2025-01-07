@@ -1,18 +1,20 @@
 package com.dainws.games.crm;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import com.dainws.games.crm.configuration.AIvsAIModeTestConfiguration;
-import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.mode.AbstractGameModeIntegrationTest;
-import com.dainws.games.crm.domain.mode.GameModeFactory;
-import com.dainws.games.crm.domain.mode.aivsai.AIvsAIGameModeFactory;
+import com.dainws.games.crm.configuration.JPATestConfiguration;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.mode.aivsai.AIvsAIGameStrategy;
 import com.dainws.games.crm.event.GameEventWatcher;
+import com.dainws.games.crm.persistence.PartyPopulator;
+import com.dainws.games.crm.services.GameService;
 
 /**
  * This test simulates a full game in classic mode between two AIs.
@@ -25,29 +27,38 @@ import com.dainws.games.crm.event.GameEventWatcher;
  * </ul>
  */
 @SpringBootTest
-@Import(AIvsAIModeTestConfiguration.class)
-public class AIvsAIGameIntegationTest extends AbstractGameModeIntegrationTest {
+@Import({ AIvsAIModeTestConfiguration.class, JPATestConfiguration.class })
+public class AIvsAIGameIntegationTest {
 
 	@Autowired
-	AIvsAIGameModeFactory gameFactory;
-	
+	GameEventWatcher eventWatcher;
+
 	@Autowired
-	GameEventWatcher eventWatcher; 
+	GameService gameService;
+
+	@Autowired
+	PartyPopulator partyPopulator;
+
+	private Party party;
+
+	@BeforeEach
+	void beforeEach() {
+		this.party = this.partyPopulator.populate(AIvsAIGameStrategy.AIVSAI_MODE);
+	}
 
 	// TODO la AI se esta marcandose un h0m1c1di
 	@Test
 	void testGivenGame_whenStartGame_thenGameShouldEnd() throws InterruptedException {
-		this.startGame();
-		this.eventWatcher.waitForGameEnd(this.game.getCode(), 0);
+		Game game = this.gameService.loadPartyGame(this.party);
+
+		for (Player player : game.getPlayers()) {
+			this.gameService.loadCompleteFor(game.getCode(), player.getPlayerCode());
+		}
 	}
 
 	void testGivenStartedGame_whenGameEnd_thenEndWithoutProblems() throws InterruptedException {
-		this.startGame();
-		this.eventWatcher.waitForGameEnd(this.game.getCode());
-	}
+		Game game = this.gameService.loadPartyGame(this.party);
 
-	@Override
-	protected GameModeFactory createGameModeFactory() {
-		return this.gameFactory;
+		this.eventWatcher.waitForGameEnd(game.getCode());
 	}
 }

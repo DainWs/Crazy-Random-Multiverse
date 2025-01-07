@@ -1,7 +1,7 @@
 package com.dainws.games.crm.domain.core.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 import com.dainws.games.crm.tools.domain.builder.GameBuilder;
@@ -45,7 +44,7 @@ class PutActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
-	void testGivenContextWithFilledCoordinate_whenPerform_thenThrowPlayerActionException() throws GameException {
+	void testGivenContextWithFilledCoordinate_whenPerform_thenDoNotPerformAction() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Warrior filledWithCard = new CardBuilder().buildFullValidWarrior();
@@ -53,7 +52,7 @@ class PutActionTest extends PlayerTurnActionTest {
 		Coordinate coordinate = actionContext.getTargetCoordinate();
 		targetZone.putCombatant(coordinate, filledWithCard);
 
-		assertThrows(PlayerActionException.class, () -> turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext));
 	}
 
 	@Override

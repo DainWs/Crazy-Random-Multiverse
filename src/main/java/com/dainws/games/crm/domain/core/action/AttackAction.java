@@ -10,13 +10,13 @@ public class AttackAction extends PlayerTurnAction {
 	protected boolean performPlayerAction(ActionContext context) {
 		Combatant sourceCombatant = this.getSourceCombatantFrom(context);
 		Combatant targetCombatant = this.getTargetCombatantFrom(context);
-		this.logTrace("El combatiente %s ataca al combatiente %s", sourceCombatant, targetCombatant);
+		this.logTrace("El combatiente {0} ataca al combatiente {1}", sourceCombatant, targetCombatant);
 
 		targetCombatant.receiveDamageFrom(sourceCombatant);
-		this.logTrace("El resultado ha sido: %s", targetCombatant);
+		this.logTrace("El resultado ha sido: {0}", targetCombatant);
 
 		if (!targetCombatant.isAlive()) {
-			this.logTrace("La carta %s ha muerto", targetCombatant.getCode());
+			this.logTrace("La carta {0} ha muerto", targetCombatant.getCode());
 			this.removeDeadTargetFromZone(context);
 		}
 

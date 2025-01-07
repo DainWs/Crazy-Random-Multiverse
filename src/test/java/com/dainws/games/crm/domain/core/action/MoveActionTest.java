@@ -2,13 +2,8 @@ package com.dainws.games.crm.domain.core.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.core.Game;
@@ -16,9 +11,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
-import com.dainws.games.crm.domain.core.exception.OperationNotAllowedException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 import com.dainws.games.crm.tools.domain.builder.GameBuilder;
@@ -29,6 +22,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 	void testGivenContext_whenPerform_thenTargetCoordinateHasCombatant() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
+		
 
 		turnAction.perform(actionContext);
 
@@ -59,8 +53,8 @@ class MoveActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
-	void testGivenContextWithFilledCoordinate_whenPerform_thenThrowPlayerActionException()
-			throws OperationNotAllowedException {
+	void testGivenContextWithFilledCoordinate_whenPerform_thenDoNotPerformAction()
+			throws NotAllowedException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Warrior filledWithCard = new CardBuilder().buildFullValidWarrior();
@@ -68,7 +62,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 		Coordinate coordinate = actionContext.getTargetCoordinate();
 		targetZone.putCombatant(coordinate, filledWithCard);
 
-		assertThrows(PlayerActionException.class, () -> turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext));
 	}
 
 	@Override
@@ -77,7 +71,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 	}
 
 	@Override
-	protected CustomActionContext createActionContext() throws OperationNotAllowedException {
+	protected CustomActionContext createActionContext() throws NotAllowedException {
 		Game game = new GameBuilder().withNRandomPlayers(5).build();
 
 		Player playerWithTurn = this.getPlayerWithTurn(game);

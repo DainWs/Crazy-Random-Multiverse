@@ -1,7 +1,5 @@
 package com.dainws.games.crm.domain.core.action;
 
-import java.lang.System.Logger.Level;
-
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
@@ -35,10 +33,10 @@ public class PutAction extends PlayerTurnAction {
 			throws NotAllowedException {
 		if (coordinate == NEXT_EMPTY_COORDINATE) {
 			zone.addCombatant(combatant);
-			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en el tablero", combatant);
+			this.logTrace("La carta {0} ha sido colocada en el tablero", combatant);
 		} else {
 			zone.putCombatant(coordinate, combatant);
-			this.logger.log(Level.TRACE, "La carta %s ha sido colocada en %s", combatant, coordinate);
+			this.logTrace("La carta {0} ha sido colocada en {1}", combatant, coordinate);
 		}
 	}
 

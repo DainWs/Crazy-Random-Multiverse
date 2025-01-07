@@ -3,13 +3,11 @@ package com.dainws.games.crm.controller.events;
 import java.util.List;
 
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.mode.GameEventDispatcher;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 
-@Component
 public class SpringGameEventDispatcher extends GameEventDispatcher {
 
 	public SpringGameEventDispatcher(List<GameModeEventDispatcher> gameModeEventDispatchers) {

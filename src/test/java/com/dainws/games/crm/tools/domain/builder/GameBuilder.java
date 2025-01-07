@@ -4,28 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.Turn;
-import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
+import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.tools.domain.core.DummyGame;
+import com.dainws.games.crm.domain.core.player.PlayerStorage;
+import com.dainws.games.crm.tools.domain.core.DummyGameStrategy;
 import com.dainws.games.crm.tools.domain.core.board.DummyZone;
 
 public class GameBuilder {
-	private ZoneFactory zoneFactory;
 	private Dealer dealer;
 	private List<Player> players;
-	private Player playerTurn;
-	private int currentTurn;
-	private int currentRound;
+	private ZoneFactory zoneFactory;
+	private EventPublisher eventPublisher;
+	private ExceptionPublisher exceptionPublisher;
 	
 	public GameBuilder() {
 		this.zoneFactory = DummyZone::new;
 		this.players = new ArrayList<>();
-		this.playerTurn = null;
-		this.currentTurn = 0;
-		this.currentRound = 0;
+
+		this.eventPublisher = EventPublisher.NONE;
+		this.exceptionPublisher = ExceptionPublisher.NONE;
 	}
 	
 	public GameBuilder withZoneFactory(ZoneFactory zoneFactory) {
@@ -84,41 +84,23 @@ public class GameBuilder {
 		return this;
 	}
 	
-	public GameBuilder withRound(int round) {
-		this.currentRound = round;
+	public GameBuilder withEventPublisher(EventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 		return this;
 	}
 	
-	public GameBuilder withTurn(int turn) {
-		this.currentTurn = turn;
-		return this;
-	}
-	
-	public GameBuilder withTurn(Player playerTurn) {
-		this.playerTurn = playerTurn;
+	public GameBuilder withExceptionPublisher(ExceptionPublisher exceptionPublisher) {
+		this.exceptionPublisher = exceptionPublisher;
 		return this;
 	}
 	
 	public Game build() {
-		Board board = new Board(this.zoneFactory, this.players);
-		DummyGame game = new DummyGame(this.dealer, this.players);
-		game.setTurn(new Turn(this.currentTurn, this.currentRound));
-		game.setBoard(board);
-
-		if (this.playerTurn != null) {
-			game.setTurn(this.getPlayerTurnIndex());
-		}
-
-		return game;
-	}
-	
-	private Turn getPlayerTurnIndex() {
-		int playerTurnIndex = this.players.indexOf(this.playerTurn);
-		
-		if (playerTurnIndex == -1) {
-			throw new IllegalArgumentException("Player with turn does not exist among the players");
-		}
-		
-		return new Turn(this.players, this.playerTurn, playerTurnIndex);
+		DummyGameStrategy strategy = new DummyGameStrategy();
+		strategy.setDealer(this.dealer);
+		strategy.setZoneFactory(this.zoneFactory);
+		strategy.setPlayers(new PlayerStorage(this.players));
+		strategy.setEventPublisher(this.eventPublisher);
+		strategy.setExceptionPublisher(this.exceptionPublisher);
+		return new Game(strategy);
 	}
 }

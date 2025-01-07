@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class PlayerStorage extends ArrayList<Player> {
 
@@ -76,15 +75,5 @@ public class PlayerStorage extends ArrayList<Player> {
 		if (!this.contains(element)) {
 			super.add(index, element);
 		}
-	}
-	
-	public List<Player> toList() {
-		return this.toList(Player.class);
-	}
-
-	public <T extends Player> List<T> toList(Class<T> clazz) {
-		return Stream.of(this)
-				.map(player -> clazz.cast(player))
-				.toList();
 	}
 }

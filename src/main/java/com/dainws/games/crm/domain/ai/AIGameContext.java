@@ -57,12 +57,12 @@ public class AIGameContext implements AIContext {
 
 	@Override
 	public Player getPlayer(PlayerCode code) {
-		return this.getPlayer(code);
+		return this.game.getPlayer(code);
 	}
 
 	@Override
 	public PlayerStorage getAlivePlayers() {
-		return this.getAlivePlayers();
+		return this.game.getAlivePlayers();
 	}
 	
 	@Override

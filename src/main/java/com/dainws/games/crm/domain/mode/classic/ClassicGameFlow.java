@@ -44,6 +44,7 @@ public class ClassicGameFlow implements GameFlow {
 
 	@Override
 	public void onNextTurn(Game game) {
+		System.out.println(game.isRunning());
 		if (game.isRunning()) {
 			this.turnManager.nextTurn(game);
 

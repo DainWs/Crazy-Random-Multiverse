@@ -7,25 +7,25 @@ import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.ai.Behavior;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.tools.domain.GameStageTest;
+import com.dainws.games.crm.tools.domain.GameBehaviorTest;
 import com.dainws.games.crm.tools.domain.builder.AIPlayerBuilder;
+import com.dainws.games.crm.tools.domain.core.action.ActionMonitor;
 
-public abstract class AIGameStageTest extends GameStageTest {
+public abstract class AIGameBehaviorTest extends GameBehaviorTest {
 
 	private final int countOfNonAIPlayers;
-	protected final PlayerActionExecutorMonitor actionExecutorMonitor;
+	protected ActionMonitor actionMonitor;
 	protected List<Player> nonAIPlayers;
 	protected AIPlayer aiPlayer;
 
-	protected AIGameStageTest() {
+	protected AIGameBehaviorTest() {
 		this(1);
 	}
 	
-	protected AIGameStageTest(int countOfNonAIPlayers) {
+	protected AIGameBehaviorTest(int countOfNonAIPlayers) {
 		super(countOfNonAIPlayers + 1);
 		this.nonAIPlayers = new ArrayList<>();
 		this.countOfNonAIPlayers = countOfNonAIPlayers;
-		this.actionExecutorMonitor = new PlayerActionExecutorMonitor();
 	}
 
 	protected final Player createPlayer() {
@@ -35,7 +35,9 @@ public abstract class AIGameStageTest extends GameStageTest {
 			return player;
 		}
 
-		Behavior behavior = this.createBehavior();
+		BehaviorMonitor behavior = new BehaviorMonitor();
+		this.actionMonitor = behavior;
+		this.prepareBehavior(behavior);
 		AIPlayer aiPlayer = this.createAIPlayer(behavior);
 		this.aiPlayer = aiPlayer;
 		return aiPlayer;
@@ -49,9 +51,7 @@ public abstract class AIGameStageTest extends GameStageTest {
 		return AIPlayerBuilder.customAIPlayer(behavior); 
 	}
 
-	protected Behavior createBehavior() {
-		return new Behavior();
-	}
+	protected void prepareBehavior(Behavior behavior) {}
 	
 	@Override
 	protected void prepareGame(Game game) {

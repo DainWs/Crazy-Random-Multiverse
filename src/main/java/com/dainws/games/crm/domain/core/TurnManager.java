@@ -7,13 +7,16 @@ public class TurnManager {
 
 	public void nextTurn(Game game) {
 		Turn nextTurn = this.getNextTurn(game);
+		System.out.println(nextTurn.getTurnNumber());
 		this.changeTurn(game, nextTurn);
 	}
 
 	private Turn getNextTurn(Game game) {
 		int turnNumber = game.getTurnNumber();
+		System.out.println(turnNumber);
 		int roundNumber = game.getRoundNumber();
 
+		System.out.println("alived " + game.countAlivePlayers());
 		if (game.countAlivePlayers() > 1) {
 			return this.getNextTurn(game, turnNumber, roundNumber);
 		}
@@ -25,12 +28,14 @@ public class TurnManager {
 		int nextTurn = currentTurn + 1;
 		int nextRound = currentRound;
 
+		System.out.println(nextTurn);
 		if (nextTurn >= game.countPlayers()) {
 			nextTurn = 0;
 			nextRound++;
 		}
 
 		Player player = game.getPlayers().get(nextTurn);
+		System.out.println(player.isDeath());
 		if (player.isDeath()) {
 			return this.getNextTurn(game, nextTurn, nextRound);
 		}
@@ -70,19 +75,19 @@ public class TurnManager {
 
 		return new Turn(prevTurn, prevRound);
 	}
-	
+
 	private void changeTurn(Game game, Turn newTurn) {
 		Turn oldTurn = game.getTurn();
+		if (!oldTurn.equals(newTurn)) {
+			game.setTurn(newTurn);
+		}
+
 		if (!oldTurn.isTurnEquals(newTurn)) {
 			game.publishEvent(EventCode.TURN_CHANGE);
 		}
 
 		if (!oldTurn.isRoundEquals(newTurn)) {
 			game.publishEvent(EventCode.ROUND_CHANGE);
-		}
-
-		if (!oldTurn.equals(newTurn)) {
-			game.setTurn(newTurn);
 		}
 	}
 }

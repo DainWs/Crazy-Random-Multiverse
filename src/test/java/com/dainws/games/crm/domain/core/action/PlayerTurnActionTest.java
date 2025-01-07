@@ -1,7 +1,7 @@
 package com.dainws.games.crm.domain.core.action;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,6 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.exception.GameException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionTurnRequiredException;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public abstract class PlayerTurnActionTest implements ActionTest {
@@ -23,17 +22,17 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 				
-		assertDoesNotThrow(() -> turnAction.perform(actionContext));
+		assertTrue(turnAction.perform(actionContext));
 	}
 	
 	@Test
-	void testGivenPlayerWithoutTurn_whenPerform_thenThrowActionAllowedOnTurnException() throws GameException {
+	void testGivenPlayerWithoutTurn_whenPerform_thenActionIsNotPerformed() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 		Player playerWithoutTurn = this.getPlayerWithoutTurn(actionContext);
 		actionContext.setSourcePlayer(playerWithoutTurn);
 		
-		assertThrows(PlayerActionTurnRequiredException.class, () -> turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext));
 	}
 	
 	@Test
@@ -43,7 +42,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		Player playerWithTurn = this.getPlayerWithTurn(actionContext);
 		actionContext.setSourcePlayer(playerWithTurn);
 
-		assertDoesNotThrow(() -> turnAction.perform(actionContext));
+		assertTrue(turnAction.perform(actionContext));
 	}
 	
 	protected abstract CustomActionContext createActionContext() throws GameException;

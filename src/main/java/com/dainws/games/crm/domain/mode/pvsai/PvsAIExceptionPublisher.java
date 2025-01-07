@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.dainws.games.crm.domain.ai.AIPlayer;
-import com.dainws.games.crm.domain.core.exception.CompositeExceptionPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
+import com.dainws.games.crm.domain.core.exception.CompositeExceptionPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 

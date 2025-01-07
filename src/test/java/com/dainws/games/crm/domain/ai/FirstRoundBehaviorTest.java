@@ -11,10 +11,10 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.tools.domain.ai.AIGameStageTest;
+import com.dainws.games.crm.tools.domain.ai.AIGameBehaviorTest;
 
 @DisplayName("Behavior - First round tests")
-public class FirstRoundBehaviorTest extends AIGameStageTest {
+public class FirstRoundBehaviorTest extends AIGameBehaviorTest {
 	
 	public FirstRoundBehaviorTest() {
 		super();
@@ -22,20 +22,20 @@ public class FirstRoundBehaviorTest extends AIGameStageTest {
 
 	@Override
 	protected void beforeEach() {
-	}
+	} // TODO fix tests
 
 	@Test
 	void testGivenFirstRound_whenAIPerformBehavior_thenShouldPutCard() {
 		this.aiPlayer.performBehavior(this.game);
 		
-		assertTrue(this.actionExecutorMonitor.wasActionExecuted(PutAction.class));
+		assertTrue(this.actionMonitor.wasActionExecuted(PutAction.class));
 	}
 	
 	@Test
 	void testGivenFirstRound_whenAIPerformBehavior_thenPutLeaderCard() {
 		this.aiPlayer.performBehavior(this.game);
 
-		ActionContext context = this.actionExecutorMonitor.getExecutedActionContexts().get(0);
+		ActionContext context = this.actionMonitor.getExecutedActionContext(0);
 		Card targetCard = context.getTargetCard();
 		assertTrue(targetCard.isType(CardType.LEADER));
 	}
@@ -46,7 +46,7 @@ public class FirstRoundBehaviorTest extends AIGameStageTest {
 
 		Board board = this.game.getBoard();
 		Zone zone = board.getZoneOf(this.aiPlayer);
-		ActionContext context = this.actionExecutorMonitor.getExecutedActionContexts().get(0);
+		ActionContext context = this.actionMonitor.getExecutedActionContext(0);
 		assertTrue(zone.hasCombatant(context.getTargetCoordinate()));
 	}
 	
@@ -56,7 +56,7 @@ public class FirstRoundBehaviorTest extends AIGameStageTest {
 
 		Board board = this.game.getBoard();
 		Zone zone = board.getZoneOf(this.aiPlayer);
-		ActionContext context = this.actionExecutorMonitor.getExecutedActionContexts().get(0);
+		ActionContext context = this.actionMonitor.getExecutedActionContext(0);
 		Card card = zone.getCombatant(context.getTargetCoordinate());
 		assertTrue(card.isType(CardType.LEADER));
 	}

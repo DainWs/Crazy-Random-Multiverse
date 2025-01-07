@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public record GameMode(String text) {
 	
+	public static final GameMode NONE = new GameMode("");
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || this.getClass() != obj.getClass()) {

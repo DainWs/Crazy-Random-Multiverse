@@ -1,12 +1,14 @@
 package com.dainws.games.crm.controller.events;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 
+@Component
 public class SpringEventPublisher implements EventPublisher {
 
 	private ApplicationEventPublisher applicationEventPublisher;

@@ -10,13 +10,16 @@ import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.AttackAction;
 import com.dainws.games.crm.domain.core.action.PutAction;
+import com.dainws.games.crm.domain.log.Logger;
 
 public class ScoreBasedDecisionEngine implements DecisionEngine {
 	private static final int DEFAULT_SCORE = 10;
 
+	private Logger logger;
 	private Map<Class<? extends Action>, Score> relation;
 
 	public ScoreBasedDecisionEngine() {
+		this.logger = Logger.getLogger(getClass());
 		this.relation = new HashMap<>();
 		this.relation.put(PutAction.class, Score.of(1000));
 		this.relation.put(AttackAction.class, Score.of(500));
@@ -28,6 +31,7 @@ public class ScoreBasedDecisionEngine implements DecisionEngine {
 
 	@Override
 	public AIAction decideBestAction(List<Goal> goals, List<AIAction> actions) {
+		this.logger.debug("Deciding best action for current goals in a score based way");
 		AIAction topAction = DecisionEngine.PASSTURN_ACTION;
 		Score topScore = new Score();
 
@@ -44,6 +48,7 @@ public class ScoreBasedDecisionEngine implements DecisionEngine {
 			}
 		}
 
+		this.logger.debug("The best action for current goals is {0}", topAction);
 		return topAction;
 	}
 

@@ -9,11 +9,6 @@ public class AIAction {
 	private ActionContext context;
 	private AIActionTemplate template;
 
-	public AIAction(Action action, ActionContext context) {
-		this.action = action;
-		this.context = context;
-	}
-
 	public AIAction(Action action, ActionContext context, AIActionTemplate template) {
 		this.action = action;
 		this.context = context;
@@ -27,9 +22,9 @@ public class AIAction {
 	public boolean alignedWith(Goal goal) {
 		return this.template.alignedWith(goal);
 	}
-
-	public boolean perform() {
-		return this.action.perform(this.context);
+	
+	public boolean canBePerformed() {
+		return this.template.canPerformWith(this.context);
 	}
 
 	public Action getAction() {

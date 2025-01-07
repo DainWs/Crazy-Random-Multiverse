@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.core.player.Player;
 
-class NoneExceptionPublisher implements ExceptionPublisher {
+public class NoneExceptionPublisher implements ExceptionPublisher {
 
-	NoneExceptionPublisher() {
+	public NoneExceptionPublisher() {
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package com.dainws.games.crm.domain.core.action;
 
-import java.lang.System.Logger.Level;
-
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
@@ -26,7 +24,7 @@ public class MoveAction extends PlayerTurnAction {
 		sourceZone.removeCombatant(fromCoordinate);
 		targetZone.putCombatant(toCoordinate, combatant);
 
-		this.logger.log(Level.TRACE, "%s ha sido movido desde %s a %s", combatant, fromCoordinate, toCoordinate);
+		this.logTrace("{0} ha sido movido desde {1} a {2}", combatant, fromCoordinate, toCoordinate);
 		this.notifyActionEvent(EventCode.PLAYER_MOVE_CARD, context);
 		return true;
 	}

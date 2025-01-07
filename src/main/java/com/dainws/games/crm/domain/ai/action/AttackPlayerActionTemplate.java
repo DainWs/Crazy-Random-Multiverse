@@ -28,6 +28,6 @@ public class AttackPlayerActionTemplate extends AggressiveActionTemplate {
 
 	@Override
 	public AIAction createAction(ActionContext actionContext) {
-		return new AIAction(new AttackAction(), actionContext);
+		return new AIAction(new AttackAction(), actionContext, this);
 	}
 }

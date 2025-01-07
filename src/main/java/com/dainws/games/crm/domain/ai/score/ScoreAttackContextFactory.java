@@ -17,6 +17,10 @@ class ScoreAttackContextFactory extends ActionContextFactory {
 
 		PlayerZoneScoreCalculator calculator = new PlayerZoneScoreCalculator();
 		calculator.enableEnemyPriority();
+		
+		if (players.size() == 1) {
+			return players.get(0);
+		}
 
 		Player playerWithHighestScore = null;
 		Score highestScore = new Score();
@@ -28,7 +32,7 @@ class ScoreAttackContextFactory extends ActionContextFactory {
 				highestScore = score;
 			}
 		}
-		
+
 		return playerWithHighestScore;
 	}
 

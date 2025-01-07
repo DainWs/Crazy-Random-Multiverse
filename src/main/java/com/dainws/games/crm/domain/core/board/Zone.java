@@ -163,7 +163,6 @@ public abstract class Zone {
 			throw new NotAllowedException("zone.row.already_filled");
 		}
 
-		System.out.println("Selected " + rowIndex + " col: " + columnIndex);
 		this.combatants[rowIndex][columnIndex] = combatant;
 	}
 

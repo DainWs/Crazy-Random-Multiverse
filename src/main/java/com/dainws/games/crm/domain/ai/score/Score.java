@@ -71,7 +71,7 @@ public final class Score implements Comparable<Score> {
 
 	@Override
 	public int compareTo(Score that) {
-		return that.value - this.value;
+		return this.value - that.value;
 	}
 
 	@Override

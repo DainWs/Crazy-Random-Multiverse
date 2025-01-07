@@ -21,7 +21,7 @@ public class GameCode {
 	}
 	
 	public boolean isNone() {
-		return this.equals(NONE);
+		return this.uuid == null;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class GameCode {
 		}
 
 		GameCode that = (GameCode) obj;
-		return this.uuid.equals(that.uuid);
+		return this.uuid != null && this.uuid.equals(that.uuid);
 	}
 
 	@Override

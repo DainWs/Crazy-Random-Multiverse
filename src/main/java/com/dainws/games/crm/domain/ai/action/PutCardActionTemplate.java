@@ -45,6 +45,6 @@ public class PutCardActionTemplate extends NeutralActionTemplate {
 
 	@Override
 	public AIAction createAction(ActionContext actionContext) {
-		return new AIAction(new PutAction(), actionContext);
+		return new AIAction(new PutAction(), actionContext, this);
 	}
 }

@@ -81,13 +81,13 @@ public class GameEventWatcher implements ApplicationListener<PayloadApplicationE
 	}
 
 	private Object registreStartEvent(GameCode gameCode) {
-		Object lock = new Object();
+		String lock = "start-"+gameCode;
 		this.startEventMap.put(gameCode, lock);
 		return lock;
 	}
 
 	private Object registreEndEvent(GameCode gameCode) {
-		Object lock = new Object();
+		String lock = "end-"+gameCode;
 		this.endEventMap.put(gameCode, lock);
 		return lock;
 	}
@@ -95,7 +95,7 @@ public class GameEventWatcher implements ApplicationListener<PayloadApplicationE
 	private Object registreSpecific(GameCode gameCode, EventCode eventCode) {
 		Map<GameCode, Object> games = this.map.get(eventCode);
 		if (!games.containsKey(gameCode)) {
-			games.put(gameCode, new Object());
+			games.put(gameCode, eventCode+"-"+gameCode);
 		}
 		return games.get(gameCode);
 	}
@@ -116,6 +116,10 @@ public class GameEventWatcher implements ApplicationListener<PayloadApplicationE
 			return this.grabInStartEvent(gameCode);
 		}
 
+		if (eventCode.equals(EventCode.GAME_END)) {
+			return this.grabInEndEvent(gameCode);
+		}
+
 		if (eventCode.equals(EventCode.GAME_END_WITH_WINNER)) {
 			return this.grabInEndEvent(gameCode);
 		}
@@ -128,20 +132,20 @@ public class GameEventWatcher implements ApplicationListener<PayloadApplicationE
 	}
 
 	private Object grabInStartEvent(GameCode gameCode) {
-		Object lock = this.startEventMap.getOrDefault(gameCode, new Object());
+		Object lock = this.startEventMap.getOrDefault(gameCode, "start-"+gameCode);
 		this.startEventMap.remove(gameCode);
 		return lock;
 	}
 
 	private Object grabInEndEvent(GameCode gameCode) {
-		Object lock = this.endEventMap.getOrDefault(gameCode, new Object());
+		Object lock = this.endEventMap.getOrDefault(gameCode, "end-"+gameCode);
 		this.endEventMap.remove(gameCode);
 		return lock;
 	}
 
 	private Object grabInSpecific(GameCode gameCode, EventCode eventCode) {
 		Map<GameCode, Object> games = this.map.get(eventCode);
-		Object lock = games.getOrDefault(gameCode, new Object());
+		Object lock = games.getOrDefault(gameCode, eventCode+"-"+gameCode);
 		games.remove(gameCode);
 		return lock;
 	}

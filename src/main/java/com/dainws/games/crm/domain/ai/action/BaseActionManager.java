@@ -13,19 +13,27 @@ import com.dainws.games.crm.domain.core.player.Player;
 
 public abstract class BaseActionManager extends AbstractActionManager {
 
+	protected BaseActionManager() {
+		super();
+	}
+	
 	@Override
 	protected final List<AIActionTemplate> defineActionTemplates(AIContext context) {
+		this.logger.trace("Defining actions for behavior");
 		List<AIActionTemplate> actionTemplates = new ArrayList<>();
 
 		if (this.shouldDefineNeutralActions(context)) {
+			this.logger.trace("Defining neutral actions for behavior");
 			actionTemplates.addAll(this.defineNeutralActions(context));
 		}
 
 		if (this.shouldDefineDefensiveActions(context)) {
+			this.logger.trace("Defining defensive actions for behavior");
 			actionTemplates.addAll(this.defineDefensiveActions(context));
 		}
 
 		if (this.shouldDefineAggressiveActions(context)) {
+			this.logger.trace("Defining aggressive actions for behavior");
 			actionTemplates.addAll(this.defineAggressiveActions(context));
 		}
 
@@ -40,7 +48,19 @@ public abstract class BaseActionManager extends AbstractActionManager {
 
 		Player me = context.getMeAsPlayer();
 		Predicate<Player> itsNotMe = Predicate.not(me::equals);
-		return context.getAlivePlayers().anyMatch(itsNotMe);
+		List<Player> alivePlayers = context.getAlivePlayers().filter(itsNotMe); 
+		if (alivePlayers.isEmpty()) {
+			return false;
+		}
+		
+		boolean canBeAggressive = false;
+		for (Player player : alivePlayers) {
+			Zone playerZone = context.getPlayerZone(player);
+			if (playerZone.hasCombatants()) {
+				canBeAggressive = true;
+			}
+		}
+		return canBeAggressive;
 	}
 
 	protected List<AIActionTemplate> defineAggressiveActions(AIContext context) {
