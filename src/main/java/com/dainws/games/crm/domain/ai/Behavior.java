@@ -23,6 +23,7 @@ public class Behavior {
 
 	void performBehavior(AIContext context) {
 		this.logger.debug("Performing AI behavior");
+		this.logger.debug("[AI behavior] I am {0}", context.getMeAsPlayer().getName());
 		
 		AIAction bestAction;
 		boolean actionWasSuccess;

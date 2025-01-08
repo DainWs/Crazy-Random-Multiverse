@@ -9,7 +9,6 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
-import com.dainws.games.crm.domain.log.ConsoleLogger;
 import com.dainws.games.crm.domain.log.Logger;
 
 public class ClassicGameFlow implements GameFlow {
@@ -18,7 +17,7 @@ public class ClassicGameFlow implements GameFlow {
 	private TurnManager turnManager;
 
 	public ClassicGameFlow() {
-		this.logger = new ConsoleLogger(getClass());
+		this.logger = Logger.getLogger(getClass());
 		this.turnManager = new TurnManager();
 	}
 

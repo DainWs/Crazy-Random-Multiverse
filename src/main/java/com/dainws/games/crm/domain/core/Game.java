@@ -123,7 +123,7 @@ public class Game {
 		return this.players.filter(Player::isAlive);
 	}
 
-	public List<Player> getDeathPlayers() {
+	public PlayerStorage getDeathPlayers() {
 		return this.players.filter(Player::isDeath);
 	}
 

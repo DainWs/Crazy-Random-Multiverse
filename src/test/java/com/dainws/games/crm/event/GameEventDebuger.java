@@ -13,11 +13,14 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
 @Component
 @ActiveProfiles({ "debug" })
 public class GameEventDebuger implements ApplicationListener<PayloadApplicationEvent<Event>> {
 
+	private StringBuilder textBuilder;
+	
 	@Override
 	public void onApplicationEvent(PayloadApplicationEvent<Event> payloadEvent) {
 		Event event = payloadEvent.getPayload();
@@ -47,65 +50,88 @@ public class GameEventDebuger implements ApplicationListener<PayloadApplicationE
 		return false;
 	}
 
-	private void debugGame(EventCode code, Game game) {
-		System.out.println("-".repeat(100));
-		System.out.println("Event code: " + code);
-		System.out.println("CardsGame code: " + game.getCode());
-		System.out.println("CardsGame mode: " + game.getMode());
-		System.out.println("CardsGame turn: " + game.getTurn());
-		System.out.println("CardsGame alive players: " + game.getAlivePlayers().size());
-		for (Player player : game.getAlivePlayers()) {
-			System.out.println("|_ ");
-			System.out.println("||-" + player.getName());
-			this.debugPlayer(player, game.getBoard().getZoneOf(player));
+	private synchronized void debugGame(EventCode code, Game game) {
+		this.textBuilder = new StringBuilder();
+
+		synchronized (game) {
+			this.textBuilder.append("-".repeat(100)).append("\n");
+			this.textBuilder.append("Event code: " + code).append("\n");
+			this.textBuilder.append("CardsGame code: " + game.getCode()).append("\n");
+			this.textBuilder.append("CardsGame mode: " + game.getMode()).append("\n");
+			this.textBuilder.append("CardsGame turn: " + game.getTurn()).append("\n");
+			this.debugAlivePlayers(game, game.getAlivePlayers());
+			this.debugDeathPlayers(game, game.getDeathPlayers());
 		}
-		System.out.println("CardsGame death players: " + game.getDeathPlayers().size());
-		for (Player player : game.getDeathPlayers()) {
-			System.out.println(" - " + player.getName());
-			this.debugPlayer(player, game.getBoard().getZoneOf(player));
+		
+		System.out.println(this.textBuilder.toString());
+	}
+	
+	private void debugAlivePlayers(Game game, PlayerStorage alivePlayers) {
+		synchronized (alivePlayers) {
+			this.textBuilder.append("CardsGame alive players: " + game.getAlivePlayers().size()).append("\n");
+			for (Player player : game.getAlivePlayers()) {
+				this.textBuilder.append("|_ \n");
+				this.textBuilder.append("||-" + player.getName()).append("\n");
+				this.debugPlayer(player, game.getBoard().getZoneOf(player));
+			}			
+		}
+	}
+	
+	private void debugDeathPlayers(Game game, PlayerStorage deathPlayers) {
+		synchronized (deathPlayers) {
+			this.textBuilder.append("CardsGame death players: " + game.getDeathPlayers().size()).append("\n");
+			for (Player player : game.getDeathPlayers()) {
+				this.textBuilder.append(" - " + player.getName()).append("\n");
+				this.debugPlayer(player, game.getBoard().getZoneOf(player));
+			}		
 		}
 	}
 	
 	private void debugPlayer(Player player, Zone zone) {
-		System.out.println("||-Hand");
-		Hand hand = player.getHand();
-		for (Card card : hand.getCards()) {
-			System.out.println("|||-"+card);
+		synchronized (player) {
+			this.textBuilder.append("||-Hand\n");
+			Hand hand = player.getHand();
+			for (Card card : hand.getCards()) {
+				this.textBuilder.append("|||-"+card).append("\n");
+			}
 		}
-		System.out.println("||-Zone");
-		System.out.println("|||- Health: " + zone.getZoneHealth());
-		System.out.println("|||- Capacity: " + zone.getCapacity());
-		this.debugZoneCoordinates(zone);
-		this.debugZoneCombatants(zone);
+		
+		synchronized (zone) {
+			this.textBuilder.append("||-Zone\n");
+			this.textBuilder.append("|||- Health: " + zone.getZoneHealth()).append("\n");
+			this.textBuilder.append("|||- Capacity: " + zone.getCapacity()).append("\n");
+			this.debugZoneCoordinates(zone);
+			this.debugZoneCombatants(zone);
+		}
 	}
 	
 	private void debugZoneCoordinates(Zone zone) {
 		int maxHorizontalDimension = zone.getMaxHorizontalDimension();
 		
-		System.out.println("|||- Graph:");
+		this.textBuilder.append("|||- Graph:\n");
 		for (int rowIndex = zone.getVerticalDimension() - 1; rowIndex >= 0; rowIndex--) {
 			int horizontalSize = zone.getHorizontalDimension(rowIndex);
 			int spaceCount = (int)((maxHorizontalDimension - horizontalSize)/2) * 3;
-			System.out.print("|||  " + " ".repeat(spaceCount));
+			this.textBuilder.append("|||  " + " ".repeat(spaceCount));
 			for (int columnIndex = zone.getHorizontalDimension(rowIndex) - 1; columnIndex >= 0; columnIndex--) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
 				if (zone.hasCombatant(coordinate)) {
-					System.out.print("[+]");
+					this.textBuilder.append("[+]");
 				} else {
-					System.out.print("[ ]");
+					this.textBuilder.append("[ ]");
 				}
 			}
-			System.out.println();		
+			this.textBuilder.append("\n");		
 		}
 	}
 	
 	private void debugZoneCombatants(Zone zone) {
-		System.out.println("|||- Combatants:");
+		this.textBuilder.append("|||- Combatants:\n");
 		for (int rowIndex = zone.getVerticalDimension() - 1; rowIndex >= 0; rowIndex--) {
 			for (int columnIndex = zone.getHorizontalDimension(rowIndex) - 1; columnIndex >= 0; columnIndex--) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
 				if (zone.hasCombatant(coordinate)) {
-					System.out.println("|||  "+coordinate+zone.getCombatant(coordinate));
+					this.textBuilder.append("|||  "+coordinate+zone.getCombatant(coordinate)).append("\n");
 				}
 			}		
 		}

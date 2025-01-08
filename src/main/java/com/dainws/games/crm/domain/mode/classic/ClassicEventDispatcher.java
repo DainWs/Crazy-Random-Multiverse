@@ -9,6 +9,8 @@ import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.log.ConsoleLogger;
+import com.dainws.games.crm.domain.log.Logger;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 
 public class ClassicEventDispatcher implements GameModeEventDispatcher {
@@ -16,6 +18,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	private static final Consumer<Event> NONE = (event) -> {
 	};
 
+	private Logger logger;
 	private GameFlow gameFlow;
 
 	private Map<EventCode, Consumer<Event>> eventConsumers;
@@ -25,6 +28,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	}
 
 	public ClassicEventDispatcher(GameFlow gameFlow) {
+		this.logger = Logger.getLogger(getClass());
 		this.gameFlow = gameFlow;
 		this.eventConsumers = new EnumMap<>(EventCode.class);
 		this.eventConsumers.put(EventCode.GAME_CREATED, NONE);
@@ -57,16 +61,19 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 
 	private void handleGameRestart(Event event) {
 		Game game = this.getGameFromEvent(event);
+		this.logger.debug("Game {0} is being restarted", game.getCode());
 		this.gameFlow.onRestartGame(game);
 	}
 
 	private void handleGameStart(Event event) {
 		Game game = this.getGameFromEvent(event);
+		this.logger.debug("Game {0} has started", game.getCode());
 		this.gameFlow.onStartGame(game);
 	}
 
 	private void handleGameEnd(Event event) {
 		Game game = this.getGameFromEvent(event);
+		this.logger.debug("Game {0} has ended", game.getCode());
 		this.gameFlow.onEndGame(game);
 	}
 
