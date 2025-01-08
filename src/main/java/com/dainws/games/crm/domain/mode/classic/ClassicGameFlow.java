@@ -9,12 +9,16 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
+import com.dainws.games.crm.domain.log.ConsoleLogger;
+import com.dainws.games.crm.domain.log.Logger;
 
 public class ClassicGameFlow implements GameFlow {
 
+	private Logger logger;
 	private TurnManager turnManager;
 
 	public ClassicGameFlow() {
+		this.logger = new ConsoleLogger(getClass());
 		this.turnManager = new TurnManager();
 	}
 
@@ -24,6 +28,7 @@ public class ClassicGameFlow implements GameFlow {
 
 	@Override
 	public void onStartGame(Game game) {
+		this.logger.debug("Dealing cards to player with turn");
 		Dealer dealer = game.getDealer();
 		dealer.dealCardsToPlayer(game, game.getPlayerWithTurn());
 	}
@@ -44,10 +49,10 @@ public class ClassicGameFlow implements GameFlow {
 
 	@Override
 	public void onNextTurn(Game game) {
-		System.out.println(game.isRunning());
 		if (game.isRunning()) {
 			this.turnManager.nextTurn(game);
 
+			this.logger.debug("Dealing cards to player with turn");
 			Dealer dealer = game.getDealer();
 			dealer.dealCardsToPlayer(game, game.getPlayerWithTurn());
 		}

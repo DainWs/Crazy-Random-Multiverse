@@ -1,7 +1,4 @@
-package com.dainws.games.crm.tools.domain.core.action;
-
-import com.dainws.games.crm.domain.core.action.Action;
-import com.dainws.games.crm.domain.core.action.ActionContext;
+package com.dainws.games.crm.domain.core.action;
 
 public class MonitoredAction implements Action {
 
@@ -11,7 +8,6 @@ public class MonitoredAction implements Action {
 	public MonitoredAction(MonitoredActionNotifier actionNotifier, Action action) {
 		this.action = action;
 		this.actionNotifier = actionNotifier;
-		System.out.println(action.getClass());
 	}
 	
 	@Override

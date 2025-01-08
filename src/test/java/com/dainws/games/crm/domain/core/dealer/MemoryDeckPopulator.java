@@ -1,4 +1,4 @@
-package com.dainws.games.crm.tools.domain.core.dealer;
+package com.dainws.games.crm.domain.core.dealer;
 
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
@@ -6,7 +6,6 @@ import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Spell;
 import com.dainws.games.crm.domain.core.card.Warrior;
-import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 

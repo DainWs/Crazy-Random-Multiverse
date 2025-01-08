@@ -1,14 +1,12 @@
-package com.dainws.games.crm.tools.domain.ai;
+package com.dainws.games.crm.domain.ai;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import com.dainws.games.crm.domain.ai.ActionManager;
-import com.dainws.games.crm.domain.ai.Behavior;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
-import com.dainws.games.crm.tools.domain.core.action.ActionMonitor;
-import com.dainws.games.crm.tools.domain.core.action.MonitoredActionNotifier;
+import com.dainws.games.crm.domain.core.action.ActionMonitor;
+import com.dainws.games.crm.domain.core.action.MonitoredActionNotifier;
 
 public class BehaviorMonitor extends Behavior implements ActionMonitor, MonitoredActionNotifier {
 

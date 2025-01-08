@@ -1,14 +1,11 @@
-package com.dainws.games.crm.tools.domain.ai;
+package com.dainws.games.crm.domain.ai;
 
 import java.util.List;
 
-import com.dainws.games.crm.domain.ai.AIAction;
-import com.dainws.games.crm.domain.ai.AIContext;
-import com.dainws.games.crm.domain.ai.ActionManager;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
-import com.dainws.games.crm.tools.domain.core.action.MonitoredAction;
-import com.dainws.games.crm.tools.domain.core.action.MonitoredActionNotifier;
+import com.dainws.games.crm.domain.core.action.MonitoredAction;
+import com.dainws.games.crm.domain.core.action.MonitoredActionNotifier;
 
 public class MonitoredActionManager implements ActionManager {
 	private ActionManager wrapper;

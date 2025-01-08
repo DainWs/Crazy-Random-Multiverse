@@ -1,5 +1,9 @@
 package com.dainws.games.crm;
 
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,19 +50,19 @@ public class AIvsAIGameIntegationTest {
 		this.party = this.partyPopulator.populate(AIvsAIGameStrategy.AIVSAI_MODE);
 	}
 
-	// TODO la AI se esta marcandose un h0m1c1di
 	@Test
 	void testGivenGame_whenStartGame_thenGameShouldEnd() throws InterruptedException {
+		assertTimeoutPreemptively(Duration.ofSeconds(10), this::playGame);
+	}
+	
+	private void playGame() throws InterruptedException {
 		Game game = this.gameService.loadPartyGame(this.party);
-
+		System.out.println(game.getMode());
 		for (Player player : game.getPlayers()) {
 			this.gameService.loadCompleteFor(game.getCode(), player.getPlayerCode());
 		}
-	}
-
-	void testGivenStartedGame_whenGameEnd_thenEndWithoutProblems() throws InterruptedException {
-		Game game = this.gameService.loadPartyGame(this.party);
-
+		
 		this.eventWatcher.waitForGameEnd(game.getCode());
 	}
+
 }

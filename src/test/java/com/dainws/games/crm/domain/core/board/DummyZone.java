@@ -1,6 +1,5 @@
-package com.dainws.games.crm.tools.domain.core.board;
+package com.dainws.games.crm.domain.core.board;
 
-import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
 
 public class DummyZone extends Zone {

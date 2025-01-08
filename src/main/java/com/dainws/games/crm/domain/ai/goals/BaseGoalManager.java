@@ -23,18 +23,18 @@ public class BaseGoalManager extends PlayerBasedGoalManager {
 		
 		boolean onlyHeAndMeArePlaying = (context.getAlivePlayers().size() <= 2);
 		if (onlyHeAndMeArePlaying) {
-			this.logger.trace("[AI Behavior] Only we two are playing");
+			this.logger.debug("[AI Behavior] Only we two are playing");
 			return List.of(BaseGoals.createAttackWithAllCardsToPlayer(player));
 		}
 
 		int capacityOf50percert = zone.getCapacity() / 2;
 		if (zone.countCombatants() > capacityOf50percert) {
-			this.logger.trace("[AI Behavior] I need to attack him with all cards");
+			this.logger.debug("[AI Behavior] I need to attack him with all cards");
 			return List.of(BaseGoals.createAttackWithAllCardsToPlayer(player));
 		}
 
 		if (zone.hasCombatants()) {
-			this.logger.trace("[AI Behavior] I need to attack him only one time");
+			this.logger.debug("[AI Behavior] I need to attack him only one time");
 			return List.of(BaseGoals.createAttackPlayerOneTime(player));
 		}
 
@@ -46,7 +46,7 @@ public class BaseGoalManager extends PlayerBasedGoalManager {
 		List<Goal> goals = new ArrayList<>();
 
 		if (this.itsMyPlayer(context, player)) {
-			this.logger.trace("[AI Behavior] I need to put all warriors on my board");
+			this.logger.debug("[AI Behavior] I need to put all warriors on my board");
 			goals.add(BaseGoals.createPutAllCards(player));
 		}
 

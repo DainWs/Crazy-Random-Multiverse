@@ -1,16 +1,12 @@
-package com.dainws.games.crm.tools.domain.core;
+package com.dainws.games.crm.domain.core;
 
-import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.GameMode;
-import com.dainws.games.crm.domain.core.GameModeStrategy;
-import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.event.EventPublisherMonitor;
+import com.dainws.games.crm.domain.core.exception.ExceptionMonitor;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
-import com.dainws.games.crm.tools.domain.core.event.EventPublisherMonitor;
-import com.dainws.games.crm.tools.domain.core.exception.ExceptionMonitor;
 
 public class MonitoredGameStrategy implements GameModeStrategy {
 	private GameModeStrategy wrapper;

@@ -65,7 +65,7 @@ public final class Turn {
 
 	@Override
 	public String toString() {
-		return "Turn[turnNumber=%s,roundNumber=$s]".formatted(this.turnNumber, this.roundNumber);
+		return "Turn[turnNumber=%s,roundNumber=%s]".formatted(this.turnNumber, this.roundNumber);
 	}
 
 }

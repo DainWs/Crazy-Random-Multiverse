@@ -1,17 +1,17 @@
-package com.dainws.games.crm.tools.domain.builder;
+package com.dainws.games.crm.domain.builder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dainws.games.crm.domain.core.DummyGameStrategy;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.board.DummyZone;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
-import com.dainws.games.crm.tools.domain.core.DummyGameStrategy;
-import com.dainws.games.crm.tools.domain.core.board.DummyZone;
 
 public class GameBuilder {
 	private Dealer dealer;

@@ -1,9 +1,5 @@
-package com.dainws.games.crm.tools.domain.core;
+package com.dainws.games.crm.domain.core;
 
-import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.GameMode;
-import com.dainws.games.crm.domain.core.GameModeStrategy;
-import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;

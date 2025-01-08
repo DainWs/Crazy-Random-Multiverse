@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.domain.builder.CardBuilder;
+import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
@@ -13,8 +15,6 @@ import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.tools.domain.builder.CardBuilder;
-import com.dainws.games.crm.tools.domain.builder.GameBuilder;
 
 class MoveActionTest extends PlayerTurnActionTest {
 

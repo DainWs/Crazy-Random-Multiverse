@@ -21,7 +21,7 @@ public abstract class AbstractActionManager implements ActionManager {
 
 	@Override
 	public final void defineActions(AIContext context) {
-		this.logger.debug("Defining actions for AI Behavior");
+		this.logger.trace("Defining actions for AI Behavior");
 		List<AIActionTemplate> templates = this.defineActionTemplates(context);
 		this.actions = new ArrayList<>();
 

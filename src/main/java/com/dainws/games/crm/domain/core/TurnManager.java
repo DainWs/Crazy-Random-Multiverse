@@ -7,16 +7,13 @@ public class TurnManager {
 
 	public void nextTurn(Game game) {
 		Turn nextTurn = this.getNextTurn(game);
-		System.out.println(nextTurn.getTurnNumber());
 		this.changeTurn(game, nextTurn);
 	}
 
 	private Turn getNextTurn(Game game) {
 		int turnNumber = game.getTurnNumber();
-		System.out.println(turnNumber);
 		int roundNumber = game.getRoundNumber();
 
-		System.out.println("alived " + game.countAlivePlayers());
 		if (game.countAlivePlayers() > 1) {
 			return this.getNextTurn(game, turnNumber, roundNumber);
 		}
@@ -28,14 +25,12 @@ public class TurnManager {
 		int nextTurn = currentTurn + 1;
 		int nextRound = currentRound;
 
-		System.out.println(nextTurn);
 		if (nextTurn >= game.countPlayers()) {
 			nextTurn = 0;
 			nextRound++;
 		}
 
 		Player player = game.getPlayers().get(nextTurn);
-		System.out.println(player.isDeath());
 		if (player.isDeath()) {
 			return this.getNextTurn(game, nextTurn, nextRound);
 		}

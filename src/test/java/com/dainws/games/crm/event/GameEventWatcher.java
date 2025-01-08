@@ -43,7 +43,7 @@ public class GameEventWatcher implements ApplicationListener<PayloadApplicationE
 	}
 	
 	public void waitForGameEnd(GameCode gameCode) throws InterruptedException {
-		this.waitForGameEnd(gameCode, 10000);
+		this.waitForGameEnd(gameCode, 0);
 	}
 
 	public void waitForGameEnd(GameCode gameCode, int miliseconds) throws InterruptedException {

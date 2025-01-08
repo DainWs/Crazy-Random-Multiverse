@@ -51,7 +51,7 @@ public class Behavior {
 	}
 
 	private boolean executeAction(AIAction aiAction) {
-		this.logger.debug("AI is performing one action of type %s", aiAction.getActionType());
+		this.logger.debug("AI is performing one action of type {0}", aiAction.getActionType());
 		Action action = aiAction.getAction();
 		ActionContext context = aiAction.getContext();
 
@@ -60,7 +60,7 @@ public class Behavior {
 			this.goalManager.updateGoalAlignedWith(aiAction);
 		}
 
-		this.logger.debug("AI Behavior performed action was success?: %s", isSucess);
+		this.logger.debug("AI Behavior performed action was success?: {0}", isSucess);
 		return isSucess;
 	}
 

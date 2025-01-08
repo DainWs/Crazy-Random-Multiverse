@@ -2,9 +2,12 @@ package com.dainws.games.crm.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameMode;
@@ -14,6 +17,13 @@ import com.dainws.games.crm.domain.mode.GameModeFactory;
 
 @Configuration
 public class GeneralConfiguration {
+
+	@Bean(name = "applicationEventMulticaster")
+	SimpleApplicationEventMulticaster simpleApplicationEventMulticaster() {
+		SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
+		eventMulticaster.setTaskExecutor(Executors.newCachedThreadPool());
+		return eventMulticaster;
+	}
 
 	@Bean("availableGameModes")
 	List<GameMode> availableGameModes(List<GameModeFactory> gameModeFactories) {

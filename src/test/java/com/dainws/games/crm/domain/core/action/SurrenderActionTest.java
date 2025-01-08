@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.domain.builder.CardBuilder;
+import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
-import com.dainws.games.crm.tools.domain.builder.CardBuilder;
-import com.dainws.games.crm.tools.domain.builder.GameBuilder;
 
 public class SurrenderActionTest implements ActionTest {
 

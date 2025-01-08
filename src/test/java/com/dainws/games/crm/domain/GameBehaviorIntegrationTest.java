@@ -1,14 +1,17 @@
-package com.dainws.games.crm.tools.domain;
+package com.dainws.games.crm.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import com.dainws.games.crm.domain.builder.PlayerBuilder;
+import com.dainws.games.crm.domain.core.DummyGameStrategy;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameModeStrategy;
+import com.dainws.games.crm.domain.core.MonitoredGameStrategy;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
@@ -17,21 +20,18 @@ import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.dealer.DealStrategyFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.dealer.Deck;
+import com.dainws.games.crm.domain.core.dealer.MemoryDeckPopulator;
+import com.dainws.games.crm.domain.core.event.EventMonitor;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.ExceptionMonitor;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 import com.dainws.games.crm.domain.mode.classic.ClassicDealStrategyFactory;
 import com.dainws.games.crm.domain.mode.classic.ClassicGameFlow;
-import com.dainws.games.crm.tools.domain.builder.PlayerBuilder;
-import com.dainws.games.crm.tools.domain.core.DummyGameStrategy;
-import com.dainws.games.crm.tools.domain.core.MonitoredGameStrategy;
-import com.dainws.games.crm.tools.domain.core.dealer.MemoryDeckPopulator;
-import com.dainws.games.crm.tools.domain.core.event.EventMonitor;
-import com.dainws.games.crm.tools.domain.core.exception.ExceptionMonitor;
 
-public abstract class GameBehaviorTest {
+public abstract class GameBehaviorIntegrationTest {
 	private final int countOfPlayers;
 
 	protected final GameLifeCycle gameLifeCycle;
@@ -44,7 +44,7 @@ public abstract class GameBehaviorTest {
 	protected Dealer dealer;
 	protected Game game;
 
-	protected GameBehaviorTest(int countOfPlayers) {
+	protected GameBehaviorIntegrationTest(int countOfPlayers) {
 		this.countOfPlayers = countOfPlayers;
 		this.gameLifeCycle = new GameLifeCycle();
 		this.gameFlow = this.createGameFlow();

@@ -1,4 +1,4 @@
-package com.dainws.games.crm.tools.domain.core.event;
+package com.dainws.games.crm.domain.core.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.event.Event;
-import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.event.EventPublisher;
 
 public class EventPublisherMonitor implements EventPublisher, EventMonitor {
 

@@ -23,7 +23,6 @@ public class GameFactory {
 		this.gameModeFactories = new HashMap<>();
 
 		for (GameModeFactory gameModeFactory : factories) {
-			System.out.println(gameModeFactory.getMode());
 			this.registre(gameModeFactory);
 		}
 	}

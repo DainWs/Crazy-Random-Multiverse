@@ -19,7 +19,7 @@ public abstract class AbstractGoalManager implements GoalManager {
 	
 	@Override
 	public void defineGoals(AIContext context) {
-		this.logger.debug("Defining goals for behavior");
+		this.logger.trace("Defining goals for behavior");
 		this.goals = new ArrayList<>();
 		
 		this.logger.trace("Defining aggressive goals for behavior");

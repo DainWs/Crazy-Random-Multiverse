@@ -10,7 +10,6 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 
-@Controller
 public class PlayerEventHandler {
 
 	private CommunicationClient communicationClient;

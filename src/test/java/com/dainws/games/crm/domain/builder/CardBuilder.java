@@ -1,4 +1,4 @@
-package com.dainws.games.crm.tools.domain.builder;
+package com.dainws.games.crm.domain.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;

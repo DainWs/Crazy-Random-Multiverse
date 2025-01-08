@@ -11,12 +11,11 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.tools.domain.ai.AIGameBehaviorTest;
 
 @DisplayName("Behavior - First round tests")
-public class FirstRoundBehaviorTest extends AIGameBehaviorTest {
+public class FirstRoundBehaviorIntegrationTest extends AIGameBehaviorIntegrationTest {
 	
-	public FirstRoundBehaviorTest() {
+	public FirstRoundBehaviorIntegrationTest() {
 		super();
 	}
 

@@ -1,7 +1,4 @@
-package com.dainws.games.crm.tools.domain.core.action;
-
-import com.dainws.games.crm.domain.core.action.Action;
-import com.dainws.games.crm.domain.core.action.ActionContext;
+package com.dainws.games.crm.domain.core.action;
 
 public interface MonitoredActionNotifier {
 	void performingAction(Action action, ActionContext context);

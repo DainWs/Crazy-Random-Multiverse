@@ -16,7 +16,6 @@ import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.services.PartyEventService;
 
-@Controller
 public class GameEventHandler {
 
 	private CommunicationClient communicationClient;
@@ -34,7 +33,6 @@ public class GameEventHandler {
 
 	@EventListener(condition = "#event.code == T(com.dainws.games.crm.domain.core.event.EventCode).GAME_START")
 	public void onGameStart(Event event) throws InterruptedException, GameException {
-		System.out.println("Receibed");
 		this.sendEventToEveryPlayer(event);
 
 		Game game = event.getDetails().getGame();

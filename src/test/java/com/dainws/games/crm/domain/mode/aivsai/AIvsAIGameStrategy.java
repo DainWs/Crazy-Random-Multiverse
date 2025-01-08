@@ -49,4 +49,8 @@ public class AIvsAIGameStrategy extends PvsAIGameStrategy {
 		return behavior;
 	}
 
+	@Override
+	public GameMode getGameMode() {
+		return AIVSAI_MODE;
+	}
 }

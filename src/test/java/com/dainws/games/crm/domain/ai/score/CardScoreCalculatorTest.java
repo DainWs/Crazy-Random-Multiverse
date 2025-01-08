@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.Range;
+import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.core.card.Card;
-import com.dainws.games.crm.tools.domain.builder.CardBuilder;
 
 class CardScoreCalculatorTest {
 
