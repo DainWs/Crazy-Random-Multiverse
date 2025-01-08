@@ -3,7 +3,6 @@ package com.dainws.games.crm.controller.events;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.controller.CommunicationClient;
 import com.dainws.games.crm.domain.ai.AIPlayer;

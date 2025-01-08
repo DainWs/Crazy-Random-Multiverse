@@ -57,7 +57,7 @@ public class AIvsAIGameIntegationTest {
 	
 	private void playGame() throws InterruptedException {
 		Game game = this.gameService.loadPartyGame(this.party);
-		System.out.println(game.getMode());
+
 		for (Player player : game.getPlayers()) {
 			this.gameService.loadCompleteFor(game.getCode(), player.getPlayerCode());
 		}
