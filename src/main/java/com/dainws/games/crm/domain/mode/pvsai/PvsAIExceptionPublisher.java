@@ -49,6 +49,6 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	}
 	
 	private void logAIExceptionCode(Player aiPlayer, ExceptionCode exceptionCode) {
-		this.logger.log(Level.SEVERE, "AI Exception handled: %s", exceptionCode.value());
+		this.logger.log(Level.SEVERE, "AI Exception handled: {0}", exceptionCode.value());
 	}
 }
