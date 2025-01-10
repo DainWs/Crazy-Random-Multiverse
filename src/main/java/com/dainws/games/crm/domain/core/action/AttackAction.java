@@ -3,12 +3,15 @@ package com.dainws.games.crm.domain.core.action;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 
 public class AttackAction extends PlayerTurnAction {
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context) {
+	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
 		Combatant sourceCombatant = this.getSourceCombatantFrom(context);
+		this.checkSourceCombatant(context, sourceCombatant);
+		
 		Combatant targetCombatant = this.getTargetCombatantFrom(context);
 		this.logTrace("El combatiente {0} ataca al combatiente {1}", sourceCombatant, targetCombatant);
 
@@ -22,6 +25,12 @@ public class AttackAction extends PlayerTurnAction {
 
 		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, context);
 		return true;
+	}
+	
+	private void checkSourceCombatant(ActionContext context, Combatant sourceCombatant) throws PlayerActionException {
+		if (!sourceCombatant.canAttack()) {
+			throw new PlayerActionException("selected_source_attack_in_cooldown", context.getSourcePlayer());
+		}
 	}
 
 	private Combatant getSourceCombatantFrom(ActionContext context) {

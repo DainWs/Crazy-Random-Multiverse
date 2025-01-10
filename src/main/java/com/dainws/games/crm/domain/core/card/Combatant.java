@@ -10,6 +10,10 @@ public abstract class Combatant extends Card {
 	protected Health health;
 	protected Equipment equipment;
 	protected Skill skill;
+	
+	protected int attackCount;
+	protected int maxAttackCount;
+	protected Cooldown attackCooldown;
 
 	protected Combatant(long code) {
 		super(code);
@@ -17,8 +21,29 @@ public abstract class Combatant extends Card {
 		this.armor = Armor.NONE;
 		this.health = Health.NONE;
 		this.skill = Skill.NONE;
+		this.attackCount = 0;
+		this.maxAttackCount = 1;
+		this.attackCooldown = new Cooldown(1);
+	}
+	
+	public void update() {
+		if (!this.canAttack() && this.attackCooldown != null) {
+			this.updateAttackCooldown();
+		}
+	}
+	
+	private void updateAttackCooldown() {
+		this.attackCooldown.update();
+
+		if (this.attackCooldown.isReady()) {
+			this.attackCount = 0;
+		}
 	}
 
+	public boolean canAttack() {
+		return this.attackCount < this.maxAttackCount;
+	}
+	
 	public void receiveDamageFrom(Combatant combatant) {
 		Damage damage = combatant.getDamage();
 		if (this.armor.canProtectAgainst(damage)) {
@@ -26,6 +51,12 @@ public abstract class Combatant extends Card {
 		} else {
 			this.health = this.health.getRemainingHealthAgainst(damage);
 		}
+		
+		combatant.increaseAttackCount();
+	}
+	
+	private void increaseAttackCount() {
+		this.attackCount++;
 	}
 
 	public void equip(Equipment equipment) {

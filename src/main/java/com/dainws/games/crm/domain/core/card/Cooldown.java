@@ -20,7 +20,9 @@ public class Cooldown {
     }
 
     public void update() {
-    	this.remainingTime--;
+    	if (this.active) {
+    		this.remainingTime--;
+    	}
 
     	if (this.isReady()) {
     		this.active = false;
