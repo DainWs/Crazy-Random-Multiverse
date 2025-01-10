@@ -34,4 +34,10 @@ public class BaseGoals {
 		GoalArchiveCondition isTargetPlayer = new TargetPlayerDecorator(archiveCondition, targetPlayer);
 		return new NTimesGoal(BaseGoalNames.ATTACK_PLAYER, isTargetPlayer, times);
 	}
+	
+	public static Goal createUseAllSpellCards(Player targetPlayer) {
+		GoalArchiveCondition archiveCondition = new SpecificActionArchiveCondition(UseSpellAction.class);
+		GoalArchiveCondition isTargetPlayer = new TargetPlayerDecorator(archiveCondition, targetPlayer);
+		return new InfiniteGoal(BaseGoalNames.USE_SPELL, isTargetPlayer);
+	}
 }

@@ -23,6 +23,7 @@ public class ScoreBasedActionManager extends BaseActionManager {
 		this.actionContextFactories = new HashMap<>();
 		this.actionContextFactories.put(AttackAction.class, ScoreAttackContextFactory::new);
 		this.actionContextFactories.put(PutAction.class, ScorePutContextFactory::new);
+		this.actionContextFactories.put(UseSpellAction.class, ScoreUseSpellContextFactory::new);
 	}
 
 	public void setContextFactory(Class<? extends Action> actionType, Supplier<? extends ActionContextFactory> factory) {

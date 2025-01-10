@@ -50,6 +50,7 @@ public class BaseGoalManager extends PlayerBasedGoalManager {
 			goals.add(BaseGoals.createPutAllCards(player));
 		}
 
+		goals.add(BaseGoals.createUseAllSpellCards(player));
 		return goals;
 	}
 
