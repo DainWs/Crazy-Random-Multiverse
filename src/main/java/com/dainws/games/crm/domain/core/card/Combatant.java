@@ -9,12 +9,14 @@ public abstract class Combatant extends Card {
 	protected Armor armor;
 	protected Health health;
 	protected Equipment equipment;
+	protected Skill skill;
 
 	protected Combatant(long code) {
 		super(code);
 		this.damage = Damage.NONE;
 		this.armor = Armor.NONE;
 		this.health = Health.NONE;
+		this.skill = Skill.NONE;
 	}
 
 	public void receiveDamageFrom(Combatant combatant) {
@@ -66,6 +68,10 @@ public abstract class Combatant extends Card {
 		return !this.health.isZero();
 	}
 
+	public boolean hasSkill() {
+		return this.skill.isPresent();
+	}
+	
 	public Equipment getEquipment() {
 		return this.equipment;
 	}
@@ -80,6 +86,10 @@ public abstract class Combatant extends Card {
 
 	public Armor getArmor() {
 		return this.armor;
+	}
+	
+	public Skill getSkill() {
+		return skill;
 	}
 
 	@Override

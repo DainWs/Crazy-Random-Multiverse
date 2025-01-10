@@ -18,6 +18,7 @@ public class Warrior extends Combatant {
 		this.damage = builder.damage;
 		this.armor = builder.armor;
 		this.health = builder.health;
+		this.skill = builder.skill;
 	}
 
 	public boolean isRarity(WarriorRarity rarity) {
@@ -68,14 +69,23 @@ public class Warrior extends Combatant {
 		private Damage damage;
 		private Armor armor;
 		private Health health;
+		private Skill skill;
 		private Equipment equipment;
 
 		private Builder(WarriorRarity rarity) {
 			this.rarity = rarity;
+			this.skill = Skill.NONE;
 		}
 
 		public Builder withCode(long id) {
 			this.id = id;
+			return this;
+		}
+		
+		public Builder withSkill(Skill skill) {
+			if (skill != null) {
+				this.skill = skill;
+			}
 			return this;
 		}
 

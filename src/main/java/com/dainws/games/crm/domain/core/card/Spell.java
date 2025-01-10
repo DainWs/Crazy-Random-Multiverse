@@ -24,7 +24,7 @@ public class Spell extends Card {
 	public static Spell newIntance(Long id, Long effectId) {
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(effectId);
-		return new Spell(id, new EffectId(effectId));
+		return new Spell(id, EffectId.from(effectId));
 	}
 	
 	public static Spell newIntance(Long id, EffectId effectId) {

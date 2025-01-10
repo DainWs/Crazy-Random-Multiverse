@@ -6,12 +6,14 @@ public class Equipment extends Card {
 	private double damage;
 	private double armor;
 	private double health;
+	private Skill skill;
 
 	private Equipment(Builder builder) {
 		super(builder.code);
 		this.damage = builder.damage;
 		this.armor = builder.armor;
 		this.health = builder.health;
+		this.skill = builder.skill;
 	}
 
 	@Override
@@ -30,6 +32,14 @@ public class Equipment extends Card {
 	public double getHealthValue() {
 		return health;
 	}
+	
+	public boolean hasSkill() {
+		return this.skill.isPresent();
+	}
+	
+	public Skill getSkill() {
+		return skill;
+	}
 
 	@Override
 	public String toString() {
@@ -46,12 +56,21 @@ public class Equipment extends Card {
 		private double damage;
 		private double armor;
 		private double health;
+		private Skill skill;
 
 		private Builder() {
+			this.skill = Skill.NONE;
 		}
 
 		public Builder withCode(long code) {
 			this.code = code;
+			return this;
+		}
+		
+		public Builder withSkill(Skill skill) {
+			if (skill != null) {
+				this.skill = skill;
+			}
 			return this;
 		}
 
