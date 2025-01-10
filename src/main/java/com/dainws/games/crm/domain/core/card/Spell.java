@@ -6,6 +6,8 @@ import com.dainws.games.crm.domain.core.effect.EffectId;
 
 public class Spell extends Card {
 	private EffectId effectId;
+	// TODO spell cards should have an agressive or defensive approach property
+	// to describe purpose
 
 	private Spell(Long id, EffectId effectId) {
 		super(id);
