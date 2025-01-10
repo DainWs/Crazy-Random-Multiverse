@@ -1,5 +1,7 @@
 package com.dainws.games.crm.domain.core.board;
 
+import java.util.function.Predicate;
+
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
@@ -54,6 +56,10 @@ public abstract class Zone {
 	}
 
 	public boolean hasCombatants() {
+		return this.hasCombatants(combatant -> true);
+	}
+	
+	public boolean hasCombatants(Predicate<Combatant> filter) {
 		boolean hasCombatants = false;
 		for (int rowIndex = 0; rowIndex < this.combatants.length; rowIndex++) {
 			if (this.hasCombatantAt(rowIndex)) {
@@ -65,13 +71,18 @@ public abstract class Zone {
 	}
 
 	public boolean hasCombatantAt(int rowIndex) {
+		return this.hasCombatantAt(rowIndex, combatant -> true);
+	}
+	
+	public boolean hasCombatantAt(int rowIndex, Predicate<Combatant> filter) {
 		if (!this.validate(rowIndex)) {
 			return false;
 		}
 
 		boolean hasCombatants = false;
 		for (int columnIndex = 0; columnIndex < this.combatants[rowIndex].length; columnIndex++) {
-			if (this.combatants[rowIndex][columnIndex] != NONE) {
+			Combatant combatant = this.combatants[rowIndex][columnIndex];
+			if (combatant != NONE && filter.test(combatant)) {
 				hasCombatants = true;
 			}
 		}
