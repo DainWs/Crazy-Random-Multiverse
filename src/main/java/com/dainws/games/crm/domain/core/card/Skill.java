@@ -49,7 +49,7 @@ public class Skill {
 		}
 	}
 
-	public void updateUses() {
+	public void update() {
 		if (this.isReusableType()) {
 			this.cooldown.update();
 
