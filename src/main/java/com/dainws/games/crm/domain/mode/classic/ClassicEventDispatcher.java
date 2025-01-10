@@ -9,7 +9,6 @@ import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.log.ConsoleLogger;
 import com.dainws.games.crm.domain.log.Logger;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 
