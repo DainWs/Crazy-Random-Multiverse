@@ -1,5 +1,6 @@
 package com.dainws.games.crm.domain.mode.classic;
 
+import com.dainws.games.crm.domain.core.CooldownManager;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.TurnManager;
@@ -14,10 +15,12 @@ import com.dainws.games.crm.domain.log.Logger;
 public class ClassicGameFlow implements GameFlow {
 
 	private Logger logger;
+	private CooldownManager cooldownManager;
 	private TurnManager turnManager;
 
 	public ClassicGameFlow() {
 		this.logger = Logger.getLogger(getClass());
+		this.cooldownManager = new CooldownManager();
 		this.turnManager = new TurnManager();
 	}
 
@@ -48,7 +51,8 @@ public class ClassicGameFlow implements GameFlow {
 
 	@Override
 	public void onNextTurn(Game game) {
-		if (game.isRunning()) {
+		if (game.isRunning()) {		
+			this.cooldownManager.updatePlayerCooldowns(game, game.getPlayerWithTurn());
 			this.turnManager.nextTurn(game);
 
 			this.logger.debug("Dealing cards to player with turn");

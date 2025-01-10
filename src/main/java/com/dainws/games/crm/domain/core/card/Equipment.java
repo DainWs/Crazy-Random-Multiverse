@@ -15,6 +15,12 @@ public class Equipment extends Card {
 		this.health = builder.health;
 		this.skill = builder.skill;
 	}
+	
+	public void update() {		
+		if (this.hasSkill()) {
+			this.skill.update();
+		}
+	}
 
 	@Override
 	public CardType getType() {

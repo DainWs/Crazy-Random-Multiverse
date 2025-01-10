@@ -30,6 +30,14 @@ public abstract class Combatant extends Card {
 		if (!this.canAttack() && this.attackCooldown != null) {
 			this.updateAttackCooldown();
 		}
+		
+		if (this.equipment != null) {
+			this.equipment.update();
+		}
+		
+		if (this.hasSkill()) {
+			this.skill.update();
+		}
 	}
 	
 	private void updateAttackCooldown() {
@@ -57,6 +65,10 @@ public abstract class Combatant extends Card {
 	
 	private void increaseAttackCount() {
 		this.attackCount++;
+		
+		if (this.attackCount >= this.maxAttackCount) {
+			this.attackCooldown.activate();
+		}
 	}
 
 	public void equip(Equipment equipment) {
