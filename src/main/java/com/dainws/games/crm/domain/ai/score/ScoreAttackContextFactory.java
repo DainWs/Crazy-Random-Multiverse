@@ -77,7 +77,8 @@ class ScoreAttackContextFactory extends ActionContextFactory {
 		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Combatant combatant = combatants[rowIndex][columnIndex];
-				if (combatant != null) {
+
+				if (combatant != null && combatant.canAttack()) {
 					this.sourceCard = combatant;
 					this.sourceCoordinate = new Coordinate(rowIndex, columnIndex);
 				}

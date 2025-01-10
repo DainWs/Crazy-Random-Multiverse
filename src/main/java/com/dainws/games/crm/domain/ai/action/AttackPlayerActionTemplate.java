@@ -1,5 +1,8 @@
 package com.dainws.games.crm.domain.ai.action;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import com.dainws.games.crm.domain.ai.AIAction;
 import com.dainws.games.crm.domain.ai.goals.BaseGoalNames;
 import com.dainws.games.crm.domain.ai.goals.Goal;
@@ -7,6 +10,7 @@ import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.AttackAction;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.card.Combatant;
 
 public class AttackPlayerActionTemplate extends AggressiveActionTemplate {
 
@@ -23,7 +27,20 @@ public class AttackPlayerActionTemplate extends AggressiveActionTemplate {
 	@Override
 	public boolean canPerformWith(ActionContext actionContext) {
 		Zone zone = actionContext.getTargetZone();
-		return zone.isAlive() && zone.hasCombatants();
+		if (!zone.isAlive() || !zone.hasCombatants()) {
+			return false;
+		}
+		
+		Zone myZone = actionContext.getSourceZone();
+		if (!myZone.hasCombatants()) {
+			return false;
+		}
+
+		Combatant[][] combatantsMatrix = myZone.getCombatants();
+		return Arrays.stream(combatantsMatrix)
+			    .flatMap(Arrays::stream)
+			    .filter(combatant -> Objects.nonNull(combatant))
+			    .anyMatch(Combatant::canAttack);
 	}
 
 	@Override

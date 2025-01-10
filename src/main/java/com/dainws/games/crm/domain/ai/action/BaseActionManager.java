@@ -8,6 +8,7 @@ import com.dainws.games.crm.domain.ai.AIActionTemplate;
 import com.dainws.games.crm.domain.ai.AIContext;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -56,7 +57,7 @@ public abstract class BaseActionManager extends AbstractActionManager {
 		boolean canBeAggressive = false;
 		for (Player player : alivePlayers) {
 			Zone playerZone = context.getPlayerZone(player);
-			if (playerZone.hasCombatants()) {
+			if (playerZone.hasCombatants(Combatant::canAttack)) {
 				canBeAggressive = true;
 			}
 		}
@@ -73,12 +74,14 @@ public abstract class BaseActionManager extends AbstractActionManager {
 		Hand hand = context.getMyHand();
 		boolean leaderInHand = hand.contains(CardType.LEADER);
 		boolean warriorsInHand = hand.contains(CardType.WARRIOR);
-		return (leaderInHand || warriorsInHand);
+		boolean spellsInHand = hand.contains(CardType.SPELL);
+		return (leaderInHand || warriorsInHand || spellsInHand);
 	}
 
 	protected List<AIActionTemplate> defineNeutralActions(AIContext context) {
 		List<AIActionTemplate> templates = new ArrayList<>();
 		templates.add(new PutCardActionTemplate());
+		templates.add(new UseSpellCardActionTemplate());
 		return templates;
 	}
 
