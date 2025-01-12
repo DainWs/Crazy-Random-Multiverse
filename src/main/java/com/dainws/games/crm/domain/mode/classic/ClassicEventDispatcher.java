@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.log.Logger;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
+import com.dainws.games.crm.domain.mode.GameModes;
 
 public class ClassicEventDispatcher implements GameModeEventDispatcher {
 
@@ -49,7 +50,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 
 	@Override
 	public GameMode getGameMode() {
-		return ClassicModeStrategy.CLASSIC_MODE;
+		return GameModes.CLASSIC;
 	}
 
 	@Override

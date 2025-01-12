@@ -18,6 +18,7 @@ import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
+import com.dainws.games.crm.domain.mode.GameModes;
 
 public class ClassicModeStrategy implements GameModeStrategy {
 
@@ -35,7 +36,7 @@ public class ClassicModeStrategy implements GameModeStrategy {
 
 	@Override
 	public GameMode getGameMode() {
-		return CLASSIC_MODE;
+		return GameModes.CLASSIC;
 	}
 
 	@Override

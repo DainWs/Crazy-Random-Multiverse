@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
+import com.dainws.games.crm.domain.mode.GameModes;
 
 public class ClassicGameModeFactory implements GameModeFactory {
 
@@ -22,7 +23,7 @@ public class ClassicGameModeFactory implements GameModeFactory {
 
 	@Override
 	public GameMode getMode() {
-		return ClassicModeStrategy.CLASSIC_MODE;
+		return GameModes.CLASSIC;
 	}
 
 	@Override

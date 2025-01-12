@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
+import com.dainws.games.crm.domain.mode.GameModes;
 
 public class PvsAIGameModeFactory implements GameModeFactory {
 
@@ -22,7 +23,7 @@ public class PvsAIGameModeFactory implements GameModeFactory {
 
 	@Override
 	public GameMode getMode() {
-		return PvsAIGameStrategy.PVSAI_MODE;
+		return GameModes.PLAYER_VS_AI;
 	}
 
 	@Override
