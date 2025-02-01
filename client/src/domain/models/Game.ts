@@ -2,6 +2,8 @@ import GameCode from '@/domain/models/GameCode';
 import Player, { PlayerCode } from '@/domain/models/Player';
 import Zone from '@/domain/models/Zone';
 
+type GameMode = 'CLASSIC' | 'PLAYER_VS_AI';
+
 class Game {
   public code: GameCode;
   public playerWithTurn: Player;
@@ -27,4 +29,5 @@ class Game {
   }
 }
 
+export { GameMode };
 export default Game;

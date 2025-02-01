@@ -14,7 +14,6 @@ import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.domain.EventDto;
 import com.dainws.games.crm.controller.dto.domain.ExceptionCodeDto;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
-import com.dainws.games.crm.controller.dto.domain.PartyListDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserClient;
@@ -82,16 +81,6 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 		String sessionId = to.getCode().text();
 		PartyDto partyDto = ModelMapper.toPartyDto(party);
 		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/info", partyDto, createHeaders(sessionId));
-	}
-
-	@Override
-	public void sendPartyList(User to, List<Party> party) {
-		this.logger.trace("Enviando lista de las fiestas, al cliente {}", to.getName());
-
-		String sessionId = to.getCode().text();
-		PartyListDto partyListDto = ModelMapper.toPartyListDto(party);
-		this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/party/list", partyListDto,
-				createHeaders(sessionId));
 	}
 
 	private MessageHeaders createHeaders(String sessionId) {

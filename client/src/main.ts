@@ -1,5 +1,3 @@
-import { configureApp } from '@/configuration/appConfigurer';
-import { mountView } from '@/infrastructure/view';
+import { mountView } from '@/view';
 
-configureApp();
 mountView();

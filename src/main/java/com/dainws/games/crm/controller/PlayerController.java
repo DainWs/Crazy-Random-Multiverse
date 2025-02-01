@@ -18,7 +18,7 @@ import com.dainws.games.crm.controller.dto.domain.ActionType;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.domain.translator.Translatable;
-
+// TODO go frontend, and fix contract
 @Controller
 public class PlayerController {
 

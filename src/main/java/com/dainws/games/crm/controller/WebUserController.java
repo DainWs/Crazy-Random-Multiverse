@@ -49,7 +49,7 @@ public class WebUserController implements UserController {
 
 	@Override
 	@PostMapping("/login")
-	public UserDto login(@RequestHeader(HttpHeaders.AUTHORIZATION) String username) {
+	public UserDto login(@RequestBody String username) {
 		this.userSession.setName(username);
 		this.userService.create(this.userSession);
 

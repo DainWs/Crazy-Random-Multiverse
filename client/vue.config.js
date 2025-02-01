@@ -8,14 +8,6 @@ function isDevelopmentEnviroment() {
     return process.env.NODE_ENV === 'development';
 }
 
-function getServerHost() {
-    if (isDevelopmentEnviroment()) {
-        return '127.0.0.1:8080';
-    }
-
-    return null;
-}
-
 export default defineConfig({
     outputDir: path.resolve(__dirname, 'dist'),
     assetsDir: 'assets',
@@ -39,29 +31,38 @@ export default defineConfig({
         plugins: [
             new webpack.EnvironmentPlugin({
                 NODE_ENV: process.env.NODE_ENV,
-                PLATAFORM: 'browser',
-                SERVER_HOST: getServerHost()
+                PLATAFORM: 'browser'
             })
         ],
         resolve: {
-            extensions: ['.*', '.js', '.ts', '.vue', '.scss', '.css', '.png', '.svg'],
+            extensions: ['.*', '.js', '.ts', '.vue', '.scss', '.css', '.png', '.svg', '.json'],
             alias: {
                 "@/*": path.resolve(__dirname, 'src/*'),
-                "@api": path.resolve(__dirname, 'src/infrastructure/api'),
-                "@repositories": path.resolve(__dirname, 'src/infrastructure/repositories'),
-                "@view": path.resolve(__dirname, 'src/infrastructure/view'),
-                "@assets": path.resolve(__dirname, 'src/infrastructure/view/assets'),
-                "@vue-root": path.resolve(__dirname, 'src/infrastructure/view/vue'),
-                "@vue-pages": path.resolve(__dirname, 'src/infrastructure/view/vue/pages'),
-                "@vue-components": [
-                    path.resolve(__dirname, 'src/infrastructure/view/vue/components'),
-                    path.resolve(__dirname, 'src/infrastructure/view/vue/pages/settings/components'),
-                    path.resolve(__dirname, 'src/infrastructure/view/vue/pages/game/components')
+                "@api": path.resolve(__dirname, 'src/api'),
+                "@repositories": path.resolve(__dirname, 'src/repositories'),
+                "@view": path.resolve(__dirname, 'src/view'),
+                "@pages": path.resolve(__dirname, 'src/view/pages'),
+                "@components": [
+                    path.resolve(__dirname, 'src/view/components'),
+                    path.resolve(__dirname, 'src/view/pages/game/components')
                 ],
+                "@assets": path.resolve(__dirname, 'src/view/assets'),
+
+                "@resources": [path.resolve(__dirname, 'resources')],
 
                 "@test": path.resolve(__dirname, 'test')
             },
         },
+    },
+
+    devServer: {
+        proxy: {
+            '': {
+                target: 'http://localhost:8080',
+                ws: true,
+                changeOrigin: true
+            }
+        }
     },
 
     // PWA - Progresive Web Application

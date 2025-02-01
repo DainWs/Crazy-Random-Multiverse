@@ -1,9 +1,5 @@
 package com.dainws.games.crm.domain;
 
-import java.util.List;
-
-
-// TODO adapt this interface
 public interface UserClient {
 	static final UserClient NONE = new NoneUserClient();
 
@@ -14,6 +10,4 @@ public interface UserClient {
 	};
 
 	void sendPartyInfo(User to, Party party);
-
-	void sendPartyList(User to, List<Party> party);
 }

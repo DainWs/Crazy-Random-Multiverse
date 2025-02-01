@@ -13,20 +13,21 @@
     "noImplicitAny": true,
     "allowArbitraryExtensions": true,
     "allowJs": true,
+    "resolveJsonModule": true,
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "@vue-components/*": [
-        "src/infrastructure/view/vue/components/*",
-        "src/infrastructure/view/vue/pages/settings/components/*",
-        "src/infrastructure/view/vue/pages/game/components/*"
+      "@resources/*": ["resources/*"],
+
+      "@assets/*": ["src/view/assets/*"],
+      "@components/*": [
+        "src/view/components/*",
+        "src/view/pages/game/components/*"
       ],
-      "@vue-pages/*": ["src/infrastructure/view/vue/pages/*"],
-      "@vue-root/*": ["src/infrastructure/view/vue/*"],
-      "@assets/*": ["src/infrastructure/view/assets/*"],
-      "@view/*": ["src/infrastructure/view/*"],
-      "@repositories/*": ["src/infrastructure/repositories/*"],
-      "@api/*": ["src/infrastructure/api/*"],
+      "@pages/*": ["src/view/pages/*"],
+      "@view/*": ["src/view/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@api/*": ["src/api/*"],
       "@/*": ["src/*"],
 
       "@test/*": ["test/*"]

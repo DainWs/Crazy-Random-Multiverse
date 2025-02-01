@@ -1,7 +1,6 @@
 import Game from "@/domain/models/Game";
 import GameEvent from "@/domain/events/GameEvent";
 import Context from "@/application/game/Context";
-import Player from "@/domain/models/Player";
 
 abstract class GameEventProcessor {
 
@@ -12,12 +11,12 @@ abstract class GameEventProcessor {
 
   protected updateContext(event: GameEvent) {
     console.log('updating context');
-  
+
     const game = event.getDetails().game;
     const player = this.getPlayerFrom(game);
     Context.setGame(game);
     Context.setPlayer(player);
-    
+
     console.log('current context updated:');
     console.log(Context);
   }
@@ -32,7 +31,7 @@ abstract class GameEventProcessor {
       contextPlayer.isSpectator = true;
       return contextPlayer;
     }
-  
+
     return newestPlayer;
   }
 }
