@@ -8,6 +8,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
@@ -17,19 +18,24 @@ import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserClient;
+import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.repositories.UserRepository;
 
+@Component
 public class CommunicationClient implements UserClient, ExceptionPublisher {
 
 	private SimpMessagingTemplate messagingTemplate;
+	private UserRepository userRepository;
 	private Logger logger;
 
-	public CommunicationClient(SimpMessagingTemplate messagingTemplate) {
+	public CommunicationClient(UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
+		this.userRepository = userRepository;
 		this.messagingTemplate = messagingTemplate;
 		this.logger = LoggerFactory.getLogger(CommunicationClient.class.getCanonicalName());
 	}
@@ -48,9 +54,10 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 	
 	public void sendExceptionCode(Player player, ExceptionCode code) {
 		if (this.canSendTo(player)) {
-			this.logger.trace("Enviando error {}, al cliente {}", code, player.getName());
+			this.logger.info("Enviando error {}, al cliente {}", code, player.getName());
 
-			String sessionId = player.getCode();
+			User user = this.getUserFrom(player);
+			String sessionId = user.getSessionId();
 			ExceptionCodeDto dto = new ExceptionCodeDto(code.value());
 			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/error", dto, createHeaders(sessionId));
 		}
@@ -58,9 +65,10 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 
 	public void sendEvent(Player player, Event event) {
 		if (this.canSendTo(player)) {
-			this.logger.trace("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
+			this.logger.info("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
 
-			String sessionId = player.getCode();
+			User user = this.getUserFrom(player);
+			String sessionId = user.getSessionId();
 			EventDto eventDto = new CommunicationMapper().mapToDto(event);
 			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 		}
@@ -72,6 +80,11 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 		}
 
 		return false;
+	}
+	
+	private User getUserFrom(Player player) {
+		UserCode code = UserCode.from(player.getCode());
+		return this.userRepository.find(code);
 	}
 
 	@Override

@@ -33,6 +33,10 @@ public class UserService {
 		return this.partyService.joinParty(partyCode, user);
 	}
 	
+	public User get(UserCode code) {
+		return this.userRepository.find(code);
+	}
+	
 	public void create(User user) {
 		this.userRepository.save(user);
 	}

@@ -1,18 +1,19 @@
 package com.dainws.games.crm.controller;
 
+import static org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTR_NAME;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.HttpHeaders;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
 
 import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
@@ -39,7 +40,7 @@ public class WebUserController implements UserController {
 	@Override
 	@PostMapping("/register")
 	public UserDto register() {
-		this.userService.create(this.userSession);
+		this.userService.create(this.userSession.clone());
 
 		UserDto userDto = new UserDto();
 		userDto.setId(this.userSession.getCode().text());
@@ -51,7 +52,7 @@ public class WebUserController implements UserController {
 	@PostMapping("/login")
 	public UserDto login(@RequestBody String username) {
 		this.userSession.setName(username);
-		this.userService.create(this.userSession);
+		this.userService.create(this.userSession.clone());
 
 		UserDto userDto = new UserDto();
 		userDto.setId(this.userSession.getCode().text());
@@ -65,7 +66,7 @@ public class WebUserController implements UserController {
 		UserCode specifiedCode = UserCode.from(userDto.getId()); 
 		if (this.userSession.isCode(specifiedCode)) {
 			this.userSession.setName(userDto.getUsername());
-			this.userService.update(this.userSession);
+			this.userService.update(this.userSession.clone());
 		}
 	}
 
@@ -83,10 +84,10 @@ public class WebUserController implements UserController {
 	public PartyDto createParty(CreatePartyRequest request) throws NotAllowedException {
 		GameMode gameMode = request.getGameMode().getDomainGameMode();
 		
-		Party party = new Party(this.userSession, gameMode);
+		Party party = new Party(this.userSession.clone(), gameMode);
 		party.setMaxUsers(request.getMaxPlayers());
 		
-		this.userService.createParty(this.userSession, party);
+		this.userService.createParty(this.userSession.clone(), party);
 		return ModelMapper.toPartyDto(party);
 	}
 	
@@ -94,7 +95,7 @@ public class WebUserController implements UserController {
 	@PostMapping("/party/{partyCode}/join")
 	public PartyDto joinParty(@PathVariable("partyCode") String partyCodeAsString) throws NotAllowedException {
 		PartyCode partyCode = PartyCode.from(partyCodeAsString);
-		Party party = this.userService.joinParty(partyCode, this.userSession);
+		Party party = this.userService.joinParty(partyCode, this.userSession.clone());
 		return ModelMapper.toPartyDto(party);
 	}
 	
@@ -103,6 +104,17 @@ public class WebUserController implements UserController {
 	public PartyListDto getPartyList() {
 		List<Party> parties = this.userService.getParties();
 		return ModelMapper.toPartyListDto(parties);
+	}
+	
+	@EventListener
+	public void onSessionCreated(SessionConnectEvent event) {
+		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+		Object httpSessionId = headerAccessor.getSessionAttributes().get(HTTP_SESSION_ID_ATTR_NAME);
+		UserCode userCode = UserCode.from(String.valueOf(httpSessionId));
+
+		User user = this.userService.get(userCode);
+		user.setSessionId(headerAccessor.getSessionId());
+		this.userService.update(user);
 	}
 	
 	@EventListener

@@ -70,6 +70,7 @@ public class Game {
 
 	public void publishEvent(EventCode code) {
 		EventDetails details = new EventDetails(this);
+		System.out.println(eventPublisher.getClass());
 		this.eventPublisher.publish(code, details);
 	}
 

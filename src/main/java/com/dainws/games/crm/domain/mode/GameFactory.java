@@ -40,6 +40,8 @@ public class GameFactory {
 		}
 
 		GameModeFactory gameModeFactory = this.gameModeFactories.get(gameMode);
+		System.out.println(gameModeFactory.getMode());
+		System.out.println(gameModeFactory.getClass());
 		Game game = gameModeFactory.createGame(party);
 		this.gameRepository.save(game);
 		return game;
