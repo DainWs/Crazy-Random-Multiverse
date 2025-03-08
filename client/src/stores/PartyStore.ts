@@ -1,9 +1,12 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia'
+
 import Party from "@/domain/models/Party";
 import PartyCode from "@/domain/models/PartyCode";
 import { GameMode } from "@/domain/models/Game";
+
 import { createParty, getPartyList, joinParty, leaveParty, startGame, updateParty } from "@/api/v1"
+
 import useSessionStore from '@/stores/SessionStore';
 
 const usePartyStore = defineStore('party', initialize);

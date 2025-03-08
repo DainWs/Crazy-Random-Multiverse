@@ -6,7 +6,7 @@ import playerFactory from '@test/domain/playerFactory';
 describe('Hand - Unit tests', () =>{
   test('Given player should be hand owner', () => {
     const player = playerFactory.createPlayer();
-    const hand = handFactory.createHand(player.code);
+    const hand = handFactory.createHand(player);
 
     expect(hand.isOwner(player.code)).toBeTruthy();
   });

@@ -1,37 +1,36 @@
 import ViewAction from "@/domain/actions/ViewAction";
 import ViewElement from "@/domain/actions/ViewElements";
-import Position from "@/domain/models/Position";
+import Position, { HandPosition } from "@/domain/models/Position";
 import Card from "@/domain/models/Card";
-import Zone from "@/domain/models/Zone";
+import Hand from "@/domain/models/Hand";
 import * as actionService from '@/application/actionService';
-import grabAndDropApi from "@view/pages/game/hooks/GrabAndDropApi";
+import grabAndDropApi from "@/services/dom/GrabAndDropApi";
 
-const useZoneSlotAction = (zone: Zone) => {
-  const elementType: ViewElement = "ZoneSlot";
+const useHandSlotAction = (hand: Hand) => {
+  const elementType: ViewElement = "Hand";
 
-  function grabCard(event: DragEvent, row: number, column: number, card: Card) {
+  function grabCard(event: DragEvent, index: number, card: Card) {
     const actionType: ViewAction = "Grab";
-    const slot: Position = { row, column };
+    const position: HandPosition = index;
 
-    actionService.startAction(zone.owner)
+    actionService.startAction(hand.owner)
       .whereTriggerIs(elementType, actionType)
       .withCard(card)
-      .fromPosition(slot)
+      .fromPosition(position)
       .completeActionSource();
 
     grabAndDropApi.grab(event.currentTarget as HTMLElement);
     grabAndDropApi.moveElementToStartingPosition(event.clientX, event.clientY);
   }
 
-  function dropCard(event: MouseEvent, row: number, column: number, card: Card) {
+  function dropCard(event: MouseEvent, position: Position, card: Card) {
     const actionType: ViewAction = "Grab";
-    const slot: Position = { row, column };
 
     actionService.endAction()
       .whereTriggerIs(elementType, actionType)
-      .toPlayer(zone.owner)
+      .toPlayer(hand.owner)
       .toCard(card)
-      .atPosition(slot)
+      .atPosition(position)
       .completeActionTarget();
   }
 
@@ -41,4 +40,4 @@ const useZoneSlotAction = (zone: Zone) => {
   };
 }
 
-export { useZoneSlotAction };
+export { useHandSlotAction };

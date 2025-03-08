@@ -16,8 +16,11 @@
 
 <body>
 	<section>
+		<button id="login-btn">Login</button>
+		<button id="createParty-btn">Create Party</button>
 		<button id="connect-btn">Connect</button>
 		<button id="disconnect-btn">Disconnect</button>
+		<button id="startGame-btn">StartGame</button>
 		<div>
 			<label for="destination"> Destination: <select
 				id="destination" style="width: 100%; height: 2rem">
@@ -46,9 +49,10 @@
 <script src="js/websocket.js" type="module"></script>
  -->
 <script type="module">
+	import { login, createParty, startGame } from './js/api.js';
 	import { StompService } from './js/websocket.js';	
 
-	function connect() {
+	async function connect() {
 		StompService.connect()
 	}
 
@@ -66,7 +70,9 @@
 		StompService.sendMessage(`/application/${destination}`, jsonBody)
 	}
 
-
+	document.getElementById('login-btn').onclick = login;
+	document.getElementById('createParty-btn').onclick = createParty;
+	document.getElementById('startGame-btn').onclick = startGame;
 	document.getElementById('send-btn').onclick = send;
 	document.getElementById('connect-btn').onclick = connect;
 	document.getElementById('disconnect-btn').onclick = disconnect;

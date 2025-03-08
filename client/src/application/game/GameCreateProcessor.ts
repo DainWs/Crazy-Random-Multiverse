@@ -17,7 +17,7 @@ class GameCreateProcessor extends GameEventProcessor {
 
     super.updateContext(event);
 
-    const hand = new Hand(Context.getPlayer().code);
+    const hand = new Hand(Context.getPlayer());
     Context.setHand(hand);
   }
 

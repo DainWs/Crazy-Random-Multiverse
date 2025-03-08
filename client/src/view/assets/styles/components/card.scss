@@ -109,7 +109,7 @@ $row-height: calc($card-height / $num-rows);
     &.mithic {}
   }
 
-  &:hover:not(.follow-mouse) {
+  &:hover:not(.follow-mouse):not(.no-info) {
     &:active {
       opacity: 50;
     }

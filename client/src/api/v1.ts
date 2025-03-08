@@ -1,13 +1,13 @@
 import { mapDtoToParty, mapDtoToPartyList, mapDtoToUser, mapUserToDto } from "@/api/mapper";
 import * as Requests from "@/api/requests";
 
-const login = async (request: Requests.LoginRequest) => {
-  const headers = new Headers();
-  headers.set('content-type', 'text/plain');
+const headers = new Headers();
+headers.set('content-type', 'application/json');
 
+
+const login = async (request: Requests.LoginRequest) => {
   const response = await fetch(`/login`, {
-    method: "POST",
-    headers,
+    method: "POST", headers,
     body: `${request.username}`
   });
 
@@ -19,7 +19,7 @@ const login = async (request: Requests.LoginRequest) => {
 
 const setAccountInfo = async (request: Requests.SetAccountInfoRequest) => {
   const response = await fetch(`/user`, {
-    method: "PUT",
+    method: "PUT", headers,
     body: JSON.stringify(mapUserToDto(request.user))
   });
 
@@ -46,7 +46,7 @@ const getPartyList = async () => {
 
 const createParty = async (request: Requests.CreatePartyRequest) => {
   const response = await fetch(`/party`, {
-    method: "POST",
+    method: "POST", headers,
     body: JSON.stringify(request)
   });
 
@@ -58,7 +58,7 @@ const createParty = async (request: Requests.CreatePartyRequest) => {
 
 const updateParty = async (request: Requests.UpdatePartyRequest) => {
   const response = await fetch(`/party/${request.partyCode}`, {
-    method: "PUT",
+    method: "PUT", headers,
     body: JSON.stringify(request)
   });
 
@@ -87,7 +87,7 @@ const leaveParty = async (request: Requests.LeavePartyRequest) => {
 }
 
 const ready = async (request: Requests.ReadyGameRequest) => {
-  const response = await fetch(`/game/${request.gameCode}/ready`, { method: "POST" })
+  const response = await fetch(`/game/${btoa(request.gameCode)}/ready`, { method: "POST" })
 
   validate(response);
 }

@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import usePartyListController from '@pages/partyList/usePartyListController';
+import Party from '@/domain/models/Party';
+import usePartyStore from '@/stores/PartyStore';
+import { navigator } from '@view/configuration/router';
 
-const partyListController = usePartyListController();
-const partyStore = partyListController.getReactivePartyList();
-const onRefreshPartiesClick = partyListController.onRefreshPartiesClick;
-const onJoinPartyClick = partyListController.onJoinPartyClick;
-const onBackClick = partyListController.onBackClick;
+const partyStore = usePartyStore();
+
+const onJoinPartyClick = async (party: Party) => {
+  await partyStore.joinToParty(party.code);
+  navigator.navigateTo('party');
+}
+
+const onRefreshPartiesClick = partyStore.refreshPartyList;
+const onBackClick = navigator.navigateToFunc('home');
 </script>
 
 <template>

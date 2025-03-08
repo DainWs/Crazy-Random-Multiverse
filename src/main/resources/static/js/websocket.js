@@ -3,7 +3,7 @@ import { Client } from '@stomp/stompjs';
 const wsServerUrl = `ws://${window.location.hostname}:${window.location.port}/ws`;
 
  // TODO Probar juego
-
+ 
 const StompService = {
 	isConnected: false,
 	connect: function() {
@@ -23,10 +23,18 @@ StompService.client = new Client({
 	reconnectDelay: 5000,
 })
 
-StompService.client.onConnect = () => {
+StompService.client.onConnect = (frame) => {
+	log(frame)
 	StompService.isConnected = true
 	StompService.client.subscribe('/topic/party/list', onServerMessage);
+	StompService.client.subscribe('/topic/party/info', onPartyInfo);
+	StompService.client.subscribe('/topic/event', onEvent);
 	StompService.client.subscribe('/user/topic/user/info', onAccountInfo);
+	StompService.client.subscribe('/user/topic/party/info', onPartyInfo);
+	StompService.client.subscribe('/user/topic/event', onEvent);
+	StompService.client.subscribe('/application/topic/user/info', onAccountInfo);
+	StompService.client.subscribe('/application/topic/party/info', onPartyInfo);
+	StompService.client.subscribe('/application/topic/event', onEvent);
 	log('Connected')
 }
 
@@ -44,7 +52,14 @@ StompService.client.onStompError = () => {
 }
 
 function onAccountInfo(message) {
-	
+	onServerMessage(message)
+}
+
+function onPartyInfo(message) {
+	onServerMessage(message)
+}
+
+function onEvent(message) {
 	onServerMessage(message)
 }
 

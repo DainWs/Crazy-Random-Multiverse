@@ -1,4 +1,6 @@
-class Position {
+type HandPosition = number;
+
+class ZonePosition {
   public row: number;
   public column: number;
 
@@ -8,4 +10,7 @@ class Position {
   }
 }
 
+type Position = HandPosition | ZonePosition;
+
+export { HandPosition, ZonePosition }
 export default Position;

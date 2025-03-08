@@ -23,7 +23,11 @@ const useSessionStore = defineStore("session", () => {
 });
 
 async function loadSessionFromLocalstorage() {
-  let username = localStorage.getItem("username")
+  let username = localStorage.getItem("username");
+  if (username != null) {
+    username = atob(atob(username));
+  }
+
   if (username == null) {
     username = defineNewUsername();
   }

@@ -8,16 +8,18 @@ import StatisticHealth from '@pages/game/card/StatisticHealth.vue';
 /**
  * @typedef {object} Props
  * @property {Card} card
+ * @property {boolean} showInfo
  */
 
 /** @type {Props} */
-const props = defineProps({ card: { require: true } });
+const props = defineProps({ card: { require: true }, showInfo: { require: false } });
 defineEmits(['cardMousedown', 'drag', 'drop']);
+console.log("a")
 </script>
 
 <template>
     <!-- TODO Colocar imagenes de fondo de los tipos de carta -->
-    <div :class="`card ${props.card.type} ${props.card.rarity ?? ''}`.toLowerCase()"
+    <div :class="`card ${props.card.type} ${props.card.rarity ?? ''} ${props.showInfo ? '' : 'no-info'}`.toLowerCase()"
         draggable="true"
 
         @mousedown="$emit('cardMousedown', $event)">

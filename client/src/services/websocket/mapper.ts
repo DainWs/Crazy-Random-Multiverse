@@ -15,7 +15,7 @@ import GameError from '@/domain/models/GameError';
 import GameEvent, { GameEventDetails } from '@/domain/events/GameEvent';
 import Party from '@/domain/models/Party';
 import Player from '@/domain/models/Player';
-import Position from '@/domain/models/Position';
+import Position, { ZonePosition } from '@/domain/models/Position';
 import User from '@/domain/models/User';
 import Zone from '@/domain/models/Zone';
 
@@ -116,7 +116,7 @@ function mapCardDtoToCard(dto: CardDto): Card {
 }
 
 function mapPositionDtoToPosition(dto: PositionDto): Position {
-  return new Position(dto.row, dto.column);
+  return new ZonePosition(dto.row, dto.column);
 }
 
 export default {

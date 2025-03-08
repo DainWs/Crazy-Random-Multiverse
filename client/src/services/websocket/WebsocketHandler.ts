@@ -70,6 +70,7 @@ class WebsocketHandler {
   }
 
   private onGameEventMessage(message: IMessage) {
+    console.log("PETOOOOO")
     const gameEventDto: GameEventDto = JSON.parse(message.body);
     this.gameEventCallback(mapper.mapGameEventDtoToGameEvent(gameEventDto));
   }

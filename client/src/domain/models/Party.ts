@@ -22,6 +22,12 @@ class Party {
     this.users = new Array();
   }
 
+  public getUserTags(username: string) {
+    const tags = [];
+    if (this.isUserAdmin(username)) tags.push('Admin');
+    return tags;
+  }
+
   public isUserAdmin(username: string) {
     return this.owner == username;
   }

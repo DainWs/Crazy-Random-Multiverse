@@ -1,4 +1,4 @@
-import mouseFollowController from "@view/pages/game/hooks/MouseFollowController";
+import mouseFollowController from "@/services/dom/MouseFollowController";
 
 type MouseEventListener = (event: MouseEvent) => void;
 
@@ -40,6 +40,7 @@ class GrabAndDropApi {
     this.draggedElement.style.opacity = '0.5';
 
     document.body.setAttribute('style', 'cursor: grabbing !important');
+    document.body.setAttribute('grabbing', 'true');
     document.addEventListener('mouseup', this.onDropListener);
     document.addEventListener('mouseout', this.onMouseOutListener);
     document.addEventListener('mouseover', this.onMouseOverListener);

@@ -2,12 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import INavigator, { AvailablePages } from '@view/INavigator';
 
-import HomePage from '@view/pages/home/HomePage.vue';
+import HomePage from '@pages/HomePage.vue';
 import GamePage from '@view/pages/game/GamePage.vue';
-import PartyPage from '@view/pages/party/PartyPage.vue';
-import PartyListPage from '@view/pages/partyList/PartyListPage.vue';
-import PreviewPage from '@view/pages/preview/PreviewPage.vue';
-import CreditsPage from '@view/pages/credits/CreditsPage.vue';
+import PartyPage from '@pages/PartyPage.vue';
+import PartyListPage from '@pages/PartyListPage.vue';
+import PreviewPage from '@pages/PreviewPage.vue';
+import CreditsPage from '@pages/CreditsPage.vue';
+import { developmentOnly } from '@view/configuration/routeGuards';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +31,7 @@ const router = createRouter({
     },
     {
       path: '/preview',
+      beforeEnter: developmentOnly,
       component: PreviewPage
     },
     {
@@ -43,6 +45,9 @@ const navigatorRoutes = new Map<AvailablePages, string>();
 navigatorRoutes.set('home', '/');
 navigatorRoutes.set('game', '/game');
 navigatorRoutes.set('party', '/party');
+navigatorRoutes.set('party-list', '/party-list');
+navigatorRoutes.set('preview', '/preview');
+navigatorRoutes.set('credits', '/credits');
 
 const navigateTo = (page: AvailablePages) => {
   const route = navigatorRoutes.get(page);
@@ -50,8 +55,13 @@ const navigateTo = (page: AvailablePages) => {
   router.push(route);
 }
 
+const navigateToFunc = (page: AvailablePages) => {
+  return () => navigateTo(page);
+}
+
 const navigator: INavigator = {
-  navigateTo
+  navigateTo,
+  navigateToFunc
 }
 
 export { navigator };

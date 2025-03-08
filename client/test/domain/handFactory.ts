@@ -3,12 +3,12 @@ import cardFactory from "@test/domain/cardFactory";
 
 import Card from "@/domain/models/Card";
 import Hand from "@/domain/models/Hand";
-import { PlayerCode } from "@/domain/models/Player";
+import Player from "@/domain/models/Player";
 
-const createHand = (playerCode?: PlayerCode, cards?: Card[]): Hand => {
-  if (!playerCode) playerCode = playerFactory.createPlayerCode();
+const createHand = (player?: Player, cards?: Card[]): Hand => {
+  if (!player) player = playerFactory.createPlayer();
   if (!cards) cards = generateCards();
-  const hand = new Hand(playerCode);
+  const hand = new Hand(player);
   hand.cards = cards;
   return hand;
 }

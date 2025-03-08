@@ -1,5 +1,7 @@
 
 const SERVER_HOST = getServerHost();
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+const IS_BROWSER = process.env.PLATAFORM === 'browser';
 
 function getServerHost() {
   if (process.env.SERVER_HOST) {
@@ -20,4 +22,4 @@ function getServerHost() {
   throw new Error('SERVER_HOST enviroment variable not defined');
 }
 
-export { SERVER_HOST };
+export { SERVER_HOST, IS_DEVELOPMENT, IS_BROWSER };

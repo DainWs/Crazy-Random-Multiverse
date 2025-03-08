@@ -1,16 +1,21 @@
 <script lang="ts" setup>
 import AppLogo from '@components/shared/AppLogo.vue'
 import AppButton from '@components/shared/AppButton.vue';
-import useHomeController from '@pages/home/useHomeController';
+import usePartyStore from '@/stores/PartyStore';
+import { navigator } from '@view/configuration/router';
+import { IS_DEVELOPMENT } from '@/env'
 
-const homeController = useHomeController();
-const isInDevelopment = homeController.isInDevelopment();
-const isNotBrowserPlatform = homeController.isNotBrowserPlatform();
-const onCreatePartyClick = homeController.onCreatePartyClick;
-const onJoinPartyClick = homeController.onJoinPartyClick;
-const onCreditsClick = homeController.onCreditsClick;
-const onPreviewClick = homeController.onPreviewClick;
-const onExitClick = homeController.onExitClick;
+// TODO define party create form
+const partyStore = usePartyStore();
+
+const onCreatePartyClick = async () => {
+  await partyStore.createOwnParty('CLASSIC', 4);
+  navigator.navigateTo('party');
+};
+
+const onJoinPartyClick = navigator.navigateToFunc('party-list');
+const onCreditsClick = navigator.navigateToFunc('credits');
+const onPreviewClick = navigator.navigateToFunc('preview');
 </script>
 
 <template>
@@ -26,10 +31,8 @@ const onExitClick = homeController.onExitClick;
           <AppButton tabindex="1" text="Crear partida" class-name="menu__item" @click="onCreatePartyClick" />
           <AppButton tabindex="2" text="Unirse a partida" class-name="menu__item" @click="onJoinPartyClick" />
           <AppButton tabindex="4" text="Creditos" class-name="menu__item" @click="onCreditsClick" />
-          <AppButton v-if="isInDevelopment" tabindex="5" text="Preview" class-name="menu__item"
+          <AppButton v-if="IS_DEVELOPMENT" tabindex="5" text="Preview" class-name="menu__item"
             @click="onPreviewClick" />
-          <AppButton v-if="isNotBrowserPlatform" tabindex="6" text="Salir" class-name="menu__item"
-            @click="onExitClick" />
         </div>
       </div>
     </nav>

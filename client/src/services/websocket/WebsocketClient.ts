@@ -2,6 +2,8 @@ import { Client } from '@stomp/stompjs';
 import { SERVER_HOST } from '@/env';
 import WebsocketHandler, { HandlerOptions } from '@/services/websocket/WebsocketHandler';
 
+const WS_SERVER_HOST = new URL(SERVER_HOST);
+
 type ClientOptions = {
   handler: HandlerOptions;
 }
@@ -11,7 +13,7 @@ class WebsocketClient extends Client {
 
   public constructor(options: ClientOptions) {
     super({
-      brokerURL: `ws://${SERVER_HOST}/ws`,
+      brokerURL: `ws://${WS_SERVER_HOST.host}/ws`,
       reconnectDelay: 100,
       debug: (message) => console.log(message)
     });

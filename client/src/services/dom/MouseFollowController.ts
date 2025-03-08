@@ -1,4 +1,3 @@
-import crypto from "crypto";
 
 // TODO donde deberia estar esta clase?
 type MouseMoveListener = (event: MouseEvent) => void;

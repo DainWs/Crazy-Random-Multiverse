@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Zone from '@/domain/models/Zone';
 import CardComponent from '@pages/game/card/CardComponent.vue';
-import { useZoneSlotAction } from '@view/pages/game/hooks/useZoneSlotAction';
+import { useZoneSlotAction } from '@pages/game/zone/useZoneSlotAction';
 
 const { zone } = defineProps<{ zone: Zone }>();
 const { grabCard, dropCard } = useZoneSlotAction(zone);

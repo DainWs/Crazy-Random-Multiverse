@@ -1,0 +1,78 @@
+$card-aspect-ratio-width: 1;
+$card-aspect-ratio-height: 1.5;
+
+$card-width: calc(18vh * $card-aspect-ratio-width);
+$card-height: calc(18vh * $card-aspect-ratio-height);
+
+@keyframes card_in {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+.hand {
+  z-index: 1000;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  &__content {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  $base-margin: -50px;
+
+  &-slot {
+    margin: 1rem;
+    padding: 0;
+    border-width: 1px;
+    border-color: black;
+    border-style: dashed;
+    border-radius: 0.6rem;
+    width: $card-width;
+    height: $card-height;
+
+    background-color: rgba(255, 255, 255, 0.15);
+
+    transition: margin-left 0.3s ease,  
+      margin-right 0.3s ease, 
+      width 0.3s ease;
+
+    animation-name: card_in;
+    animation-duration: 2s;
+
+    display: none;
+    &:has(.card) {
+      display: block;
+    }
+  }
+
+  @for $i from 2 through 10 {
+    &:has(&-slot:nth-child(#{$i})) &-slot {
+      margin-left: -($i * 10px);
+
+      &:hover {
+        margin-right: calc($i * 10px);
+      }
+
+      &:last-child { margin-right: 0; }
+      &:first-child { margin-left: 0; }
+    }
+  }
+}
+/*
+body[grabbing] .hand:hover .hand-slot {
+  display: block;
+}
+*/

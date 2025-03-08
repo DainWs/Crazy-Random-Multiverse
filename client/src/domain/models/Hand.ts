@@ -1,17 +1,17 @@
-import { PlayerCode } from '@/domain/models/Player';
+import Player, { PlayerCode } from '@/domain/models/Player';
 import Card, { CardCode } from '@/domain/models/Card';
 
 class Hand {
-  public ownerCode: PlayerCode;
+  public owner: Player;
   public cards: Card[];
 
-  public constructor(ownerCode: PlayerCode) {
-    this.ownerCode = ownerCode;
+  public constructor(owner: Player) {
+    this.owner = owner;
     this.cards = new Array();
   }
 
   public isOwner(playerCode: PlayerCode) {
-    return this.ownerCode == playerCode;
+    return this.owner.code == playerCode;
   }
 
   public addCard(card: Card): void {

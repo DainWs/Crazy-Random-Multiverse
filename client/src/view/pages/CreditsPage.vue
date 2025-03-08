@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import creditsController from '@view/pages/credits/CreditsController';
-const credits = creditsController.getCredits();
-const onBackClick = creditsController.onBackClick;
+import creditsJson from '@resources/Credits.json';
+import { navigator } from '@view/configuration/router';
+
+const onBackClick = navigator.navigateToFunc('home');
 </script>
 
 <template>
@@ -10,7 +11,7 @@ const onBackClick = creditsController.onBackClick;
       <h1 class="dws--title">Credits</h1>
       <img src="@assets/images/close-large.svg" class="dws--credits--close" @click="onBackClick" />
       <section class="dws--credits__section">
-        <div v-for="section in credits" :key="section.id">
+        <div v-for="section in creditsJson.credits" :key="section.id">
           <h3>{{ section.name }}</h3>
           <p class="dws--credits__people">
             <span v-for="person in section.people" :key="`${section.id}_${person}`">{{ person }}</span>
