@@ -50,7 +50,7 @@ $card-height: calc(18vh * $card-aspect-ratio-height);
       width 0.3s ease;
 
     animation-name: card_in;
-    animation-duration: 2s;
+    animation-duration: .5s;
 
     display: none;
     &:has(.card) {

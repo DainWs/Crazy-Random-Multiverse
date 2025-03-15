@@ -1,12 +1,9 @@
 
-// TODO donde deberia estar esta clase?
-type MouseMoveListener = (event: MouseEvent) => void;
-
 class MouseFollowController {
   private elementsFollowingMouse: Set<HTMLElement>;
   private isAlreadyFollowingMouse: boolean;
 
-  private onMouseMoveListener: MouseMoveListener;
+  private onMouseMoveListener: (event: MouseEvent) => void;
 
   public constructor() {
     this.elementsFollowingMouse = new Set();
