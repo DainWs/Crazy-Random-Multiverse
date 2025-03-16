@@ -4,7 +4,7 @@ type MouseEventListener = (event: MouseEvent) => void;
 
 const CREATE_GHOST_ELEMENT = true;
 
-class GrabAndDropApi {
+class GrabAndDropController {
   private isDragging: boolean;
   private toParent: HTMLElement | null;
   private draggedElement: HTMLElement | null;
@@ -142,5 +142,5 @@ document.addEventListener('dragover', (e) => { e.preventDefault() });
 document.addEventListener('dragstart', (e) => { e.preventDefault() });
 document.addEventListener('drop', (e) => { e.preventDefault() });
 
-const grabAndDropApi = new GrabAndDropApi();
-export default grabAndDropApi;
+const grabAndDropControllers = new GrabAndDropController();
+export default grabAndDropControllers;

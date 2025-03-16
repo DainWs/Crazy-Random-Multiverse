@@ -8,7 +8,7 @@ type ActionTriggerKey = string;
 const ACTION_TYPES = new Map<ActionTriggerKey, ActionType>();
 ACTION_TYPES.set(createKey('Hand', 'Grab', 'ZoneSlot', 'Drop'), 'PUT_CARD');
 ACTION_TYPES.set(createKey('ZoneSlot', 'Grab', 'ZoneSlot', 'Drop'), 'MOVE_CARD');
-ACTION_TYPES.set(createKey('ZoneSlot.Card', 'Click', 'ZoneSlot.Card', 'Click'), 'ATTACK_CARD');
+ACTION_TYPES.set(createKey('ZoneSlot.Card', 'SimpleClick', 'ZoneSlot.Card', 'SimpleClick'), 'ATTACK_CARD');
 
 const resolveActionType = (sourceTrigger: ActionTrigger, targetTrigger: ActionTrigger): ActionType => {
   const key = getKeyFromTriggers(sourceTrigger, targetTrigger);

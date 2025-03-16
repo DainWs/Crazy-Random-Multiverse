@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Zone from '@/domain/models/Zone';
 import Hand from '@/domain/models/Hand';
 import Card from '@/domain/models/Card';
@@ -23,15 +23,24 @@ for (let i = 0; i < cardsToGenerate; i++) {
   setTimeout(() => hand.value.addCard(card), 3000 * i);
 }
 
-const zone = new Zone(sessionStore.currentUser.toPlayer());
-zone.health = 75;
-zone.maxHealth = 100;
-zone.combatants = [];
-zone.combatants[0] = new Array(3);
-zone.combatants[1] = new Array(3);
-zone.combatants[1][1] = cardFactory.createCard();
+const zone = ref(new Zone(sessionStore.currentUser.toPlayer()));
+zone.value.health = 75;
+zone.value.maxHealth = 100;
+zone.value.combatants = [];
+zone.value.combatants[0] = new Array(3);
+zone.value.combatants[1] = new Array(3);
+zone.value.combatants[1][1] = cardFactory.createCard();
 
+watch(zone, (zone, oldZone) => {
+  console.log(zone)
+  console.log(oldZone)
+});
 
+setTimeout(() => {
+  zone.value.health = 10;
+  console.log("aaaaaaaaaaaaaaaa")
+
+}, 1000)
 const onBackClick = navigator.navigateToFunc('home');
 </script>
 

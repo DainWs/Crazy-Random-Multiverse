@@ -12,27 +12,31 @@ const trElementAttribute = `${customAttributePrefix}-tr-element`;
 const spAttribute = `${customAttributePrefix}-sp-element`;
 const spIDAttribute = `${customAttributePrefix}-sp-id`;
 
-class MouseTrailEffect {
+class MouseTrailController {
   private startingElements: Set<HTMLElement>;
+  private elementFactories: Map<string,CreateDOMElement>;
   private isAlreadyRunning: boolean;
 
-  private createElement: CreateDOMElement;
   private onMouseMoveListener: (event: MouseEvent) => void;
 
-  public constructor(factoryMethod: CreateDOMElement) {
+  public constructor() {
     this.startingElements = new Set();
+    this.elementFactories = new Map();
     this.isAlreadyRunning = false;
 
-    this.createElement = factoryMethod;
     this.onMouseMoveListener = this.handleMouseMove.bind(this);
   }
 
-  public addElement(node: Node) {
+  public addElement(node: Node, factoryMethod: CreateDOMElement) {
     const htmlElement = node as HTMLElement;
     if (!htmlElement.hasAttribute(spAttribute)) {
+      const calculatedID = `${Math.random() * 10000}-${Math.random() * 10000}`;
+  
       htmlElement.setAttribute(spAttribute, '');
-      htmlElement.setAttribute(spIDAttribute, `${Math.random() * 10000}-${Math.random() * 10000}`);
+      htmlElement.setAttribute(spIDAttribute, calculatedID);
+  
       this.startingElements.add(htmlElement);
+      this.elementFactories.set(calculatedID, factoryMethod);
       this.update();
     }
 
@@ -43,8 +47,11 @@ class MouseTrailEffect {
     const htmlElement = node as HTMLElement;
     if (htmlElement.hasAttribute(spAttribute)) {
       this.startingElements.delete(htmlElement);
+      this.elementFactories.delete(htmlElement.getAttribute(spIDAttribute) ?? '');
+
       htmlElement.removeAttribute(spAttribute);
       htmlElement.removeAttribute(spIDAttribute);
+
       this.update();
     }
     
@@ -79,6 +86,8 @@ class MouseTrailEffect {
   }
 
   private redrawElementsOf(trailedID: string, startPoint: StartPoint, endPoint: EndPoint) {
+    const createElement = this.getDOMFactoryFor(trailedID);
+
     const elements = document.querySelectorAll(`[${trElementAttribute}="${trailedID}"]`);
     elements.forEach(element => element.remove());
 
@@ -88,8 +97,9 @@ class MouseTrailEffect {
     const angle = Math.atan2(diferenceOnY, diferenceOnX) * (180 / Math.PI);
 
     for (let i = 0; i <= distance; i += 10) {
-      const trailedElement = this.createElement();
+      const trailedElement = createElement();
       trailedElement.classList.add('trailed-element');
+      trailedElement.setAttribute(trElementAttribute, trailedID);
 
       const distanceFactor = Math.sin((i / distance) * Math.PI);
       const spacing = 10 + distanceFactor * 20;
@@ -101,6 +111,22 @@ class MouseTrailEffect {
       document.body.appendChild(trailedElement);
     }    
   }
+
+  private getDOMFactoryFor(trailedID: string) {
+    const DOMFactory = this.elementFactories.get(trailedID);
+    if (DOMFactory) {
+      return DOMFactory;
+    }
+
+    return createDefaultElement;
+  }
 }
 
-export default MouseTrailEffect;
+function createDefaultElement() {
+  const div = document.createElement('div');
+  div.style.background = 'red';
+  return div;
+}
+
+const mouseTrailController = new MouseTrailController();
+export default mouseTrailController;

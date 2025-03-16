@@ -1,10 +1,11 @@
+import { toRef } from 'vue';
 <script lang="ts" setup>
 import Zone from '@/domain/models/Zone';
 import CardComponent from '@pages/game/card/CardComponent.vue';
 import { useZoneSlotAction } from '@pages/game/zone/useZoneSlotAction';
 
 const { zone } = defineProps<{ zone: Zone }>();
-const { grabCard, dropCard } = useZoneSlotAction(zone);
+const { clickCard , grabCard, dropCard } = useZoneSlotAction(zone);
 </script>
 
 <template>
@@ -14,9 +15,8 @@ const { grabCard, dropCard } = useZoneSlotAction(zone);
                 <div v-for="(card, columnIndex) in lineColumns" :key="`${lineIndex}-${columnIndex}`" class="column">
                     <div class="zone-slot drop-zone"
                         @drop="dropCard($event, lineIndex, columnIndex, card)">
-
                         <CardComponent v-if="card" :card="card"
-                            @simpleClick="() => console.log('simple click')"
+                            @simpleClick="clickCard($event, lineIndex, columnIndex, card)"
                             @doubleClick="() => console.log('doble click')"
                             @grab="grabCard($event, lineIndex, columnIndex, card)" />
                     </div>

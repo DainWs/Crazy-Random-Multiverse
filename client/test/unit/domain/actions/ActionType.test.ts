@@ -13,8 +13,8 @@ describe('ActionType - Unit tests', () =>{
   });
 
   test('Should resolve as action type ATTACK_CARD', () => {
-    const sourceTrigger: ActionTrigger = { action: 'Click' , element: 'ZoneSlot.Card' };
-    const targetTrigger: ActionTrigger = { action: 'Click' , element: 'ZoneSlot.Card' };
+    const sourceTrigger: ActionTrigger = { action: 'SimpleClick' , element: 'ZoneSlot.Card' };
+    const targetTrigger: ActionTrigger = { action: 'SimpleClick' , element: 'ZoneSlot.Card' };
 
     const actionType = resolveActionType(sourceTrigger, targetTrigger);
 
@@ -32,7 +32,7 @@ describe('ActionType - Unit tests', () =>{
 
   test('Should resolve as action type NONE', () => {
     const sourceTrigger: ActionTrigger = { action: 'Drop' , element: 'ZoneSlot.Card' };
-    const targetTrigger: ActionTrigger = { action: 'Click' , element: 'Hand' };
+    const targetTrigger: ActionTrigger = { action: 'SimpleClick' , element: 'Hand' };
 
     const actionType = resolveActionType(sourceTrigger, targetTrigger);
 
