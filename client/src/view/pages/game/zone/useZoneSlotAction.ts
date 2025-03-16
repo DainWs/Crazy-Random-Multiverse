@@ -4,7 +4,7 @@ import Position from "@/domain/models/Position";
 import Card from "@/domain/models/Card";
 import Zone from "@/domain/models/Zone";
 import * as actionService from '@/application/actionService';
-import grabAndDropApi from "@/services/dom/GrabAndDropApi";
+import grabAndDropApi from "@/services/dom/GrabAndDropController";
 
 const useZoneSlotAction = (zone: Zone) => {
   const elementType: ViewElement = "ZoneSlot";

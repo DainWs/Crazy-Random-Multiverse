@@ -14,24 +14,11 @@ import useClickEventWrapper from '@pages/game/card/useClickEventWrapper';
 
 /** @type {Props} */
 const props = defineProps({ card: { require: true }, showInfo: { require: false } });
-const emit = defineEmits(['simpleClick', 'doubleClick', 'grabbed', 'drag', 'drop']);
-var cardId = "id" + Math.random().toString(16).slice(2);
+const cardId = "id" + Math.random().toString(16).slice(2);
 
-const { dispatchType } = useClickEventWrapper();
+const emit = defineEmits(['simpleClick', 'doubleClick', 'grab', 'drag', 'drop']);
 
-/**
- * @param {MouseEvent} event 
- */
- async function handleMouse(event) {
-    const mouseType = await dispatchType(event);
-    const currentTarget = document.getElementById(cardId);
-    if (mouseType && mouseType == 'Grab') emit('grabbed', { ...event, currentTarget });
-    if (mouseType && mouseType == 'SimpleClick') emit('simpleClick', { ...event, currentTarget });
-    if (mouseType && mouseType == 'DoubleClick') emit('doubleClick', { ...event, currentTarget });
-    console.log(mouseType)
-}
-
-console.log("a")
+const { handleMouseEvent } = useClickEventWrapper(cardId, emit);
 </script>
 
 <template>
@@ -40,8 +27,8 @@ console.log("a")
         :id="cardId"
         draggable="true"
 
-        @mousedown.left.capture="handleMouse"
-        @mouseup.left.capture="handleMouse">
+        @mousedown.left.capture="handleMouseEvent"
+        @mouseup.left.capture="handleMouseEvent">
 
         <div class="card--type">{{ card.getTypeDescription() }}</div>
         <div class="card--name">{{ card.name }}</div>

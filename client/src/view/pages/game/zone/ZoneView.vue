@@ -5,9 +5,6 @@ import { useZoneSlotAction } from '@pages/game/zone/useZoneSlotAction';
 
 const { zone } = defineProps<{ zone: Zone }>();
 const { grabCard, dropCard } = useZoneSlotAction(zone);
-
-// grabCard($event, lineIndex, columnIndex, card)
-//@dragover="onDropCard({ player: zone.owner, ...$event })"
 </script>
 
 <template>
@@ -21,7 +18,7 @@ const { grabCard, dropCard } = useZoneSlotAction(zone);
                         <CardComponent v-if="card" :card="card"
                             @simpleClick="() => console.log('simple click')"
                             @doubleClick="() => console.log('doble click')"
-                            @grabbed="grabCard($event, lineIndex, columnIndex, card)" />
+                            @grab="grabCard($event, lineIndex, columnIndex, card)" />
                     </div>
                 </div>
             </div>

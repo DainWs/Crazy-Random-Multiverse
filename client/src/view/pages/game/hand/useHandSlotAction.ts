@@ -4,7 +4,7 @@ import Position, { HandPosition } from "@/domain/models/Position";
 import Card from "@/domain/models/Card";
 import Hand from "@/domain/models/Hand";
 import * as actionService from '@/application/actionService';
-import grabAndDropApi from "@/services/dom/GrabAndDropApi";
+import grabAndDropApi from "@/services/dom/GrabAndDropController";
 
 const useHandSlotAction = (hand: Hand) => {
   const elementType: ViewElement = "Hand";
