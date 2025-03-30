@@ -21,8 +21,8 @@ public class WebLoadController {
 	}
 
 	@PostMapping("/game/{gameCode}/ready")
-	public void readyToStart(@PathVariable("gameCode") String gameCodeAsString) {
-		GameCode gameCode = GameCode.from(gameCodeAsString);
+	public void readyToStart(@PathVariable("gameCode") String gameCodeBase64UrlSafe) {
+		GameCode gameCode = GameCode.fromBase64UrlSafe(gameCodeBase64UrlSafe);
 		PlayerCode playerCode = this.userSession.getCode().toPlayerCode();
 		this.gameService.loadCompleteFor(gameCode, playerCode);
 	}

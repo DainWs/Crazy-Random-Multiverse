@@ -5,12 +5,12 @@ import PartyDto from '@/services/websocket/dto/PartyDto';
 import PartyListDto from '@/services/websocket/dto/PartyListDto';
 import GameEventDto from '@/services/websocket/dto/GameEventDto';
 import Party from '@/domain/models/Party';
-import GameEvent from '@/domain/events/GameEvent';
+import Event from '@/services/events/Event';
 import GameError from '@/domain/models/GameError';
 
 type PartyCallback = (party: Party) => void;
 type PartyListCallback = (parties: Party[]) => void;
-type GameEventCallback = (event: GameEvent) => void;
+type GameEventCallback = (event: Event) => void;
 type GameErrorCallback = (error: GameError) => void;
 
 type HandlerOptions = {
@@ -34,10 +34,10 @@ class WebsocketHandler {
   }
 
   public onConnect(stompClient: Client, frame: IFrame) {
-    stompClient.subscribe('/user/topic/party/info', this.onPartyInfoMessage);
-    stompClient.subscribe('/user/topic/party/list', this.onPartyListMessage);
-    stompClient.subscribe('/user/topic/error', this.onGameErrorMessage);
-    stompClient.subscribe('/user/topic/event', this.onGameEventMessage);
+    stompClient.subscribe('/user/topic/party/info', this.onPartyInfoMessage.bind(this));
+    stompClient.subscribe('/user/topic/party/list', this.onPartyListMessage.bind(this));
+    stompClient.subscribe('/user/topic/error', this.onGameErrorMessage.bind(this));
+    stompClient.subscribe('/user/topic/event', this.onGameEventMessage.bind(this));
     this.log('Connected');
   };
 
@@ -70,8 +70,8 @@ class WebsocketHandler {
   }
 
   private onGameEventMessage(message: IMessage) {
-    console.log("PETOOOOO")
     const gameEventDto: GameEventDto = JSON.parse(message.body);
+    console.log(gameEventDto)
     this.gameEventCallback(mapper.mapGameEventDtoToGameEvent(gameEventDto));
   }
 

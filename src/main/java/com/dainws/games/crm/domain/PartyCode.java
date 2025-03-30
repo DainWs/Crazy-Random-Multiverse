@@ -3,6 +3,10 @@ package com.dainws.games.crm.domain;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.apache.tomcat.util.codec.binary.Base64;
+
+import com.dainws.games.crm.domain.core.GameCode;
+
 public class PartyCode {
 	private UUID uuid;
 
@@ -34,13 +38,18 @@ public class PartyCode {
 		return this.uuid.toString();
 	}
 
-	public static PartyCode from(String uuid) {
-		if (uuid == null) {
-			throw new NullPointerException("El UUID indicado es nulo");
-		}
+	public static PartyCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
+		Objects.requireNonNull(uuidAsBase64UrlSafe);
+		
+		String asString = new String(Base64.decodeBase64URLSafe(uuidAsBase64UrlSafe));
+		return from(asString);
+	}
+
+	public static PartyCode from(String uuidAsString) {
+		Objects.requireNonNull(uuidAsString);
 
 		PartyCode partyCode = new PartyCode();
-		partyCode.uuid = UUID.fromString(uuid);
+		partyCode.uuid = UUID.fromString(uuidAsString);
 		return partyCode;
 	}
 }

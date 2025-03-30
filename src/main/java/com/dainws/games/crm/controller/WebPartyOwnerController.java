@@ -28,7 +28,6 @@ public class WebPartyOwnerController implements PartyOwnerController {
 	}
 
 	@Override
-	@PutMapping("/party/{partyCode}")
 	public void updateParty(UpdatePartyRequest request) throws PartyException {
 		PartyCode code = PartyCode.from(request.getCode());
 		GameMode gameMode = request.getGameMode().getDomainGameMode();
@@ -40,7 +39,6 @@ public class WebPartyOwnerController implements PartyOwnerController {
 	}
 	
 	@Override
-	@PostMapping("/party/{partyCode}/kick")
 	public void kickoutUser(KickoutFromPartyRequest request) throws PartyException {
 		PartyCode partyCode = PartyCode.from(request.getPartyCode());
 		UserCode userToKick = UserCode.from(request.getUserCode());
@@ -48,9 +46,8 @@ public class WebPartyOwnerController implements PartyOwnerController {
 	}
 
 	@Override
-	@PostMapping("/party/{partyCode}/start")
-	public void startPartyGame(@PathVariable("partyCode") String partyCodeAsString) throws PartyException {
-		PartyCode partyCode = PartyCode.from(partyCodeAsString);
+	public void startPartyGame(String partyCodeBase64UrlSafe) throws PartyException {
+		PartyCode partyCode = PartyCode.fromBase64UrlSafe(partyCodeBase64UrlSafe);
 		this.partyOwnerService.startPartyGame(this.userSession.clone(), partyCode);
 	}
 	

@@ -1,19 +1,23 @@
 import WebsocketClient, { ClientOptions } from "@/services/websocket/WebsocketClient"
 import useSessionStore from "@/stores/SessionStore";
 import usePartyStore from "@/stores/PartyStore";
+import useGameStore from "@/stores/GameStore";
+import useGameEvents from "@/services/useGameEvents";
 
 let clientInstance: WebsocketClient;
 
 const useWebsocket = () => {
   const sessionStore = useSessionStore();
   const partyStore = usePartyStore();
+  const gameStore = useGameStore();
+  const { addEventToQueue } = useGameEvents();
 
   const options: ClientOptions = {
     handler: {
       onParty: party => partyStore.currentParty = party,
       onPartyList: parties => partyStore.allParties = parties,
-      onGameEvent: () => { console.log("not configured") },
-      onGameError: () => { console.log("not configured") }
+      onGameEvent: addEventToQueue,
+      onGameError: gameError => gameStore.errors.push(gameError)
     }
   }
 

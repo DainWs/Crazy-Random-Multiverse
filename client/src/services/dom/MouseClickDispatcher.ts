@@ -1,5 +1,5 @@
 
-type ClickType = null | 'SimpleClick' | 'DoubleClick' | 'Grab';
+type ClickType = null | 'SimpleClick' | 'DoubleClick' | 'RightClick' | 'Grab';
 
 class MouseClickDispatcher {
   private clickCount: number;

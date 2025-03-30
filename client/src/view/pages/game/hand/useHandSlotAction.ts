@@ -6,10 +6,12 @@ import Hand from "@/domain/models/Hand";
 import * as actionService from '@/application/actionService';
 import grabAndDropApi from "@/services/dom/GrabAndDropController";
 
-const useHandSlotAction = (hand: Hand) => {
+const useHandSlotAction = (hand: Hand | null) => {
   const elementType: ViewElement = "Hand";
 
   function grabCard(event: DragEvent, index: number, card: Card) {
+    if (!hand) throw new Error("You cant grab a card from a null hand");
+
     const actionType: ViewAction = "Grab";
     const position: HandPosition = index;
 
@@ -24,7 +26,9 @@ const useHandSlotAction = (hand: Hand) => {
   }
 
   function dropCard(event: MouseEvent, position: Position, card: Card) {
-    const actionType: ViewAction = "Grab";
+    if (!hand) throw new Error("You cant drop a card on a null hand");
+  
+    const actionType: ViewAction = "Drop";
 
     actionService.endAction()
       .whereTriggerIs(elementType, actionType)

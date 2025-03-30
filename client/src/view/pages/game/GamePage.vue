@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import PlayerHand from '@pages/game/hand/PlayerHand.vue';
+import Zone from '@/domain/models/Zone';
 import ZoneView from '@pages/game/zone/ZoneView.vue';
 import ZoneNavigator from '@pages/game/zone/ZoneNavigator.vue';
+import PlayerHand from '@pages/game/hand/PlayerHand.vue';
 import useGameController from '@pages/game/useGameController';
 
 const gameController = useGameController();
@@ -12,6 +13,11 @@ const playerHand = gameController.getReactivePlayerHand();
 const visibleZone = gameController.getReactiveVisibleZone();
 const onZoneSelect = gameController.onZoneSelect;
 const onActionPerformed = gameController.onActionPerformed;
+
+console.log(game)
+console.log(playerInfo)
+console.log(playerHand)
+console.log(visibleZone)
 </script>
 
 <template>
@@ -20,7 +26,7 @@ const onActionPerformed = gameController.onActionPerformed;
     <!-- TODO Agregar e implementar componente ErrorMessagesComponent -->
 
     <!-- TODO Agregar enemy zone preview -->
-    <ZoneView v-if="visibleZone" :zone="visibleZone" />
+    <ZoneView v-if="visibleZone" :is-enemy-zone="visibleZone?.isPlayerOwner(playerInfo)" :zone="visibleZone as Zone" />
     <ZoneNavigator :game="game" @select="onZoneSelect" />
     <PlayerHand :hand="playerHand"/>
   </div>

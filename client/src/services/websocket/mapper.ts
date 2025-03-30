@@ -12,7 +12,7 @@ import PositionDto from '@/services/websocket/dto/PositionDto';
 import Card, { CardCode } from '@/domain/models/Card';
 import Game from '@/domain/models/Game';
 import GameError from '@/domain/models/GameError';
-import GameEvent, { GameEventDetails } from '@/domain/events/GameEvent';
+import Event, { EventCode, EventDetails } from '@/services/events/Event';
 import Party from '@/domain/models/Party';
 import Player from '@/domain/models/Player';
 import Position, { ZonePosition } from '@/domain/models/Position';
@@ -47,10 +47,10 @@ const mapErrorDtoToGameError = (dto: ErrorDto): GameError => {
   return new GameError(dto.key, dto.value, dto.language);
 };
 
-const mapGameEventDtoToGameEvent = (dto: GameEventDto): GameEvent => {
+const mapGameEventDtoToGameEvent = (dto: GameEventDto): Event => {
   const detailsDto = dto.details;
 
-  const details: GameEventDetails = { game: mapGameDtoToGame(detailsDto.game) };
+  const details: EventDetails = { game: mapGameDtoToGame(detailsDto.game) };
   if (detailsDto.sourceCard) details.sourceCard = mapCardDtoToCard(detailsDto.sourceCard);
   if (detailsDto.sourcePlayer) details.sourcePlayer = mapPlayerDtoToPlayer(detailsDto.sourcePlayer);
   if (detailsDto.sourcePosition) details.sourcePosition = mapPositionDtoToPosition(detailsDto.sourcePosition);
@@ -58,7 +58,7 @@ const mapGameEventDtoToGameEvent = (dto: GameEventDto): GameEvent => {
   if (detailsDto.targetPlayer) details.targetPlayer = mapPlayerDtoToPlayer(detailsDto.targetPlayer);
   if (detailsDto.targetPosition) details.targetPosition = mapPositionDtoToPosition(detailsDto.targetPosition);
 
-  return new GameEvent(dto.code, details);
+  return new Event(dto.code as EventCode, details);
 };
 
 function mapGameDtoToGame(dto: GameDto): Game {
@@ -76,12 +76,14 @@ function mapZoneDtoToZone(dto: ZoneDto): Zone {
   zone.health = dto.health;
   zone.maxHealth = dto.maxHealth;
 
-  const combatants = new Array<Array<Card>>();
+  const combatants = new Array<Array<Card>>(dto.combatants.length);
   for (const rowNumber in dto.combatants) {
-    const rowCombatants = new Array<Card>();
+    const rowCombatants = new Array<Card>(dto.combatants[rowNumber].length);
     const rowDtoCombatants = dto.combatants[rowNumber];
+  
     for (const columnNumber in rowDtoCombatants) {
       const combatantDto = rowDtoCombatants[columnNumber];
+  
       if (combatantDto) {
         rowCombatants[columnNumber] = mapCardDtoToCard(combatantDto);
       }
@@ -90,6 +92,7 @@ function mapZoneDtoToZone(dto: ZoneDto): Zone {
     combatants[rowNumber] = rowCombatants;
   }
   zone.combatants = combatants;
+  console.log(zone.combatants)
   return zone;
 }
 

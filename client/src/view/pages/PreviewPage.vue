@@ -27,20 +27,11 @@ const zone = ref(new Zone(sessionStore.currentUser.toPlayer()));
 zone.value.health = 75;
 zone.value.maxHealth = 100;
 zone.value.combatants = [];
-zone.value.combatants[0] = new Array(3);
+zone.value.combatants[0] = new Array(1);
+zone.value.combatants[0][0] = cardFactory.createCard();
 zone.value.combatants[1] = new Array(3);
-zone.value.combatants[1][1] = cardFactory.createCard();
+zone.value.combatants[2] = new Array(3);
 
-watch(zone, (zone, oldZone) => {
-  console.log(zone)
-  console.log(oldZone)
-});
-
-setTimeout(() => {
-  zone.value.health = 10;
-  console.log("aaaaaaaaaaaaaaaa")
-
-}, 1000)
 const onBackClick = navigator.navigateToFunc('home');
 </script>
 
@@ -51,7 +42,7 @@ const onBackClick = navigator.navigateToFunc('home');
       <img src="@assets/images/close-large.svg" class="dws--close" @click="onBackClick" />
       <div class="horizontal--50-50">
         <section>
-          <ZoneView :zone="zone"></ZoneView>
+          <ZoneView :zone="(zone as Zone)" :is-enemy-zone="false"></ZoneView>
         </section>
         <section>
           <PlayerHand :hand="hand"></PlayerHand>

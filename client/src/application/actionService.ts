@@ -5,6 +5,10 @@ import ActionBuilder from '@/domain/actions/ActionBuilder';
 
 let currentActionBuilder: ActionBuilder;
 
+const hasAlreadyStartedAnAction = () => {
+  return currentActionBuilder != undefined && !currentActionBuilder.hasFinish();
+}
+
 const startAction = (playerThatStartAction: Player) => {
   if (currentActionBuilder == undefined || currentActionBuilder.hasFinish()) {
     currentActionBuilder = new ActionBuilder(onActionSourceComplete, onActionTargetComplete);
@@ -31,6 +35,7 @@ function onActionSourceComplete(source: ActionSource) {
 
 function onActionTargetComplete(target: ActionTarget) {
   console.log(`Player action [02/02] complete: target${JSON.stringify(target)}`);
+  //currentActionBuilder.build();
   /*
   const game = gameRepository.findCurrentGame();
   if (game == undefined) {
@@ -43,4 +48,4 @@ function onActionTargetComplete(target: ActionTarget) {
   */
 }
 
-export { startAction, endAction, cancelAction };
+export { hasAlreadyStartedAnAction, startAction, endAction, cancelAction };

@@ -19,9 +19,8 @@ public class WebPartyMemberController implements PartyMemberController {
 	}
 
 	@Override
-	@PostMapping("/party/{partyCode}/leave")
-	public void leaveParty(@PathVariable("partyCode") String partyCodeAsString) {
-		PartyCode partyCode = PartyCode.from(partyCodeAsString);
+	public void leaveParty(String partyCodeBase64UrlSafe) {
+		PartyCode partyCode = PartyCode.fromBase64UrlSafe(partyCodeBase64UrlSafe);
 		this.partyService.leaveParty(partyCode, this.userSession.clone());
 	}
 

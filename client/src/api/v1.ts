@@ -57,7 +57,7 @@ const createParty = async (request: Requests.CreatePartyRequest) => {
 }
 
 const updateParty = async (request: Requests.UpdatePartyRequest) => {
-  const response = await fetch(`/party/${request.partyCode}`, {
+  const response = await fetch(`/party/${toBase64UrlSafe(request.partyCode)}`, {
     method: "PUT", headers,
     body: JSON.stringify(request)
   });
@@ -66,13 +66,13 @@ const updateParty = async (request: Requests.UpdatePartyRequest) => {
 }
 
 const startGame = async (request: Requests.StartGameRequest) => {
-  const response = await fetch(`/party/${request.partyCode}/start`, { method: "POST" });
+  const response = await fetch(`/party/${toBase64UrlSafe(request.partyCode)}/start`, { method: "POST" });
 
   validate(response);
 }
 
 const joinParty = async (request: Requests.JoinPartyRequest) => {
-  const response = await fetch(`/party/${request.partyCode}/join`, { method: "POST" });
+  const response = await fetch(`/party/${toBase64UrlSafe(request.partyCode)}/join`, { method: "POST" });
 
   validate(response);
 
@@ -81,19 +81,26 @@ const joinParty = async (request: Requests.JoinPartyRequest) => {
 }
 
 const leaveParty = async (request: Requests.LeavePartyRequest) => {
-  const response = await fetch(`/party/${request.partyCode}/leave`, { method: "POST" });
+  const response = await fetch(`/party/${toBase64UrlSafe(request.partyCode)}/leave`, { method: "POST" });
 
   validate(response);
 }
 
 const ready = async (request: Requests.ReadyGameRequest) => {
-  const response = await fetch(`/game/${btoa(request.gameCode)}/ready`, { method: "POST" })
+  const response = await fetch(`/game/${toBase64UrlSafe(request.gameCode)}/ready`, { method: "POST" })
 
   validate(response);
 }
 
 function validate(response: Response) {
   if (!response.ok) throw new Error(response.statusText);
+}
+
+function toBase64UrlSafe(text: string) {
+  return btoa(text)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
 }
 
 export {

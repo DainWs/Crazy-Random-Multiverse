@@ -7,7 +7,6 @@ import * as actionService from '@/application/actionService';
 import grabAndDropController from "@/services/dom/GrabAndDropController";
 import mouseTrailController from "@/services/dom/MouseTrailController";
 import VisualEffects from "@/services/dom/VisualEffects";
-import { toRef } from "vue";
 
 const useZoneSlotAction = (zone: Zone) => {
   const elementType: ViewElement = "ZoneSlot";
@@ -16,11 +15,20 @@ const useZoneSlotAction = (zone: Zone) => {
     const actionType: ViewAction = "SimpleClick";
     const slot: Position = { row, column };
 
-    actionService.startAction(zone.owner)
-      .whereTriggerIs(elementType, actionType)
-      .withCard(card)
-      .fromPosition(slot)
-      .completeActionSource();
+    if (actionService.hasAlreadyStartedAnAction()) {
+      actionService.endAction()
+        .whereTriggerIs(elementType, actionType)
+        .toPlayer(zone.owner)
+        .toCard(card)
+        .atPosition(slot)
+        .completeActionTarget();
+    } else {
+      actionService.startAction(zone.owner)
+        .whereTriggerIs(elementType, actionType)
+        .withCard(card)
+        .fromPosition(slot)
+        .completeActionSource();
+    }
 
     const element = event.currentTarget as HTMLElement;
     mouseTrailController.addElement(element, VisualEffects.trailAttack);

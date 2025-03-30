@@ -1,24 +1,37 @@
-import { toRef } from 'vue';
 <script lang="ts" setup>
 import Zone from '@/domain/models/Zone';
 import CardComponent from '@pages/game/card/CardComponent.vue';
 import { useZoneSlotAction } from '@pages/game/zone/useZoneSlotAction';
 
-const { zone } = defineProps<{ zone: Zone }>();
+const { zone, isEnemyZone } = defineProps<{ zone: Zone, isEnemyZone: boolean }>();
 const { clickCard , grabCard, dropCard } = useZoneSlotAction(zone);
+console.log(zone)
+
+function rowFrom(index: number) {
+    if (isEnemyZone) {
+        return index - 1;
+    }
+
+    return zone.combatants.length - index;
+}
+
+function getSlotClasses(row: number, column: number) {
+    let dropSlot = zone.isEnabledPosition({ row, column }) ? 'drop-zone' : '';
+    return `zone-slot ${dropSlot}`;
+}
 </script>
 
 <template>
     <div class="zone">
         <div class="zone__content">
-            <div v-for="(lineColumns, lineIndex) in zone.combatants" :key="`${lineIndex}`" class="line">
-                <div v-for="(card, columnIndex) in lineColumns" :key="`${lineIndex}-${columnIndex}`" class="column">
-                    <div class="zone-slot drop-zone"
-                        @drop="dropCard($event, lineIndex, columnIndex, card)">
+            <div v-for="i in zone.combatants.length" :key="`${rowFrom(i)}`" class="line">
+                <div v-for="(card, columnIndex) in zone.combatants[rowFrom(i)]" :key="`${rowFrom(i)}-${columnIndex}`" class="column">
+                    <div :class="getSlotClasses(rowFrom(i), columnIndex)"
+                        @drop="dropCard($event,rowFrom(i), columnIndex, card)">
                         <CardComponent v-if="card" :card="card"
-                            @simpleClick="clickCard($event, lineIndex, columnIndex, card)"
+                            @simpleClick="clickCard($event, rowFrom(i), columnIndex, card)"
                             @doubleClick="() => console.log('doble click')"
-                            @grab="grabCard($event, lineIndex, columnIndex, card)" />
+                            @grab="grabCard($event, rowFrom(i), columnIndex, card)" />
                     </div>
                 </div>
             </div>

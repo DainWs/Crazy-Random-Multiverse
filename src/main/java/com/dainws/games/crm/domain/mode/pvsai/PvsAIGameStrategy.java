@@ -24,8 +24,8 @@ public class PvsAIGameStrategy extends ClassicModeStrategy {
 	@Override
 	public PlayerStorage createPlayerStorage() {
 		PlayerStorage players = super.createPlayerStorage();
-
-		for (int i = 0; i < players.size(); i++) {
+		int aiPlayersToBuild = players.size();
+		for (int i = 0; i < aiPlayersToBuild; i++) {
 			String aiName = "Player " + i;
 			players.add(new AIPlayer(this.createBehavior(), aiName));
 		}

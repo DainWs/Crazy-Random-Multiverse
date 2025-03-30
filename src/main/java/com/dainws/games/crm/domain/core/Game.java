@@ -39,9 +39,13 @@ public class Game {
 		this.gameMode = strategy.getGameMode();
 		this.isRunning = true;
 
+		System.out.println("dealer");
 		this.dealer = strategy.createDealer();
+		System.out.println("players");
 		this.players = strategy.createPlayerStorage();
+		System.out.println("board");
 		this.board = strategy.createBoard(this.players);
+		System.out.println("turn");
 		this.turn = strategy.createTurn(this.players);
 
 		this.eventPublisher = strategy.createEventPublisher(this);

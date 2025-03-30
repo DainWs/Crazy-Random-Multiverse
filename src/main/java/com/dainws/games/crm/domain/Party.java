@@ -98,7 +98,7 @@ public class Party {
 		return this.users.isEmpty();
 	}
 
-	public boolean isLocked() {
+	public boolean isLocked() {		
 		return !this.currentGame.isNone();
 	}
 

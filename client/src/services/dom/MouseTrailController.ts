@@ -25,6 +25,12 @@ class MouseTrailController {
     this.isAlreadyRunning = false;
 
     this.onMouseMoveListener = this.handleMouseMove.bind(this);
+
+    document.addEventListener('click', this.clearAll.bind(this));
+  }
+
+  private clearAll() {
+    this.startingElements.forEach(this.removeElement.bind(this));
   }
 
   public addElement(node: Node, factoryMethod: CreateDOMElement) {
@@ -36,6 +42,7 @@ class MouseTrailController {
       htmlElement.setAttribute(spIDAttribute, calculatedID);
   
       this.startingElements.add(htmlElement);
+      console.log(this.startingElements)
       this.elementFactories.set(calculatedID, factoryMethod);
       this.update();
     }
@@ -46,11 +53,16 @@ class MouseTrailController {
   public removeElement(node: Node) {
     const htmlElement = node as HTMLElement;
     if (htmlElement.hasAttribute(spAttribute)) {
+      const trailedID = htmlElement.getAttribute(spIDAttribute);
+  
       this.startingElements.delete(htmlElement);
-      this.elementFactories.delete(htmlElement.getAttribute(spIDAttribute) ?? '');
+      this.elementFactories.delete(trailedID ?? '');
 
       htmlElement.removeAttribute(spAttribute);
       htmlElement.removeAttribute(spIDAttribute);
+
+      const elements = document.querySelectorAll(`[${trElementAttribute}="${trailedID}"]`);
+      elements.forEach(element => element.remove());
 
       this.update();
     }
@@ -102,14 +114,14 @@ class MouseTrailController {
       trailedElement.setAttribute(trElementAttribute, trailedID);
 
       const distanceFactor = Math.sin((i / distance) * Math.PI);
-      const spacing = 10 + distanceFactor * 20;
+      const spacing = 10 + distanceFactor * 5;
       
-      trailedElement.style.height = `${20 + distanceFactor * 40}px`;
-      trailedElement.style.left = `${startPoint.x + (diferenceOnX * i / distance) - 1.5}px`;
+      trailedElement.style.height = `${5 + distanceFactor * 50}px`;
+      trailedElement.style.left = `${startPoint.x + (diferenceOnX * i / distance) - spacing}px`;
       trailedElement.style.top = `${startPoint.y + (diferenceOnY * i / distance) - parseFloat(trailedElement.style.height) / 2}px`;
       trailedElement.style.transform = `rotate(${angle}deg)`;
       document.body.appendChild(trailedElement);
-    }    
+    }
   }
 
   private getDOMFactoryFor(trailedID: string) {
