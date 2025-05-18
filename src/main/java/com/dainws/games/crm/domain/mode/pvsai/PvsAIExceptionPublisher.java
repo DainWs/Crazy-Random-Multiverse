@@ -2,14 +2,15 @@ package com.dainws.games.crm.domain.mode.pvsai;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.ai.AIPlayer;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.exception.CompositeExceptionPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
-import com.dainws.games.crm.domain.core.player.Player;
 
 public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 
@@ -17,7 +18,7 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	
 	public PvsAIExceptionPublisher(ExceptionPublisher exceptionPublisher) {
 		super(exceptionPublisher);
-		this.logger = Logger.getLogger("PvsAI Exception publisher");
+		this.logger = LoggerFactory.getLogger("PvsAI Exception publisher");
 	}
 
 	@Override
@@ -49,6 +50,6 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	}
 	
 	private void logAIExceptionCode(Player aiPlayer, ExceptionCode exceptionCode) {
-		this.logger.log(Level.SEVERE, "AI Exception handled: {0}", exceptionCode.value());
+		this.logger.error("AI Exception handled: {}", exceptionCode.value());
 	}
 }

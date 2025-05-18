@@ -3,10 +3,12 @@ package com.dainws.games.crm.domain.ai.goals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.ai.AIAction;
 import com.dainws.games.crm.domain.ai.AIContext;
 import com.dainws.games.crm.domain.ai.GoalManager;
-import com.dainws.games.crm.domain.log.Logger;
 
 public abstract class AbstractGoalManager implements GoalManager {
 
@@ -14,7 +16,7 @@ public abstract class AbstractGoalManager implements GoalManager {
 	private List<Goal> goals;
 
 	public AbstractGoalManager() {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 	
 	@Override

@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
-import com.dainws.games.crm.domain.core.GameCode;
-
 public class PartyCode {
 	private UUID uuid;
 

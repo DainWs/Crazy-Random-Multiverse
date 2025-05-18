@@ -1,5 +1,8 @@
 package com.dainws.games.crm.domain.mode.classic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.core.CooldownManager;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
@@ -10,7 +13,6 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
-import com.dainws.games.crm.domain.log.Logger;
 
 public class ClassicGameFlow implements GameFlow {
 
@@ -19,7 +21,7 @@ public class ClassicGameFlow implements GameFlow {
 	private TurnManager turnManager;
 
 	public ClassicGameFlow() {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 		this.cooldownManager = new CooldownManager();
 		this.turnManager = new TurnManager();
 	}

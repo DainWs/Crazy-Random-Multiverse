@@ -1,9 +1,9 @@
 package com.dainws.games.crm.services;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class GameService {
 
 	public GameService(GameLifeCycle gameLifeCycle, GameRepository gameRepository,
 			List<GameModeFactory> gameModeFactories) {
-		this.logger = Logger.getLogger(getClass().getName());
+		this.logger = LoggerFactory.getLogger(getClass());
 		this.gameLifeCycle = gameLifeCycle;
 		this.gameRepository = gameRepository;
 		this.gameFactory = new GameFactory(gameRepository);
@@ -41,7 +41,7 @@ public class GameService {
 	}
 
 	public Game loadPartyGame(Party party) {
-		this.logger.log(Level.FINE, "Creating game for party {0}", party.getCode());
+		this.logger.trace("Creating game for party {}", party.getCode());
 
 		Game game = this.gameFactory.createGame(party);
 		party.setCurrentGame(game.getCode());

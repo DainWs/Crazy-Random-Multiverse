@@ -4,12 +4,14 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.log.Logger;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 import com.dainws.games.crm.domain.mode.GameModes;
 
@@ -28,7 +30,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	}
 
 	public ClassicEventDispatcher(GameFlow gameFlow) {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 		this.gameFlow = gameFlow;
 		this.eventConsumers = new EnumMap<>(EventCode.class);
 		this.eventConsumers.put(EventCode.GAME_CREATED, NONE);

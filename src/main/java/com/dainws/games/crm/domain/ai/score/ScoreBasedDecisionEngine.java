@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.ai.AIAction;
 import com.dainws.games.crm.domain.ai.DecisionEngine;
 import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.AttackAction;
 import com.dainws.games.crm.domain.core.action.PutAction;
-import com.dainws.games.crm.domain.log.Logger;
 
 public class ScoreBasedDecisionEngine implements DecisionEngine {
 	private static final int DEFAULT_SCORE = 10;
@@ -19,7 +21,7 @@ public class ScoreBasedDecisionEngine implements DecisionEngine {
 	private Map<Class<? extends Action>, Score> relation;
 
 	public ScoreBasedDecisionEngine() {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 		this.relation = new HashMap<>();
 		this.relation.put(PutAction.class, Score.of(1000));
 		this.relation.put(AttackAction.class, Score.of(500));

@@ -45,6 +45,13 @@ public class ActionMapper {
 		return contextTemplate;
 	}
 	
+	public ActionContextTemplate mapPassTurnActionDto(ActionDto actionDto) {
+		ActionContextTemplate contextTemplate = new ActionContextTemplate();
+		contextTemplate.setGameCode(this.mapGameCodeDto(actionDto.getGameCode()));
+		contextTemplate.setSourcePlayerCode(this.mapPlayerCodeDto(actionDto.getSourcePlayerCode()));
+		return contextTemplate;
+	}
+	
 	public ActionContextTemplate mapEquipActionDto(ActionDto actionDto) {
 		String targetPlayerCode = actionDto.getTargetPlayerCode();
 		if (targetPlayerCode == null) {

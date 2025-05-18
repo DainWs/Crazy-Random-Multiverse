@@ -1,7 +1,8 @@
 package com.dainws.games.crm.domain.core.action;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
@@ -21,7 +22,7 @@ public abstract class PlayerTurnAction implements Action {
 
 	protected PlayerTurnAction() {
 		this.track = "[NONE TRACK]";
-		this.logger = Logger.getLogger(LOGGER_NAME);
+		this.logger = LoggerFactory.getLogger(LOGGER_NAME);
 	}
 
 	@Override
@@ -66,10 +67,8 @@ public abstract class PlayerTurnAction implements Action {
 	protected abstract boolean performPlayerAction(ActionContext context) throws PlayerActionException, GameException;
 
 	protected final void logTrace(String format, Object... arguments) {
-		if (this.logger.isLoggable(Level.FINEST)) {
-			String formatWithTrack = this.track + " " + format;
-			this.logger.log(Level.FINEST, formatWithTrack, arguments);
-		}
+		String formatWithTrack = this.track + " " + format;
+		this.logger.trace(formatWithTrack, arguments);
 	}
 
 	protected final void publishException(ExceptionCode exceptionCode, ActionContext context) {

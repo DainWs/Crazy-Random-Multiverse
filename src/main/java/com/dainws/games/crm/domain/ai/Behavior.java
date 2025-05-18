@@ -2,11 +2,13 @@ package com.dainws.games.crm.domain.ai;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.ai.goals.Goal;
 import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.PassTurnAction;
-import com.dainws.games.crm.domain.log.Logger;
 
 public class Behavior {
 	private Logger logger;
@@ -15,7 +17,7 @@ public class Behavior {
 	private ActionManager actionManager;
 
 	public Behavior() {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 		this.actionManager = ActionManager.getDefault();
 		this.goalManager = GoalManager.getDefault();
 		this.decisionEngine = DecisionEngine.getDefault();

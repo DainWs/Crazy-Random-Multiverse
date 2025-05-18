@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dainws.games.crm.domain.ai.AIAction;
 import com.dainws.games.crm.domain.ai.AIActionTemplate;
 import com.dainws.games.crm.domain.ai.AIContext;
 import com.dainws.games.crm.domain.ai.ActionManager;
-import com.dainws.games.crm.domain.log.Logger;
 
 public abstract class AbstractActionManager implements ActionManager {
 
@@ -16,7 +18,7 @@ public abstract class AbstractActionManager implements ActionManager {
 	private List<AIAction> actions;
 	
 	protected AbstractActionManager() {
-		this.logger = Logger.getLogger(getClass());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override
