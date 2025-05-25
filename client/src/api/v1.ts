@@ -92,6 +92,15 @@ const ready = async (request: Requests.ReadyGameRequest) => {
   validate(response);
 }
 
+const sendAction = async (request: Requests.ActionRequest) => {
+  const response = await fetch(`/game/${toBase64UrlSafe(request.game)}/action`, { 
+    method: "POST", headers,
+    body: JSON.stringify(request)
+  })
+
+  validate(response);
+}
+
 function validate(response: Response) {
   if (!response.ok) throw new Error(response.statusText);
 }
@@ -113,5 +122,6 @@ export {
   startGame,
   joinParty,
   leaveParty,
-  ready
+  ready,
+  sendAction
 };

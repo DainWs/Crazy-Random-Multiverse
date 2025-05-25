@@ -41,8 +41,8 @@ public class PutAction extends PlayerTurnAction {
 	}
 
 	private Combatant grabCombatantFromHand(ActionContext context) {
-		CardCode cardCode = context.getTargetCard().getCode();
-		Hand hand = context.getTargetPlayer().getHand();
+		CardCode cardCode = context.getSourceCard().getCode();
+		Hand hand = context.getSourcePlayer().getHand();
 		return (Combatant) hand.grab(cardCode);
 	}
 

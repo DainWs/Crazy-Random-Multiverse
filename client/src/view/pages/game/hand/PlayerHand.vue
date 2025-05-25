@@ -3,7 +3,7 @@ import Hand from '@/domain/models/Hand';
 import CardComponent from '@pages/game/card/CardComponent.vue';
 import { useHandSlotAction } from '@pages/game/hand/useHandSlotAction';
 
-const { hand } = defineProps<{ hand: Hand | null }>();
+const { hand } = defineProps<{ hand: Hand }>();
 const { grabCard, dropCard } = useHandSlotAction(hand);
 
 </script>

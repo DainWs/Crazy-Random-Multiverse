@@ -18,14 +18,13 @@ eventProcessors.set('PLAYER_RECEIVE_CARD', PlayerReceiveCardProcessor);
 
 const process = async (event: Event, context: Context) => {
   const EventProcessorClass = eventProcessors.get(event.code);
-  
-  if (!EventProcessorClass) {
-    throw new Error(`No event processor found for EventCode "${event.code}"`);
-  }
 
-  const processor = new EventProcessorClass();
-  processor.process(event, context);
-  
+  if (EventProcessorClass) {
+    const processor = new EventProcessorClass();
+    processor.process(event, context);
+  } else {
+    console.log(`No event processor found for EventCode "${event.code}"`);
+  }
 };
 
 export { Context, process };

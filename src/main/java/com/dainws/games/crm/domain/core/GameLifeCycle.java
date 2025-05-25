@@ -86,7 +86,7 @@ public class GameLifeCycle {
 		}
 	}
 
-	private boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
+	private synchronized boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
 		List<Player> gameLoadingPlayers = this.getLoadingPlayersOf(game);
 		boolean wasRemoved = gameLoadingPlayers.removeIf(player -> player.isCode(code));
 		this.setLoadingPlayersOf(game, gameLoadingPlayers);

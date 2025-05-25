@@ -5,18 +5,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dainws.games.crm.controller.dto.ActionMapper;
 import com.dainws.games.crm.controller.dto.domain.ActionDto;
 import com.dainws.games.crm.controller.dto.domain.ActionType;
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 
@@ -37,8 +32,10 @@ public class WebPlayerController implements PlayerController {
 	}
 	
 	@Override
-	public void dispatchAction(String gameCodeAsString, ActionDto actionDto) throws IllegalAccessException {
-		if (!gameCodeAsString.contentEquals(actionDto.getGameCode())) {
+	public void dispatchAction(String gameCodeBase64UrlSafe, ActionDto actionDto) throws IllegalAccessException {
+		GameCode gameCode = GameCode.fromBase64UrlSafe(gameCodeBase64UrlSafe);
+		System.out.println(actionDto.getGameCode());
+		if (!gameCode.text().contentEquals(actionDto.getGameCode())) {
 			throw new IllegalAccessException("Acceso denegado - intento de acceso al juego incorrecto");
 		}
 		

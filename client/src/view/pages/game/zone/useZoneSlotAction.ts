@@ -3,27 +3,29 @@ import ViewElement from "@/domain/actions/ViewElements";
 import Position from "@/domain/models/Position";
 import Card from "@/domain/models/Card";
 import Zone from "@/domain/models/Zone";
-import * as actionService from '@/application/actionService';
 import grabAndDropController from "@/services/dom/GrabAndDropController";
 import mouseTrailController from "@/services/dom/MouseTrailController";
 import VisualEffects from "@/services/dom/VisualEffects";
+import useActionStore from "@/stores/ActionStore";
 
 const useZoneSlotAction = (zone: Zone) => {
+  const actionStore = useActionStore();
+
   const elementType: ViewElement = "ZoneSlot";
 
   function clickCard(event: MouseEvent, row: number, column: number, card: Card) {
     const actionType: ViewAction = "SimpleClick";
     const slot: Position = { row, column };
 
-    if (actionService.hasAlreadyStartedAnAction()) {
-      actionService.endAction()
+    if (actionStore.actionInProgress) {
+      actionStore.endAction()
         .whereTriggerIs(elementType, actionType)
         .toPlayer(zone.owner)
         .toCard(card)
         .atPosition(slot)
         .completeActionTarget();
     } else {
-      actionService.startAction(zone.owner)
+      actionStore.startAction(zone.owner)
         .whereTriggerIs(elementType, actionType)
         .withCard(card)
         .fromPosition(slot)
@@ -38,7 +40,7 @@ const useZoneSlotAction = (zone: Zone) => {
     const actionType: ViewAction = "Grab";
     const slot: Position = { row, column };
 
-    actionService.startAction(zone.owner)
+    actionStore.startAction(zone.owner)
       .whereTriggerIs(elementType, actionType)
       .withCard(card)
       .fromPosition(slot)
@@ -49,10 +51,10 @@ const useZoneSlotAction = (zone: Zone) => {
   }
 
   function dropCard(event: MouseEvent, row: number, column: number, card: Card) {
-    const actionType: ViewAction = "Grab";
+    const actionType: ViewAction = "Drop";
     const slot: Position = { row, column };
 
-    actionService.endAction()
+    actionStore.endAction()
       .whereTriggerIs(elementType, actionType)
       .toPlayer(zone.owner)
       .toCard(card)

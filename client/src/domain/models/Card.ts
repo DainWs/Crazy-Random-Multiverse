@@ -4,20 +4,20 @@ type DamageType = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorType = 'PHYSICAL' | 'MAGIC';
 
 class CardCode {
-  public value: number;
+  public code: number;
   public type: CardType;
 
-  public constructor(value: number, type: CardType) {
-    this.value = value;
+  public constructor(code: number, type: CardType) {
+    this.code = code;
     this.type = type;
   }
 
   public equals(that: CardCode) {
-    return this.value == that.value && this.type == that.type;
+    return this.code == that.code && this.type == that.type;
   }
 
   public toString() {
-    return `[${this.type},${this.value}]`;
+    return `[${this.type},${this.code}]`;
   }
 }
 

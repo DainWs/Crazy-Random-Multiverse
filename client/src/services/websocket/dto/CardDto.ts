@@ -1,7 +1,7 @@
 type CardTypeDto = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 
 type CardCodeDto = {
-  value: number;
+  code: number;
   type: CardTypeDto;
 };
 

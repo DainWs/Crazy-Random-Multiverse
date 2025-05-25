@@ -1,25 +1,29 @@
+import Game from '@/domain/models/Game';
 import Zone from '@/domain/models/Zone';
+import Hand from '@/domain/models/Hand';
+import Player from '@/domain/models/Player';
 import ActionParts from '@/domain/actions/ActionParts';
 import useGameStore from '@/stores/GameStore';
+import useActionStore from '@/stores/ActionStore';
 
 const useGameController = () => {
   const gameStore = useGameStore();
-  if (gameStore.currentGame == null) throw new Error("Not in a game");
+  const actionStore = useActionStore();
 
   const getReactiveGame = () => {
-    return gameStore.currentGame;
+    return gameStore.currentGame as Game;
   };
 
   const getReactivePlayerInfo = () => {
-    return gameStore.playerInfo;
+    return gameStore.playerInfo as Player;
   };
 
   const getReactivePlayerHand = () => {
-    return gameStore.playerHand;
+    return gameStore.playerHand as Hand;
   };
 
   const getReactiveVisibleZone = () => {
-    return gameStore.visibleZone;
+    return gameStore.visibleZone as Zone;
   };
 
   const onZoneSelect = (zone: Zone) => {
@@ -31,6 +35,7 @@ const useGameController = () => {
     console.log(event.source);
     console.log('Target:');
     console.log(event.target);
+    await actionStore.executeAction(event.source, event.target);
   };
 
   return {
@@ -39,7 +44,8 @@ const useGameController = () => {
     getReactivePlayerHand,
     getReactiveVisibleZone,
     onZoneSelect,
-    onActionPerformed
+    onActionPerformed,
+    passTurn: actionStore.executePassTurnAction
   };
 };
 

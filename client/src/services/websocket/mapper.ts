@@ -104,7 +104,7 @@ function mapPlayerDtoToPlayer(dto: PlayerDto): Player {
 }
 
 function mapCardDtoToCard(dto: CardDto): Card {
-  const cardCode = new CardCode(dto.code.value, dto.code.type);
+  const cardCode = new CardCode(dto.code.code, dto.code.type);
   const card = new Card(cardCode, dto.type);
   card.name = dto.name;
   card.description = dto.description;

@@ -15,6 +15,7 @@ function rowFrom(index: number) {
     return zone.combatants.length - index;
 }
 
+// TODO Jugar una partida
 function getSlotClasses(row: number, column: number) {
     let dropSlot = zone.isEnabledPosition({ row, column }) ? 'drop-zone' : '';
     return `zone-slot ${dropSlot}`;

@@ -32,9 +32,15 @@ public class JPAActionContextFactory implements ActionContextFactory {
 			context.setTargetPlayer(game.getPlayer(contextTemplate.getTargetPlayerCode()));
 		}
 
-		context.setSourceCard(this.cardRepository.find(contextTemplate.getSourceCardCode()));
+		if (contextTemplate.getSourceCardCode() != null) {
+			context.setSourceCard(this.cardRepository.find(contextTemplate.getSourceCardCode()));
+		}
+
+		if (contextTemplate.getTargetCardCode() != null) {
+			context.setTargetCard(this.cardRepository.find(contextTemplate.getTargetCardCode()));
+		}
+
 		context.setSourceCoordinate(contextTemplate.getSourceCoordinate());
-		context.setTargetCard(this.cardRepository.find(contextTemplate.getTargetCardCode()));
 		context.setTargetCoordinate(contextTemplate.getTargetCoordinate());
 		return context;
 	}

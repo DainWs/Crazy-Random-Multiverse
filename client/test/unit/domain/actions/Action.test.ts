@@ -12,14 +12,14 @@ describe('Action - Unit tests', () =>{
   test('Should be action of same type', () => {
     const action = new Action(game, actionSource, actionTarget);
 
-    const expectedType: ActionType = 'MOVE_CARD';
+    const expectedType: ActionType = 'MOVE_ACTION';
     expect(action.isType(expectedType)).toBe(true);
   });
 
   test('Should be action of different type', () => {
     const action = new Action(game, actionSource, actionTarget);
 
-    const unExpectedType: ActionType = 'ATTACK_CARD';
+    const unExpectedType: ActionType = 'ATTACK_ACTION';
     expect(action.isType(unExpectedType)).toBe(false);
   });
 })
