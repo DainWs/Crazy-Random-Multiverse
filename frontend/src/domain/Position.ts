@@ -1,3 +1,5 @@
+type NonePosition = null;
+
 type HandPosition = number;
 
 class ZonePosition {
@@ -10,7 +12,7 @@ class ZonePosition {
   }
 }
 
-type Position = HandPosition | ZonePosition;
+type Position = NonePosition | HandPosition | ZonePosition;
 
 export type { HandPosition, ZonePosition }
 export default Position;

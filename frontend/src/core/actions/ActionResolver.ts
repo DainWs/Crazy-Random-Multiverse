@@ -15,7 +15,7 @@ class ActionResolver {
   }
 
   public apply(event: ActionEvent): boolean {
-    const trigger = event.trigger;
+    const trigger = event.getTrigger();
 
     if (this.source == null && this.pattern.matchSourceCondition(trigger)) {
       this.source = event;
@@ -35,8 +35,11 @@ class ActionResolver {
   }
 
   public createAction(gameCode: GameCode): Action {
-    if (!this.isComplete()) throw new Error("Pattern is not completed");
-    return new Action(gameCode, this.source as ActionEvent, this.target as ActionEvent);
+    if (this.source !== null && this.target !== null) {
+      return new Action(gameCode, this.source, this.target);
+    }
+
+    throw new Error("Pattern is not completed");
   }
 
   public reset(): void {

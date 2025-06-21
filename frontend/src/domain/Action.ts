@@ -4,13 +4,15 @@ import Player from '@/domain/Player';
 import Position from '@/domain/Position';
 import ActionEvent from '@/domain/ActionEvent';
 
+type NoneCard = null;
+
 class Action {
   public game: GameCode;
   public sourcePlayer: Player;
-  public sourceCard: Card;
+  public sourceCard: Card | NoneCard;
   public sourcePosition: Position;
   public targetPlayer: Player;
-  public targetCard?: Card;
+  public targetCard?: Card | NoneCard;
   public targetPosition: Position;
 
   public constructor(gameCode: GameCode, source: ActionEvent, target: ActionEvent) {

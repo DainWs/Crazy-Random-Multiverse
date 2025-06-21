@@ -3,8 +3,8 @@ import InteractionSystem from '@/core/InteractionSystem';
 import VisualEffectSystem from '@/core/VisualEffectSystem';
 import ActionEvent from '@/domain/ActionEvent';
 import cardFactory from '@/domain/cardFactory';
+import Player from '@/domain/Player';
 import { CardView } from '@/game/cards/CardView';
-import EventBus from '@/game/EventBus';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
 
@@ -28,7 +28,10 @@ class GameScene extends Scene {
     public create() {
         console.log(new ActionEvent({
             element: 'Hand.Card',
-            input: 'DoubleClick'
+            input: 'DoubleClick',
+            position: null,
+            player: new Player("none", "DainWs"),
+            card: null
         }));
 
         this.camera = this.cameras.main;
