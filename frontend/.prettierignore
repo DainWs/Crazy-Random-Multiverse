@@ -1,0 +1,9 @@
+**/*.vue
+test/*
+
+.prettierrc.json
+eslint.config.js
+.eslintrc.*
+jest.config.js
+tsconfig.json
+vue.config.js

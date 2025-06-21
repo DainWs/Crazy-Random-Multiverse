@@ -1,24 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "module": "ES2022",
     "target": "esnext",
+    "module": "esnext",
     "strict": true,
     "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "importHelpers": true,
-    "skipLibCheck": true,
+    "moduleResolution": "Node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
       "@resources/*": ["resources/*"],
-
       "@assets/*": ["src/view/assets/*"],
       "@components/*": [
         "src/view/components/*",
@@ -29,11 +23,18 @@
       "@repositories/*": ["src/repositories/*"],
       "@api/*": ["src/api/*"],
       "@/*": ["src/*"],
-
       "@test/*": ["test/*"]
     },
     "types": ["@types/node", "@types/jest", "jest"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["**/*", ".eslintrc.json", "modules.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

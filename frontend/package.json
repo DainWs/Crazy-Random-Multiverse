@@ -1,0 +1,36 @@
+{
+    "name": "crm-view-web",
+    "version": "0.0.1-SNAPSHOT",
+    "description": "CRM Game gui",
+    "license": "ISC",
+    "author": "DainWs",
+    "main": "src/main.ts",
+    "type": "module",
+    "private": true,
+    "keywords": [ "CRM", "Games", "Cards" ],
+    "scripts": {
+        "dev": "node log.js dev & vite --config vite/config.dev.mjs",
+        "build": "node log.js build & vite build --config vite/config.prod.mjs",
+        "dev:nolog": "vite --config vite/config.dev.mjs",
+        "build:nolog": "vite build --config vite/config.prod.mjs"
+    },
+    "dependencies": {
+        "phaser": "^3.90.0",
+        "vue": "3.5.13"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.20",
+        "terser": "^5.31.0",
+        "@vitejs/plugin-vue": "^5.2.2",
+        "@vue/tsconfig": "^0.7.0",
+        "typescript": "~5.7.2",
+        "vite": "^6.3.1",
+        "vue-tsc": "^2.2.8"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead",
+        "not ie 11"
+    ]
+}
