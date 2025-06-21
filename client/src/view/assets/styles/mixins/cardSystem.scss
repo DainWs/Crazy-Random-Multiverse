@@ -1,0 +1,59 @@
+/// Calcula columnas según el aspect ratio
+@function calc-columns($aspect-ratio-width, $grid-units: 16) {
+  @return calc($grid-units * $aspect-ratio-width);
+}
+
+/// Calcula filas según el aspect ratio
+@function calc-rows($aspect-ratio-height, $grid-units: 16) {
+  @return calc($grid-units * $aspect-ratio-height);
+}
+
+/// Mixin base para el grid de la tarjeta
+@mixin card-grid($aspect-ratio-width, $aspect-ratio-height, $base-size: 18vh, $grid-units: 16) {
+  $card-width: calc($base-size * $aspect-ratio-width);
+  $card-height: calc($base-size * $aspect-ratio-height);
+
+  $num-columns:  calc-columns($aspect-ratio-width, $grid-units);
+  $num-rows: calc-rows($aspect-ratio-height, $grid-units);
+
+  $column-width: calc($card-width / $num-columns);
+  $row-height: calc($card-height / $num-rows);
+
+  width: $card-width;
+  height: $card-height;
+
+  display: grid;
+  grid-template-columns: repeat($num-columns, $column-width);
+  grid-template-rows: repeat($num-rows, $row-height);
+
+  // Exponer filas/columnas como custom properties (si JS u otros estilos lo necesitan)
+  --card-columns: #{$num-columns};
+  --card-rows: #{$num-rows};
+}
+
+/// Mixin para la sección de nombre
+@mixin card-section-name($cols, $rows) {
+  grid-row: 1 / round(1 + ($rows * 0.075));
+  grid-column: round($cols / 4) / -(round($cols / 4));
+}
+
+/// Mixin para la imagen
+@mixin card-section-image($cols, $rows) {
+  $start: round(1 + ($rows * 0.075));
+  grid-row: $start / round(1 + ($rows * 0.4));
+  grid-column: 1 / -1;
+}
+
+/// Mixin para el tipo
+@mixin card-section-type($cols, $rows) {
+  $start: round(1 + ($rows * 0.4));
+  grid-row: $start / round($start + ($rows * 0.075));
+  grid-column: round($cols / 4) / -(round($cols / 4));
+}
+
+/// Mixin para la sección de detalles
+@mixin card-section-details($cols, $rows) {
+  $start: round(1 + ($rows * 0.475));
+  grid-row: $start / -1;
+  grid-column: round($cols / 4) / -(round($cols / 4));
+}

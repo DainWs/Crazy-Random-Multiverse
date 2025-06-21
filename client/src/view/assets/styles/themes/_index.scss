@@ -3,3 +3,23 @@
 @use 'dark';
 @use 'golden';
 @use 'green';
+
+html,
+body,
+#app,
+main {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+
+  font-size: large;
+}
+
+.dws--side-nav--ux {
+  inset-block-start: 0;
+}
+
+.dws--btn:focus {
+  box-shadow: none;
+}

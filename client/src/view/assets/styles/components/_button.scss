@@ -121,22 +121,27 @@
   }
 }
 
-
 .dws--btn {
-  font-weight: 300;
-  font-family: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
+  padding: 1rem 1.5rem;
 
+  font-size: 1rem;
+  font-weight: 300;
+  
   cursor: pointer;
   user-select: none;
 
+  p {
+    margin: 0;
+  }
+
   &--primary {
-    //color: $golden-darken;
-    //background-color: $golden;
+    // color: darkgoldenrod;
+    // background-color: gold;
   
     &:active,
     &:hover {
-      //color: $golden;
-      //background-color: $golden-darken;
+      // color: goldenrod;
+      // background-color: rgb(138, 117, 0);
     }
   }
 

@@ -5,14 +5,15 @@ import IErrorViewer from '@view/IErrorViewer';
 import INavigator from '@view/INavigator';
 import app from '@view/App.vue';
 
-import '@assets/styles/main.scss'
+import { createVuetify } from 'vuetify';
 import { createPinia } from 'pinia';
-//import 'bootstrap/dist/css/bootstrap.min.css';
-//import 'bootstrap';
+
+import '@assets/styles/main.scss'
 
 const mountView = () => {
   createApp(app)
     .use(createPinia())
+    .use(createVuetify({}))
     .use(router)
     .mount('#app');
 };

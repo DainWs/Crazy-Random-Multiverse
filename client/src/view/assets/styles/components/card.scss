@@ -1,6 +1,7 @@
 @use 'sass:math';
-@import '../mixins/columnSystem.scss';
+@use '../mixins/cardSystem.scss' as *;
 
+/*
 $card-aspect-ratio-width: 1;
 $card-aspect-ratio-height: 1.5;
 
@@ -72,11 +73,56 @@ $row-height: calc($card-height / $num-rows);
     grid-column-start: math.round(calc($num-columns / 4));
     grid-column-end: -(math.round(calc($num-columns / 4)));
   }
+*/
+
+.card {
+  // Aspect ratio configurable
+  $width: 1;
+  $height: 1.5;
+
+  $cols: calc-columns($width);
+  $rows: calc-rows($height);
+
+  @include card-grid($width, $height);
+
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+  border-radius: 0.6rem;
+
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+
+  color: black;
+  background-color: white;
+  
+  font-size: 1.2vh;
+
+  &--name {
+    display: block;
+    @include card-section-name($cols, $rows);
+  }
+
+  &--image {
+    display: block;
+    @include card-section-image($cols, $rows);
+  }
+
+  &--type {
+    display: block;
+    @include card-section-type($cols, $rows);
+  }
+
+  &__details {
+    @include card-section-details($cols, $rows);
+  }
 
   &__tooltip {
     visibility: hidden;
-    width: $card-width;
-    height: $card-height;
+    width: calc(20vh * $width);
+    height: calc(20vh * $height);
     background-color: black;
     color: #fff;
     text-align: center;
@@ -125,6 +171,13 @@ $row-height: calc($card-height / $num-rows);
   }
 }
 
-.zone-slot .card:hover {
-  cursor: grab;
+.zone-slot {
+
+  & .card {
+
+
+    &:hover {
+      cursor: grab;
+    }
+  }
 }
