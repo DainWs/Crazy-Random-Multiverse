@@ -1,12 +1,13 @@
 import { Armor, Damage, Health } from "@/domain/Statistics";
+import Skill from "@/domain/Skills";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
 type CardTexture = 'card' | 'common-card' | 'uncommon-card' | 'rare-card' | 'epic-card' | 'legendary-card' | 'mithic-card';
 
 class CardCode {
-  public code: number;
-  public type: CardType;
+  public readonly code: number;
+  public readonly type: CardType;
 
   public constructor(code: number, type: CardType) {
     this.code = code;
@@ -26,22 +27,42 @@ class CardCode {
   }
 }
 
+type CardOptions = {
+  code: CardCode;
+  name: string;
+  description: string;
+  type: CardType;
+  rarity?: CardRarity;
+}
+
+type Require<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+type RequireAndOmit<T, K extends keyof T, I extends keyof T> = Omit<T, I | K> & { [P in K]-?: NonNullable<T[P]> };
+
+type CombatantCard = Require<Card, 'damage' | 'armor' | 'health'>;
+type LeaderCard = CombatantCard;
+type WarriorCard = Require<Card, 'rarity'>;
+type EquipmentCard = RequireAndOmit<Card, 'damage' | 'armor' | 'health', 'activeSkill' | 'equipment'>;
+type SpellCard = RequireAndOmit<Card, 'activeSkill', 'rarity' | 'damage' | 'armor' | 'health' | 'passiveSkill' | 'equipment'>;
+
 class Card {
-  public code: CardCode;
-  public name: string;
-  public description: string;
-  public type: CardType;
-  public rarity?: CardRarity;
+  public readonly code: CardCode;
+  public readonly name: string;
+  public readonly description: string;
+  public readonly type: CardType;
+  public readonly rarity?: CardRarity;
   public damage?: Damage;
   public armor?: Armor
   public health?: Health;
-  // TODO agregar posibilidad de tener equipada una carta de tipo 'Equipment'
+  public activeSkill?: Skill;
+  public passiveSkill?: Skill;
+  public equipment?: EquipmentCard;
 
-  public constructor(code: CardCode, type: CardType) {
-    this.code = code;
-    this.type = type;
-    this.name = '';
-    this.description = '';
+  public constructor(options: CardOptions) {
+    this.code = options.code;
+    this.name = options.name;
+    this.description = options.description;
+    this.type = options.type;
+    this.rarity = options.rarity;
   }
 
   public isType(type: CardType, rarity?: CardRarity): boolean {
@@ -54,6 +75,10 @@ class Card {
 
   public hasStatistics(): boolean {
     return this.isCombatant() || this.isType('EQUIPMENT');
+  }
+
+  public hasSkills(): boolean {
+    return !!this.activeSkill || !!this.passiveSkill;
   }
 
   public getTypeDescription(): string {
@@ -82,5 +107,6 @@ class Card {
 }
 
 export { CardCode };
-export type { CardType, CardRarity, CardTexture };
+export type { CardOptions, CardType, CardRarity, CardTexture };
+export type { CombatantCard, LeaderCard, WarriorCard, EquipmentCard, SpellCard };
 export default Card;
