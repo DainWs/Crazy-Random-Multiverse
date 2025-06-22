@@ -36,7 +36,9 @@ class CardView extends Phaser.GameObjects.Container {
     this.definition = definition;
 
     this.initializeView();
+    this.setInteractive({ useHandCursor: true });
 
+    scene.input.setDraggable(this);
     scene.add.existing(this);
     scene.interactionSystem.registerCard(this);
   }
@@ -152,6 +154,11 @@ class CardView extends Phaser.GameObjects.Container {
     const y = this.y - this.background.displayHeight / 2;
     this.tooltip.setPosition(x, y);
     this.tooltip.setVisible(true);
+  }
+
+  public setOriginalPosition(originalX: number, originalY: number) {
+    this.originalX = originalX;
+    this.originalY = originalY;
   }
 
   public resetPosition(): void {

@@ -24,7 +24,9 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     this.allowedCombatant = allowedCombatant;
 
     this.initializeView()
+    this.setInteractive({ useHandCursor: true });
 
+    scene.input.setDraggable(this);
     scene.add.existing(this)
     //scene.physics.add.existing(this, true)
     scene.interactionSystem.registerSlot(this);
