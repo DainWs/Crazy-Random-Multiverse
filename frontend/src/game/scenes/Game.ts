@@ -43,7 +43,7 @@ class GameScene extends Scene {
             this.children.add(card);
         }
 
-        const zone = new ZoneView(this, 0, 0);
+        const zone = new ZoneView(this, 1300, 150);
         this.zones = [];
         this.zones.push(zone);
         this.children.add(zone);
