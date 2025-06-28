@@ -17,7 +17,7 @@ function noneTween(card: CardView) {
 function hoverTween(card: CardView): TweenConfig {
   return {
     targets: card,
-    scale: 1.1,
+    scale: 1.035,
     duration: 150,
     ease: 'Power1'
   };
