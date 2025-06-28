@@ -3,6 +3,8 @@ import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import { GameScene } from "@/game/scenes/Game";
 
+const BEHIND_CARD_OFFSET = 20;
+
 class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
@@ -11,6 +13,9 @@ class CardView extends Phaser.GameObjects.Container {
   public readonly definition: Card;
   private cardBehind?: CardView;
 
+  private allowGrab: boolean; // TODO search a way to improve this
+
+  private originalDepth: number; // TODO maybe this is not needed if we use getDepth() and default depth
   private originalX: number;
   private originalY: number;
 
@@ -23,12 +28,14 @@ class CardView extends Phaser.GameObjects.Container {
     super(scene, x, y);
     this.originalX = x;
     this.originalY = y;
+    this.depth = 10;
+    this.originalDepth = this.depth;
     this.scale = 1;
     this.width = 200;
     this.height = 300;
-    this.depth = 10;
 
     this.definition = definition;
+    this.allowGrab = true;
 
     this.initializeView();
     this.setInteractive({ useHandCursor: true });
@@ -65,12 +72,14 @@ class CardView extends Phaser.GameObjects.Container {
       throw new Error("There is already a card behind this card.");
     }
 
-    
     this.cardBehind = card;
-    const offset = 20;
-    const bounds = this.getBounds();
-    card.setPosition(bounds.centerX - offset, bounds.centerY - offset);
-    card.setDepth(this.depth - 1);
+    this.cardBehind.setOriginalPosition(this.x - BEHIND_CARD_OFFSET, this.y - BEHIND_CARD_OFFSET);
+    this.cardBehind.setOriginalDepth(this.originalDepth - 1);
+    this.cardBehind.resetPosition();
+
+    this.scene.input.setDraggable(this.cardBehind, false);
+    this.cardBehind.setInteractive({ useHandCursor: false });
+    this.cardBehind.allowGrab = false;
   }
 
   public loadCardTexture(texture: CardTexture): void {
@@ -89,13 +98,42 @@ class CardView extends Phaser.GameObjects.Container {
     this.tooltip?.setDepth(this.depth + 100);
   }
 
+  public canBeGrabbed(): boolean {
+    return this.allowGrab;
+  }
+
+  public setPosition(x?: number, y?: number, z?: number, w?: number): this {
+    const xWithOffset = x ? x - BEHIND_CARD_OFFSET : undefined;
+    const yWithOffset = y ? y - BEHIND_CARD_OFFSET : undefined;
+    this.cardBehind?.setPosition(xWithOffset, yWithOffset, z, w);
+    return super.setPosition(x, y, z, w);
+  }
+
+  public setDepth(depth: number): this {
+    this.cardBehind?.setDepth(depth - 1);
+    return super.setDepth(depth);
+  }
+
   public setOriginalPosition(originalX: number, originalY: number) {
+    this.cardBehind?.setOriginalPosition(originalX - BEHIND_CARD_OFFSET, originalY - BEHIND_CARD_OFFSET);
     this.originalX = originalX;
     this.originalY = originalY;
   }
 
+  public setOriginalDepth(originalDepth: number) {
+    this.cardBehind?.setOriginalDepth(originalDepth -1);
+    this.originalDepth = originalDepth;
+  }
+
   public resetPosition(): void {
+    this.cardBehind?.resetPosition();
     this.setPosition(this.originalX, this.originalY);
+    this.setDepth(this.originalDepth);
+  }
+
+  public resetDepth(): void {
+    this.cardBehind?.resetDepth();
+    this.setDepth(this.originalDepth);
   }
 }
 

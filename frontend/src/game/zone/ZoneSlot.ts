@@ -30,9 +30,10 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     this.definition = definition;
 
     this.initializeView()
-    this.setInteractive({ useHandCursor: true });
 
-    scene.input.setDraggable(this);
+    const isADropZone = true;
+    this.setInteractive(undefined, undefined, isADropZone);
+
     scene.add.existing(this)
     //scene.physics.add.existing(this, true)
     scene.interactionSystem.registerSlot(this);
@@ -58,8 +59,6 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     this.card = card;
     this.card.setPosition(bounds.centerX, bounds.centerY);
     this.card.setDisplaySize(this.width, this.height);
-    this.card.setInteractive({ useHandCursor: true });
-    this.scene.input.setDraggable(this.card);
     return true;
   }
 
