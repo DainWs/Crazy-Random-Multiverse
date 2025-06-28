@@ -12,6 +12,7 @@ const config: Phaser.Types.Core.GameConfig = {
     width: window.innerWidth,
     height: window.innerHeight,
     parent: 'game-container',
+    pixelArt: true,
     transparent: true,
     scene: [
         Boot,
