@@ -46,6 +46,10 @@ export class Preloader extends Scene
         this.load.image('epic-card', 'card-epic.png');
         this.load.image('legendary-card', 'card-legendary.png');
         this.load.image('mithic-card', 'card-mithic.png');
+        
+        this.load.image('leader-card', 'card-leader.png');
+        this.load.image('equipment-card', 'card-equipment.png');
+        this.load.image('spell-card', 'card-spell.png');
 
 
         this.load.image('warrior-0', 'logo.png');
