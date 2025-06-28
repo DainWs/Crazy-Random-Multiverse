@@ -1,19 +1,25 @@
+import { ZonePosition } from "@/domain/Position";
 import { CardView } from "@/game/cards/CardView";
 import { GameScene } from "@/game/scenes/Game";
 
-type AllowedCombatant = 'Leader' | 'Warrior';
+type AllowedCombatant = 'LEADER' | 'WARRIOR';
+type ZoneSlotDefinition = {
+  position: ZonePosition;
+  allowedCombatant: AllowedCombatant;
+}
 
 class ZoneSlot extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
+  private mark: Phaser.GameObjects.Image;
   private card: CardView | null;
 
-  private allowedCombatant: AllowedCombatant;
+  public readonly definition: ZoneSlotDefinition;
 
   constructor(
     scene: GameScene, 
     x: number, 
     y: number,
-    allowedCombatant: AllowedCombatant = 'Warrior'
+    definition: ZoneSlotDefinition
   ) {
     super(scene, x, y);
     this.scale = 1;
@@ -21,7 +27,7 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     this.height = 300;
 
     this.card = null;
-    this.allowedCombatant = allowedCombatant;
+    this.definition = definition;
 
     this.initializeView()
     this.setInteractive({ useHandCursor: true });
@@ -37,7 +43,11 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     this.background.setStrokeStyle(2, 0x444444);
     //this.background.setOrigin(0);
 
-    this.add(this.background);
+    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.definition.allowedCombatant.toLowerCase()}`);
+    this.mark.setScale(4);
+    this.mark.setOrigin(0.5, 0.5);
+
+    this.add([ this.background, this.mark ]);
   }
 
   public placeCard(card: CardView): boolean {
@@ -78,4 +88,5 @@ class ZoneSlot extends Phaser.GameObjects.Container {
   }
 }
 
+export type { ZoneSlotDefinition };
 export default ZoneSlot;

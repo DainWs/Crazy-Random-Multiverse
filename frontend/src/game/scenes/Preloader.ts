@@ -51,6 +51,8 @@ export class Preloader extends Scene
         this.load.image('equipment-card', 'card-equipment.png');
         this.load.image('spell-card', 'card-spell.png');
 
+        this.load.image('zoneslot-mark-warrior', 'warrior_mark.png');
+        this.load.image('zoneslot-mark-leader', 'leader_mark.png');
 
         this.load.image('warrior-0', 'logo.png');
     }
