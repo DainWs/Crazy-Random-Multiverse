@@ -14,5 +14,6 @@ class ZonePosition {
 
 type Position = NonePosition | HandPosition | ZonePosition;
 
-export type { HandPosition, ZonePosition }
+export { ZonePosition };
+export type { HandPosition };
 export default Position;
