@@ -1,21 +1,15 @@
 import Card, { CardTexture } from "@/domain/Card";
-import { Armor, Damage, Health } from "@/domain/Statistics";
-import { showDebugBoxes } from "@/env";
-import { CardStatisticView } from "@/game/cards/CardStatisticView";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
+import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import { GameScene } from "@/game/scenes/Game";
-import * as TextUtils from "@/game/utils/TextUtils";
 
 class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
-  private cardName: Phaser.GameObjects.Text;
   private cardImage: Phaser.GameObjects.Image;
-  private damage: CardStatisticView;
-  private armor: CardStatisticView;
-  private health: CardStatisticView;
-  private tooltip: CardTooltipView;
+  private tooltip?: CardTooltipView;
 
   public readonly definition: Card;
+  private cardsBehind: Set<CardView>;
 
   private originalX: number;
   private originalY: number;
@@ -34,6 +28,7 @@ class CardView extends Phaser.GameObjects.Container {
     this.height = 300;
 
     this.definition = definition;
+    this.cardsBehind = new Set<CardView>();
 
     this.initializeView();
     this.setInteractive({ useHandCursor: true });
@@ -56,88 +51,32 @@ class CardView extends Phaser.GameObjects.Container {
 
     this.add([this.cardImage, this.background]);
 
-    this.tooltip = new CardTooltipView(this.scene, this.width / 2 + 10, 0);
-    this.tooltip.setNameText(this.definition.name);
-    this.tooltip.setDescriptionText(`${this.definition.rarity}\n\n${this.definition.description}`);
-
-    this.defineCardName(this.definition.name);
-    this.defineDamageStat(this.definition.damage);
-    this.defineHealthStat(this.definition.health);
-    this.defineArmorStat(this.definition.armor);
+    const cardViewStrategy = dispatchCardViewStrategy(this.definition);
+    this.tooltip = cardViewStrategy.createTooltip(this.scene, this);
+    this.add(cardViewStrategy.createObjects(this.scene, this, this.displayWidth, this.displayHeight));
   }
 
-  private defineCardName(name: string) {
-    const horizontalPadding = this.background.displayWidth * 0.2;
-    const verticalPadding = this.background.displayHeight * 0.05;
-    const width = this.background.displayWidth * 0.70 - horizontalPadding;
-    const height = this.background.displayHeight * 0.10 - verticalPadding;
-    const x = 0;
-    const y = -(this.background.displayHeight / 2) + height / 2 + verticalPadding;
-    const fontSize = Math.floor(this.background.displayHeight * 0.08);
-
-    if (showDebugBoxes) {
-      const nameBox = this.scene.add.rectangle(x, y);
-      nameBox.setSize(width, height);
-      nameBox.setFillStyle(0xFF0000, 0.5);
-      nameBox.setStrokeStyle(1, 0x000000);
-      this.add(nameBox);
-    }
-
-    this.cardName = this.scene.add.text(x, y, name);
-    this.cardName.setOrigin(0.5, 0.5);
-    this.cardName.setSize(width, height);
-    this.cardName.setColor('#000');
-    this.cardName.setFontSize(fontSize);
-    TextUtils.fitText(this.cardName, width, height);
-    this.add(this.cardName);
+  public addCardBehind(card: CardView) {
+    this.add(card);
+    this.cardsBehind.add(card);
+    this.redrawCardsBehind();
   }
 
-  private defineDamageStat(damageStat: Damage | undefined): void {
-    const horizontalPadding = this.background.displayWidth * 0.06;
-    const verticalPadding = this.background.displayHeight * 0.03;
-    const width = this.background.displayWidth * 0.4 - horizontalPadding * 2;
-    const height = this.background.displayHeight * 0.2 - verticalPadding * 2;
-    const x = -(width / 2) - horizontalPadding / 2;
-    const y = this.background.displayHeight / 2 - (height / 2 + verticalPadding * 2) - this.background.displayHeight * 0.02;
-
-    if (damageStat) {
-      this.damage = new CardStatisticView(this.scene, damageStat);
-      this.damage.setIconPosition('left');
-      this.damage.setPosition(x, y);
-      this.damage.setSize(width, height);
-      this.add(this.damage);
-    }
+  public removeCardBehind(card: CardView) {
+    this.remove(card);
+    this.cardsBehind.delete(card);
+    this.redrawCardsBehind();
   }
 
-  private defineHealthStat(healthStat: Health | undefined): void {
-    const horizontalPadding = this.background.displayWidth * 0.06;
-    const verticalPadding = this.background.displayHeight * 0.03;
-    const width = this.background.displayWidth * 0.4 - horizontalPadding * 2;
-    const height = this.background.displayHeight * 0.2 - verticalPadding * 2;
-    const x = (width / 2) + horizontalPadding / 2;
-    const y = this.background.displayHeight / 2 - (height / 2 + verticalPadding * 2) - this.background.displayHeight * 0.02;
+  private redrawCardsBehind(): void {
+    const offset = 20;
 
-    if (healthStat) {
-      this.health = new CardStatisticView(this.scene, healthStat);
-      this.health.setIconPosition('right');
-      this.health.setPosition(x, y);
-      this.health.setSize(width, height);
-      this.add(this.health);
-    }
-  }
-
-  private defineArmorStat(armorStat: Armor | undefined): void {
-    const width = this.background.displayWidth * 0.40;
-    const height = this.background.displayHeight * 0.10;
-    const x = 0;
-    const y = height * 2;
-
-    if (armorStat) {
-      this.armor = new CardStatisticView(this.scene, armorStat);
-      this.armor.setIconPosition('top');
-      this.armor.setPosition(x, y);
-      this.armor.setSize(width, height);
-      this.add(this.armor);
+    let index = 1;
+    for (const card of this.cardsBehind) {
+      const currentOffset = offset * index;
+      card.setDepth(this.depth - index);
+      card.setPosition(this.x + currentOffset, this.y + currentOffset);
+      index++;
     }
   }
 
@@ -146,14 +85,14 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   public hideTooltip(): void {
-    this.tooltip.setVisible(false);
+    this.tooltip?.setVisible(false);
   }
 
   public showTooltip(): void { 
     const x = this.x + this.background.displayWidth / 2 + 20;
     const y = this.y - this.background.displayHeight / 2;
-    this.tooltip.setPosition(x, y);
-    this.tooltip.setVisible(true);
+    this.tooltip?.setPosition(x, y);
+    this.tooltip?.setVisible(true);
   }
 
   public setOriginalPosition(originalX: number, originalY: number) {

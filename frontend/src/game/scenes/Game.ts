@@ -39,7 +39,7 @@ class GameScene extends Scene {
         for (let i = 0; i < 5; i++) {
             const x = (200 + 10) * i;
         
-            const card = new CardView(this, 150 + x, 200, cardFactory.createWarriorCard({}));
+            const card = new CardView(this, 150 + x, 200, cardFactory.createCard());
             this.children.add(card);
         }
 

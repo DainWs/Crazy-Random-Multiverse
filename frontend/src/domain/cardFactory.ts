@@ -3,15 +3,12 @@ import { EquipmentCard, LeaderCard, SpellCard, WarriorCard } from "@/domain/Card
 import { Armor, ArmorType, Damage, DamageType, Health } from "@/domain/Statistics";
 import Skill, { SkillCode } from "@/domain/Skills";
 
-/*
 type CardAbstractFactoryMethod = (code: CardCode, name?: string, description?: string) => Card;
 const typeBasedFactoryMethods = new Map<CardType, CardAbstractFactoryMethod>();
 typeBasedFactoryMethods.set("LEADER", createLeaderCard);
-typeBasedFactoryMethods.set("WARRIOR", createWarriorCard);
 typeBasedFactoryMethods.set("EQUIPMENT", createEquipmentCard);
 typeBasedFactoryMethods.set("SPELL", createSpellCard);
 
-*/
 const createCardCode = (value?: number, type?: CardType): CardCode => {
   if (!value) value = Math.floor(Math.random() * 10000);
   if (!type) type = getRandomCardType();
@@ -23,14 +20,15 @@ const createSkillCode = (value?: number): SkillCode => {
   return value;
 }
 
-/*
 const createCard = (code?: CardCode, name?: string, description?: string) => {
   if (!code) code = createCardCode();
-  const cardFactoryMethod = typeBasedFactoryMethods.get(code.type);
-  if (!cardFactoryMethod) throw new Error(`CardAbstractFactoryMethod should not be undefined for type ${code}`);
+  if (code.type == "WARRIOR") {
+    return createWarriorCard({ code, name, description });
+  }
+
+  const cardFactoryMethod = typeBasedFactoryMethods.get(code.type) as CardAbstractFactoryMethod;
   return cardFactoryMethod(code, name, description);
 }
-*/
 
 /** Purposely function: typeBasedFactoryMethods binding  */
 function createLeaderCard(code?: CardCode, name?: string, description?: string, 
@@ -90,7 +88,7 @@ function createEquipmentCard(code?: CardCode, name?: string, description?: strin
 /** Purposely function: typeBasedFactoryMethods binding  */
 function createSpellCard(code?: CardCode, name?: string, description?: string): SpellCard {
   if (!code) code = createCardCode(undefined, 'SPELL');
-  const card = createCardOptions(code, 'SPELL', name, description);
+  const card = createCardOptions(code, 'SPELL', name, " as das dasasd asdasdasdadadada dsada sdasd asdasdadsasdad  dasd a das dad as das dasd sad as dasdasdad a");
   card.activeSkill = createSkill();
   return card as SpellCard;
 }
@@ -172,7 +170,7 @@ const shouldSpawn = (spawnRateInPercent: number = 50) => {
 
 export default {
   createCardCode,
-  //createCard,
+  createCard,
   createLeaderCard,
   createWarriorCard,
   createEquipmentCard,

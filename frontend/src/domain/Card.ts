@@ -3,7 +3,20 @@ import Skill from "@/domain/Skills";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
-type CardTexture = 'card' | 'common-card' | 'uncommon-card' | 'rare-card' | 'epic-card' | 'legendary-card' | 'mithic-card';
+type WarriorTexture = 
+  | 'card' 
+  | 'common-card' 
+  | 'uncommon-card'
+  | 'rare-card' 
+  | 'epic-card' 
+  | 'legendary-card' 
+  | 'mithic-card';
+
+type CardTexture = 
+  | WarriorTexture
+  | 'leader-card' 
+  | 'equipment-card' 
+  | 'spell-card';
 
 class CardCode {
   public readonly code: number;
@@ -95,10 +108,10 @@ class Card {
 
   public getTexture(): CardTexture {
     if (this.isType("WARRIOR")) {
-      return `${this.rarity?.toLowerCase()}-card` as CardTexture;
+      return `${this.rarity?.toLowerCase()}-card` as WarriorTexture;
     }
   
-    return 'card';
+    return `${this.type.toLowerCase()}-card` as CardTexture;
   }
 
   public equals(that: Card) {
