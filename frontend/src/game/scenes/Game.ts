@@ -36,14 +36,24 @@ class GameScene extends Scene {
 
         this.camera = this.cameras.main;
 
-        for (let i = 0; i < 5; i++) {
-            const x = (200 + 10) * i;
+        const cardWidth = 200;
+        const cardHeight = 300;
+        const cardSpacing = 10;
+
+        let x = 150;
+        let y = -100;
+        for (let i = 0; i < 10; i++) {
+            x += cardWidth + cardSpacing;
+            if (i % 5 === 0) {
+                x = 150;
+                y += cardHeight + cardSpacing;
+            }
         
-            const card = new CardView(this, 150 + x, 200, cardFactory.createCard());
+            const card = new CardView(this, x, y, cardFactory.createCard());
             this.children.add(card);
         }
 
-        const zone = new ZoneView(this, 1300, 150);
+        const zone = new ZoneView(this, 1300, 200);
         this.zones = [];
         this.zones.push(zone);
         this.children.add(zone);

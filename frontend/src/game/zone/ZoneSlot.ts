@@ -40,9 +40,8 @@ class ZoneSlot extends Phaser.GameObjects.Container {
   }
 
   private initializeView() {
-    this.background = this.scene.add.rectangle(0, 0, this.displayWidth, this.displayHeight, 0xCCCCCC);
-    this.background.setStrokeStyle(2, 0x444444);
-    //this.background.setOrigin(0);
+    this.background = this.scene.add.rectangle(0, 0, this.displayWidth, this.displayHeight, 0xffffff);
+    this.background.setStrokeStyle(4, 0x000000);
 
     this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.definition.allowedCombatant.toLowerCase()}`);
     this.mark.setScale(4);
@@ -86,7 +85,7 @@ class ZoneSlot extends Phaser.GameObjects.Container {
   }
 
   public clearHighlight(): void {
-    this.background.setFillStyle(0xcccccc)
+    this.background.setFillStyle(0xffffff)
   }
 }
 
