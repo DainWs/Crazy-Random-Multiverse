@@ -47,7 +47,6 @@ class ZoneView extends Phaser.GameObjects.Container {
         };
 
         const zoneSlotView = new ZoneSlot(scene, 0, 0, definition);
-
         const posX = col * (zoneSlotView.displayWidth + spacing);
         const posY = row * (zoneSlotView.displayHeight + spacing);
 

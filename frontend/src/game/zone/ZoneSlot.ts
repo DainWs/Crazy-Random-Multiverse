@@ -53,20 +53,19 @@ class ZoneSlot extends Phaser.GameObjects.Container {
   public placeCard(card: CardView): boolean {
     if (this.card) return false;
 
+    const bounds = this.getBounds();
+
     this.card = card;
-    this.card.setPosition(0, 0);
+    this.card.setPosition(bounds.centerX, bounds.centerY);
     this.card.setDisplaySize(this.width, this.height);
     this.card.setInteractive({ useHandCursor: true });
     this.scene.input.setDraggable(this.card);
-  
-    this.add(this.card);
     return true;
   }
 
   public clearCard(): boolean {
     if (!this.card) return false;
 
-    this.remove(this.card);
     this.card = null;
     return true;
   }
@@ -77,6 +76,10 @@ class ZoneSlot extends Phaser.GameObjects.Container {
     }
 
     return this.card !== null;
+  }
+
+  public getCard(): CardView | null {
+    return this.card;
   }
 
   public highlight(): void {

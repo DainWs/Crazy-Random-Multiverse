@@ -7,9 +7,9 @@ class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
   private tooltip?: CardTooltipView;
-
+  
   public readonly definition: Card;
-  private cardsBehind: Set<CardView>;
+  private cardBehind?: CardView;
 
   private originalX: number;
   private originalY: number;
@@ -26,9 +26,9 @@ class CardView extends Phaser.GameObjects.Container {
     this.scale = 1;
     this.width = 200;
     this.height = 300;
+    this.depth = 10;
 
     this.definition = definition;
-    this.cardsBehind = new Set<CardView>();
 
     this.initializeView();
     this.setInteractive({ useHandCursor: true });
@@ -56,28 +56,21 @@ class CardView extends Phaser.GameObjects.Container {
     this.add(cardViewStrategy.createObjects(this.scene, this, this.displayWidth, this.displayHeight));
   }
 
-  public addCardBehind(card: CardView) {
-    this.add(card);
-    this.cardsBehind.add(card);
-    this.redrawCardsBehind();
+  public hasCardBehind(): boolean {
+    return this.cardBehind != undefined;
   }
 
-  public removeCardBehind(card: CardView) {
-    this.remove(card);
-    this.cardsBehind.delete(card);
-    this.redrawCardsBehind();
-  }
-
-  private redrawCardsBehind(): void {
-    const offset = 20;
-
-    let index = 1;
-    for (const card of this.cardsBehind) {
-      const currentOffset = offset * index;
-      card.setDepth(this.depth - index);
-      card.setPosition(this.x + currentOffset, this.y + currentOffset);
-      index++;
+  public applyCardEffects(card: CardView) {
+    if (this.cardBehind) {
+      throw new Error("There is already a card behind this card.");
     }
+
+    
+    this.cardBehind = card;
+    const offset = 20;
+    const bounds = this.getBounds();
+    card.setPosition(bounds.centerX - offset, bounds.centerY - offset);
+    card.setDepth(this.depth - 1);
   }
 
   public loadCardTexture(texture: CardTexture): void {
@@ -93,6 +86,7 @@ class CardView extends Phaser.GameObjects.Container {
     const y = this.y - this.background.displayHeight / 2;
     this.tooltip?.setPosition(x, y);
     this.tooltip?.setVisible(true);
+    this.tooltip?.setDepth(this.depth + 100);
   }
 
   public setOriginalPosition(originalX: number, originalY: number) {
