@@ -8,12 +8,12 @@ class CardInputManager {
   
   public readonly handler: CardInputHandler;
 
-  private readonly zoneSlots: Set<ZoneSlot>;
+  private readonly interactableObjects: Set<InteractiveGameObject>;
   private sourceZoneSlot: ZoneSlot | null;
   private targetZoneSlot: ZoneSlot | null;
 
   public constructor(scene: Phaser.Scene) {
-    this.zoneSlots = new Set<ZoneSlot>();
+    this.interactableObjects = new Set<InteractiveGameObject>();
     this.sourceZoneSlot = null;
     this.targetZoneSlot = null;
 
@@ -23,34 +23,29 @@ class CardInputManager {
     this.handler.onDropCallback = (card) => this.onDropCard(scene, card);
   }
 
-  public onGrabCard(scene: Phaser.Scene, card: CardView) {
-    console.log("changed dragged card to " + card);
-    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.zoneSlots]);
-    console.log(interactiveGameObject);
-
+  public onGrabCard(scene: Phaser.Scene, _: CardView) {
+    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
     if (!interactiveGameObject || interactiveGameObject.hasCard()) {
       this.sourceZoneSlot?.clearHighlight();
-      this.sourceZoneSlot = interactiveGameObject as ZoneSlot ?? null;
-    }
-
-    if (this.targetZoneSlot && !this.targetZoneSlot.hasCard()) {
-      this.targetZoneSlot.highlight(); // TODO change to leaveHighligth or something
+      this.sourceZoneSlot = interactiveGameObject ?? null;
+      this.sourceZoneSlot?.highlight();
     }
   }
 
-  public onDragCard(scene: Phaser.Scene, a: CardView) {
-    console.log(a)
-    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.zoneSlots]);
-    console.log(interactiveGameObject);
+  public onDragCard(scene: Phaser.Scene, draggedCard: CardView) {
+    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
 
-    if (!interactiveGameObject || !interactiveGameObject.hasCard()) {
-      this.targetZoneSlot?.clearHighlight();
-      this.targetZoneSlot = interactiveGameObject as ZoneSlot ?? null;
+    this.targetZoneSlot?.clearHighlight();
+    this.targetZoneSlot = interactiveGameObject ?? null;
+    if (this.shouldHighlightTargetZoneSlot(draggedCard)) {
+      this.targetZoneSlot?.highlight();
     }
+  }
 
-    if (this.targetZoneSlot && !this.targetZoneSlot.hasCard()) {
-      this.targetZoneSlot.highlight();
-    }
+  private shouldHighlightTargetZoneSlot(card: CardView): boolean {
+    if (!this.targetZoneSlot) return false;
+    if (this.targetZoneSlot.hasCard()) return false;
+    return this.targetZoneSlot.definition.allowedCombatant === card.definition.type;
   }
 
   public onDropCard(_: Phaser.Scene, droppedCard: CardView) {
@@ -58,12 +53,12 @@ class CardInputManager {
       this.sourceZoneSlot.clearCard();
     }
 
-    const successfullyPlaced = this.placeDroppedCardInTargetZoneSlot(droppedCard);
-    if (!successfullyPlaced) {
+    const actionSuccess = this.dispatchDroppedCardAction(droppedCard);
+    if (!actionSuccess) {
       droppedCard.resetPosition();
     }
 
-    if (!successfullyPlaced && this.sourceZoneSlot) {
+    if (!actionSuccess && this.sourceZoneSlot) {
       this.sourceZoneSlot.placeCard(droppedCard);
     }
 
@@ -74,13 +69,40 @@ class CardInputManager {
     this.targetZoneSlot = null;
   }
 
-  private placeDroppedCardInTargetZoneSlot(droppedCard: CardView) {
-    if (!this.targetZoneSlot) {
+  private dispatchDroppedCardAction(droppedCard: CardView) {
+    if (droppedCard.definition.isType('EQUIPMENT')) {
+      return this.equipCardToCombatantOnTargetZoneSlot(droppedCard);
+    }
+
+    if (droppedCard.definition.isCombatant()) {
+      return this.placeDroppedCardOnTargetZoneSlot(droppedCard);
+    }
+  
+    return false;
+  }
+  
+  private equipCardToCombatantOnTargetZoneSlot(droppedCard: CardView): boolean {
+    if (!this.targetZoneSlot) return false;
+  
+    const targetCard = this.targetZoneSlot.getCard();
+    if (!targetCard || targetCard.hasCardBehind()) return false;
+
+    targetCard.applyCardEffects(droppedCard);
+    return true;
+  }
+
+  private placeDroppedCardOnTargetZoneSlot(droppedCard: CardView): boolean {
+    if (!this.targetZoneSlot) return false;
+  
+    if (this.targetZoneSlot.hasCard()) {
+      console.warn("Target zone slot already has a card, cannot place another one.");
+      // show message: that slot already has a card
       return false;
     }
 
-    if (this.targetZoneSlot.hasCard()) {
-      // show message: that slot already has a card
+    if (this.targetZoneSlot.definition.allowedCombatant !== droppedCard.definition.type) {
+      console.warn("Target zone slot does not allow this type of card.");
+      // show message: that slot type is not the same
       return false;
     }
 
@@ -88,28 +110,34 @@ class CardInputManager {
     return true;
   }
 
-  public registerSlot(slot: ZoneSlot): void {
-    this.zoneSlots.add(slot)
+  public registerGameObject(gameObject: InteractiveGameObject): void {
+    this.interactableObjects.add(gameObject);
   }
 
-  public unregisterSlot(slot: ZoneSlot): void {
-    this.zoneSlots.delete(slot)
+  public unregisterGameObject(gameObject: InteractiveGameObject): void {
+    this.interactableObjects.delete(gameObject);
   }
 }
 
-function getInteractiveGameObjectAtCursor(scene: Phaser.Scene, gameObjects: Phaser.GameObjects.GameObject[]) {
+function getInteractiveGameObjectAtCursor(
+  scene: Phaser.Scene, 
+  objects: InteractiveGameObject[], 
+  exclude?: InteractiveGameObject[]
+): InteractiveGameObject | undefined {
   const pointer = scene.input.activePointer;
   const camera = scene.cameras.main;
-  const results: Phaser.GameObjects.GameObject[] = [];
+  const results: InteractiveGameObject[] = [];
 
+  const gameObjects = objects.filter(obj => !exclude || !exclude.includes(obj));
   scene.input.manager.hitTest(pointer, gameObjects, camera, results);
   console.log(results)
-  return results.find(isAInteractiveGameObject) as InteractiveGameObject ?? null;
+  return results.find(isAInteractiveGameObject);
 }
 
 function isAInteractiveGameObject(gameObject: Phaser.GameObjects.GameObject) {
   return (
-    gameObject instanceof ZoneSlot
+    gameObject instanceof ZoneSlot ||
+    gameObject instanceof CardView
   );
 }
 
