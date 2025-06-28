@@ -22,7 +22,7 @@ class SpellViewStrategy implements CardViewStrategy {
     const y = totalHeight / 2 - (height / 2 + bottomPadding) - totalHeight * 0.02;
 
     const gameObjects = [];
-    if (showDebugBoxes || true) {
+    if (showDebugBoxes) {
       const descriptionBox = scene.add.rectangle(x, y);
       descriptionBox.setSize(width, height);
       descriptionBox.setFillStyle(0xFF0000, 0.5);
@@ -31,6 +31,7 @@ class SpellViewStrategy implements CardViewStrategy {
     }
 
     const descriptionText = scene.add.text(0, 0, description);
+    descriptionText.setColor('#000');
     descriptionText.setWordWrapWidth(width, true);
     descriptionText.setFixedSize(width, height);
     descriptionText.setOrigin(0.5, 0.5);
