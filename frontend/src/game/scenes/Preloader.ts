@@ -39,7 +39,6 @@ export class Preloader extends Scene
         this.load.image('statistic-icon_magic_armor', 'magic_shield.png');
         this.load.image('statistic-icon_health', 'hearth.png');
 
-        this.load.image('card', 'card.png');
         this.load.image('common-card', 'card-common.png');
         this.load.image('uncommon-card', 'card-uncommon.png');
         this.load.image('rare-card', 'card-rare.png');
