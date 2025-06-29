@@ -1,9 +1,9 @@
 import ActionSystem from '@/core/ActionSystem';
 import InteractionSystem from '@/core/InteractionSystem';
-import VisualEffectSystem from '@/core/VisualEffectSystem';
 import ActionEvent from '@/domain/ActionEvent';
 import cardFactory from '@/domain/cardFactory';
 import Player from '@/domain/Player';
+import Zone from '@/domain/Zone';
 import { CardView } from '@/game/cards/CardView';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
@@ -13,7 +13,6 @@ class GameScene extends Scene {
     public background: Phaser.GameObjects.Image;
 
     public readonly actionSystem: ActionSystem;
-    public readonly visualEffectSystem: VisualEffectSystem;
     public readonly interactionSystem: InteractionSystem;
 
     public zones: ZoneView[];
@@ -21,7 +20,6 @@ class GameScene extends Scene {
     public constructor() {
         super('Game');
         this.actionSystem = new ActionSystem(this, 'game-code');
-        this.visualEffectSystem = new VisualEffectSystem(this);
         this.interactionSystem = new InteractionSystem(this);
     }
 
@@ -53,12 +51,14 @@ class GameScene extends Scene {
             this.children.add(card);
         }
 
-        const zone = new ZoneView(this, 1300, 200);
+        const player = new Player("none", "DainWs");
+        const zone = new Zone(player, 'BASE');
+        const zoneView = new ZoneView(this, 1300, 150, zone);
         this.zones = [];
-        this.zones.push(zone);
-        this.children.add(zone);
+        this.zones.push(zoneView);
+        this.children.add(zoneView);
 
-        this.add.rectangle(150, 200, 1, 1, 0xFF0000, 0.5).setStrokeStyle(1, 0x000000);
+        this.children.add(this.add.rectangle(1300, 200, 1, 1, 0xFFFFFF, 0.5).setStrokeStyle(1, 0x000000));
     }
 
     public changeScene() {

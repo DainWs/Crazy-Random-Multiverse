@@ -1,4 +1,6 @@
-import Card, { CardTexture, CombatantCard } from "@/domain/Card";
+import applyAnimation, { CardAnimation } from "@/core/visual_effects/CardAnimations";
+import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
+import Card, { CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import { GameScene } from "@/game/scenes/Game";
@@ -23,7 +25,7 @@ class CardView extends Phaser.GameObjects.Container {
     scene: GameScene,
     x: number,
     y: number,
-    card: CombatantCard
+    card: Card
   ) {
     super(scene, x, y);
     this.originalX = x;
@@ -67,7 +69,7 @@ class CardView extends Phaser.GameObjects.Container {
     return this.cardBehind != undefined;
   }
 
-  public applyCardEffects(card: CardView) {
+  public equip(card: CardView) {
     if (this.cardBehind) {
       throw new Error("There is already a card behind this card.");
     }
@@ -80,6 +82,14 @@ class CardView extends Phaser.GameObjects.Container {
     this.scene.input.setDraggable(this.cardBehind, false);
     this.cardBehind.setInteractive({ useHandCursor: false });
     this.cardBehind.allowGrab = false;
+  }
+
+  public applyAnimation(animation: CardAnimation): void {
+    applyAnimation(this, animation);
+  }
+
+  public applyTween(tween: CardTween): void {
+    this.scene.tweens.add(resolveTween(this, tween));
   }
 
   public loadCardTexture(texture: CardTexture): void {

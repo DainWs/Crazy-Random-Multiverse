@@ -24,10 +24,10 @@ const animations = new Map<CardAnimation, CardAnimationApplier>();
 animations.set('startDrag', startDragAnimation);
 animations.set('endDrag', endDragAnimation);
 
-const resolveCardAnimation = (animation: CardAnimation) => {
-  return animations.get(animation) ?? noneAnimation;
+const applyAnimation = (card: CardView, animation: CardAnimation) => {
+  const apply = animations.get(animation) ?? noneAnimation;
+  apply(card);
 }
 
-export { startDragAnimation, endDragAnimation };
-export type { CardAnimation, CardAnimationApplier };
-export default resolveCardAnimation;
+export type { CardAnimation };
+export default applyAnimation;

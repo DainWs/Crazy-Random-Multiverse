@@ -50,22 +50,22 @@ class CardInputHandler {
     if (this.card.canBeGrabbed()) {
       this.scene.input.manager.canvas.style.cursor = "grab";
     }
-    this.scene.visualEffectSystem.applyTweenToCard(this.card, 'hover');
-  
+
+    this.card.applyTween('hover');
     this.card.showTooltip();
   }
 
   private onPointerOut(): void {
     this.scene.input.manager.canvas.style.cursor = "default";
-    this.scene.visualEffectSystem.applyTweenToCard(this.card, 'unhover');
-  
+
+    this.card.applyTween('unhover');
     this.card.hideTooltip();
   }
 
   private onGrab(_: Pointer, target: PhaserGameObject): void {
     if (target === this.card && this.card.canBeGrabbed()) {
-      this.scene.input.manager.canvas.style.cursor = "grab";
-      this.scene.visualEffectSystem.applyAnimationToCard(this.card, 'startDrag');
+      this.scene.input.manager.canvas.style.cursor = "grabbing";
+      this.card.applyAnimation('startDrag')
       this.callback(this.card);
       EventBus.emit('card.grab', this.card);
     }
@@ -81,8 +81,8 @@ class CardInputHandler {
   
   private onDrop(_: Pointer, target: PhaserGameObject): void {
     if (target === this.card && this.card.canBeGrabbed()) {
-      this.scene.input.manager.canvas.style.cursor = "default";
-      this.scene.visualEffectSystem.applyAnimationToCard(this.card, 'endDrag');
+      this.scene.input.manager.canvas.style.cursor = "grab";
+      this.card.applyAnimation('endDrag');
       this.callback(this.card);
       EventBus.emit('card.drop', this.card);
     }

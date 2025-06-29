@@ -26,25 +26,26 @@ class CardInputManager {
   public onGrabCard(scene: Phaser.Scene, _: CardView) {
     const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
     if (!interactiveGameObject || interactiveGameObject.hasCard()) {
-      this.sourceZoneSlot?.clearHighlight();
+      this.sourceZoneSlot?.applyAnimation('unhighlight');
       this.sourceZoneSlot = interactiveGameObject ?? null;
-      this.sourceZoneSlot?.highlight();
+      this.sourceZoneSlot?.applyAnimation('highlight_as_source');
     }
   }
 
   public onDragCard(scene: Phaser.Scene, draggedCardView: CardView) {
     const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
 
-    this.targetZoneSlot?.clearHighlight();
+    this.targetZoneSlot?.applyAnimation('unhighlight');
     this.targetZoneSlot = interactiveGameObject ?? null;
     if (this.shouldHighlightTargetZoneSlot(draggedCardView)) {
-      this.targetZoneSlot?.highlight();
+      this.targetZoneSlot?.applyAnimation('highlight_as_target');
     }
   }
 
   private shouldHighlightTargetZoneSlot(cardView: CardView): boolean {
     if (!this.targetZoneSlot) return false;
     if (this.targetZoneSlot.hasCard()) return false;
+    if (this.targetZoneSlot === this.sourceZoneSlot) return false;
     return this.targetZoneSlot.zoneSlot.allowedCombatant === cardView.card.type;
   }
 
@@ -62,10 +63,10 @@ class CardInputManager {
       this.sourceZoneSlot.placeCard(droppedCard);
     }
 
-    this.sourceZoneSlot?.clearHighlight();
+    this.sourceZoneSlot?.applyAnimation('unhighlight');
     this.sourceZoneSlot = null;
 
-    this.targetZoneSlot?.clearHighlight();
+    this.targetZoneSlot?.applyAnimation('unhighlight');
     this.targetZoneSlot = null;
   }
 
@@ -87,7 +88,7 @@ class CardInputManager {
     const targetCard = this.targetZoneSlot.getCard();
     if (!targetCard || targetCard.hasCardBehind()) return false;
 
-    targetCard.applyCardEffects(droppedCardView);
+    targetCard.equip(droppedCardView);
     return true;
   }
 

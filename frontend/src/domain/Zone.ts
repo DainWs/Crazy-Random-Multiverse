@@ -1,8 +1,14 @@
 import Owner, { PlayerCode } from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
-import ZoneSlot from '@/domain/ZoneSlot';
+import ZoneSlot, { AllowedCombatant } from '@/domain/ZoneSlot';
 
 type ZoneType = 'BASE' | 'NO_LEADER' | 'ONLY_LEADER';
+
+const BASE_ZONE_ORGANIZATION = [
+  { index: 0, columnCount: 3, allowedCombatant: 'WARRIOR' },
+  { index: 1, columnCount: 3, allowedCombatant: 'WARRIOR' },
+  { index: 2, columnCount: 1, allowedCombatant: 'LEADER' }
+];
 
 class Zone {
   public readonly owner: Owner;
@@ -18,6 +24,20 @@ class Zone {
     this.health = 0;
     this.maxHealth = 0;
     this.slots = new Array();
+
+    this.initializeSlots();
+  }
+
+  private initializeSlots() {
+    for (const row of BASE_ZONE_ORGANIZATION) {
+      this.slots[row.index] = [];
+
+      for (let column = 0; column < row.columnCount; column++) {
+        const position = new ZonePosition(row.index, column);
+        const zoneSlot = new ZoneSlot(position, row.allowedCombatant as AllowedCombatant);
+        this.slots[row.index][column] = zoneSlot;
+      }
+    }
   }
 
   public isPlayerOwner(playerIdentifier: Owner | PlayerCode): boolean {

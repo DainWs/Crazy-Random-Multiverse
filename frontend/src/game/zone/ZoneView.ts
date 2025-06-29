@@ -5,15 +5,11 @@ import ZoneSlotView from "@/game/zone/ZoneSlotView"
 
 interface ZoneViewOptions {
   spaceBetweenSlots?: number;
-  zoneSlotWidth?: number;
-  zoneSlotHeight?: number;
 }
 
 type AllZoneViewOptions = Required<ZoneViewOptions>;
 const defaultOptions: AllZoneViewOptions = {
-  spaceBetweenSlots: 10,
-  zoneSlotWidth: 200,
-  zoneSlotHeight: 300,
+  spaceBetweenSlots: 10
 };
 
 class ZoneView extends Phaser.GameObjects.Container {
@@ -30,11 +26,14 @@ class ZoneView extends Phaser.GameObjects.Container {
     options: ZoneViewOptions = defaultOptions
   ) {
     super(scene, x, y);
+    console.log('ZoneView created', this.x, this.y);
     this.options = { ...defaultOptions, ...options };
+    this.slots = [];
     this.zone = zone;
     this.scale = 1
 
     this.initializeView();
+
     const bounds = this.getBounds();
     this.width = bounds.width;
     this.height = bounds.height;
@@ -46,13 +45,15 @@ class ZoneView extends Phaser.GameObjects.Container {
     const zoneSlots = this.zone.slots.flatMap(row => row);
     for (const zoneSlot of zoneSlots) {
       const zoneSlotView = new ZoneSlotView(this.scene as GameScene, 0, 0, zoneSlot);
-      zoneSlotView.setSize(this.options.zoneSlotWidth, this.options.zoneSlotHeight);
 
       const position = zoneSlot.position;
       const x = this.resolveXForPosition(position, zoneSlotView.displayWidth);
       const y = this.resolveYForPosition(position, zoneSlotView.displayHeight);
       zoneSlotView.setPosition(x, y);
-      this.slots[position.row][position.column].add(zoneSlotView);
+
+      if (!this.slots[position.row]) this.slots[position.row] = [];
+      this.slots[position.row][position.column] = zoneSlotView;
+      this.add(zoneSlotView);
     }
   }
 

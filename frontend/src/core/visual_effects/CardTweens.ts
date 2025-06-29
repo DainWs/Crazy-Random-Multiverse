@@ -36,10 +36,10 @@ const tweens = new Map<CardTween, CardTweenProvider>();
 tweens.set('hover', hoverTween);
 tweens.set('unhover', unhoverTween);
 
-const resolveCardTween = (tween: CardTween): CardTweenProvider => {
-  return tweens.get(tween) ?? noneTween;
+const resolveTween = (card: CardView, tween: CardTween) => {
+  const provider = tweens.get(tween) ?? noneTween;
+  return provider(card);
 }
 
-export { hoverTween, unhoverTween }
-export type { CardTween, CardTweenProvider };
-export default resolveCardTween;
+export type { CardTween };
+export default resolveTween;
