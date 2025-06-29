@@ -32,20 +32,20 @@ class CardInputManager {
     }
   }
 
-  public onDragCard(scene: Phaser.Scene, draggedCard: CardView) {
+  public onDragCard(scene: Phaser.Scene, draggedCardView: CardView) {
     const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
 
     this.targetZoneSlot?.clearHighlight();
     this.targetZoneSlot = interactiveGameObject ?? null;
-    if (this.shouldHighlightTargetZoneSlot(draggedCard)) {
+    if (this.shouldHighlightTargetZoneSlot(draggedCardView)) {
       this.targetZoneSlot?.highlight();
     }
   }
 
-  private shouldHighlightTargetZoneSlot(card: CardView): boolean {
+  private shouldHighlightTargetZoneSlot(cardView: CardView): boolean {
     if (!this.targetZoneSlot) return false;
     if (this.targetZoneSlot.hasCard()) return false;
-    return this.targetZoneSlot.definition.allowedCombatant === card.definition.type;
+    return this.targetZoneSlot.zoneSlot.allowedCombatant === cardView.card.type;
   }
 
   public onDropCard(_: Phaser.Scene, droppedCard: CardView) {
@@ -69,29 +69,29 @@ class CardInputManager {
     this.targetZoneSlot = null;
   }
 
-  private dispatchDroppedCardAction(droppedCard: CardView) {
-    if (droppedCard.definition.isType('EQUIPMENT')) {
-      return this.equipCardToCombatantOnTargetZoneSlot(droppedCard);
+  private dispatchDroppedCardAction(droppedCardView: CardView) {
+    if (droppedCardView.card.isType('EQUIPMENT')) {
+      return this.equipCardToCombatantOnTargetZoneSlot(droppedCardView);
     }
 
-    if (droppedCard.definition.isCombatant()) {
-      return this.placeDroppedCardOnTargetZoneSlot(droppedCard);
+    if (droppedCardView.card.isCombatant()) {
+      return this.placeDroppedCardOnTargetZoneSlot(droppedCardView);
     }
   
     return false;
   }
   
-  private equipCardToCombatantOnTargetZoneSlot(droppedCard: CardView): boolean {
+  private equipCardToCombatantOnTargetZoneSlot(droppedCardView: CardView): boolean {
     if (!this.targetZoneSlot) return false;
   
     const targetCard = this.targetZoneSlot.getCard();
     if (!targetCard || targetCard.hasCardBehind()) return false;
 
-    targetCard.applyCardEffects(droppedCard);
+    targetCard.applyCardEffects(droppedCardView);
     return true;
   }
 
-  private placeDroppedCardOnTargetZoneSlot(droppedCard: CardView): boolean {
+  private placeDroppedCardOnTargetZoneSlot(droppedCardView: CardView): boolean {
     if (!this.targetZoneSlot) return false;
   
     if (this.targetZoneSlot.hasCard()) {
@@ -100,13 +100,13 @@ class CardInputManager {
       return false;
     }
 
-    if (this.targetZoneSlot.definition.allowedCombatant !== droppedCard.definition.type) {
+    if (this.targetZoneSlot.zoneSlot.allowedCombatant !== droppedCardView.card.type) {
       console.warn("Target zone slot does not allow this type of card.");
       // show message: that slot type is not the same
       return false;
     }
 
-    this.targetZoneSlot.placeCard(droppedCard);
+    this.targetZoneSlot.placeCard(droppedCardView);
     return true;
   }
 

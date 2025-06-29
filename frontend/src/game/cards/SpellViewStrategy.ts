@@ -8,9 +8,9 @@ class SpellViewStrategy implements CardViewStrategy {
     return undefined;
   }
 
-  public createObjects(scene: Phaser.Scene, card: CardView, totalWidth: number, totalHeight: number) {
+  public createObjects(scene: Phaser.Scene, cardView: CardView, totalWidth: number, totalHeight: number) {
     return [
-      ...this.defineDamageStat(scene, totalWidth, totalHeight, card.definition.description)
+      ...this.defineDamageStat(scene, totalWidth, totalHeight, cardView.card.description)
     ];
   }
 

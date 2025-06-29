@@ -9,17 +9,17 @@ import * as TextUtils from "@/game/utils/TextUtils";
 class CombatantViewStrategy implements CardViewStrategy {
   public createTooltip(scene: Phaser.Scene, cardView: CardView) {
     const tooltip = new CardTooltipView(scene, cardView.width / 2 + 10, 0);
-    tooltip.setNameText(cardView.definition.name);
-    tooltip.setDescriptionText(`${cardView.definition.rarity}\n\n${cardView.definition.description}`);
+    tooltip.setNameText(cardView.card.name);
+    tooltip.setDescriptionText(`${cardView.card.rarity}\n\n${cardView.card.description}`);
     return tooltip;
   }
 
   public createObjects(scene: Phaser.Scene, cardView: CardView, totalCardWidth: number, totalCardHeight: number) {
     return [
-      ...this.defineCardName(scene, totalCardWidth, totalCardHeight, cardView.definition.name),
-      ...this.defineDamageStat(scene, totalCardWidth, totalCardHeight, cardView.definition.damage),
-      ...this.defineHealthStat(scene, totalCardWidth, totalCardHeight, cardView.definition.health),
-      ...this.defineArmorStat(scene, totalCardWidth, totalCardHeight, cardView.definition.armor)
+      ...this.defineCardName(scene, totalCardWidth, totalCardHeight, cardView.card.name),
+      ...this.defineDamageStat(scene, totalCardWidth, totalCardHeight, cardView.card.damage),
+      ...this.defineHealthStat(scene, totalCardWidth, totalCardHeight, cardView.card.health),
+      ...this.defineArmorStat(scene, totalCardWidth, totalCardHeight, cardView.card.armor)
     ];
   }
 

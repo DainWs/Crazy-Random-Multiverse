@@ -1,23 +1,31 @@
-import Owner from '@/domain/Player';
-import Combatant from '@/domain/Card';
+import Owner, { PlayerCode } from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
+import ZoneSlot from '@/domain/ZoneSlot';
+
+type ZoneType = 'BASE' | 'NO_LEADER' | 'ONLY_LEADER';
 
 class Zone {
+  public readonly owner: Owner;
+  public readonly type: ZoneType;
   public health: number;
   public maxHealth: number;
-  public owner: Owner;
-  public combatants: Combatant[][];
+  public slots: ZoneSlot[][];
 
-  public constructor(owner: Owner) {
+  public constructor(owner: Owner, type: ZoneType = 'BASE') {
+    this.owner = owner;
+    this.type = type;
+
     this.health = 0;
     this.maxHealth = 0;
-    this.owner = owner;
-    this.combatants = new Array();
+    this.slots = new Array();
   }
 
-  public isPlayerOwner(player: Owner | null): boolean {
-    if (!player) return false;
-    return this.owner.code === player.code;
+  public isPlayerOwner(playerIdentifier: Owner | PlayerCode): boolean {
+    if (playerIdentifier instanceof Owner) {
+      return this.owner.code == playerIdentifier.code;
+    }
+  
+    return this.owner.code == playerIdentifier;
   }
 
   public isEnabledPosition(position: ZonePosition) {
@@ -33,8 +41,11 @@ class Zone {
   }
 
   private hasLeaderInBoard() {
-    const combatant = this.combatants[0][0];
-    return combatant?.isType('LEADER')
+    if (this.type === 'NO_LEADER') {
+      return false;
+    }
+
+    return this.slots[0][0]?.combatant?.isType('LEADER');
   }
 
   private isPreviousLineFull(row: number) {
@@ -47,12 +58,17 @@ class Zone {
   }
 
   private isLineFull(row: number) {
-    return !this.combatants[row].every(combatant => combatant != null);
+    return !this.slots[row].every(slot => slot.combatant != null);
   }
 
   private hasCombatant(position: ZonePosition) {
-    return this.combatants[position.row][position.column] != null;
+    return this.slots[position.row][position.column]?.combatant != null;
+  }
+
+  public getMaxColumns() {
+    return this.slots.reduce((max, row) => Math.max(max, row.length), 0);
   }
 }
 
+export type { ZoneType };
 export default Zone;

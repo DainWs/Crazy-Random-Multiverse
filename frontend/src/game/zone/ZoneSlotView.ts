@@ -1,33 +1,26 @@
-import { ZonePosition } from "@/domain/Position";
+import { CombatantCard } from "@/domain/Card";
+import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
 import { GameScene } from "@/game/scenes/Game";
-
-type AllowedCombatant = 'LEADER' | 'WARRIOR';
-type ZoneSlotViewDefinition = {
-  position: ZonePosition;
-  allowedCombatant: AllowedCombatant;
-}
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
   private mark: Phaser.GameObjects.Image;
   private card: CardView | null;
 
-  public readonly definition: ZoneSlotViewDefinition;
+  public readonly zoneSlot: ZoneSlot;
 
   constructor(
     scene: GameScene, 
     x: number, 
     y: number,
-    definition: ZoneSlotViewDefinition
+    zoneSlot: ZoneSlot
   ) {
     super(scene, x, y);
     this.scale = 1;
-    this.width = 200;
-    this.height = 300;
 
     this.card = null;
-    this.definition = definition;
+    this.zoneSlot = zoneSlot;
 
     this.initializeView()
 
@@ -35,7 +28,6 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.setInteractive(undefined, undefined, isADropZone);
 
     scene.add.existing(this)
-    //scene.physics.add.existing(this, true)
     scene.interactionSystem.registerSlot(this);
   }
 
@@ -43,19 +35,20 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.background = this.scene.add.rectangle(0, 0, this.displayWidth, this.displayHeight, 0xffffff);
     this.background.setStrokeStyle(4, 0x000000);
 
-    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.definition.allowedCombatant.toLowerCase()}`);
+    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
     this.mark.setScale(4);
     this.mark.setOrigin(0.5, 0.5);
 
     this.add([ this.background, this.mark ]);
   }
 
-  public placeCard(card: CardView): boolean {
-    if (this.card) return false;
+  public placeCard(cardView: CardView): boolean {
+    if (this.card || !cardView.card.isCombatant()) return false;
+
+    this.zoneSlot.combatant = cardView.card as CombatantCard;
 
     const bounds = this.getBounds();
-
-    this.card = card;
+    this.card = cardView;
     this.card.setPosition(bounds.centerX, bounds.centerY);
     this.card.setDisplaySize(this.width, this.height);
     return true;
@@ -64,6 +57,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   public clearCard(): boolean {
     if (!this.card) return false;
 
+    this.zoneSlot.combatant = null;
     this.card = null;
     return true;
   }
@@ -89,5 +83,4 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   }
 }
 
-export type { ZoneSlotViewDefinition };
 export default ZoneSlotView;

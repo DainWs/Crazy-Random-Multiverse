@@ -1,4 +1,4 @@
-import Card, { CardTexture } from "@/domain/Card";
+import Card, { CardTexture, CombatantCard } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import { GameScene } from "@/game/scenes/Game";
@@ -10,7 +10,7 @@ class CardView extends Phaser.GameObjects.Container {
   private cardImage: Phaser.GameObjects.Image;
   private tooltip?: CardTooltipView;
   
-  public readonly definition: Card;
+  public readonly card: Card;
   private cardBehind?: CardView;
 
   private allowGrab: boolean; // TODO search a way to improve this
@@ -23,7 +23,7 @@ class CardView extends Phaser.GameObjects.Container {
     scene: GameScene,
     x: number,
     y: number,
-    definition: Card
+    card: CombatantCard
   ) {
     super(scene, x, y);
     this.originalX = x;
@@ -34,11 +34,11 @@ class CardView extends Phaser.GameObjects.Container {
     this.width = 200;
     this.height = 300;
 
-    this.definition = definition;
-    this.allowGrab = true;
+    this.card = card;
 
     this.initializeView();
     this.setInteractive({ useHandCursor: true });
+    this.allowGrab = true;
 
     scene.input.setDraggable(this);
     scene.add.existing(this);
@@ -46,7 +46,7 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   private initializeView() {
-    this.background = this.scene.add.image(0, 0, this.definition.getTexture());
+    this.background = this.scene.add.image(0, 0, this.card.getTexture());
     this.background.setScale(this.scaleX, this.scaleY);
     this.background.setDisplaySize(this.width, this.height);
 
@@ -58,7 +58,7 @@ class CardView extends Phaser.GameObjects.Container {
 
     this.add([this.cardImage, this.background]);
 
-    const cardViewStrategy = dispatchCardViewStrategy(this.definition);
+    const cardViewStrategy = dispatchCardViewStrategy(this.card);
     this.tooltip = cardViewStrategy.createTooltip(this.scene, this);
     this.add(cardViewStrategy.createObjects(this.scene, this, this.displayWidth, this.displayHeight));
   }

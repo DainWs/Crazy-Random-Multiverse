@@ -1,72 +1,72 @@
-import { ZonePosition } from "@/domain/Position";
+import Position, { ZonePosition } from "@/domain/Position";
+import Zone from "@/domain/Zone";
 import { GameScene } from "@/game/scenes/Game";
-import ZoneSlotView, { ZoneSlotViewDefinition } from "@/game/zone/ZoneSlotView"
+import ZoneSlotView from "@/game/zone/ZoneSlotView"
 
-type AllowedCombatant = 'LEADER' | 'WARRIOR';
-type ZoneSlotConfig = {
-  columnCount: number;
-  allowedCombatant: AllowedCombatant;
+interface ZoneViewOptions {
+  spaceBetweenSlots?: number;
+  zoneSlotWidth?: number;
+  zoneSlotHeight?: number;
 }
 
-interface ZoneConfig {
-  maxColumns?: number;
-  spacing?: number
-  zoneSlotConfigs?: ZoneSlotConfig[];
-}
-
-const defaultMaxColumns = 3;
-const defaultSpacing = 10;
-const defaultZoneSlotConfig: ZoneSlotConfig[] = [
-  { columnCount: 3, allowedCombatant: 'WARRIOR' },
-  { columnCount: 3, allowedCombatant: 'WARRIOR' },
-  { columnCount: 1, allowedCombatant: 'LEADER' }
-];
+type AllZoneViewOptions = Required<ZoneViewOptions>;
+const defaultOptions: AllZoneViewOptions = {
+  spaceBetweenSlots: 10,
+  zoneSlotWidth: 200,
+  zoneSlotHeight: 300,
+};
 
 class ZoneView extends Phaser.GameObjects.Container {
+  private readonly options: AllZoneViewOptions;
   private readonly slots: ZoneSlotView[][];
+  
+  public readonly zone: Zone;
 
   constructor(
     scene: GameScene, 
     x: number, 
     y: number, 
-    config: ZoneConfig = {}
+    zone: Zone,
+    options: ZoneViewOptions = defaultOptions
   ) {
     super(scene, x, y);
-    const maxColumns = config.maxColumns ?? defaultMaxColumns;
-    const spacing = config.spacing ?? defaultSpacing;
-    const zoneSlotConfigs = config.zoneSlotConfigs ?? defaultZoneSlotConfig;
-
-    this.slots = [];
-    for (let row = 0; row < zoneSlotConfigs.length; row++) {
-      this.slots[row] = [];
-
-      for (let col = 0; col < zoneSlotConfigs[row].columnCount; col++) {
-        const definition: ZoneSlotViewDefinition = {
-          position: new ZonePosition(row, col),
-          allowedCombatant: zoneSlotConfigs[row].allowedCombatant
-        };
-
-        const zoneSlotView = new ZoneSlotView(scene, 0, 0, definition);
-        const posX = col * (zoneSlotView.displayWidth + spacing);
-        const posY = row * (zoneSlotView.displayHeight + spacing);
-
-        if (zoneSlotConfigs[row].columnCount === 1) {
-          const halfCol = Math.trunc(maxColumns / 2);
-          zoneSlotView.setPosition(halfCol * (zoneSlotView.displayWidth + spacing), posY);
-        } else {
-          zoneSlotView.setPosition(posX, posY);
-        }
-        
-        this.slots[row][col] = zoneSlotView;
-        this.add(zoneSlotView);
-      }
-    }
-
+    this.options = { ...defaultOptions, ...options };
+    this.zone = zone;
     this.scale = 1
-    this.width = maxColumns * (200 + spacing);
-    this.height = zoneSlotConfigs.length * (300 + spacing);
+
+    this.initializeView();
+    const bounds = this.getBounds();
+    this.width = bounds.width;
+    this.height = bounds.height;
 
     this.scene.add.existing(this)
+  }
+
+  private initializeView() {
+    const zoneSlots = this.zone.slots.flatMap(row => row);
+    for (const zoneSlot of zoneSlots) {
+      const zoneSlotView = new ZoneSlotView(this.scene as GameScene, 0, 0, zoneSlot);
+      zoneSlotView.setSize(this.options.zoneSlotWidth, this.options.zoneSlotHeight);
+
+      const position = zoneSlot.position;
+      const x = this.resolveXForPosition(position, zoneSlotView.displayWidth);
+      const y = this.resolveYForPosition(position, zoneSlotView.displayHeight);
+      zoneSlotView.setPosition(x, y);
+      this.slots[position.row][position.column].add(zoneSlotView);
+    }
+  }
+
+  private resolveXForPosition(position: ZonePosition, zoneSlotWidth: number): number {
+    if (this.zone.slots[position.row].length > 1) {
+      return position.column * (zoneSlotWidth + this.options.spaceBetweenSlots);
+    }
+
+    const middleColumn = Math.trunc(this.zone.getMaxColumns() / 2);
+    return middleColumn * (zoneSlotWidth + this.options.spaceBetweenSlots);
+  }
+
+  private resolveYForPosition(position: ZonePosition, zoneSlotHeight: number): number {
+    return position.row * (zoneSlotHeight + this.options.spaceBetweenSlots);
   }
 
   public getSlots(): ZoneSlotView[][] {
