@@ -1,16 +1,16 @@
 import CardInputHandler from "@/core/interactions/CardInputHandler";
 import { CardView } from "@/game/cards/CardView";
-import ZoneSlot from "@/game/zone/ZoneSlot";
+import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
-type InteractiveGameObject = ZoneSlot;
+type InteractiveGameObject = ZoneSlotView;
 
 class CardInputManager {
   
   public readonly handler: CardInputHandler;
 
   private readonly interactableObjects: Set<InteractiveGameObject>;
-  private sourceZoneSlot: ZoneSlot | null;
-  private targetZoneSlot: ZoneSlot | null;
+  private sourceZoneSlot: ZoneSlotView | null;
+  private targetZoneSlot: ZoneSlotView | null;
 
   public constructor(scene: Phaser.Scene) {
     this.interactableObjects = new Set<InteractiveGameObject>();
@@ -136,7 +136,7 @@ function getInteractiveGameObjectAtCursor(
 
 function isAInteractiveGameObject(gameObject: Phaser.GameObjects.GameObject) {
   return (
-    gameObject instanceof ZoneSlot ||
+    gameObject instanceof ZoneSlotView ||
     gameObject instanceof CardView
   );
 }

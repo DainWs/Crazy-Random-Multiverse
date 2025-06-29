@@ -1,6 +1,6 @@
 import { GameScene } from "@/game/scenes/Game";
 import { CardView } from "@/game/cards/CardView"
-import ZoneSlot from "@/game/zone/ZoneSlot"
+import ZoneSlotView from "@/game/zone/ZoneSlotView"
 import CardInputManager from "@/core/interactions/CardInputManager";
 
 class InteractionSystem {
@@ -22,11 +22,11 @@ class InteractionSystem {
     this.cardInputManager.handler.removeHandledCard(this.scene, card);
   }
 
-  public registerSlot(zoneSlot: ZoneSlot): void {
+  public registerSlot(zoneSlot: ZoneSlotView): void {
     this.cardInputManager.registerGameObject(zoneSlot);
   }
 
-  public unregisterSlot(zoneSlot: ZoneSlot): void {
+  public unregisterSlot(zoneSlot: ZoneSlotView): void {
     this.cardInputManager.unregisterGameObject(zoneSlot);
   }
 }

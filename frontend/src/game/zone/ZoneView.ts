@@ -1,6 +1,6 @@
 import { ZonePosition } from "@/domain/Position";
 import { GameScene } from "@/game/scenes/Game";
-import ZoneSlot, { ZoneSlotDefinition } from "@/game/zone/ZoneSlot"
+import ZoneSlotView, { ZoneSlotViewDefinition } from "@/game/zone/ZoneSlotView"
 
 type AllowedCombatant = 'LEADER' | 'WARRIOR';
 type ZoneSlotConfig = {
@@ -23,7 +23,7 @@ const defaultZoneSlotConfig: ZoneSlotConfig[] = [
 ];
 
 class ZoneView extends Phaser.GameObjects.Container {
-  private readonly slots: ZoneSlot[][];
+  private readonly slots: ZoneSlotView[][];
 
   constructor(
     scene: GameScene, 
@@ -41,12 +41,12 @@ class ZoneView extends Phaser.GameObjects.Container {
       this.slots[row] = [];
 
       for (let col = 0; col < zoneSlotConfigs[row].columnCount; col++) {
-        const definition: ZoneSlotDefinition = {
+        const definition: ZoneSlotViewDefinition = {
           position: new ZonePosition(row, col),
           allowedCombatant: zoneSlotConfigs[row].allowedCombatant
         };
 
-        const zoneSlotView = new ZoneSlot(scene, 0, 0, definition);
+        const zoneSlotView = new ZoneSlotView(scene, 0, 0, definition);
         const posX = col * (zoneSlotView.displayWidth + spacing);
         const posY = row * (zoneSlotView.displayHeight + spacing);
 
@@ -69,7 +69,7 @@ class ZoneView extends Phaser.GameObjects.Container {
     this.scene.add.existing(this)
   }
 
-  public getSlots(): ZoneSlot[][] {
+  public getSlots(): ZoneSlotView[][] {
     return this.slots
   }
 }

@@ -3,23 +3,23 @@ import { CardView } from "@/game/cards/CardView";
 import { GameScene } from "@/game/scenes/Game";
 
 type AllowedCombatant = 'LEADER' | 'WARRIOR';
-type ZoneSlotDefinition = {
+type ZoneSlotViewDefinition = {
   position: ZonePosition;
   allowedCombatant: AllowedCombatant;
 }
 
-class ZoneSlot extends Phaser.GameObjects.Container {
+class ZoneSlotView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
   private mark: Phaser.GameObjects.Image;
   private card: CardView | null;
 
-  public readonly definition: ZoneSlotDefinition;
+  public readonly definition: ZoneSlotViewDefinition;
 
   constructor(
     scene: GameScene, 
     x: number, 
     y: number,
-    definition: ZoneSlotDefinition
+    definition: ZoneSlotViewDefinition
   ) {
     super(scene, x, y);
     this.scale = 1;
@@ -89,5 +89,5 @@ class ZoneSlot extends Phaser.GameObjects.Container {
   }
 }
 
-export type { ZoneSlotDefinition };
-export default ZoneSlot;
+export type { ZoneSlotViewDefinition };
+export default ZoneSlotView;
