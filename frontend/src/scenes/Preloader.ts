@@ -30,30 +30,6 @@ export class Preloader extends Scene
         this.load.setPath('assets');
         
         this.load.image('logo', 'logo.png');
-        
-        this.load.image('statistic-icon_unknown', 'statistic-icon_unknown.png');
-        this.load.image('statistic-icon_true_damage', 'true_sword.png');
-        this.load.image('statistic-icon_physical_damage', 'sword.png');
-        this.load.image('statistic-icon_magic_damage', 'staff.png');
-        this.load.image('statistic-icon_physical_armor', 'shield.png');
-        this.load.image('statistic-icon_magic_armor', 'magic_shield.png');
-        this.load.image('statistic-icon_health', 'hearth.png');
-
-        this.load.image('common-card', 'card-common.png');
-        this.load.image('uncommon-card', 'card-uncommon.png');
-        this.load.image('rare-card', 'card-rare.png');
-        this.load.image('epic-card', 'card-epic.png');
-        this.load.image('legendary-card', 'card-legendary.png');
-        this.load.image('mithic-card', 'card-mithic.png');
-        
-        this.load.image('leader-card', 'card-leader.png');
-        this.load.image('equipment-card', 'card-equipment.png');
-        this.load.image('spell-card', 'card-spell.png');
-
-        this.load.image('zoneslot-mark-warrior', 'warrior_mark.png');
-        this.load.image('zoneslot-mark-leader', 'leader_mark.png');
-
-        this.load.image('warrior-0', 'logo.png');
     }
 
     create ()
@@ -63,6 +39,6 @@ export class Preloader extends Scene
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         //this.scene.start('MainMenu');
-        this.scene.start('Game');
+        this.scene.start('GameLoad');
     }
 }

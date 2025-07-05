@@ -1,9 +1,6 @@
 import ActionSystem from '@/core/ActionSystem';
 import InteractionSystem from '@/core/InteractionSystem';
-import ActionEvent from '@/domain/ActionEvent';
-import cardFactory from '@/domain/cardFactory';
-import Player from '@/domain/Player';
-import Zone from '@/domain/Zone';
+import StoreSystem from '@/core/StoreSystem';
 import { CardView } from '@/game/cards/CardView';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
@@ -24,14 +21,6 @@ class GameScene extends Scene {
     }
 
     public create() {
-        console.log(new ActionEvent({
-            element: 'Hand.Card',
-            input: 'DoubleClick',
-            position: null,
-            player: new Player("none", "DainWs"),
-            card: null
-        }));
-
         this.camera = this.cameras.main;
 
         const cardWidth = 200;
@@ -40,20 +29,19 @@ class GameScene extends Scene {
 
         let x = 150;
         let y = -100;
-        for (let i = 0; i < 10; i++) {
+        let i = 0;
+        for (const card of StoreSystem.getPlayerHand()) {
             x += cardWidth + cardSpacing;
             if (i % 5 === 0) {
                 x = 150;
                 y += cardHeight + cardSpacing;
             }
         
-            const card = new CardView(this, x, y, cardFactory.createCard());
-            this.children.add(card);
+            this.children.add(new CardView(this, x, y, card));
+            i++;
         }
 
-        const player = new Player("none", "DainWs");
-        const zone = new Zone(player, 'BASE');
-        const zoneView = new ZoneView(this, 1300, 150, zone);
+        const zoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
         this.zones = [];
         this.zones.push(zoneView);
         this.children.add(zoneView);
@@ -63,6 +51,13 @@ class GameScene extends Scene {
 
     public changeScene() {
         this.scene.start('GameOver');
+    }
+
+    override update(time: number, delta: number): void {
+        super.update(time, delta);
+
+        
+        
     }
 }
 
