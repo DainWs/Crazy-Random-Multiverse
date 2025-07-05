@@ -168,7 +168,7 @@ const shouldSpawn = (spawnRateInPercent: number = 50) => {
   return Math.random() < (spawnRateInPercent / 100);
 }
 
-export default {
+const cardFactory = {
   createCardCode,
   createCard,
   createLeaderCard,
@@ -179,4 +179,6 @@ export default {
   getRandomCardRarity,
   getRandomDamageType,
   getRandomArmorType
-}
+};
+
+export default cardFactory;
