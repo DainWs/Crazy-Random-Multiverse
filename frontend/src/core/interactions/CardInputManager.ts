@@ -2,6 +2,8 @@ import CardDragAndDrop from "@/core/interactions/CardDragAndDrop";
 import CardMouseOver from "@/core/interactions/CardMouseOver";
 import mouseClickDispatcher from "@/core/interactions/MouseClickDispatcher";
 import { CardView } from "@/game/cards/CardView";
+import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
+import ZoneView from "@/game/zone/ZoneView";
 
 type Pointer = Phaser.Input.Pointer;
 
@@ -28,6 +30,10 @@ async function onPointerDown(scene: Phaser.Scene, card: CardView): Promise<void>
 
 function onSimpleClickCard(scene: Phaser.Scene, card: CardView) {
   console.log('Card clicked:', card);
+  // TODO don't do this at home
+  const list = scene.children.list.filter(child => child instanceof ZoneView);
+
+  new CardActionPerspective(scene, card, list).enter();
 }
 
 function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
