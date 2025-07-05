@@ -3,7 +3,7 @@ import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
 import Card, { CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
-import { GameScene } from "@/game/scenes/Game";
+import { GameScene } from "@/scenes/Game";
 
 const BEHIND_CARD_OFFSET = 20;
 
@@ -128,6 +128,10 @@ class CardView extends Phaser.GameObjects.Container {
     this.cardBehind?.setOriginalPosition(originalX - BEHIND_CARD_OFFSET, originalY - BEHIND_CARD_OFFSET);
     this.originalX = originalX;
     this.originalY = originalY;
+  }
+
+  public getOriginalPosition(): { x: number, y: number } {
+    return { x: this.originalX, y: this.originalY }; 
   }
 
   public setOriginalDepth(originalDepth: number) {

@@ -1,6 +1,6 @@
 import Position, { ZonePosition } from "@/domain/Position";
 import Zone from "@/domain/Zone";
-import { GameScene } from "@/game/scenes/Game";
+import { GameScene } from "@/scenes/Game";
 import ZoneSlotView from "@/game/zone/ZoneSlotView"
 
 interface ZoneViewOptions {

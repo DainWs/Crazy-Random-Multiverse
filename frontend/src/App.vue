@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Phaser from 'phaser';
 import { ref, toRaw } from 'vue';
-import type { MainMenu } from '@/game/scenes/MainMenu';
+import type { MainMenu } from '@/scenes/MainMenu';
 import PhaserGame from '@/PhaserGame.vue';
 
 // The sprite can only be moved in the MainMenu Scene

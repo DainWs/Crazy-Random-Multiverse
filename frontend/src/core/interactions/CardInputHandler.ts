@@ -1,4 +1,4 @@
-import { GameScene } from "@/game/scenes/Game";
+import { GameScene } from "@/scenes/Game";
 import { CardView } from "@/game/cards/CardView";
 import EventBus from "@/game/EventBus";
 

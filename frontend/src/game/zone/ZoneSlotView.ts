@@ -4,7 +4,7 @@ import resolveZoneSlotAnimation, { ZoneSlotAnimations } from "@/core/visual_effe
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
-import { GameScene } from "@/game/scenes/Game";
+import { GameScene } from "@/scenes/Game";
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
