@@ -1,145 +1,59 @@
-import CardInputHandler from "@/core/interactions/CardInputHandler";
+import CardDragAndDrop from "@/core/interactions/CardDragAndDrop";
+import CardMouseOver from "@/core/interactions/CardMouseOver";
+import mouseClickDispatcher from "@/core/interactions/MouseClickDispatcher";
 import { CardView } from "@/game/cards/CardView";
-import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
-type InteractiveGameObject = ZoneSlotView;
+type Pointer = Phaser.Input.Pointer;
 
-class CardInputManager {
-  
-  public readonly handler: CardInputHandler;
+const mouseOver = new CardMouseOver();
+const dragAndDrop = new CardDragAndDrop();
 
-  private readonly interactableObjects: Set<InteractiveGameObject>;
-  private sourceZoneSlot: ZoneSlotView | null;
-  private targetZoneSlot: ZoneSlotView | null;
-
-  public constructor(scene: Phaser.Scene) {
-    this.interactableObjects = new Set<InteractiveGameObject>();
-    this.sourceZoneSlot = null;
-    this.targetZoneSlot = null;
-
-    this.handler = new CardInputHandler();
-    this.handler.onGrabCallback = (card) => this.onGrabCard(scene, card);
-    this.handler.onDragCallback = (card) => this.onDragCard(scene, card);
-    this.handler.onDropCallback = (card) => this.onDropCard(scene, card);
-  }
-
-  public onGrabCard(scene: Phaser.Scene, _: CardView) {
-    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
-    if (!interactiveGameObject || interactiveGameObject.hasCard()) {
-      this.sourceZoneSlot?.applyAnimation('unhighlight');
-      this.sourceZoneSlot = interactiveGameObject ?? null;
-      this.sourceZoneSlot?.applyAnimation('highlight_as_source');
-    }
-  }
-
-  public onDragCard(scene: Phaser.Scene, draggedCardView: CardView) {
-    const interactiveGameObject = getInteractiveGameObjectAtCursor(scene, [...this.interactableObjects]);
-
-    this.targetZoneSlot?.applyAnimation('unhighlight');
-    this.targetZoneSlot = interactiveGameObject ?? null;
-    if (this.shouldHighlightTargetZoneSlot(draggedCardView)) {
-      this.targetZoneSlot?.applyAnimation('highlight_as_target');
-    }
-  }
-
-  private shouldHighlightTargetZoneSlot(cardView: CardView): boolean {
-    if (!this.targetZoneSlot) return false;
-    if (this.targetZoneSlot.hasCard()) return false;
-    if (this.targetZoneSlot === this.sourceZoneSlot) return false;
-    return this.targetZoneSlot.zoneSlot.allowedCombatant === cardView.card.type;
-  }
-
-  public onDropCard(_: Phaser.Scene, droppedCard: CardView) {
-    if (this.sourceZoneSlot) {
-      this.sourceZoneSlot.clearCard();
-    }
-
-    const actionSuccess = this.dispatchDroppedCardAction(droppedCard);
-    if (!actionSuccess) {
-      droppedCard.resetPosition();
-    }
-
-    if (!actionSuccess && this.sourceZoneSlot) {
-      this.sourceZoneSlot.placeCard(droppedCard);
-    }
-
-    this.sourceZoneSlot?.applyAnimation('unhighlight');
-    this.sourceZoneSlot = null;
-
-    this.targetZoneSlot?.applyAnimation('unhighlight');
-    this.targetZoneSlot = null;
-  }
-
-  private dispatchDroppedCardAction(droppedCardView: CardView) {
-    if (droppedCardView.card.isType('EQUIPMENT')) {
-      return this.equipCardToCombatantOnTargetZoneSlot(droppedCardView);
-    }
-
-    if (droppedCardView.card.isCombatant()) {
-      return this.placeDroppedCardOnTargetZoneSlot(droppedCardView);
-    }
-  
-    return false;
-  }
-  
-  private equipCardToCombatantOnTargetZoneSlot(droppedCardView: CardView): boolean {
-    if (!this.targetZoneSlot) return false;
-  
-    const targetCard = this.targetZoneSlot.getCard();
-    if (!targetCard || targetCard.hasCardBehind()) return false;
-
-    targetCard.equip(droppedCardView);
-    return true;
-  }
-
-  private placeDroppedCardOnTargetZoneSlot(droppedCardView: CardView): boolean {
-    if (!this.targetZoneSlot) return false;
-  
-    if (this.targetZoneSlot.hasCard()) {
-      console.warn("Target zone slot already has a card, cannot place another one.");
-      // show message: that slot already has a card
-      return false;
-    }
-
-    if (this.targetZoneSlot.zoneSlot.allowedCombatant !== droppedCardView.card.type) {
-      console.warn("Target zone slot does not allow this type of card.");
-      // show message: that slot type is not the same
-      return false;
-    }
-
-    this.targetZoneSlot.placeCard(droppedCardView);
-    return true;
-  }
-
-  public registerGameObject(gameObject: InteractiveGameObject): void {
-    this.interactableObjects.add(gameObject);
-  }
-
-  public unregisterGameObject(gameObject: InteractiveGameObject): void {
-    this.interactableObjects.delete(gameObject);
+function createDragWrapper(scene: Phaser.Scene, card: CardView) {
+  return (_: Pointer, dragX: number, dragY: number) => {
+    dragAndDrop.onDragCard(scene, card, dragX, dragY);
   }
 }
 
-function getInteractiveGameObjectAtCursor(
-  scene: Phaser.Scene, 
-  objects: InteractiveGameObject[], 
-  exclude?: InteractiveGameObject[]
-): InteractiveGameObject | undefined {
-  const pointer = scene.input.activePointer;
-  const camera = scene.cameras.main;
-  const results: InteractiveGameObject[] = [];
-
-  const gameObjects = objects.filter(obj => !exclude || !exclude.includes(obj));
-  scene.input.manager.hitTest(pointer, gameObjects, camera, results);
-  console.log(results)
-  return results.find(isAInteractiveGameObject);
+function onPointerUp(_1: Phaser.Scene, _2: CardView): void {
+  mouseClickDispatcher.dispatch('mouseup');
 }
 
-function isAInteractiveGameObject(gameObject: Phaser.GameObjects.GameObject) {
-  return (
-    gameObject instanceof ZoneSlotView ||
-    gameObject instanceof CardView
-  );
+async function onPointerDown(scene: Phaser.Scene, card: CardView): Promise<void> {
+  if (!card.canBeClicked()) return;
+
+  const clickType = await mouseClickDispatcher.dispatch('mousedown');
+  if (clickType === 'SimpleClick') CardInputManager.onSimpleClickCard(scene, card);
+  if (clickType === 'DoubleClick') CardInputManager.onSimpleClickCard(scene, card);
+}
+
+function onSimpleClickCard(scene: Phaser.Scene, card: CardView) {
+  console.log('Card clicked:', card);
+}
+
+function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
+  card.on("pointerover", () => mouseOver.onPointerOver(scene, card));
+  card.on("pointerout", () => mouseOver.onPointerOut(scene, card));
+  card.on("pointerup", () => onPointerUp(scene, card));
+  card.on("pointerdown", () => onPointerDown(scene, card));
+  card.on("dragstart", () => dragAndDrop.onGrabCard(scene, card));
+  card.on("drag", createDragWrapper(scene, card));
+  card.on("dragend", () => dragAndDrop.onDropCard(scene, card));
+}
+
+function removeHandledCard(scene: Phaser.Scene, card: CardView): void {
+  card.off("pointerover", () => mouseOver.onPointerOver(scene, card));
+  card.off("pointerout", () => mouseOver.onPointerOut(scene, card));
+  card.off("pointerup", () => onPointerUp(scene, card));
+  card.off("pointerdown", () => onPointerDown(scene, card));
+  card.off("dragstart", () => dragAndDrop.onGrabCard(scene, card));
+  card.off("drag", createDragWrapper(scene, card));
+  card.off("dragend", () => dragAndDrop.onDropCard(scene, card));
+}
+
+const CardInputManager = {
+  onSimpleClickCard,
+  handleCardInputs,
+  removeHandledCard
 }
 
 export default CardInputManager;

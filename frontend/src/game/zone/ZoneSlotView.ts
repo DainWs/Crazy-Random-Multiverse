@@ -1,10 +1,9 @@
-import { ZoneSlotVisualEffects } from "@/core/visual_effects";
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
-import resolveZoneSlotAnimation, { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
+import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
+import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
-import { GameScene } from "@/scenes/Game";
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
@@ -14,7 +13,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   public readonly zoneSlot: ZoneSlot;
 
   constructor(
-    scene: GameScene, 
+    scene: Phaser.Scene, 
     x: number, 
     y: number,
     zoneSlot: ZoneSlot
@@ -33,7 +32,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.setInteractive(undefined, undefined, isADropZone);
 
     scene.add.existing(this)
-    scene.interactionSystem.registerSlot(this);
+    InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
   private initializeView() {
@@ -90,6 +89,20 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
 
   public applyAnimation(animation: ZoneSlotAnimations) {
     applyAnimation(this, animation);
+  }
+
+  public canBeClicked(): boolean {
+    return false;
+  }
+
+  protected preDestroy(): void {
+    super.preDestroy();
+    InteractiveObjectManager.unregisterGameObject(this.scene, this);
+
+    if (this.cardView) {
+      this.cardView.destroy();
+      this.cardView = null;
+    }
   }
 }
 

@@ -1,9 +1,9 @@
+import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import applyAnimation, { CardAnimation } from "@/core/visual_effects/CardAnimations";
 import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
 import Card, { CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
-import { GameScene } from "@/scenes/Game";
 
 const BEHIND_CARD_OFFSET = 20;
 
@@ -15,14 +15,14 @@ class CardView extends Phaser.GameObjects.Container {
   public readonly card: Card;
   private cardBehind?: CardView;
 
-  private allowGrab: boolean; // TODO search a way to improve this
+  private allowClicks: boolean; // TODO search a way to improve this
 
   private originalDepth: number; // TODO maybe this is not needed if we use getDepth() and default depth
   private originalX: number;
   private originalY: number;
 
   constructor(
-    scene: GameScene,
+    scene: Phaser.Scene,
     x: number,
     y: number,
     card: Card
@@ -39,12 +39,12 @@ class CardView extends Phaser.GameObjects.Container {
     this.card = card;
 
     this.initializeView();
-    this.setInteractive({ useHandCursor: true });
-    this.allowGrab = true;
+    this.setInteractive({ draggable: true, useHandCursor: true });
+    this.allowClicks = true;
 
     scene.input.setDraggable(this);
     scene.add.existing(this);
-    scene.interactionSystem.registerCard(this);
+    InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
   private initializeView() {
@@ -81,7 +81,7 @@ class CardView extends Phaser.GameObjects.Container {
 
     this.scene.input.setDraggable(this.cardBehind, false);
     this.cardBehind.setInteractive({ useHandCursor: false });
-    this.cardBehind.allowGrab = false;
+    this.cardBehind.allowClicks = false;
   }
 
   public applyAnimation(animation: CardAnimation): void {
@@ -108,8 +108,8 @@ class CardView extends Phaser.GameObjects.Container {
     this.tooltip?.setDepth(this.depth + 100);
   }
 
-  public canBeGrabbed(): boolean {
-    return this.allowGrab;
+  public canBeClicked(): boolean {
+    return this.allowClicks;
   }
 
   public setPosition(x?: number, y?: number, z?: number, w?: number): this {
@@ -149,6 +149,12 @@ class CardView extends Phaser.GameObjects.Container {
     this.cardBehind?.resetDepth();
     this.setDepth(this.originalDepth);
   }
+
+  protected preDestroy(): void {
+    super.preDestroy();
+    InteractiveObjectManager.unregisterGameObject(this.scene, this);
+  }
 }
 
 export { CardView };
+export default CardView;

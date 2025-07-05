@@ -1,5 +1,4 @@
 import ActionSystem from '@/core/ActionSystem';
-import InteractionSystem from '@/core/InteractionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { CardView } from '@/game/cards/CardView';
 import ZoneView from '@/game/zone/ZoneView';
@@ -10,18 +9,19 @@ class GameScene extends Scene {
     public background: Phaser.GameObjects.Image;
 
     public readonly actionSystem: ActionSystem;
-    public readonly interactionSystem: InteractionSystem;
 
     public zones: ZoneView[];
 
     public constructor() {
         super('Game');
         this.actionSystem = new ActionSystem(this, 'game-code');
-        this.interactionSystem = new InteractionSystem(this);
     }
 
-    public create() {
+    public create() {    
+        this.input.dragDistanceThreshold = 10;
+
         this.camera = this.cameras.main;
+
 
         const cardWidth = 200;
         const cardHeight = 300;
