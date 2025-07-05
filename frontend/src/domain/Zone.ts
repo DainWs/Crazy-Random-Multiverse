@@ -34,6 +34,14 @@ class Zone {
     }
   }
 
+  public isAlive() {
+    if (this.health === 0 && this.maxHealth === 0) {
+      return true;
+    }
+
+    return this.maxHealth > 0 && this.health > 0;
+  }
+
   public isPlayerOwner(playerIdentifier: Owner | PlayerCode): boolean {
     if (playerIdentifier instanceof Owner) {
       return this.owner.code == playerIdentifier.code;

@@ -1,9 +1,7 @@
 import { Scene } from 'phaser';
 
-export class Preloader extends Scene
-{
-    constructor ()
-    {
+class Preloader extends Scene {
+    constructor () {
         super('Preloader');
     }
 
@@ -42,3 +40,5 @@ export class Preloader extends Scene
         this.scene.start('GameLoad');
     }
 }
+
+export { Preloader };

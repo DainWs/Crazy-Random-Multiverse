@@ -88,7 +88,8 @@ function createEquipmentCard(code?: CardCode, name?: string, description?: strin
 /** Purposely function: typeBasedFactoryMethods binding  */
 function createSpellCard(code?: CardCode, name?: string, description?: string): SpellCard {
   if (!code) code = createCardCode(undefined, 'SPELL');
-  const card = createCardOptions(code, 'SPELL', name, " as das dasasd asdasdasdadadada dsada sdasd asdasdadsasdad  dasd a das dad as das dasd sad as dasdasdad a");
+  if (!description) description = "As das dasasd asdasdasdadadada dsada sdasd asdasdadsasdad  dasd a das dad as das dasd sad as dasdasdad a";
+  const card = createCardOptions(code, 'SPELL', name, description);
   card.activeSkill = createSkill();
   return card as SpellCard;
 }

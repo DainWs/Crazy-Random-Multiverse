@@ -56,10 +56,19 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
 
-        
-        
+        const playerZone = StoreSystem.getPlayerZone();
+        if (!playerZone.isAlive()) {
+            this.scene.start('GameOver');
+            return;
+        }
+
+        const player = StoreSystem.getPlayer();
+        const othersZones = StoreSystem.getZones().filter(zone => zone.owner !== player);
+        if (othersZones.length > 0 && othersZones.every(zone => !zone.isAlive())) {
+            this.scene.start('GameOver');
+            return;
+        }
     }
 }
 
-export { GameScene as Game }
-export type { GameScene }
+export { GameScene }
