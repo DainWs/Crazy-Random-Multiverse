@@ -1,23 +1,16 @@
 import Owner, { PlayerCode } from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
+import { ZoneOrganizationsType, getZoneOrganization } from '@/domain/ZoneOrganizations';
 import ZoneSlot, { AllowedCombatant } from '@/domain/ZoneSlot';
-
-type ZoneType = 'BASE' | 'NO_LEADER' | 'ONLY_LEADER';
-
-const BASE_ZONE_ORGANIZATION = [
-  { index: 0, columnCount: 3, allowedCombatant: 'WARRIOR' },
-  { index: 1, columnCount: 3, allowedCombatant: 'WARRIOR' },
-  { index: 2, columnCount: 1, allowedCombatant: 'LEADER' }
-];
 
 class Zone {
   public readonly owner: Owner;
-  public readonly type: ZoneType;
+  public readonly type: ZoneOrganizationsType;
   public health: number;
   public maxHealth: number;
   public slots: ZoneSlot[][];
 
-  public constructor(owner: Owner, type: ZoneType = 'BASE') {
+  public constructor(owner: Owner, type: ZoneOrganizationsType = 'BASE') {
     this.owner = owner;
     this.type = type;
 
@@ -29,7 +22,8 @@ class Zone {
   }
 
   private initializeSlots() {
-    for (const row of BASE_ZONE_ORGANIZATION) {
+    const organization = getZoneOrganization(this.type);
+    for (const row of organization) {
       this.slots[row.index] = [];
 
       for (let column = 0; column < row.columnCount; column++) {
@@ -90,5 +84,4 @@ class Zone {
   }
 }
 
-export type { ZoneType };
 export default Zone;
