@@ -3,6 +3,7 @@ import Zone from '@/domain/Zone';
 import Player from '@/domain/Player';
 import cardFactory from '@/domain/cardFactory';
 import StoreSystem from '@/core/StoreSystem';
+import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
 
 class GameLoadScene extends Scene {
     constructor() {
@@ -26,10 +27,16 @@ class GameLoadScene extends Scene {
     }
 
     preload() {
-        //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('assets');
+        this.loadAssets();
+        this.generateOverlays();
+        this.loadGameData();
+    }
 
-        this.load.image('statistic-icon_unknown', 'statistic-icon_unknown.png');
+    private loadAssets() {
+        this.load.setPath('assets');
+        this.load.image('unknown', 'unknown.png');
+
+        this.load.image('statistic-icon_unknown', 'unknown.png');
         this.load.image('statistic-icon_true_damage', 'true_sword.png');
         this.load.image('statistic-icon_physical_damage', 'sword.png');
         this.load.image('statistic-icon_magic_damage', 'staff.png');
@@ -52,7 +59,13 @@ class GameLoadScene extends Scene {
         this.load.image('zoneslot-mark-leader', 'leader_mark.png');
 
         this.load.image('warrior-0', 'logo.png');
+    }
 
+    private generateOverlays() {
+        CalmTargetingOverlay.generateTexture(this);
+    }
+
+    private loadGameData() {
         const player = StoreSystem.getPlayer();
         StoreSystem.setGameCode('game-code');
         StoreSystem.setPlayerHand([
