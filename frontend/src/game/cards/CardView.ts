@@ -8,6 +8,9 @@ import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatche
 const BEHIND_CARD_OFFSET = 20;
 
 class CardView extends Phaser.GameObjects.Container {
+  public static readonly WIDTH: number = 200;
+  public static readonly HEIGHT: number = 300;
+
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
   private tooltip?: CardTooltipView;
@@ -33,8 +36,8 @@ class CardView extends Phaser.GameObjects.Container {
     this.depth = 10;
     this.originalDepth = this.depth;
     this.scale = 1;
-    this.width = 200;
-    this.height = 300;
+    this.width = CardView.WIDTH;
+    this.height = CardView.HEIGHT;
 
     this.card = card;
 

@@ -1,6 +1,7 @@
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { CardView } from '@/game/cards/CardView';
+import HandView from '@/game/hand/HandView';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
 
@@ -22,24 +23,13 @@ class GameScene extends Scene {
 
         this.camera = this.cameras.main;
 
-
-        const cardWidth = 200;
-        const cardHeight = 300;
-        const cardSpacing = 10;
-
-        let x = 150;
-        let y = -100;
-        let i = 0;
+        const cardViews = [];
         for (const card of StoreSystem.getPlayerHand()) {
-            x += cardWidth + cardSpacing;
-            if (i % 5 === 0) {
-                x = 150;
-                y += cardHeight + cardSpacing;
-            }
-        
-            this.children.add(new CardView(this, x, y, card));
-            i++;
+            cardViews.push(new CardView(this, 0, 0, card));
         }
+
+        const handView = new HandView(this, cardViews);
+        this.children.add(handView);
 
         const zoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
         this.zones = [];
