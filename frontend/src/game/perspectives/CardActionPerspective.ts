@@ -1,5 +1,5 @@
 import { CardView } from "@/game/cards/CardView";
-import CalmTargetingOverlay from "@/game/perspectives/overlays/CalmTargetingOverlay";
+import CalmTargetingOverlay, { TargetArea } from "@/game/perspectives/overlays/CalmTargetingOverlay";
 import Perspective from "@/game/perspectives/Perspective";
 import ZoneView from "@/game/zone/ZoneView";
 
@@ -35,34 +35,52 @@ class CardActionPerspective implements Perspective {
         this.targetZones = targetZones;
         this.currentZone = this.targetZones[0] ?? null;
 
-        this.overlay = new CalmTargetingOverlay(scene);
+        this.overlay = new CalmTargetingOverlay(scene, this.targetAreaCollector.bind(this));
+    }
+
+    private targetAreaCollector(): TargetArea[] {
+        console.log("wow " + this.currentZone)
+        if (!this.currentZone) return [];
+        const targetAreas: TargetArea[] = [];
+
+        const zoneBounds = this.currentZone.getBounds();
+        const targetXOffset = zoneBounds.x;
+        const targetYOffset = zoneBounds.y;
+        for (const zoneSlot of this.currentZone.getSlots().flat()) {
+            targetAreas.push({
+                x: targetXOffset + zoneSlot.x,
+                y: targetYOffset + zoneSlot.y,
+                width: zoneSlot.displayWidth,
+                height: zoneSlot.displayHeight
+            });
+        }
+        return targetAreas;
     }
 
     public async enter() {
-        if (this.currentZone) {
-            this.overlay.setTargets(this.currentZone);
-        }
-
-        await this.moveCardToLeftPanel();
+        this.selectedCard.disableInteractive();
+        this.moveCardToLeftPanel();
         this.overlay.activate();
     }
 
     public async exit() {
         this.overlay.deactivate();
         await this.moveCardToOrigin();
+        this.selectedCard.setInteractive();
     }
 
     private async moveCardToLeftPanel(): Promise<void> {
         const x = this.scene.cameras.main.x + PerspectiveOptions.card.leftPadding;
         const y = this.scene.cameras.main.y + PerspectiveOptions.card.topPadding +
-            (this.scene.cameras.main.height / 2 - this.selectedCard.displayHeight / 2);
+            (this.scene.cameras.main.height / 2);
 
-
+        this.selectedCard.setDepth(10000);
         this.scene.tweens.add({
           targets: this.selectedCard,
           x, y,
           duration: PerspectiveOptions.card.moveInDuration,
-          ease: PerspectiveOptions.card.moveInEase
+          ease: PerspectiveOptions.card.moveInEase,
+          persist: false
         })
 
         await sleep(PerspectiveOptions.card.moveInDuration);
@@ -75,10 +93,12 @@ class CardActionPerspective implements Perspective {
             targets: this.selectedCard,
             x, y,
             duration: PerspectiveOptions.card.moveOutDuration,
-            ease: PerspectiveOptions.card.moveOutEase
+            ease: PerspectiveOptions.card.moveOutEase,
+            persist: false
         });
 
         await sleep(PerspectiveOptions.card.moveOutDuration);
+        this.selectedCard.resetDepth();
     }
 }
 
