@@ -38,3 +38,10 @@ defineExpose({ scene, game });
 <template>
     <div id="game-container"></div>
 </template>
+
+<style>
+#game-container {
+    width: 100vw;
+    height: 100vh;
+}
+</style>
