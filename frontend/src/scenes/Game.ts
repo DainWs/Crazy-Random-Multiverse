@@ -23,13 +23,19 @@ class GameScene extends Scene {
 
         this.camera = this.cameras.main;
 
-        const cardViews = [];
+        
+        const cardXOutOfVision = this.camera.x - CardView.WIDTH;
+        const cardYOutOfVision = this.camera.y - CardView.HEIGHT;
+        
+        const cards: CardView[] = [];
         for (const card of StoreSystem.getPlayerHand()) {
-            cardViews.push(new CardView(this, 0, 0, card));
+            cards.push(new CardView(this, cardXOutOfVision, cardYOutOfVision, card));
         }
-
-        const handView = new HandView(this, cardViews);
+        
+        const handView = new HandView(this);
+        handView.addCards(...cards);
         this.children.add(handView);
+
 
         const zoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
         this.zones = [];

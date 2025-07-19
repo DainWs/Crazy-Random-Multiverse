@@ -4,6 +4,7 @@ import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
 import Card, { CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
+import { Tweens } from "phaser";
 
 const BEHIND_CARD_OFFSET = 20;
 
@@ -91,8 +92,8 @@ class CardView extends Phaser.GameObjects.Container {
     applyAnimation(this, animation);
   }
 
-  public applyTween(tween: CardTween): void {
-    this.scene.tweens.add(resolveTween(this, tween));
+  public applyTween(tween: CardTween, ...args: unknown[]): Phaser.Tweens.Tween {
+    return this.scene.tweens.add(resolveTween(this, tween, ...args));
   }
 
   public loadCardTexture(texture: CardTexture): void {
