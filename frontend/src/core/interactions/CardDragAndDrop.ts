@@ -66,6 +66,10 @@ class CardDragAndDrop {
       this.sourceZoneSlot.placeCard(droppedCard);
     }
 
+    if (actionSuccess && !this.sourceZoneSlot) {
+      droppedCard.playSoundForAction('put');
+    }
+
     this.sourceZoneSlot?.applyAnimation('unhighlight');
     this.sourceZoneSlot = null;
 

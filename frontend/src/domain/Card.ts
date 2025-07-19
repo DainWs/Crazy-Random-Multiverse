@@ -18,6 +18,9 @@ type CardTexture =
   | 'equipment-card' 
   | 'spell-card';
 
+type CardAudioType = 'put' | 'attack' | 'die';
+type Resource = string;
+
 class CardCode {
   public readonly code: number;
   public readonly type: CardType;
@@ -29,6 +32,10 @@ class CardCode {
 
   public equals(that: CardCode) {
     return this.code == that.code && this.type == that.type;
+  }
+
+  public number() {
+    return this.code;
   }
 
   public text() {
@@ -106,6 +113,23 @@ class Card {
     return this.rarity;
   }
 
+  public getAudio(type: CardAudioType): Resource {
+    if (this.isType("WARRIOR")) {
+      const number = (type == 'attack') ? Math.floor(Math.random() * 3) + 1 : 1;
+      return `${this.rarity?.toLowerCase()}-${type}-${this.code.number()}-${number}`;
+    }
+  
+    return `${this.type.toLowerCase()}-${type}-${this.code.number()}`;
+  }
+
+  public getImage(): Resource {
+    if (this.isType("WARRIOR")) {
+      return `${this.rarity?.toLowerCase()}-${this.code.number()}`;
+    }
+  
+    return `${this.type.toLowerCase()}-${this.code.number()}`;
+  }
+
   public getTexture(): CardTexture {
     if (this.isType("WARRIOR")) {
       return `${this.rarity?.toLowerCase()}-card` as WarriorTexture;
@@ -120,6 +144,6 @@ class Card {
 }
 
 export { CardCode };
-export type { CardOptions, CardType, CardRarity, CardTexture };
+export type { CardAudioType, CardOptions, CardType, CardRarity, CardTexture };
 export type { CombatantCard, LeaderCard, WarriorCard, EquipmentCard, SpellCard };
 export default Card;

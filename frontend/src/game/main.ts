@@ -20,7 +20,10 @@ const config: Phaser.Types.Core.GameConfig = {
         GameLoad,
         GameScene,
         GameOver
-    ]
+    ],
+    audio: {
+        disableWebAudio: false
+    }
 };
 
 const StartGame = (parent: string) => {

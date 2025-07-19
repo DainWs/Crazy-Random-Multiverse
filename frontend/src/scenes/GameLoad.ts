@@ -59,6 +59,19 @@ class GameLoadScene extends Scene {
         this.load.image('zoneslot-mark-leader', 'leader_mark.png');
 
         this.load.image('warrior-0', 'logo.png');
+        this.load.image('common-1', 'common-01.png');
+        this.load.audio('common-put-1-1', 'common-put-01.mp3');
+        this.load.audio('common-attack-1-1', 'common-attack-01-1.mp3');
+        this.load.audio('common-attack-1-2', 'common-attack-01-2.mp3');
+        this.load.audio('common-attack-1-3', 'common-attack-01-3.mp3');
+        this.load.audio('common-die-1-1', 'common-die-01.mp3');
+
+        this.load.image('mithic-1', 'mithic-01.png');
+        this.load.audio('mithic-put-1-1', 'mithic-put-01.mp3');
+        this.load.audio('mithic-attack-1-1', 'mithic-attack-01-1.mp3');
+        this.load.audio('mithic-attack-1-2', 'mithic-attack-01-1.mp3');
+        this.load.audio('mithic-attack-1-3', 'mithic-attack-01-1.mp3');
+        this.load.audio('mithic-die-1-1', 'mithic-die-01.mp3');
     }
 
     private generateOverlays() {
@@ -70,8 +83,8 @@ class GameLoadScene extends Scene {
         StoreSystem.setGameCode('game-code');
         StoreSystem.setPlayerHand([
             cardFactory.createLeaderCard(),
-            cardFactory.createWarriorCard({}),
-            cardFactory.createWarriorCard({}),
+            cardFactory.createWarriorCard({ rarity: 'COMMON', code: 1 }),
+            cardFactory.createWarriorCard({ rarity: 'MITHIC', code: 1 }),
             cardFactory.createWarriorCard({}),
             cardFactory.createWarriorCard({}),
             cardFactory.createEquipmentCard(),

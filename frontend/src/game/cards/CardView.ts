@@ -1,7 +1,7 @@
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import applyAnimation, { CardAnimation } from "@/core/visual_effects/CardAnimations";
 import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
-import Card, { CardTexture } from "@/domain/Card";
+import Card, { CardAudioType, CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import { Tweens } from "phaser";
@@ -58,7 +58,13 @@ class CardView extends Phaser.GameObjects.Container {
 
     const cardImageSize = this.background.displayWidth;
     const cardY = -(cardImageSize - this.background.displayHeight / 2);
-    this.cardImage = this.scene.add.image(0, cardY, 'warrior-0');
+
+    let cardImage = this.card.getImage();
+    if (!this.scene.textures.exists(cardImage)) {
+      cardImage = 'warrior-0';
+    }
+
+    this.cardImage = this.scene.add.image(0, cardY, cardImage);
     this.cardImage.setDisplaySize(cardImageSize, cardImageSize);
     this.cardImage.setOrigin(0.5, 0.5);
 
@@ -86,6 +92,11 @@ class CardView extends Phaser.GameObjects.Container {
     this.scene.input.setDraggable(this.cardBehind, false);
     this.cardBehind.setInteractive({ useHandCursor: false });
     this.cardBehind.allowClicks = false;
+  }
+
+  public playSoundForAction(type: CardAudioType) {
+    const audioResource = this.card.getAudio(type);
+    this.scene.sound.play(audioResource, { volume: 0.5 });
   }
 
   public applyAnimation(animation: CardAnimation): void {

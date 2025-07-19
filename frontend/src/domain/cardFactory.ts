@@ -23,7 +23,7 @@ const createSkillCode = (value?: number): SkillCode => {
 const createCard = (code?: CardCode, name?: string, description?: string) => {
   if (!code) code = createCardCode();
   if (code.type == "WARRIOR") {
-    return createWarriorCard({ code, name, description });
+    return createWarriorCard({ code: code.number(), name, description });
   }
 
   const cardFactoryMethod = typeBasedFactoryMethods.get(code.type) as CardAbstractFactoryMethod;
@@ -43,15 +43,15 @@ function createLeaderCard(code?: CardCode, name?: string, description?: string,
 }
 
 /** Purposely function: typeBasedFactoryMethods binding  */
-function createWarriorCard(options: {code?: CardCode, name?: string, description?: string, 
+function createWarriorCard(options: {code?: number, name?: string, description?: string, 
   rarity?: CardRarity, 
   damage?: number, damageType?: DamageType, 
   armor?: number, armorType?: ArmorType, 
   health?: number, maxHealth?: number
 }): WarriorCard {
-  if (!options.code) options.code = createCardCode(undefined, 'WARRIOR');
+  const code = (options.code) ? new CardCode(options.code, 'WARRIOR') : createCardCode(undefined, 'WARRIOR');
   if (!options.rarity) options.rarity = getRandomCardRarity();
-  const card = createCardOptions(options.code, 'WARRIOR', options.name, options.description, options.rarity);
+  const card = createCardOptions(code, 'WARRIOR', options.name, options.description, options.rarity);
   if (shouldSpawn(10)) { // 10% of spawnRate
     card.passiveSkill = createSkill();
     fillStatisticsWithLimits(card, 
