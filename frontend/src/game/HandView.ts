@@ -36,7 +36,6 @@ const NONE_CARD_IS_HOVER: number = Number.MAX_VALUE;
 
 class HandView extends Phaser.GameObjects.Container {
   private readonly options: HandViewOptions;
-  private lastAddedCardTimeout?: NodeJS.Timeout;
 
   private hoverIndex: number;
   private cards: CardView[];
@@ -95,7 +94,6 @@ class HandView extends Phaser.GameObjects.Container {
 
   private addCard(card: CardView, handBounds: HandBounds) {
     const index = this.cards.length;
-    console.log(index)
     this.cards[index] = card;
 
     const affectedByHover = index > this.hoverIndex;
