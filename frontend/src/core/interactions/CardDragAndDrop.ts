@@ -1,6 +1,6 @@
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import CardView from "@/game/cards/CardView";
-import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import ZoneSlotView from "@/game/ZoneSlotView";
 
 class CardDragAndDrop {
   private sourceZoneSlot: ZoneSlotView | null;

@@ -1,4 +1,4 @@
-import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import ZoneSlotView from "@/game/ZoneSlotView";
 
 type ZoneSlotAnimation = 'highlight_as_source' | 'highlight_as_target' | 'unhighlight';
 type ZoneSlotAnimationProvider = (zoneSlot: ZoneSlotView) => void;

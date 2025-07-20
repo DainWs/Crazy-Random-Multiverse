@@ -1,7 +1,7 @@
 import { CardView } from "@/game/cards/CardView";
 import CalmTargetingOverlay, { TargetArea } from "@/game/perspectives/overlays/CalmTargetingOverlay";
 import Perspective from "@/game/perspectives/Perspective";
-import ZoneView from "@/game/zone/ZoneView";
+import ZoneView from "@/game/ZoneView";
 
 type SelectedCard = CardView
 type TargetZone = ZoneView;

@@ -3,7 +3,7 @@ import CardMouseOver from "@/core/interactions/CardMouseOver";
 import mouseClickDispatcher from "@/core/interactions/MouseClickDispatcher";
 import { CardView } from "@/game/cards/CardView";
 import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
-import ZoneView from "@/game/zone/ZoneView";
+import ZoneView from "@/game/ZoneView";
 
 type Pointer = Phaser.Input.Pointer;
 

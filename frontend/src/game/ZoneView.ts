@@ -1,7 +1,7 @@
-import Position, { ZonePosition } from "@/domain/Position";
-import Zone from "@/domain/Zone";
 import { GameScene } from "@/scenes/Game";
-import ZoneSlotView from "@/game/zone/ZoneSlotView"
+import Zone from "@/domain/Zone";
+import { ZonePosition } from "@/domain/Position";
+import ZoneSlotView from "@/game/ZoneSlotView"
 
 interface ZoneViewOptions {
   spaceBetweenSlots?: number;

@@ -1,8 +1,8 @@
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { CardView } from '@/game/cards/CardView';
-import HandView from '@/game/hand/HandView';
-import ZoneView from '@/game/zone/ZoneView';
+import HandView from '@/game/HandView';
+import ZoneView from '@/game/ZoneView';
 import { Scene } from 'phaser';
 
 class GameScene extends Scene {

@@ -1,6 +1,6 @@
 import CardInputManager from "@/core/interactions/CardInputManager";
 import { CardView } from "@/game/cards/CardView";
-import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import ZoneSlotView from "@/game/ZoneSlotView";
 
 type GameObject = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Depth;
 type InteractiveGameObject = ZoneSlotView | CardView;
