@@ -5,7 +5,6 @@ import CardMovePattern from "@/core/actions/CardMovePattern";
 import CardPutPattern from "@/core/actions/CardPutPattern";
 import ActionEvent from "@/domain/ActionEvent";
 import GameCode from "@/domain/GameCode";
-import EventBus from "@/game/EventBus";
 import { GameScene } from "@/scenes/Game";
 
 class ActionSystem {

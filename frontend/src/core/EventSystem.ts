@@ -8,7 +8,7 @@ type Listener = (...args: any[]) => void;
 
 const emitter = new Events.EventEmitter();
 
-class EventBus {
+class EventSystem {
   static rawOn(event: string, listener: Listener, context?: any): void {
     emitter.on(event, listener, context);
   }
@@ -34,4 +34,5 @@ class EventBus {
   }
 }
 
-export default EventBus;
+export default EventSystem;
+
