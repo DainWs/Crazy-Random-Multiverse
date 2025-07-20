@@ -4,8 +4,9 @@ import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
+import CardPlacementZone from "@/game/CardPlacementZone";
 
-class ZoneSlotView extends Phaser.GameObjects.Container {
+class ZoneSlotView extends Phaser.GameObjects.Container implements CardPlacementZone {
   private background: Phaser.GameObjects.Rectangle;
   private mark: Phaser.GameObjects.Image;
   private cardView: CardView | null;
@@ -27,9 +28,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.zoneSlot = zoneSlot;
 
     this.initializeView()
-
-    const isADropZone = true;
-    this.setInteractive(undefined, undefined, isADropZone);
+    this.setInteractive({ dropZone: true });
 
     scene.add.existing(this)
     InteractiveObjectManager.registerGameObject(this.scene, this);
@@ -58,12 +57,17 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     return true;
   }
 
-  public clearCard(): boolean {
+  public removeCard(): boolean {
     if (!this.cardView) return false;
 
     this.zoneSlot.combatant = null;
     this.cardView = null;
     return true;
+  }
+
+  /** @deprecated */
+  public clearCard(): boolean {
+    return this.removeCard();
   }
 
   public hasCard(card?: CardView): boolean {
