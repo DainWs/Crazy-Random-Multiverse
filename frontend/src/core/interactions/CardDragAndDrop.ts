@@ -2,6 +2,7 @@ import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectM
 import CardView from "@/game/cards/CardView";
 import ZoneSlotView from "@/game/ZoneSlotView";
 
+/** @deprecated */
 class CardDragAndDrop {
   private sourceZoneSlot: ZoneSlotView | null;
   private targetZoneSlot: ZoneSlotView | null;
@@ -16,12 +17,9 @@ class CardDragAndDrop {
       return;
     }
 
-    console.log("me llaman??")
     scene.input.manager.canvas.style.cursor = "grabbing";
-    card.applyAnimation('startDrag');
 
-    const interactiveGameObject = getTopGameObjectAtCursor<ZoneSlotView>(scene, 'ZoneSlotView');
-    console.log(interactiveGameObject);
+    const interactiveGameObject = getTopGameObjectAtCursor(scene, 'ZoneSlotView') as ZoneSlotView | undefined;
     if (!interactiveGameObject || interactiveGameObject.hasCard()) {
       this.sourceZoneSlot?.applyAnimation('unhighlight');
       this.sourceZoneSlot = interactiveGameObject ?? null;
@@ -32,8 +30,7 @@ class CardDragAndDrop {
   public onDragCard(scene: Phaser.Scene, draggedCardView: CardView, dragX: number, dragY: number) {
     draggedCardView.setPosition(dragX, dragY);
 
-    const interactiveGameObject = getTopGameObjectAtCursor<ZoneSlotView>(scene, 'ZoneSlotView');
-    console.log(interactiveGameObject)
+    const interactiveGameObject = getTopGameObjectAtCursor(scene, 'ZoneSlotView') as ZoneSlotView | undefined;
     this.targetZoneSlot?.applyAnimation('unhighlight');
     this.targetZoneSlot = interactiveGameObject ?? null;
     if (this.shouldHighlightTargetZoneSlot(draggedCardView)) {
@@ -43,7 +40,6 @@ class CardDragAndDrop {
 
   private shouldHighlightTargetZoneSlot(cardView: CardView): boolean {
     if (!this.targetZoneSlot) return false;
-    console.log(this.targetZoneSlot)
     if (this.targetZoneSlot.hasCard()) return false;
     if (this.targetZoneSlot === this.sourceZoneSlot) return false;
     return this.targetZoneSlot.zoneSlot.allowedCombatant === cardView.card.type;

@@ -7,13 +7,17 @@ import ActionEvent from "@/domain/ActionEvent";
 import GameCode from "@/domain/GameCode";
 import { GameScene } from "@/scenes/Game";
 
+// TODO pensar seriamente si esta clase va a ser necesaria al final
+const resolvers: Array<ActionResolver> = [];
+//resolvers.push(ActionResolver.createFrom(new CardPutPattern()));
+//resolvers.push(ActionResolver.createFrom(new CardMovePattern()));
+
+
 class ActionSystem {
-    private readonly scene: GameScene;
     private readonly gameCode: GameCode;
     private readonly resolvers: Array<ActionResolver>;
     
-    public constructor(scene: GameScene, gameCode: GameCode) {
-        this.scene = scene;
+    public constructor(gameCode: GameCode) {
         this.gameCode = gameCode;
         this.resolvers = [];
         this.addPattern(new CardPutPattern());
@@ -26,7 +30,7 @@ class ActionSystem {
     };
 
     private addPattern(pattern: ActionPattern): void {
-        this.resolvers.push(new ActionResolver(pattern));
+        //this.resolvers.push(new ActionResolver(pattern));
     }
 
     private async process(event: ActionEvent): Promise<void> {

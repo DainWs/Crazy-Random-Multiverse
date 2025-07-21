@@ -1,9 +1,15 @@
 import { Events } from 'phaser';
 
+// TODO esta clase tal vez tampoco es necesaria, ya que los eventos se estan manejando a bajo nivel
+type HandCardActionEvents = 'hand.grab_card' | 'hand.left-click_card';
+type ZoneSlotActionEvents = 'zone-slot.grab_card' | 'zone-slot.drop_card' | 'zone-slot.left-click_card' | 'zone-slot.right-click_card';
+
+/** @deprecated */
 type CardEvents = 'card.left-click' | 'card.right-click' | 'card.grab' | 'card.drop' | 'card.drag';
+/** @deprecated */
 type ZoneSlotEvents = 'zone-slot.card_over' | 'zone-slot.card_out'; // TODO to remove
 
-type Event = CardEvents | ZoneSlotEvents;
+type Event = HandCardActionEvents | ZoneSlotActionEvents | CardEvents | ZoneSlotEvents;
 type Listener = (...args: any[]) => void;
 
 const emitter = new Events.EventEmitter();

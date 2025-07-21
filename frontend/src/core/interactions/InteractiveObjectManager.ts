@@ -1,15 +1,19 @@
 import CardInputManager from "@/core/interactions/CardInputManager";
 import { CardView } from "@/game/cards/CardView";
+import HandView from "@/game/HandView";
 import ZoneSlotView from "@/game/ZoneSlotView";
 
 type GameObject = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Depth;
-type InteractiveGameObject = ZoneSlotView | CardView;
-type InteractiveGameObjectType = 'ZoneSlotView' | 'CardView';
+type InteractiveGameObject = HandView | ZoneSlotView | CardView;
+type InteractiveGameObjectType =  'HandView' | 'ZoneSlotView' | 'CardView';
+
+type Predicate = (object: InteractiveGameObject) => boolean;
 
 const NoneFilter = () => true;
 
 const typeFilters = new Map<InteractiveGameObjectType, (object: InteractiveGameObject) => boolean>();
 typeFilters.set('ZoneSlotView', (object) => object instanceof ZoneSlotView);
+typeFilters.set('HandView', (object) => object instanceof HandView);
 typeFilters.set('CardView', (object) => object instanceof CardView);
 
 const interactableObjects = new Set<InteractiveGameObject>();
@@ -30,36 +34,37 @@ function unregisterGameObject(scene: Phaser.Scene, gameObject: InteractiveGameOb
   }
 }
 
-function getTopGameObjectAtCursor<T extends GameObject = InteractiveGameObject>(
-  scene: Phaser.Scene,
-  onlyOfType?: InteractiveGameObjectType
-) {
-  const objects = getGameObjectsAtCursor<T>(scene, onlyOfType);
-  
+function getTopGameObjectAtCursor(scene: Phaser.Scene, ...onlyOfType: InteractiveGameObjectType[]) {
+  const objects = getGameObjectsAtCursor(scene, ...onlyOfType);
+
   return objects.find(object => 
     objects.every(other => object.depth >= other.depth));
 }
 
-function getGameObjectsAtCursor<T extends GameObject = InteractiveGameObject>(
-  scene: Phaser.Scene,
-  onlyOfType?: InteractiveGameObjectType
-) {
-  let objectsToCheck = [...interactableObjects];
-  if (onlyOfType) {
-    const filterFunction = typeFilters.get(onlyOfType) ?? NoneFilter;
-    objectsToCheck = objectsToCheck.filter(filterFunction);
-  }
+function getGameObjectsAtCursor(scene: Phaser.Scene, ...onlyOfTypes: InteractiveGameObjectType[]) {
+  const objects = copyInteractableObjects(onlyOfTypes);
 
   const pointer = scene.input.activePointer;
   const camera = scene.cameras.main;
   const results: InteractiveGameObject[] = [];
+  scene.input.manager.hitTest(pointer, [...objects], camera, results);
 
-  scene.input.manager.hitTest(pointer, [...objectsToCheck], camera, results);
-  return results.filter(isAInteractiveGameObject) as unknown as T[];
+  return results.filter(isAInteractiveGameObject) as GameObject[]; // TODO replace this filter with onlyOfType filter
+}
+
+function copyInteractableObjects(onlyOfTypes: InteractiveGameObjectType[]) {
+  const filters: Predicate[] = [];
+  for (const type of onlyOfTypes) {
+    filters.push(typeFilters.get(type) ?? NoneFilter);
+  } 
+
+  return [...interactableObjects]
+    .filter(interactableObject => filters.some(filter => filter(interactableObject)));
 }
 
 function isAInteractiveGameObject(gameObject: Phaser.GameObjects.GameObject) {
   return (
+    gameObject instanceof HandView ||
     gameObject instanceof ZoneSlotView ||
     gameObject instanceof CardView
   );
@@ -72,4 +77,4 @@ const InteractiveObjectManager = {
 
 export { getGameObjectsAtCursor, getTopGameObjectAtCursor }
 export default InteractiveObjectManager;
-export type { InteractiveGameObject };
+export type { InteractiveGameObject, InteractiveGameObjectType };
