@@ -1,13 +1,19 @@
+import Card from "@/domain/Card";
+import CardView from "@/game/cards/CardView";
+
 class CardTooltipView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
   private nameText: Phaser.GameObjects.Text;
   private descriptionText: Phaser.GameObjects.Text;
 
-  private readonly padding: number = 8;
+  private readonly margin: number;
+  private readonly padding: number;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y);
     this.setDepth(10);
+    this.margin = 20;
+    this.padding = 8;
 
     this.nameText =  this.scene.add.text(0, 0, "");
     this.nameText.setOrigin(0, 0);
@@ -55,12 +61,14 @@ class CardTooltipView extends Phaser.GameObjects.Container {
     this.background.setSize(width, height);
   }
 
-  /** Muestra el tooltip */
-  public show() {
+  public show(cardView: CardView) {
+    const x = cardView.x + (cardView.displayWidth / 2) + this.margin;
+    const y = cardView.y - (cardView.displayHeight / 2);
+    this.setPosition(x, y);
+    this.setDepth(cardView.depth + 100);
     this.setVisible(true);
   }
 
-  /** Oculta el tooltip */
   public hide() {
     this.setVisible(false);
   }
