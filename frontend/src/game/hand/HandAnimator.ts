@@ -1,4 +1,4 @@
-import { MOVE_TO_HAND_DURATION } from "@/core/visual_effects/CardTweens";
+import { MOVE_TO_DURATION } from "@/game/cards/CardTweens";
 import CardView from "@/game/cards/CardView";
 
 type OnCompleteCallback = () => void;
@@ -18,7 +18,7 @@ class HandAnimator {
     setTimeout(() => {
       this.setInteractiveForCardViews(handCards, true);
       onComplete();
-    }, MOVE_TO_HAND_DURATION + (incomingCards.length * tweenDelay));
+    }, MOVE_TO_DURATION + (incomingCards.length * tweenDelay));
   }
 
   private setInteractiveForCardViews(cardViews: CardView[], isInteractive: boolean) {

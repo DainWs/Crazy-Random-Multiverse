@@ -3,7 +3,7 @@ import { CardView } from "@/game/cards/CardView";
 type CardAnimation = 'startDrag' | 'endDrag';
 type CardAnimationApplier = (card: CardView) => void;
 
-function noneAnimation() {};
+function noneAnimation() {}
 
 function startDragAnimation(card: CardView): void {
   card.hideTooltip();
@@ -20,14 +20,5 @@ function endDragAnimation(card: CardView): void {
   card.showTooltip();
 }
 
-const animations = new Map<CardAnimation, CardAnimationApplier>();
-animations.set('startDrag', startDragAnimation);
-animations.set('endDrag', endDragAnimation);
-
-const applyAnimation = (card: CardView, animation: CardAnimation) => {
-  const apply = animations.get(animation) ?? noneAnimation;
-  apply(card);
-}
-
-export type { CardAnimation };
-export default applyAnimation;
+export type { CardAnimation, CardAnimationApplier };
+export { noneAnimation, startDragAnimation, endDragAnimation };

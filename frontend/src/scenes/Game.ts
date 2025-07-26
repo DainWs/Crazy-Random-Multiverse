@@ -1,3 +1,5 @@
+import CardController from '@/controllers/CardController';
+import CardViewFactory from '@/controllers/CardViewFactory';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
@@ -10,6 +12,7 @@ class GameScene extends Scene {
 
     public readonly actionSystem: ActionSystem;
 
+    public readonly cardController: CardController;
     public readonly handController: HandController;
 
     public zones: ZoneView[];
@@ -18,7 +21,10 @@ class GameScene extends Scene {
         super('Game');
         this.actionSystem = new ActionSystem('game-code');
 
-        this.handController = new HandController(this);
+        this.cardController = new CardController(this);
+
+        const cardViewFactory = new CardViewFactory(this.cardController);
+        this.handController = new HandController(this, cardViewFactory);
     }
 
     public create() {    

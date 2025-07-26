@@ -35,43 +35,30 @@ function unhoverTween(card: CardView): TweenConfig {
   }
 }
 
-function handHorizontalSlideTween(card: CardView, args: unknown[]): TweenConfig {
-  const [x, y] = args as number[];
-
+const SLIDE_TO_DURATION = 250;
+function slideToTween(card: CardView, [x, y]: unknown[]): TweenConfig {
   return {
     targets: card,
     x, y,
-    duration: 250,
+    duration: SLIDE_TO_DURATION,
     ease: 'Power1',
     persist: false
   };
 }
 
-const MOVE_TO_HAND_DURATION = 500;
-function moveToHandTween(card: CardView, args: unknown[]): TweenConfig {
-  const [x, y, delay] = args as number[];
-
+const MOVE_TO_DURATION = 500;
+function moveToTween(card: CardView, [x, y, delay]: unknown[]): TweenConfig {
   return {
     targets: card,
-    x, y, delay, 
-    duration: MOVE_TO_HAND_DURATION,
+    x, y, 
+    delay: delay as number, 
+    duration: MOVE_TO_DURATION,
     completeDelay: 100,
     ease: 'Power1',
     persist: false
   };
 }
 
-const tweens = new Map<CardTween, CardTweenProvider>();
-tweens.set('hover', hoverTween);
-tweens.set('unhover', unhoverTween);
-tweens.set('hand_horizontal_slide', handHorizontalSlideTween);
-tweens.set('move_to_hand', moveToHandTween);
-
-const resolveTween = (card: CardView, tween: CardTween, ...args: unknown[]): TweenConfig => {
-  const provider = tweens.get(tween) ?? noneTween;
-  return provider(card, args);
-}
-
-export { MOVE_TO_HAND_DURATION };
-export type { CardTween };
-export default resolveTween;
+export { SLIDE_TO_DURATION, MOVE_TO_DURATION };
+export { noneTween,  hoverTween, unhoverTween, slideToTween, moveToTween };
+export type { CardTween, CardTweenProvider };
