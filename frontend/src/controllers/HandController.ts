@@ -10,6 +10,7 @@ class HandController {
   public constructor(scene: Phaser.Scene) {
     this.scene = scene;
     this.handView = new HandView(scene);
+    scene.children.add(this.handView);
   }
 
   public addCards(...cards: Card[]) {
@@ -25,6 +26,7 @@ class HandController {
     const cardView = new CardView(this.scene, card);
     return cardView;
   }
+
 }
 
 export default HandController;
