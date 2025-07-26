@@ -1,7 +1,8 @@
+import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { CardView } from '@/game/cards/CardView';
-import HandView from '@/game/HandView';
+import HandView from '@/game/hand/HandView';
 import ZoneView from '@/game/ZoneView';
 import { Scene } from 'phaser';
 
@@ -11,31 +12,22 @@ class GameScene extends Scene {
 
     public readonly actionSystem: ActionSystem;
 
+    public readonly handController: HandController;
+
     public zones: ZoneView[];
 
     public constructor() {
         super('Game');
         this.actionSystem = new ActionSystem(this, 'game-code');
+
+        this.handController = new HandController(this);
     }
 
     public create() {    
         this.input.dragDistanceThreshold = 10;
-
         this.camera = this.cameras.main;
 
-        
-        const cardXOutOfVision = this.camera.x - CardView.WIDTH;
-        const cardYOutOfVision = this.camera.y - CardView.HEIGHT;
-        
-        const cards: CardView[] = [];
-        for (const card of StoreSystem.getPlayerHand()) {
-            cards.push(new CardView(this, cardXOutOfVision, cardYOutOfVision, card));
-        }
-        
-        const handView = new HandView(this);
-        handView.addCards(...cards);
-        this.children.add(handView);
-
+        this.handController.addCards(...StoreSystem.getPlayerHand());
 
         const zoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
         this.zones = [];

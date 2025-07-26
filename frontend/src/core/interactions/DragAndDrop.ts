@@ -2,8 +2,8 @@ import EventSystem from "@/core/EventSystem";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import ActionTrigger from "@/domain/ActionTrigger";
 import CardView from "@/game/cards/CardView";
-import HandView from "@/game/HandView";
-import ZoneSlotView from "@/game/ZoneSlotView";
+import HandView from "@/game/hand/HandView";
+import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
 type SourceGameObject = HandView | ZoneSlotView;
 type TargetGameObject = ZoneSlotView | CardView;

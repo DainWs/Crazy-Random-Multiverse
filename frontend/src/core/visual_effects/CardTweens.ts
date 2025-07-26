@@ -47,13 +47,14 @@ function handHorizontalSlideTween(card: CardView, args: unknown[]): TweenConfig 
   };
 }
 
+const MOVE_TO_HAND_DURATION = 500;
 function moveToHandTween(card: CardView, args: unknown[]): TweenConfig {
   const [x, y, delay] = args as number[];
 
   return {
     targets: card,
     x, y, delay, 
-    duration: 500,
+    duration: MOVE_TO_HAND_DURATION,
     completeDelay: 100,
     ease: 'Power1',
     persist: false
@@ -71,5 +72,6 @@ const resolveTween = (card: CardView, tween: CardTween, ...args: unknown[]): Twe
   return provider(card, args);
 }
 
+export { MOVE_TO_HAND_DURATION };
 export type { CardTween };
 export default resolveTween;
