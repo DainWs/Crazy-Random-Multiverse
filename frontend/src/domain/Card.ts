@@ -64,7 +64,10 @@ type WarriorCard = Require<Card, 'rarity'>;
 type EquipmentCard = RequireAndOmit<Card, 'damage' | 'armor' | 'health', 'activeSkill' | 'equipment'>;
 type SpellCard = RequireAndOmit<Card, 'activeSkill', 'rarity' | 'damage' | 'armor' | 'health' | 'passiveSkill' | 'equipment'>;
 
+const crypto = new Crypto();
+
 class Card {
+  public readonly uuid: string;
   public readonly code: CardCode;
   public readonly name: string;
   public readonly description: string;
@@ -78,6 +81,7 @@ class Card {
   public equipment?: EquipmentCard;
 
   public constructor(options: CardOptions) {
+    this.uuid = crypto.randomUUID();
     this.code = options.code;
     this.name = options.name;
     this.description = options.description;
@@ -139,7 +143,7 @@ class Card {
   }
 
   public equals(that: Card) {
-    return this.code.equals(that.code);
+    return this.uuid === that.uuid && this.code.equals(that.code);
   }
 }
 
