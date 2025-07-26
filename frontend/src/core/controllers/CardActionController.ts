@@ -17,7 +17,7 @@ function equipCardToCombatantOnTargetZoneSlot(droppedCardView: CardView): boolea
   if (!this.targetZoneSlot) return false;
 
   const targetCard = this.targetZoneSlot.getCard();
-  if (!targetCard || targetCard.hasCardBehind()) return false;
+  if (!targetCard || targetCard.hasCardStacked()) return false;
 
   targetCard.equip(droppedCardView);
   return true;

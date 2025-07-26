@@ -89,9 +89,9 @@ class CardDragAndDrop {
     if (!this.targetZoneSlot) return false;
   
     const targetCard = this.targetZoneSlot.getCard();
-    if (!targetCard || targetCard.hasCardBehind()) return false;
+    if (!targetCard || targetCard.hasCardStacked()) return false;
 
-    targetCard.equip(droppedCardView);
+    targetCard.stack(droppedCardView);
     return true;
   }
 
