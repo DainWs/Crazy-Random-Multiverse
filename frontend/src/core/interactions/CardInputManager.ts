@@ -3,7 +3,7 @@ import CardDragAndDropManager, { TargetGameObject } from "@/core/interactions/Dr
 import mouseClickDispatcher from "@/core/interactions/MouseClickDispatcher";
 import { CardView } from "@/game/cards/CardView";
 import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
-import ZoneView from "@/game/ZoneView";
+import ZoneView from "@/game/zone/ZoneView";
 
 type Pointer = Phaser.Input.Pointer;
 

@@ -1,9 +1,7 @@
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
-import { CardView } from '@/game/cards/CardView';
-import HandView from '@/game/hand/HandView';
-import ZoneView from '@/game/ZoneView';
+import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
 
 class GameScene extends Scene {
@@ -18,7 +16,7 @@ class GameScene extends Scene {
 
     public constructor() {
         super('Game');
-        this.actionSystem = new ActionSystem(this, 'game-code');
+        this.actionSystem = new ActionSystem('game-code');
 
         this.handController = new HandController(this);
     }

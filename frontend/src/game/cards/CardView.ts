@@ -1,6 +1,6 @@
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import applyAnimation, { CardAnimation } from "@/core/visual_effects/CardAnimations";
-import resolveTween, { CardMoveTypeTweens, CardTween } from "@/core/visual_effects/CardTweens";
+import resolveTween, { CardTween } from "@/core/visual_effects/CardTweens";
 import Card, { CardAudioType, CardTexture } from "@/domain/Card";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
@@ -29,8 +29,8 @@ class CardView extends Phaser.GameObjects.Container {
     card: Card
   ) {
     super(scene);
-    this.x = this.scene.cameras.main.x - (CardView.WIDTH + 50);
-    this.y = this.scene.cameras.main.y - (CardView.HEIGHT + 50);
+    this.x = this.scene.cameras.main.x - CardView.WIDTH;
+    this.y = this.scene.cameras.main.y - CardView.HEIGHT;
     this.originalX = this.x;
     this.originalY = this.y;
     this.depth = 10;
