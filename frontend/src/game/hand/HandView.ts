@@ -1,42 +1,25 @@
 import { showDebugBoxes } from "@/env";
 import CardView from "@/game/cards/CardView";
-
-type SpaceBetweenCardOptions = {
-  min: number;
-  max: number;
-  decayFactor: number;
-}
+import HandAnimator from "@/game/hand/HandAnimator";
+import HandInteractionManager from "@/game/hand/HandInteractionManager";
+import HandLayoutHelper, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
 
 interface HandViewOptions {
-  spaceBetweenCards: SpaceBetweenCardOptions;
-  horizontalSlideMinCards: number;
+  spaceBetweenCards?: SpaceBetweenCardOptions;
   maxCards: number;
 }
 
 const defaultOptions: HandViewOptions = {
-  spaceBetweenCards: {
-    min: 20,
-    max: 250,
-    decayFactor: 0.2
-  },
-  horizontalSlideMinCards: 2,
   maxCards: 10
 };
-
-type HandBounds = {
-  x: number;
-  y: number;
-  margin: number;
-  width: number;
-  height: number;
-  spaceBetweenCards: number;
-}
 
 const NONE_CARD_IS_HOVER: number = Number.MAX_VALUE;
 
 class HandView extends Phaser.GameObjects.Container {
   private readonly options: HandViewOptions;
-  private lastAddedCardTimeout?: NodeJS.Timeout;
+  private readonly interactionManager: HandInteractionManager;
+  private readonly layoutHelper: HandLayoutHelper;
+  private readonly animator: HandAnimator;
 
   private hoverIndex: number;
   private cards: CardView[];
@@ -47,6 +30,9 @@ class HandView extends Phaser.GameObjects.Container {
   ) {
     super(scene);
     this.options = { ...defaultOptions, ...options };
+    this.interactionManager = new HandInteractionManager();
+    this.layoutHelper = new HandLayoutHelper(this.options.maxCards, this.options.spaceBetweenCards);
+    this.animator = new HandAnimator();
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.cards = [];
     this.scale = 1
@@ -58,16 +44,9 @@ class HandView extends Phaser.GameObjects.Container {
   }
 
   private initializeView() {
-    const bounds = this.calculateHandBounds(this.options.maxCards);
-
-    this.width = bounds.width
-    this.height = bounds.height;
-
     const camera = this.scene.cameras.main;
-    this.x = camera.centerX;
-    this.y = (camera.y + camera.height) - this.height / 2;
-
     camera.on(Phaser.Cameras.Scene2D.Events.FOLLOW_UPDATE, this.updatePositionFromCamera);
+    this.updatePositionFromCamera();
 
     if (showDebugBoxes) {
       this.scene.add.rectangle(this.x, this.y, this.width, this.height, 0xFFFF00)
@@ -76,111 +55,84 @@ class HandView extends Phaser.GameObjects.Container {
 
   private updatePositionFromCamera() {
     console.log(arguments);
+
+    const camera = this.scene.cameras.main;
+    this.layoutHelper.setBoundPositionTo(camera);
+    this.x = this.layoutHelper.handBounds.x;
+    this.y = this.layoutHelper.handBounds.y;
+    this.width = this.layoutHelper.handBounds.width
+    this.height = this.layoutHelper.handBounds.height;
   }
 
-  public addCards(...cards: CardView[]) {
-    const handBounds = this.calculateHandBounds(this.cards.length + cards.length);
-    [...this.cards, ...cards].forEach(card => card.disableInteractive());
+  public addCards(...incomingCards: CardView[]) {
+    const newCardLength = this.cards.length + incomingCards.length;
 
-    for (const card of cards) {
-      this.addCard(card, handBounds);
+    for (let i = this.cards.length; i < newCardLength; i++) {
+      const incomingCard = incomingCards[i];
+
+      const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(i, newCardLength);
+      incomingCard.setOriginalPosition(slotPosition.x, slotPosition.y);
+      incomingCard.setOriginalDepth(this.depth + i);
+
+      this.interactionManager.attachListeners(this, incomingCard);
+      this.cards[i] = incomingCard;
     }
 
-    const refreshDelay = 200 * (this.cards.length + 1);
-    setTimeout(() => {
-      this.cards.forEach(card => card.setInteractive());
-      this.updateCards();
-    }, refreshDelay);
-  }
-
-  private addCard(card: CardView, handBounds: HandBounds) {
-    const index = this.cards.length;
-    console.log(index)
-    this.cards[index] = card;
-
-    const affectedByHover = index > this.hoverIndex;
-    const { x, y } = this.calculateSlotPositionFromIndex(index, affectedByHover, handBounds);
-    card.setOriginalPosition(x, y);
-    card.setOriginalDepth(this.depth + index);
-    console.log(200 * index)
-    card.applyTween('move_to_hand', x, y, 200 * index);
-
-    card.on("pointerover", () => this.onSlotHover(index));
-    card.on("pointerout", () => this.onSlotHoverEnd(index));
+    const onCompleteAnimation = () => this.updateCards();
+    this.animator.animateIncomingCards(this.cards, incomingCards, onCompleteAnimation);
   }
 
   public removeCard(card: CardView) {
     if (!this.cards.includes(card)) return;
+    this.interactionManager.deattachListeners(this, card);
 
     const index = this.cards.indexOf(card);
-    card.off("pointerover", () => this.onSlotHover(index));
-    card.off("pointerout", () => this.onSlotHoverEnd(index));
     this.cards.splice(index, 1);
     this.updateCards();
   }
 
-  private onSlotHover(hoverIndex: number) {
-    if (this.hoverIndex === NONE_CARD_IS_HOVER || this.hoverIndex !== hoverIndex) {
-      this.hoverIndex = hoverIndex;
-      this.updateCards();
-    }
-  }
-
-  private onSlotHoverEnd(unhoverIndex: number) {
-    if (this.hoverIndex === unhoverIndex) {
-      this.hoverIndex = NONE_CARD_IS_HOVER;
-      this.updateCards();
-    }
-  }
-
   public updateCards() {
-    const handBounds = this.calculateHandBounds();
+    const cardLength = this.cards.length;
 
     for (let i = 0; i < this.cards.length; i++) {
-      const affectedByHover = i > this.hoverIndex;
-      const { x, y } = this.calculateSlotPositionFromIndex(i, affectedByHover, handBounds);
-      this.cards[i].applyTween('hand_horizontal_slide', x, y);
-    }
-
-    const bounds = this.getBounds();
-    this.width = bounds.width;
-    this.height = bounds.height;
-  }
-
-  private calculateSlotPositionFromIndex(index: number, affectedByHover: boolean = false, bounds?: HandBounds) {
-    if (!bounds) bounds = this.calculateHandBounds();
-
-    let xOffset = CardView.WIDTH/2 + (index * bounds.spaceBetweenCards);
-    if (affectedByHover) {
-      xOffset += CardView.WIDTH - bounds.spaceBetweenCards;
-    }
-
-    const x = bounds.x + bounds.margin + xOffset;
-    const y = bounds.y;
-    return { x, y };
-  }
-
-  private calculateHandBounds(cardLength: number = this.cards.length): HandBounds {
-    const spaceBetweenCards = this.calculateSpaceBetweenCards(cardLength);
-    const totalWidth = (cardLength - 1) * spaceBetweenCards + CardView.WIDTH;
-    return {
-      x: this.x - this.width/2,
-      y: this.y,
-      margin: (this.width - totalWidth) / 2,
-      width: totalWidth,
-      height: CardView.HEIGHT * 1.30,
-      spaceBetweenCards
+      const position = this.layoutHelper.calculateSlotPositionFromIndex(i, cardLength);
+      this.animator.sliceCard(this.cards[i], position.x, position.y);
     }
   }
 
-  private calculateSpaceBetweenCards(cardLength: number = this.cards.length) {
-    if (cardLength <= 0) return 0;
-    
-    const option = this.options.spaceBetweenCards;
+  public onHoverCard(hoverCard: CardView) {
+    const hoverIndex = this.cards.indexOf(hoverCard);
+
+    if (hoverIndex != -1 && (this.hoverIndex === NONE_CARD_IS_HOVER || this.hoverIndex !== hoverIndex)) {
+      this.hoverIndex = hoverIndex;
+      this.sliceCardsToShowHoverIndex();
+    }
+  }
+
+  public onUnhoverCard(unhoverCard: CardView) {
+    const unhoverIndex = this.cards.indexOf(unhoverCard);
+
+    if (this.hoverIndex === unhoverIndex) {
+      this.hoverIndex = NONE_CARD_IS_HOVER;
+      this.sliceCardsToShowHoverIndex();
+    }
+  }
+
+  private sliceCardsToShowHoverIndex() {
+    const xOffset = this.layoutHelper.calculateXOffsetForSlicedCard(this.cards.length);
   
-    const spacingRange = option.max - option.min;
-    const decay = Math.exp(-option.decayFactor * (cardLength - 1));
-    return option.min + spacingRange * decay;
+    for (let i = 0; i < this.cards.length; i++) {
+      const card = this.cards[i];
+      let x = card.x;
+      let y = card.y;
+
+      if (i > this.hoverIndex) x += xOffset;
+      this.animator.sliceCard(card, x, y);
+    }
+  }
+
+  public getCards() {
+    return this.cards;
   }
 }
 
