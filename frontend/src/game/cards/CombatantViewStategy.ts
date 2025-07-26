@@ -3,10 +3,15 @@ import { showDebugBoxes } from "@/env";
 import { CardStatisticView } from "@/game/cards/CardStatisticView";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { CardView } from "@/game/cards/CardView";
-import CardViewStrategy from "@/game/cards/CardViewStrategy";
 import * as TextUtils from "@/game/utils/TextUtils";
+import CardViewStrategy from "@/game/cards/CardViewStrategy";
+import CombatantStackHelper from "@/game/cards/CombatantStackHelper";
 
 class CombatantViewStrategy implements CardViewStrategy {
+  public createStackHelper(_: Phaser.Scene, cardView: CardView) {
+    return new CombatantStackHelper(cardView);
+  }
+
   public createTooltip(scene: Phaser.Scene, cardView: CardView) {
     const tooltip = new CardTooltipView(scene, cardView.width / 2 + 10, 0);
     tooltip.setNameText(cardView.card.name);

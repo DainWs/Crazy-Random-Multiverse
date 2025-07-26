@@ -4,6 +4,10 @@ import CardViewStrategy from "@/game/cards/CardViewStrategy";
 import * as TextUtils from "@/game/utils/TextUtils";
 
 class SpellViewStrategy implements CardViewStrategy {
+  public createStackHelper(_: Phaser.Scene, _2: CardView) {
+    return undefined;
+  }
+
   public createTooltip(_: Phaser.Scene, _2: CardView) {
     return undefined;
   }
