@@ -34,7 +34,6 @@ public class WebPlayerController implements PlayerController {
 	@Override
 	public void dispatchAction(String gameCodeBase64UrlSafe, ActionDto actionDto) throws IllegalAccessException {
 		GameCode gameCode = GameCode.fromBase64UrlSafe(gameCodeBase64UrlSafe);
-		System.out.println(actionDto.getGameCode());
 		if (!gameCode.text().contentEquals(actionDto.getGameCode())) {
 			throw new IllegalAccessException("Acceso denegado - intento de acceso al juego incorrecto");
 		}

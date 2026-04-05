@@ -33,11 +33,9 @@ public class PvsAIGameModeFactory implements GameModeFactory {
 	
 	@Override
 	public Game createGame(Party party, Deck deck) {
-		System.out.println("Strategy");
 		PvsAIGameStrategy strategy = new PvsAIGameStrategy(party, deck);
 		strategy.setEventPublisher(this.eventPublisher);
 		strategy.setExceptionPublisher(this.exceptionPublisher);
-		System.out.println("End Strategy");
 		return new Game(strategy);
 	}
 	

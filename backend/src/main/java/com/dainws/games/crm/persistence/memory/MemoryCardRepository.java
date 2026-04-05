@@ -41,13 +41,8 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public Card find(CardCode cardCode) throws NotFoundException {
-		System.out.println("aa "+ cardCode);
 		if (this.has(cardCode)) {
 			return this.findCopyOf(cardCode);
-		}
-		
-		for (Entry<CardCode, Card> a : cards.entrySet()) {
-			System.out.println(a.getKey() + " - " + a.getValue());
 		}
 
 		throw NotFoundException.cardNotFound();

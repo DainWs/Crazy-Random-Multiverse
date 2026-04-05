@@ -35,17 +35,13 @@ public class GameFactory {
 
 	public Game createGame(Party party) {
 		GameMode gameMode = party.getGameMode();
-		System.out.println(gameMode);
 		if (!this.gameModeFactories.containsKey(gameMode)) {
 			throw new NotFoundException("game_mode");
 		}
 
 		GameModeFactory gameModeFactory = this.gameModeFactories.get(gameMode);
-		System.out.println(gameModeFactory.getMode());
-		System.out.println(gameModeFactory.getClass());
 		Game game = gameModeFactory.createGame(party);
 		this.gameRepository.save(game);
-		System.out.println("Finish");
 		return game;
 	}
 
