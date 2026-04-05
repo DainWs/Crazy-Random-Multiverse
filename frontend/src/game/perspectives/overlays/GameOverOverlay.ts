@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 const KEY = 'game-over-overlay';
 
-export default class GameOverOverlay extends Phaser.GameObjects.Graphics {
+class GameOverOverlay extends Phaser.GameObjects.Graphics {
   private static readonly BACKGROUND_COLOR = 0x323232;
   private static readonly MAX_FLICKER_OFFSET = 80;
   private static readonly VERTICAL_SCROLL_SPEED = 2;
@@ -87,3 +87,5 @@ export default class GameOverOverlay extends Phaser.GameObjects.Graphics {
     this.sinTime += GameOverOverlay.COLOR_SHIFT_SPEED;
   }
 }
+
+export default GameOverOverlay;

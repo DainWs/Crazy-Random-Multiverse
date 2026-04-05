@@ -30,6 +30,14 @@
 - Write code that other developers can easily understand and extend.
 - Avoid unnecessary abstractions, but design with future changes in mind.
 - Keep functions and classes focused on a single responsibility.
+- JS or TS exports must be at the end of the file.
+- Avoid comments, and use meaningful names instead.
+
+## Tests Guidelines
+- Try to avoid mocks, this is why:
+  - A good unit test is that who does not need to mock anything.
+  - A good integration test is that who does not need to mock only the external dependencies.
+  - A good e2e test is that who does not need to mock anything.
 
 ## Collaboration
 - Write meaningful and descriptive commit messages.
