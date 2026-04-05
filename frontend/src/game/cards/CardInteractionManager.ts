@@ -15,6 +15,16 @@ class CardInteractionManager {
     card.on("pointerup", () => onPointerUp());
     card.on("pointerdown", () => onPointerDown(card.scene, card));
 
+    // TODO Capturar evento para dragstart en HandController para Acciones
+    // TODO Capturar evento para dragstart en ZoneController para Acciones
+    // TODO Capturar evento para onDrop en ZoneController para Acciones
+
+    // TODO Capturar evento para dragenter en ZoneSlotView para animaciones
+    // TODO Capturar evento para dragleave en ZoneSlotView para animaciones
+    
+    // TODO Capturar evento para dragstart en CardView para animaciones
+    // TODO Capturar evento para drag en CardView para animaciones
+    // TODO Capturar evento para drop en CardView para animaciones
     card.on("dragstart", () => dragAndDrop.onGrabCard(card.scene, card));
     card.on("dragenter", createDragEnterWrapper(card.scene, card));
     card.on("dragleave", createDragLeaveWrapper(card.scene, card));
