@@ -26,9 +26,10 @@ public class Behavior {
 	void performBehavior(AIContext context) {
 		this.logger.debug("Performing AI behavior");
 		this.logger.debug("[AI behavior] I am {0}", context.getMeAsPlayer().getName());
-		
+
 		AIAction bestAction;
 		boolean actionWasSuccess;
+		int safetyLimit = 15; // TODO temporal limit
 		do {
 			this.goalManager.defineGoals(context);
 			this.actionManager.defineActions(context);
@@ -40,7 +41,8 @@ public class Behavior {
 				actionWasSuccess = this.executeAction(bestAction);
 			}
 
-		} while (actionWasSuccess && context.getAlivePlayers().size() > 1);
+			safetyLimit--;
+		} while (actionWasSuccess && context.getAlivePlayers().size() > 1 && safetyLimit > 0);
 
 		this.passTurn(context);
 		this.logger.debug("AI Behavior performance ended");
