@@ -1,5 +1,6 @@
 package com.dainws.games.crm.controller.dto.domain;
 
+import com.dainws.games.crm.usecase.dto.PositionDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EventDetailsDto {

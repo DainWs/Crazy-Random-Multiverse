@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.domain;
+package com.dainws.games.crm.usecase.dto;
 
 public class PositionDto {
 	private int row;

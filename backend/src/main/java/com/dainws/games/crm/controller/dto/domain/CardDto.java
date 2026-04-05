@@ -4,6 +4,7 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
 import com.dainws.games.crm.domain.core.card.statistics.DamageType;
+import com.dainws.games.crm.usecase.dto.CardCodeDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;

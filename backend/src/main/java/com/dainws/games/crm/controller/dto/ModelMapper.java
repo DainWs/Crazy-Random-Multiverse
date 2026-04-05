@@ -3,13 +3,11 @@ package com.dainws.games.crm.controller.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dainws.games.crm.controller.dto.domain.CardCodeDto;
 import com.dainws.games.crm.controller.dto.domain.CardDto;
 import com.dainws.games.crm.controller.dto.domain.GameDto;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.controller.dto.domain.PartyListDto;
 import com.dainws.games.crm.controller.dto.domain.PlayerDto;
-import com.dainws.games.crm.controller.dto.domain.PositionDto;
 import com.dainws.games.crm.controller.dto.domain.ZoneDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
@@ -24,6 +22,8 @@ import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.usecase.dto.CardCodeDto;
+import com.dainws.games.crm.usecase.dto.PositionDto;
 
 public class ModelMapper {
 

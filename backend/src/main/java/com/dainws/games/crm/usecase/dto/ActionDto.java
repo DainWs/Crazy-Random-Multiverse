@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.domain;
+package com.dainws.games.crm.usecase.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
