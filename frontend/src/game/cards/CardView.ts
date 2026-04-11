@@ -97,7 +97,11 @@ class CardView extends Phaser.GameObjects.Container {
 
   public playSoundForAction(type: CardAudioType) {
     const audioResource = this.card.getAudio(type);
-    this.scene.sound.play(audioResource, { volume: 0.5 });
+    if (this.scene.cache.audio.exists(audioResource)) {
+      this.scene.sound.play(audioResource, { volume: 0.5 });
+    } else {
+      console.warn(`Audio key "${audioResource}" not found in cache.`);
+    }
   }
 
   public canBeClicked(): boolean {
@@ -111,28 +115,11 @@ class CardView extends Phaser.GameObjects.Container {
 
 
 
-  public onPointerOver() {
-    if (this.canBeClicked()) {
-      this.scene.input.manager.canvas.style.cursor = "grab";
-    }
 
-    CardAnimator.playTween(this, 'hover');
-    this.tooltip?.show(this);
-  }
-  
-  public onPointerOut() {
-    this.scene.input.manager.canvas.style.cursor = "default";
-
-    CardAnimator.playTween(this, 'unhover');
-    this.tooltip?.hide();
-  }
-
-  /** @deprecated */
   public showTooltip(): void { 
     this.tooltip?.show(this);
   }
 
-  /** @deprecated */
   public hideTooltip(): void {
     this.tooltip?.hide();
   }

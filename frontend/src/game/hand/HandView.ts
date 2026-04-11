@@ -54,8 +54,6 @@ class HandView extends Phaser.GameObjects.Container {
   }
 
   private updatePositionFromCamera() {
-    console.log(arguments);
-
     const camera = this.scene.cameras.main;
     this.layoutHelper.setBoundPositionTo(camera);
     this.x = this.layoutHelper.handBounds.x;
@@ -127,8 +125,8 @@ class HandView extends Phaser.GameObjects.Container {
   
     for (let i = 0; i < this.cards.length; i++) {
       const card = this.cards[i];
-      let x = card.x;
-      let y = card.y;
+      let x = card.getOriginalPosition().x;
+      let y = card.getOriginalPosition().y;
 
       if (i > this.hoverIndex) x += xOffset;
       this.animator.sliceCard(card, x, y);
@@ -137,6 +135,11 @@ class HandView extends Phaser.GameObjects.Container {
 
   public getCards() {
     return this.cards;
+  }
+
+  protected preDestroy(): void {
+    super.preDestroy();
+    this.scene.cameras.main.off(Phaser.Cameras.Scene2D.Events.FOLLOW_UPDATE, this.updatePositionFromCamera);
   }
 }
 

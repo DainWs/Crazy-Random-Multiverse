@@ -31,7 +31,6 @@ class CombatantStackHelper implements CardStackHelper {
 
     this.combatant.scene.input.setDraggable(equipment, false);
     equipment.setInteractive({ useHandCursor: false });
-    // card.disableClick(); // TODO deprecated?
   }
 
   public hasCardStacked(): boolean {
