@@ -10,15 +10,17 @@ class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
     public background: Phaser.GameObjects.Image;
 
-    public readonly actionSystem: ActionSystem;
-
-    public readonly cardController: CardController;
-    public readonly handController: HandController;
+    public actionSystem: ActionSystem;
+    public cardController: CardController;
+    public handController: HandController;
 
     public zones: ZoneView[];
 
     public constructor() {
         super('Game');
+    }
+
+    public init() {
         this.actionSystem = new ActionSystem('game-code');
 
         this.cardController = new CardController(this);
@@ -31,12 +33,25 @@ class GameScene extends Scene {
         this.input.dragDistanceThreshold = 10;
         this.camera = this.cameras.main;
 
-        this.handController.addCards(...StoreSystem.getPlayerHand());
+        this.renderAll();
+    }
 
-        const zoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
+    private renderAll() {
+        this.renderHand();
+        this.renderZones();
+    }
+
+    private renderHand() {
+        this.handController.clearCards();
+        this.handController.addCards(...StoreSystem.getPlayerHand());
+    }
+
+    private renderZones() {
         this.zones = [];
-        this.zones.push(zoneView);
-        this.children.add(zoneView);
+
+        const playerZoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
+        this.zones.push(playerZoneView);
+        this.children.add(playerZoneView);
 
         this.children.add(this.add.rectangle(1300, 200, 1, 1, 0xFFFFFF, 0.5).setStrokeStyle(1, 0x000000));
     }
