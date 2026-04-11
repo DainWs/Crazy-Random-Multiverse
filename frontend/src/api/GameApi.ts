@@ -9,7 +9,14 @@ const sendPassTurnAction = async (gameCode: GameCode) => {
   console.log(`Sending pass turn action: ${gameCode}`);
 }
 
+const sendReady = async (gameCode: GameCode) => {
+  await fetch(`/game/${gameCode}/ready`, {
+    method: 'POST'
+  });
+}
+
 export {
   sendAction,
-  sendPassTurnAction
+  sendPassTurnAction,
+  sendReady
 };

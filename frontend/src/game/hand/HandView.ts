@@ -91,6 +91,10 @@ class HandView extends Phaser.GameObjects.Container {
     this.updateCards();
   }
 
+  public clearCards() {
+    this.cards.forEach(card => this.removeCard(card));
+  }
+
   public updateCards() {
     const cardLength = this.cards.length;
 

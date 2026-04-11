@@ -4,6 +4,7 @@ import Player from '@/domain/Player';
 import cardFactory from '@/domain/cardFactory';
 import StoreSystem from '@/core/StoreSystem';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
+import { sendReady } from '@/api/GameApi';
 
 class GameLoadScene extends Scene {
     constructor() {
@@ -101,9 +102,17 @@ class GameLoadScene extends Scene {
             new Zone(new Player('AI_04', 'AI_04'), 'BASE')
         ])
     }
+    
 
-    create() {
-        this.scene.start('Game');
+    async create() {
+        const gameCode = StoreSystem.getGameCode();
+        if (gameCode) {
+            await sendReady(gameCode);
+            this.scene.start('Game');
+        } else {
+            console.error("No game code found in StoreSystem");
+            this.scene.start('MainMenu');
+        }
     }
 }
 

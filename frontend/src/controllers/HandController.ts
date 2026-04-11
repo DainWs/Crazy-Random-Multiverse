@@ -27,6 +27,10 @@ class HandController {
     return cards.map(card => this.cardViewFactory.createCardView(this.scene, card));
   }
 
+  public clearCards() {
+    this.handView.clearCards();
+  }
+
   public onGrabCard(event: InteractionEvent<Card>) {
     const cardView = this.findCardViewOf(event.source);
     if (cardView) {
