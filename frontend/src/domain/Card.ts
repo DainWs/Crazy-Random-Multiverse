@@ -96,6 +96,10 @@ class Card {
     return this.isType('LEADER') || this.isType('WARRIOR');
   }
 
+  public hasAlreadyEquipment(): boolean {
+    return this.equipment !== null;
+  }
+
   public hasStatistics(): boolean {
     return this.isCombatant() || this.isType('EQUIPMENT');
   }

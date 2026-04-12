@@ -4,9 +4,8 @@ import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
-import CardPlacementZone from "@/game/CardPlacementZone";
 
-class ZoneSlotView extends Phaser.GameObjects.Container implements CardPlacementZone {
+class ZoneSlotView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
   private mark: Phaser.GameObjects.Image;
   private cardView: CardView | null;
@@ -45,37 +44,18 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CardPlacement
     this.add([ this.background, this.mark ]);
   }
 
-  public placeCard(cardView: CardView): boolean {
-    if (this.cardView || !cardView.card.isCombatant()) return false;
+  public setCard(cardView: CardView | null) {
+    if (cardView) {
+      this.zoneSlot.combatant = cardView.card as CombatantCard;
 
-    this.zoneSlot.combatant = cardView.card as CombatantCard;
-
-    const bounds = this.getBounds();
-    this.cardView = cardView;
-    this.cardView.setPosition(bounds.centerX, bounds.centerY);
-    this.cardView.setDisplaySize(this.width, this.height);
-    return true;
-  }
-
-  public removeCard(): boolean {
-    if (!this.cardView) return false;
-
-    this.zoneSlot.combatant = null;
-    this.cardView = null;
-    return true;
-  }
-
-  /** @deprecated */
-  public clearCard(): boolean {
-    return this.removeCard();
-  }
-
-  public hasCard(card?: CardView): boolean {
-    if (card) {
-      return this.cardView === card;
+      const bounds = this.getBounds();
+      this.cardView = cardView;
+      this.cardView.setPosition(bounds.centerX, bounds.centerY);
+      this.cardView.setDisplaySize(this.width, this.height);
+    } else {
+      this.zoneSlot.combatant = null;
+      this.cardView = null;
     }
-
-    return this.cardView !== null;
   }
 
   public getCard(): CardView | null {

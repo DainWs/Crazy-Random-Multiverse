@@ -1,4 +1,4 @@
-import { CombatantCard } from "@/domain/Card";
+import Card, { CombatantCard } from "@/domain/Card";
 import { ZonePosition } from "@/domain/Position";
 
 type AllowedCombatant = 'LEADER' | 'WARRIOR';
@@ -13,6 +13,22 @@ class ZoneSlot {
     this.position = position;
     this.allowedCombatant = allowedCombatant;
     this.combatant = null;
+  }
+
+  public canPlaceCard(card: Card): boolean {
+    if (card.isCombatant() && !this.combatant) {
+      return this.allowedCombatant === card.type;
+    }
+
+    if (card.isType('EQUIPMENT') && this.combatant) {
+      return !this.combatant.hasAlreadyEquipment();
+    }
+
+    return false;
+  }
+
+  public isOccupied(): boolean {
+    return this.combatant !== null;
   }
 
   public getMaskTexture(): ZoneSlotMarkTexture {

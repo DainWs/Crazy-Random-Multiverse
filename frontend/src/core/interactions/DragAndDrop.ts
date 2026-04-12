@@ -1,6 +1,5 @@
-import EventSystem from "@/core/EventSystem";
+import { dispatchAction } from "@/core/interactions/CardInteractionDispatcher";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
-import ActionTrigger from "@/domain/ActionTrigger";
 import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
@@ -14,11 +13,37 @@ class CardDragAndDropManager {
 
   public onGrabCard(scene: Phaser.Scene, card: CardView) {
     if (!card.canBeClicked()) return false;
+
+    scene.input.manager.canvas.style.cursor = "grabbing";
+    console.log(card.getOriginalDepth());
     card.applyAnimation('startDrag');
 
+    // TODO no se hasta que punto sale rentable hacer esto (1), pero es necesario para que el drag and drop funcione correctamente
+    // (1) const worldMatrix = card.getWorldTransformMatrix();
+    // (1) this.originalParent = card.parentContainer || scene;
+    // (1) this.originalPositionInParent = { x: card.x, y: card.y };
+
+    // TODO: no se si esto (2) es necesario, pero es necesario para que el drag and drop funcione correctamente
+    // (2) scene.add.existing(card);
+    // (1) card.setPosition(worldMatrix.getX(), worldMatrix.getY());
+
     this.setSource(getSourceGameObjectAtCursor(scene));
+    // (1) this.setSource(this.getInteractableSourceFromParent(scene));
     return true;
   }
+
+  /* (1)
+  private getInteractableSourceFromParent(parent: Phaser.GameObjects.Container | Phaser.Scene): SourceGameObject | undefined {
+    let current: any = parent;
+    while (current) {
+      if (current instanceof HandView || current instanceof ZoneSlotView) {
+        return current as SourceGameObject;
+      }
+      current = current.parentContainer;
+    }
+    return undefined;
+  }
+    */
 
   private setSource(source: SourceGameObject | undefined) {
     if (this.sourceGameObject instanceof ZoneSlotView) {
@@ -42,9 +67,7 @@ class CardDragAndDropManager {
   }
 
   private onZoneSlotDragEnter(cardView: CardView, targetGameObject: ZoneSlotView) {
-    const hasAlreadyACard = targetGameObject.hasCard();
-    const isCardAllowedByZoneSlot = targetGameObject.zoneSlot.allowedCombatant === cardView.card.type;
-    if (hasAlreadyACard && isCardAllowedByZoneSlot) {
+    if (targetGameObject.zoneSlot.canPlaceCard(cardView.card)) {
       targetGameObject?.applyAnimation('highlight_as_target');
     }
   }
@@ -61,44 +84,26 @@ class CardDragAndDropManager {
 
   public onDropCard(scene: Phaser.Scene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
     scene.input.manager.canvas.style.cursor = "grab";
-    droppedCard.applyAnimation('endDrag');
+    console.log("drop")
 
-    if (!targetGameObject) return false;
+    let success = false;
     if (targetGameObject instanceof ZoneSlotView) {
-      return this.onZoneSlotDropCard(droppedCard, targetGameObject);
-    }
-  
-    // TODO haz un buen dispatcher para las siguientes acciones: put, move, equip
-    // el resultado del dispatcher, es decir, la accion a realizar, es posible que se realize en CardController
-    this.sourceGameObject = undefined;
-  }
-
-  private onZoneSlotDropCard(droppedCardView: CardView, targetGameObject: ZoneSlotView) {
-
-    if (droppedCardView.card.isType('EQUIPMENT')) {
-      //return this.equipCardToCombatantOnTargetZoneSlot(droppedCardView);
-    }
-  
-    if (droppedCardView.card.isCombatant()) {
-      //return this.placeDroppedCardOnTargetZoneSlot(droppedCardView);
+      success = dispatchAction(scene, droppedCard, this.sourceGameObject, targetGameObject);
+      targetGameObject.applyAnimation('unhighlight');
     }
 
     if (this.sourceGameObject instanceof ZoneSlotView) {
       this.sourceGameObject?.applyAnimation('unhighlight');
     }
-    return false;
-  }
 
-  private dispatchDroppedCardAction(droppedCardView: CardView) {
-    if (droppedCardView.card.isType('EQUIPMENT')) {
-      //return this.equipCardToCombatantOnTargetZoneSlot(droppedCardView);
+    if (!success) {
+      droppedCard.resetPosition();
     }
   
-    if (droppedCardView.card.isCombatant()) {
-      //return this.placeDroppedCardOnTargetZoneSlot(droppedCardView);
-    }
-  
-    return false;
+    droppedCard.applyAnimation('endDrag');
+
+    this.sourceGameObject = undefined;
+    return success;
   }
 }
 
