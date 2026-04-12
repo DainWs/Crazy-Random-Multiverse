@@ -10,23 +10,24 @@ class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
     public background: Phaser.GameObjects.Image;
 
-    public actionSystem: ActionSystem;
-    public cardController: CardController;
-    public handController: HandController;
+    public readonly actionSystem: ActionSystem;
+    public readonly cardController: CardController;
+    public readonly handController: HandController;
 
     public zones: ZoneView[];
 
     public constructor() {
         super('Game');
-    }
 
-    public init() {
         this.actionSystem = new ActionSystem('game-code');
-
         this.cardController = new CardController(this);
 
         const cardViewFactory = new CardViewFactory(this.cardController);
         this.handController = new HandController(this, cardViewFactory);
+    }
+
+    public init() {
+        this.handController.init();
     }
 
     public create() {    

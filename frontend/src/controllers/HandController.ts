@@ -4,17 +4,20 @@ import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 
 class HandController {
-  private scene: Phaser.Scene;
+  private readonly scene: Phaser.Scene;
   private readonly cardViewFactory: CardViewFactory;
 
-  public readonly handView: HandView;
-  
+  private handView: HandView;
+
   public constructor(scene: Phaser.Scene, cardViewFactory: CardViewFactory) {
     this.scene = scene;
-    this.handView = new HandView(scene);
     this.cardViewFactory = cardViewFactory;
-    this.scene.children.add(this.handView);
+  }
 
+  public init() {
+    this.handView = new HandView(this.scene);
+
+    this.scene.children.add(this.handView);
     this.scene.events.on('grabCard', this.onGrabCard.bind(this));
   }
 
