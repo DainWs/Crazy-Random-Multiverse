@@ -15,7 +15,8 @@ class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
 
-  private stackHelper?: CardStackHelper;
+  // TODO when mouse over stacked card, it should show the tooltip of the stacked card, this include to slide the cards to show the stacked card
+  private stackHelper?: CardStackHelper; 
   private tooltip?: CardTooltipView;
 
   public readonly card: Card;
@@ -41,6 +42,7 @@ class CardView extends Phaser.GameObjects.Container {
     this.scale = 1;
     this.width = CardView.WIDTH;
     this.height = CardView.HEIGHT;
+    this.setSize(this.width, this.height);
 
     this.card = card;
 
@@ -130,6 +132,10 @@ class CardView extends Phaser.GameObjects.Container {
 
   public applyTween(tween: CardTween, ...args: unknown[]): void {
     CardAnimator.playTween(this, tween, ...args);
+  }
+
+  public stopTweens() {
+    this.scene.tweens.killTweensOf(this);
   }
 
   public setPosition(x?: number, y?: number, z?: number, w?: number): this {

@@ -5,6 +5,7 @@ import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
+import * as Constants from '@/core/Constants';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -31,7 +32,9 @@ class GameScene extends Scene {
     }
 
     public create() {    
-        this.input.dragDistanceThreshold = 10;
+        this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
+        this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
+        this.input.setPollAlways();
         this.camera = this.cameras.main;
 
         this.renderAll();

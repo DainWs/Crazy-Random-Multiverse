@@ -26,7 +26,8 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.cardView = null;
     this.zoneSlot = zoneSlot;
 
-    this.initializeView()
+    this.initializeView();
+    this.setSize(this.width, this.height);
     this.setInteractive({ dropZone: true });
 
     scene.add.existing(this)
@@ -50,6 +51,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
 
       const bounds = this.getBounds();
       this.cardView = cardView;
+      this.cardView.setOriginalPosition(bounds.centerX, bounds.centerY);
       this.cardView.setPosition(bounds.centerX, bounds.centerY);
       this.cardView.setDisplaySize(this.width, this.height);
     } else {

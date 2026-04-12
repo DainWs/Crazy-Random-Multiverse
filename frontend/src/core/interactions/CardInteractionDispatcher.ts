@@ -5,6 +5,7 @@ import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import { GameScene } from "@/scenes/Game";
 
 function dispatchAction(scene: Phaser.Scene, card: CardView, source?: SourceGameObject, target?: TargetGameObject) {
+  console.log("dispatchAction", source, target);
   if (scene instanceof GameScene) {
     return internalActionDispatch(scene, card, source, target);
   } else {
@@ -15,11 +16,11 @@ function dispatchAction(scene: Phaser.Scene, card: CardView, source?: SourceGame
 
 function internalActionDispatch(scene: GameScene, cardView: CardView, source?: SourceGameObject, target?: TargetGameObject) {
   if (source instanceof HandView && target instanceof ZoneSlotView && cardView.card.isCombatant()) {
-    return scene.cardController.putCardOnZoneSlot(cardView, target);
+    return scene.cardController.putCardOnZoneSlot(cardView, source, target);
   }
 
   if (source instanceof HandView && target instanceof ZoneSlotView && cardView.card.isType('EQUIPMENT')) {
-    return scene.cardController.equipCardToCombatant(cardView, target.getCard()!, target);
+    return scene.cardController.equipCardToCombatant(cardView, target.getCard()!, source, target);
   }
 
   if (source instanceof ZoneSlotView && target instanceof ZoneSlotView && cardView.card.isCombatant()) {

@@ -34,6 +34,7 @@ class HandController {
     this.handView.clearCards();
   }
 
+  // Useless?
   public onGrabCard(event: InteractionEvent<Card>) {
     const cardView = this.findCardViewOf(event.source);
     if (cardView) {

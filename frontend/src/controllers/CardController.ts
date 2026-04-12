@@ -1,16 +1,17 @@
-import { CombatantCard } from "@/domain/Card";
 import CardView from "@/game/cards/CardView";
+import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import { GameScene } from "@/scenes/Game";
 
 
 class CardController {
-  private readonly scene: Phaser.Scene;
+  private readonly scene: GameScene;
 
-  public constructor(scene: Phaser.Scene) {
+  public constructor(scene: GameScene) {
     this.scene = scene;
   }
 
-  public putCardOnZoneSlot(cardView: CardView, zoneSlotView: ZoneSlotView) {
+  public putCardOnZoneSlot(cardView: CardView, handView: HandView, zoneSlotView: ZoneSlotView) {
     if (zoneSlotView.getCard() !== null) {
       console.warn("Target zone slot already has a card, cannot place another one.");
       return false;
@@ -21,6 +22,7 @@ class CardController {
       return false;
     }
 
+    handView.removeCard(cardView);
     zoneSlotView.setCard(cardView);
     // TODO propagar evento al backend
     return true;
@@ -53,7 +55,7 @@ class CardController {
     return true;
   }
 
-  public equipCardToCombatant(equipmentCardView: CardView, targetCardView: CardView, targetZoneSlotView: ZoneSlotView) {
+  public equipCardToCombatant(equipmentCardView: CardView, targetCardView: CardView, sourceHandView: HandView, targetZoneSlotView: ZoneSlotView) {
     if (targetZoneSlotView.getCard() === null) {
       console.warn("Target zone slot does not have a card.");
       return false;
@@ -64,6 +66,7 @@ class CardController {
       return false;
     }
 
+    sourceHandView.removeCard(equipmentCardView);
     targetCardView.stack(equipmentCardView);
     // TODO propagar evento al backend
     return true;

@@ -8,8 +8,7 @@ function noneAnimation() {}
 function startDragAnimation(card: CardView): void {
   card.hideTooltip();
   card.setScale(1);
-  card.setDepth(12); // TODO increment default card depth
-  // card.setDepth(card.getDepth() + 1); 
+  card.setDepth(700);
   card.setAlpha(1);
 }
 

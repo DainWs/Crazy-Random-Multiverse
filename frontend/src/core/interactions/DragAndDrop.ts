@@ -9,13 +9,12 @@ type TargetGameObject = ZoneSlotView | CardView;
 
 class CardDragAndDropManager {
   private sourceGameObject: SourceGameObject | undefined;
-  //private targetGameObject: TargetGameObject | undefined;
 
   public onGrabCard(scene: Phaser.Scene, card: CardView) {
     if (!card.canBeClicked()) return false;
+    card.stopTweens();
 
     scene.input.manager.canvas.style.cursor = "grabbing";
-    console.log(card.getOriginalDepth());
     card.applyAnimation('startDrag');
 
     // TODO no se hasta que punto sale rentable hacer esto (1), pero es necesario para que el drag and drop funcione correctamente
@@ -28,6 +27,10 @@ class CardDragAndDropManager {
     // (1) card.setPosition(worldMatrix.getX(), worldMatrix.getY());
 
     this.setSource(getSourceGameObjectAtCursor(scene));
+
+    if (this.sourceGameObject instanceof HandView) {
+      this.sourceGameObject.disableCardListeners();
+    }
     // (1) this.setSource(this.getInteractableSourceFromParent(scene));
     return true;
   }
@@ -79,12 +82,13 @@ class CardDragAndDropManager {
   }
 
   public onDragCard(_: Phaser.Scene, draggedCardView: CardView, dragX: number, dragY: number) {
+    draggedCardView.stopTweens();
     draggedCardView.setPosition(dragX, dragY);
+    console.log("card drag", draggedCardView.x, draggedCardView.y);
   }
 
   public onDropCard(scene: Phaser.Scene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
-    scene.input.manager.canvas.style.cursor = "grab";
-    console.log("drop")
+    console.log("drop ", this.sourceGameObject, " -> ", targetGameObject)
 
     let success = false;
     if (targetGameObject instanceof ZoneSlotView) {
@@ -92,18 +96,24 @@ class CardDragAndDropManager {
       targetGameObject.applyAnimation('unhighlight');
     }
 
+    return success;
+  }
+
+  public onDragEnd(scene: Phaser.Scene, card: CardView) {
+    scene.input.manager.canvas.style.cursor = "grab";
+    
+    card.resetPosition();
+    card.applyAnimation('endDrag');
+
     if (this.sourceGameObject instanceof ZoneSlotView) {
       this.sourceGameObject?.applyAnimation('unhighlight');
     }
 
-    if (!success) {
-      droppedCard.resetPosition();
+    if (this.sourceGameObject instanceof HandView) {
+      this.sourceGameObject.enableCardListeners();
     }
-  
-    droppedCard.applyAnimation('endDrag');
 
     this.sourceGameObject = undefined;
-    return success;
   }
 }
 

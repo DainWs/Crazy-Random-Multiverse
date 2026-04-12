@@ -1,29 +1,28 @@
 import CardView from "@/game/cards/CardView";
-import mouseClickDispatcher from "@/core/interactions/MouseClickDispatcher";
 import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
 import ZoneView from "@/game/zone/ZoneView";
+import * as Constants from "@/core/Constants";
 
 class CardClickHandler {
-  public async onPointerDown(scene: Phaser.Scene, card: CardView): Promise<void> {
+  public onPointerDown(_1: Phaser.Scene, _2: CardView, _3: Phaser.Input.Pointer): void {
+    // No action is performed on pointerdown to allow Phaser to decide
+    // if the movement will result in a "drag" or a click.
+  }
+
+  public onPointerUp(scene: Phaser.Scene, card: CardView, pointer: Phaser.Input.Pointer): void {
     if (!card.canBeClicked()) return;
-
-    const clickType = await mouseClickDispatcher.dispatch('mousedown');
-    if (clickType === 'SimpleClick') this.onSimpleClickCard(scene, card);
-    if (clickType === 'DoubleClick') this.onDoubleClickCard(scene, card);
+  
+    if (
+      pointer.getDuration() < Constants.DRAG_TIME_THRESHOLD &&
+      pointer.getDistance() < Constants.DRAG_DISTANCE_THRESHOLD
+    ) {
+      this.onSimpleClickCard(scene, card);
+    }
   }
 
-  public onPointerUp(_: Phaser.Scene, __: CardView): void {
-    mouseClickDispatcher.dispatch('mouseup');
-  }
-
-  // TODO definir accion en caso de doble click
-  private onDoubleClickCard(scene: Phaser.Scene, card: CardView) {
-    this.onSimpleClickCard(scene, card);
-  }
-
-  // TODO completamente incompleto, tareas:
-  // BUG: Solo debe funcionar sobre cartas que se encuentren situadas en una zona
-  // BUG: Al hacer click y activarse la perspectiva, se deshabilita despues de poco tiempo
+  // TODO completely incomplete, tasks:
+  // BUG: It should only work on cards that are located in a zone
+  // BUG: When clicking and activating the perspective, it is disabled after a short time
   private onSimpleClickCard(scene: Phaser.Scene, card: CardView) {
     const zones = scene.children.list.filter(child => child instanceof ZoneView) as ZoneView[];
     new CardActionPerspective(scene, card, zones).enter();

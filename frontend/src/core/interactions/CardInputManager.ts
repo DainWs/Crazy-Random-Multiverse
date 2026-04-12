@@ -12,10 +12,21 @@ const clickHandler = new CardClickHandler();
 function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
   card.on("pointerover", () => mouseOver.onPointerOver(scene, card));
   card.on("pointerout", () => mouseOver.onPointerOut(scene, card));
-  card.on("pointerup", () => clickHandler.onPointerUp(scene, card));
-  card.on("pointerdown", () => clickHandler.onPointerDown(scene, card));
+  card.on("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
+  card.on("pointerdown", (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer));
 
+    // TODO Capturar evento para dragstart en HandController para Acciones
+    // TODO Capturar evento para dragstart en ZoneController para Acciones
+    // TODO Capturar evento para onDrop en ZoneController para Acciones
+
+    // TODO Capturar evento para dragenter en ZoneSlotView para animaciones
+    // TODO Capturar evento para dragleave en ZoneSlotView para animaciones
+    
+    // TODO Capturar evento para dragstart en CardView para animaciones
+    // TODO Capturar evento para drag en CardView para animaciones
+    // TODO Capturar evento para drop en CardView para animaciones
   card.on("dragstart", () => dragAndDrop.onGrabCard(scene, card));
+  card.on("dragend", () => dragAndDrop.onDragEnd(scene, card));
   card.on("dragenter", createDragEnterWrapper(scene, card));
   card.on("dragleave", createDragLeaveWrapper(scene, card));
   card.on("drag", createDragWrapper(scene, card));
@@ -25,10 +36,11 @@ function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
 function removeHandledCard(scene: Phaser.Scene, card: CardView): void {
   card.off("pointerover", () => mouseOver.onPointerOver(scene, card));
   card.off("pointerout", () => mouseOver.onPointerOut(scene, card));
-  card.off("pointerup", () => clickHandler.onPointerUp(scene, card));
-  card.off("pointerdown", () => clickHandler.onPointerDown(scene, card));
+  card.off("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
+  card.off("pointerdown", (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer));
 
   card.off("dragstart", () => dragAndDrop.onGrabCard(scene, card));
+  card.off("dragend", () => dragAndDrop.onDragEnd(scene, card));
   card.off("dragenter", createDragEnterWrapper(scene, card));
   card.off("dragleave", createDragLeaveWrapper(scene, card));
   card.off("drag", createDragWrapper(scene, card));
@@ -56,4 +68,4 @@ const CardInputManager = {
   removeHandledCard
 }
 
-export default CardInputManager;
+export default CardInputManager;
