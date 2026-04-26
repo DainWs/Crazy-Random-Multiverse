@@ -31,8 +31,9 @@ class HandLayoutHelper {
   }
 
   public setBoundPositionTo(camera: Camera2D) {
-    this.handBounds.x = camera.centerX;
-    this.handBounds.y = (camera.y + camera.height) - this.handBounds.height / 2;
+    const paddingX = -100;
+    this.handBounds.x = camera.x + paddingX + (this.handBounds.width / 2);
+    this.handBounds.y = (camera.y + camera.height) + 180;
   }
 
   public calculateSlotPositionFromIndex(
@@ -40,16 +41,11 @@ class HandLayoutHelper {
     cardLength: number
   ) {
     const spaceBetweenCards = this.calculateSpaceBetweenCards(cardLength);
-    const xOffset = CardView.WIDTH/2 + (index * spaceBetweenCards);;
-    const margin = this.calculateMargin(this.handBounds.width, spaceBetweenCards, cardLength);
-    const x = (this.handBounds.x - this.handBounds.width/2) + margin + xOffset;
+    const xOffset = CardView.WIDTH / 2 + (index * spaceBetweenCards);
+    
+    const x = (this.handBounds.x - this.handBounds.width / 2) + xOffset;
     const y = this.handBounds.y;
     return { x, y };
-  }
-
-  private calculateMargin(originalWidth: number, spaceBetweenCards: number, cardLength: number) {
-    const totalWidth = (cardLength - 1) * spaceBetweenCards + CardView.WIDTH;
-    return (originalWidth - totalWidth) / 2;
   }
   
   public calculateSpaceBetweenCards(cardLength: number) {

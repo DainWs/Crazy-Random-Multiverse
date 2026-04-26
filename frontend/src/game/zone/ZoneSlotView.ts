@@ -4,58 +4,128 @@ import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
+import { SlotLogicalBounds } from "@/game/zone/ZoneView";
+import ProjectionSystem from "@/core/ProjectionSystem";
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
-  private background: Phaser.GameObjects.Rectangle;
+  private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
   private cardView: CardView | null;
 
   public readonly zoneSlot: ZoneSlot;
+  private logicalBounds: SlotLogicalBounds;
 
   constructor(
     scene: Phaser.Scene, 
-    x: number, 
-    y: number,
+    bounds: SlotLogicalBounds,
     zoneSlot: ZoneSlot
   ) {
-    super(scene, x, y);
+    super(scene, 0, 0);
+    this.logicalBounds = bounds;
     this.scale = 1;
-    this.width = 200;
-    this.height = 300;
+    this.width = bounds.width;
+    this.height = bounds.height;
 
     this.cardView = null;
     this.zoneSlot = zoneSlot;
 
     this.initializeView();
-    this.setSize(this.width, this.height);
-    this.setInteractive({ dropZone: true });
+    
+    const quad = this.getProjectedQuad();
+    const polygon = new Phaser.Geom.Polygon([
+      quad.tl.x, quad.tl.y,
+      quad.tr.x, quad.tr.y,
+      quad.br.x, quad.br.y,
+      quad.bl.x, quad.bl.y
+    ]);
+    this.setInteractive(polygon, Phaser.Geom.Polygon.Contains, true);
 
     scene.add.existing(this)
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
+  private getProjectedQuad() {
+    const rad = Phaser.Math.DegToRad(this.logicalBounds.rotation);
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    const hw = this.logicalBounds.width / 2;
+    const hh = this.logicalBounds.height / 2;
+
+    const getCorner = (lx: number, ly: number) => {
+        const bx = this.logicalBounds.boardX + lx * cos - ly * sin;
+        const by = this.logicalBounds.boardY + lx * sin + ly * cos;
+        return ProjectionSystem.project(bx, by);
+    };
+
+    return {
+        tl: getCorner(-hw, -hh),
+        tr: getCorner(hw, -hh),
+        br: getCorner(hw, hh),
+        bl: getCorner(-hw, hh)
+    };
+  }
+
   private initializeView() {
-    this.background = this.scene.add.rectangle(0, 0, this.displayWidth, this.displayHeight, 0xffffff);
-    this.background.setStrokeStyle(3, 0x000000);
+    this.backgroundGraphics = this.scene.add.graphics();
+    
+    this.drawBackground(0xffffff, 0x4488cc);
 
-    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
-    this.mark.setScale(4);
+    const centerProj = ProjectionSystem.project(this.logicalBounds.boardX, this.logicalBounds.boardY);
+
+    this.setDepth(centerProj.y);
+
+    this.mark = this.scene.add.image(centerProj.x, centerProj.y, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
+    this.mark.setScale(4 * centerProj.scale);
     this.mark.setOrigin(0.5, 0.5);
+    this.mark.setAlpha(0.8);
+    this.mark.setAngle(this.logicalBounds.rotation);
 
-    this.add([ this.background, this.mark ]);
+    this.add([ this.backgroundGraphics, this.mark ]);
+  }
+
+  private drawBackground(color: number, borderColor?: number) {
+    this.backgroundGraphics.clear();
+    const quad = this.getProjectedQuad();
+    
+    const alpha = (color === 0xffffff) ? 0.45 : 0.35;
+    
+    this.backgroundGraphics.fillStyle(color, alpha);
+    if (borderColor) {
+        this.backgroundGraphics.lineStyle(2, borderColor, 0.8);
+    } else {
+        this.backgroundGraphics.lineStyle(2, 0x4488cc, 0.8);
+    }
+    
+    this.backgroundGraphics.beginPath();
+    this.backgroundGraphics.moveTo(quad.tl.x, quad.tl.y);
+    this.backgroundGraphics.lineTo(quad.tr.x, quad.tr.y);
+    this.backgroundGraphics.lineTo(quad.br.x, quad.br.y);
+    this.backgroundGraphics.lineTo(quad.bl.x, quad.bl.y);
+    this.backgroundGraphics.closePath();
+    
+    this.backgroundGraphics.fillPath();
+    this.backgroundGraphics.strokePath();
   }
 
   public setCard(cardView: CardView | null) {
     if (cardView) {
       this.zoneSlot.combatant = cardView.card as CombatantCard;
 
-      const bounds = this.getBounds();
       this.cardView = cardView;
-      this.cardView.setOriginalPosition(bounds.centerX, bounds.centerY);
-      this.cardView.setPosition(bounds.centerX, bounds.centerY);
-      this.cardView.setDisplaySize(this.width, this.height);
+      this.add(this.cardView);
+      
+      const centerProj = ProjectionSystem.project(this.logicalBounds.boardX, this.logicalBounds.boardY);
+
+      this.cardView.setPosition(centerProj.x, centerProj.y);
+      this.cardView.setOriginalPosition(centerProj.x, centerProj.y);
+      this.cardView.setScale(centerProj.scale);
+      this.cardView.setAngle(this.logicalBounds.rotation); 
     } else {
       this.zoneSlot.combatant = null;
+      if (this.cardView) {
+        this.remove(this.cardView);
+      }
       this.cardView = null;
     }
   }
@@ -65,12 +135,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   }
 
   public setBackgroundColor(color: number, borderColor?: number): void {
-    this.background.setFillStyle(color);
-
-    if (borderColor) {
-      console.log(borderColor)
-      this.background.setStrokeStyle(3, borderColor);
-    }
+    this.drawBackground(color, borderColor);
   }
 
   public applyAnimation(animation: ZoneSlotAnimations) {

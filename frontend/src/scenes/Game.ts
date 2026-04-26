@@ -6,6 +6,11 @@ import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
+import BattlefieldLayout, { PlayerPosition } from '@/core/BattlefieldLayout';
+import CameraSystem from '@/core/CameraSystem';
+import BattlefieldFloor from '@/game/board/BattlefieldFloor';
+import Player from '@/domain/Player';
+import Zone from '@/domain/Zone';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -15,6 +20,8 @@ class GameScene extends Scene {
     public readonly cardController: CardController;
     public readonly handController: HandController;
 
+    private battlefield: Phaser.GameObjects.Container;
+    private cameraSystem: CameraSystem;
     public zones: ZoneView[];
 
     public constructor() {
@@ -35,7 +42,13 @@ class GameScene extends Scene {
         this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
-        this.camera = this.cameras.main;
+        
+        const { width, height } = this.scale;
+
+        this.battlefield = this.add.container(width / 2, height * 0.42);
+        
+        this.cameraSystem = new CameraSystem(this);
+        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
 
         this.renderAll();
     }
@@ -52,12 +65,44 @@ class GameScene extends Scene {
 
     private renderZones() {
         this.zones = [];
+        this.battlefield.removeAll(true);
 
-        const playerZoneView = new ZoneView(this, 1300, 150, StoreSystem.getPlayerZone());
-        this.zones.push(playerZoneView);
-        this.children.add(playerZoneView);
+        const floor = new BattlefieldFloor(this);
+        this.battlefield.add(floor);
 
-        this.children.add(this.add.rectangle(1300, 200, 1, 1, 0xFFFFFF, 0.5).setStrokeStyle(1, 0x000000));
+        const positions = [
+            PlayerPosition.BOTTOM,
+            PlayerPosition.TOP,
+            PlayerPosition.LEFT,
+            PlayerPosition.RIGHT
+        ];
+
+        const zones = this.getOrMockZones();
+
+        positions.forEach((pos, index) => {
+            const zoneData = zones[index];
+            if (!zoneData) return;
+
+            const layout = BattlefieldLayout.getPlayerLayout(pos);
+            const zoneView = new ZoneView(this, zoneData, layout);
+            
+            this.zones.push(zoneView);
+            this.battlefield.add(zoneView);
+        });
+    }
+
+    private getOrMockZones(): Zone[] {
+        let zones = StoreSystem.getZones();
+        if (zones.length === 0) {
+            const players = [
+                StoreSystem.getPlayer(),
+                new Player('p2', 'Opponent 1'),
+                new Player('p3', 'Opponent 2'),
+                new Player('p4', 'Opponent 3')
+            ];
+            zones = players.map(p => new Zone(p, 'BASE'));
+        }
+        return zones;
     }
 
     public changeScene() {
