@@ -4,6 +4,9 @@ import Zone from "@/domain/Zone";
 import * as ExternalStoreApi from "@/api/LocalStorageApi";
 import GameCode from "@/domain/GameCode";
 import Card from "@/domain/Card";
+import Battlefield from "@/domain/Battlefield";
+import { DEFAULT_SKIN } from "@/domain/BattlefieldSkin";
+
 
 type PlayerHand = Card[];
 type PlayerZone = Zone;
@@ -16,6 +19,7 @@ type Store = {
   playerZone?: PlayerZone;
   zones?: Zones;
   currentGameCode?: GameCode;
+  battlefield?: Battlefield;
 }
 
 const store: Store = {};
@@ -88,6 +92,18 @@ function setZones(zones: Zones): void {
   store.zones = zones;
 }
 
+function getBattlefield(): Battlefield {
+  if (!store.battlefield) {
+    store.battlefield = new Battlefield(DEFAULT_SKIN);
+  }
+
+  return store.battlefield;
+}
+
+function setBattlefield(battlefield: Battlefield): void {
+  store.battlefield = battlefield;
+}
+
 const StoreSystem = {
   getGameCode,
   setGameCode,
@@ -99,7 +115,9 @@ const StoreSystem = {
   getPlayerZone,
   setPlayerZone,
   getZones,
-  setZones
+  setZones,
+  getBattlefield,
+  setBattlefield
 }
 
 export default StoreSystem;

@@ -30,7 +30,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.zoneSlot = zoneSlot;
 
     this.initializeView();
-    
+
     const quad = this.getProjectedQuad();
     const polygon = new Phaser.Geom.Polygon([
       quad.tl.x, quad.tl.y,
@@ -55,7 +55,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     const getCorner = (lx: number, ly: number) => {
         const bx = this.logicalBounds.boardX + lx * cos - ly * sin;
         const by = this.logicalBounds.boardY + lx * sin + ly * cos;
-        return ProjectionSystem.project(bx, by);
+        return ProjectionSystem.toPoint3D({ x: bx, y: by });
     };
 
     return {
@@ -68,12 +68,12 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
 
   private initializeView() {
     this.backgroundGraphics = this.scene.add.graphics();
-    
+
     this.drawBackground(0xffffff, 0x4488cc);
 
-    const centerProj = ProjectionSystem.project(this.logicalBounds.boardX, this.logicalBounds.boardY);
+    const centerProj = ProjectionSystem.toPoint3D({ x: this.logicalBounds.boardX, y: this.logicalBounds.boardY });
 
-    this.setDepth(centerProj.y);
+    this.setDepth(centerProj.z);
 
     this.mark = this.scene.add.image(centerProj.x, centerProj.y, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
     this.mark.setScale(4 * centerProj.scale);
@@ -114,8 +114,8 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
 
       this.cardView = cardView;
       this.add(this.cardView);
-      
-      const centerProj = ProjectionSystem.project(this.logicalBounds.boardX, this.logicalBounds.boardY);
+
+      const centerProj = ProjectionSystem.toPoint3D({ x: this.logicalBounds.boardX, y: this.logicalBounds.boardY });
 
       this.cardView.setPosition(centerProj.x, centerProj.y);
       this.cardView.setOriginalPosition(centerProj.x, centerProj.y);

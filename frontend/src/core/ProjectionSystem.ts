@@ -1,32 +1,36 @@
-class ProjectionSystem {
-    private static readonly FOCAL_LENGTH = 1800;
-    private static readonly DEPTH_OFFSET = 7000;
+import { Point2D, Corners2D } from "@/domain/Battlefield";
 
-    public static project(localX: number, localY: number): { x: number; y: number; scale: number } {
-        const depth = this.DEPTH_OFFSET - localY;
-        const scale = this.FOCAL_LENGTH / depth;
+type Point3D = { x: number, y: number, z: number, scale: number };
+type Corners3D = { tl: Point3D, tr: Point3D, bl: Point3D, br: Point3D }
 
-        return {
-            x: localX * scale,
-            y: localY * scale,
-            scale
-        };
-    }
+const FOCAL_LENGTH = 1800;
+const DEPTH_OFFSET = 7000;
 
-    public static projectQuad(
-        left: number, right: number, top: number, bottom: number
-    ): { tl: {x: number, y: number}; tr: {x: number, y: number}; bl: {x: number, y: number}; br: {x: number, y: number} } {
-        const pTL = this.project(left, top);
-        const pTR = this.project(right, top);
-        const pBL = this.project(left, bottom);
-        const pBR = this.project(right, bottom);
-        return {
-            tl: { x: pTL.x, y: pTL.y },
-            tr: { x: pTR.x, y: pTR.y },
-            bl: { x: pBL.x, y: pBL.y },
-            br: { x: pBR.x, y: pBR.y }
-        };
-    }
+function toCorners3D(corners: Corners2D): Corners3D {
+    return {
+        tl: toPoint3D(corners.tl),
+        tr: toPoint3D(corners.tr),
+        bl: toPoint3D(corners.bl),
+        br: toPoint3D(corners.br)
+    };
 }
 
+function toPoint3D(point: Point2D): Point3D {
+    const depth = DEPTH_OFFSET - point.y;
+    const scale = FOCAL_LENGTH / depth;
+
+    return {
+        x: point.x * scale,
+        y: point.y * scale,
+        z: depth,
+        scale: scale
+    };
+}
+
+const ProjectionSystem = {
+    toCorners3D,
+    toPoint3D
+}
+
+export type { Point3D, Corners3D };
 export default ProjectionSystem;

@@ -8,7 +8,7 @@ import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import BattlefieldLayout, { PlayerPosition } from '@/core/BattlefieldLayout';
 import CameraSystem from '@/core/CameraSystem';
-import BattlefieldFloor from '@/game/board/BattlefieldFloor';
+import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import Player from '@/domain/Player';
 import Zone from '@/domain/Zone';
 
@@ -67,10 +67,11 @@ class GameScene extends Scene {
         this.zones = [];
         this.battlefield.removeAll(true);
 
-        const floor = new BattlefieldFloor(this);
+        const battlefield = StoreSystem.getBattlefield();
+        const floor = new BattlefieldView(this, battlefield);
         this.battlefield.add(floor);
 
-        const positions = [
+        const sidePositions = [
             PlayerPosition.BOTTOM,
             PlayerPosition.TOP,
             PlayerPosition.LEFT,
@@ -78,32 +79,41 @@ class GameScene extends Scene {
         ];
 
         const zones = this.getOrMockZones();
+        let zoneIdx = 0;
 
-        positions.forEach((pos, index) => {
-            const zoneData = zones[index];
-            if (!zoneData) return;
+        sidePositions.forEach((side) => {
+            for (let i = 0; i < Constants.MAX_PLAYERS_PER_BATTLEFIELD_SIDE; i++) {
+                const zoneData = zones[zoneIdx++];
+                if (!zoneData) continue;
 
-            const layout = BattlefieldLayout.getPlayerLayout(pos);
-            const zoneView = new ZoneView(this, zoneData, layout);
-            
-            this.zones.push(zoneView);
-            this.battlefield.add(zoneView);
+                const layout = BattlefieldLayout.getPlayerLayout(side, i);
+                const zoneView = new ZoneView(this, zoneData, layout);
+                
+                this.zones.push(zoneView);
+                this.battlefield.add(zoneView);
+            }
         });
+
     }
 
     private getOrMockZones(): Zone[] {
         let zones = StoreSystem.getZones();
-        if (zones.length === 0) {
-            const players = [
-                StoreSystem.getPlayer(),
-                new Player('p2', 'Opponent 1'),
-                new Player('p3', 'Opponent 2'),
-                new Player('p4', 'Opponent 3')
-            ];
+        const totalNeeded = 4 * Constants.MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
+
+        if (zones.length < totalNeeded) {
+            const players: Player[] = [];
+            // First player is the user
+            players.push(StoreSystem.getPlayer());
+            
+            // Add opponents
+            for (let i = 1; i < totalNeeded; i++) {
+                players.push(new Player(`p${i+1}`, `Opponent ${i}`));
+            }
             zones = players.map(p => new Zone(p, 'BASE'));
         }
         return zones;
     }
+
 
     public changeScene() {
         this.scene.start('GameOver');
