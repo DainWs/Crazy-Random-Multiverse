@@ -55,24 +55,7 @@ class Battlefield {
     const maxPlayers = MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
 
     const linearOffset = (zoneIndex - (maxPlayers - 1) / 2) * PLAYER_SPACING;
-    
-    // Apply progressive spacing for Y-axis (LEFT and RIGHT sides)
-    let progressiveOffset = linearOffset;
-    if ((zoneSide === BattlefieldSide.LEFT || zoneSide === BattlefieldSide.RIGHT) && maxPlayers > 2) {
-      const totalSpace = (maxPlayers - 1) * PLAYER_SPACING;
-      const minGap = 0.95 * PLAYER_SPACING;
-      const d = 2 * (PLAYER_SPACING - minGap) / (maxPlayers - 2);
-      
-      const progressiveIndex = zoneSide === BattlefieldSide.RIGHT ? (maxPlayers - 1 - zoneIndex) : zoneIndex;
-      
-      let currentOffset = -totalSpace / 2;
-      for (let i = 0; i < progressiveIndex; i++) {
-        const gapIndex = i;
-        const gap = minGap + gapIndex * d;
-        currentOffset += gap;
-      }
-      progressiveOffset = currentOffset;
-    }
+    const progressiveOffset = this.calculateProgressiveOffset(zoneSide, zoneIndex);
 
     const halfWidth = this.sideSize / 2;
     const margin = this.skin.gridStep * 2;
@@ -99,6 +82,30 @@ class Battlefield {
     });
 
     return positionMap.get(zoneSide) || { x: 0, y: 0 };
+  }
+
+  
+  private calculateProgressiveOffset(zoneSide: BattlefieldSide, zoneIndex: number): number {
+    const maxPlayers = MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
+    const linearOffset = (zoneIndex - (maxPlayers - 1) / 2) * PLAYER_SPACING;
+
+    if (maxPlayers <= 2) return linearOffset;
+    if (zoneSide !== BattlefieldSide.LEFT && zoneSide !== BattlefieldSide.RIGHT) return linearOffset;
+
+    const totalSpace = (maxPlayers - 1) * PLAYER_SPACING;
+    const minGap = 0.95 * PLAYER_SPACING;
+    const distance = 2 * (PLAYER_SPACING - minGap) / (maxPlayers - 2);
+    
+    let progressiveIndex = zoneIndex;
+    if (zoneSide === BattlefieldSide.RIGHT) {
+      progressiveIndex = maxPlayers - 1 - zoneIndex;
+    }
+
+    let currentOffset = -totalSpace / 2;
+    for (let i = 0; i < progressiveIndex; i++) {
+      currentOffset += minGap + i * distance;
+    }
+    return currentOffset;
   }
 }
 
