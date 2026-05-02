@@ -1,10 +1,19 @@
-import { Point2D, Corners2D } from "@/domain/Battlefield";
-
-type Point3D = { x: number, y: number, z: number, scale: number };
-type Corners3D = { tl: Point3D, tr: Point3D, bl: Point3D, br: Point3D }
+import { Point2D, Corners2D, Corners3D, Point3D } from "@/domain/Geometry";
 
 const FOCAL_LENGTH = 1800;
 const DEPTH_OFFSET = 7000;
+
+
+function createCorners2D(width: number, height: number): Corners2D {
+    const hw = width / 2;
+    const hh = height / 2;
+    return {
+        tl: { x: -hw, y: -hh }, // Top-left
+        tr: { x: hw, y: -hh }, // Top-right
+        bl: { x: -hw, y: hh }, // Bottom-left
+        br: { x: hw, y: hh } // Bottom-right
+    };
+}
 
 function toCorners3D(corners: Corners2D): Corners3D {
     return {
@@ -29,7 +38,8 @@ function toPoint3D(point: Point2D): Point3D {
 
 const ProjectionSystem = {
     toCorners3D,
-    toPoint3D
+    toPoint3D,
+    createCorners2D
 }
 
 export type { Point3D, Corners3D };

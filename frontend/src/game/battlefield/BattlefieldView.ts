@@ -10,7 +10,6 @@ class BattlefieldView extends Phaser.GameObjects.Graphics {
         super(scene);
         this.battlefield = battlefield;
         this.battlefieldViewStrategy = dispatchBattlefieldViewStrategy(battlefield);
-        this.setPosition(0, -200);
         this.setDepth(-10000);
         this.render();
         scene.add.existing(this);

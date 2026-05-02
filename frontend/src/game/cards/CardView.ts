@@ -7,10 +7,12 @@ import CardStackHelper from "@/game/cards/CardStackHelper";
 import { CardTooltipView } from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import CardAnimator from "@/game/cards/CardAnimator";
+import { Size2D } from "@/domain/Geometry";
 
 class CardView extends Phaser.GameObjects.Container {
   public static readonly WIDTH: number = 200;
   public static readonly HEIGHT: number = 300;
+  public static readonly SIZE: Size2D = { width: CardView.WIDTH, height: CardView.HEIGHT };
 
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;

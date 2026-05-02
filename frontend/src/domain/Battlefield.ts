@@ -1,13 +1,24 @@
 import BattlefieldSkin from "@/domain/BattlefieldSkin";
+import { Corners2D, Point2D, Rotation } from "@/domain/Geometry";
 
-type Point2D = { x: number, y: number };
-type Corners2D = { tl: Point2D, tr: Point2D, bl: Point2D, br: Point2D }
-
-const MAX_PLAYERS_PER_BATTLEFIELD_SIDE = 4;
+const MAX_PLAYERS_PER_BATTLEFIELD_SIDE = 3;
 const PLAYER_SPACING = 900;
 const EXTRA_BOARD_SPACE_PER_PLAYERS = (MAX_PLAYERS_PER_BATTLEFIELD_SIDE - 1) * PLAYER_SPACING;
 
-const BASE_BOARD_SIDE = 2400;
+const BASE_BOARD_SIDE = 3200;
+
+enum BattlefieldSide {
+  BOTTOM = 'bottom',
+  TOP = 'top',
+  LEFT = 'left',
+  RIGHT = 'right'
+}
+
+const rotationMap = new Map<BattlefieldSide, Rotation>();
+rotationMap.set(BattlefieldSide.BOTTOM, 0);
+rotationMap.set(BattlefieldSide.TOP, 180);
+rotationMap.set(BattlefieldSide.LEFT, 90);
+rotationMap.set(BattlefieldSide.RIGHT, -90);
 
 class Battlefield {
   public readonly sideSize: number;
@@ -27,15 +38,69 @@ class Battlefield {
 
   public getCorners(): Corners2D {
     const w = this.sideSize / 2;
-    const thickness = this.skin.thickness;
     return {
-      tl: { x: -w + (thickness * 2), y: -w }, // Top-left
-      tr: { x: w - (thickness * 2), y: -w }, // Top-right
-      bl: { x: -w + (thickness + 10), y: w }, // Bottom-left
-      br: { x: w - (thickness + 10), y: w } // Bottom-right
+      tl: { x: -w, y: -w }, // Top-left
+      tr: { x:  w, y: -w }, // Top-right
+      bl: { x: -w, y:  w }, // Bottom-left
+      br: { x:  w, y:  w } // Bottom-right
     };
+  }
+
+  public getRotationForSide(side: BattlefieldSide): Rotation {
+    return rotationMap.get(side) || 0;
+  }
+
+  public getPlayerZonePosition(zoneSide: BattlefieldSide, zoneIndex: number): Point2D {
+    const playerZoneHalfHeight = 470;
+    const maxPlayers = MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
+
+    const linearOffset = (zoneIndex - (maxPlayers - 1) / 2) * PLAYER_SPACING;
+    
+    // Apply progressive spacing for Y-axis (LEFT and RIGHT sides)
+    let progressiveOffset = linearOffset;
+    if ((zoneSide === BattlefieldSide.LEFT || zoneSide === BattlefieldSide.RIGHT) && maxPlayers > 2) {
+      const totalSpace = (maxPlayers - 1) * PLAYER_SPACING;
+      const minGap = 0.95 * PLAYER_SPACING;
+      const d = 2 * (PLAYER_SPACING - minGap) / (maxPlayers - 2);
+      
+      const progressiveIndex = zoneSide === BattlefieldSide.RIGHT ? (maxPlayers - 1 - zoneIndex) : zoneIndex;
+      
+      let currentOffset = -totalSpace / 2;
+      for (let i = 0; i < progressiveIndex; i++) {
+        const gapIndex = i;
+        const gap = minGap + gapIndex * d;
+        currentOffset += gap;
+      }
+      progressiveOffset = currentOffset;
+    }
+
+    const halfWidth = this.sideSize / 2;
+    const margin = this.skin.gridStep * 2;
+  
+    const positionMap = new Map<BattlefieldSide, Point2D>();
+    positionMap.set(BattlefieldSide.BOTTOM, { 
+      x: linearOffset, 
+      y: halfWidth - playerZoneHalfHeight - margin
+    });
+    
+    positionMap.set(BattlefieldSide.TOP, { 
+      x: -linearOffset, 
+      y: -halfWidth + playerZoneHalfHeight + margin
+    });
+    
+    positionMap.set(BattlefieldSide.LEFT, { 
+      x: -halfWidth + playerZoneHalfHeight + margin, 
+      y: progressiveOffset
+    });
+    
+    positionMap.set(BattlefieldSide.RIGHT, { 
+      x: halfWidth - playerZoneHalfHeight - margin, 
+      y: progressiveOffset
+    });
+
+    return positionMap.get(zoneSide) || { x: 0, y: 0 };
   }
 }
 
-export type { Point2D, Corners2D };
+export { BattlefieldSide, MAX_PLAYERS_PER_BATTLEFIELD_SIDE }
 export default Battlefield;

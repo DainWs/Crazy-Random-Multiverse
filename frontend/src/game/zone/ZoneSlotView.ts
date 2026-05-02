@@ -4,8 +4,8 @@ import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
-import { SlotLogicalBounds } from "@/game/zone/ZoneView";
-import ProjectionSystem from "@/core/ProjectionSystem";
+import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
+import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
@@ -13,99 +13,61 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   private cardView: CardView | null;
 
   public readonly zoneSlot: ZoneSlot;
-  private logicalBounds: SlotLogicalBounds;
+  public readonly centerPoint: Point3D;
+  public readonly corners: Corners3D;
+  public readonly slotRotation: Rotation;
 
   constructor(
     scene: Phaser.Scene, 
-    bounds: SlotLogicalBounds,
+    orientedBoundingBox: OrientedBoundingBox3D,
     zoneSlot: ZoneSlot
   ) {
     super(scene, 0, 0);
-    this.logicalBounds = bounds;
     this.scale = 1;
-    this.width = bounds.width;
-    this.height = bounds.height;
+    this.width = orientedBoundingBox.width;
+    this.height = orientedBoundingBox.height;
+    this.centerPoint = orientedBoundingBox;
+    this.corners = orientedBoundingBox.corners;
+    this.slotRotation = orientedBoundingBox.rotation;
 
     this.cardView = null;
     this.zoneSlot = zoneSlot;
 
     this.initializeView();
 
-    const quad = this.getProjectedQuad();
     const polygon = new Phaser.Geom.Polygon([
-      quad.tl.x, quad.tl.y,
-      quad.tr.x, quad.tr.y,
-      quad.br.x, quad.br.y,
-      quad.bl.x, quad.bl.y
+      this.corners.tl.x, this.corners.tl.y,
+      this.corners.tr.x, this.corners.tr.y,
+      this.corners.br.x, this.corners.br.y,
+      this.corners.bl.x, this.corners.bl.y
     ]);
     this.setInteractive(polygon, Phaser.Geom.Polygon.Contains, true);
-
+/*
+    const graphics = this.scene.add.graphics();
+    graphics.clear();
+    graphics.fillStyle(0xffffff, 0.05);
+    graphics.lineStyle(1, 0x4488cc, 0.5);
+    graphics.beginPath();
+    graphics.moveTo(0, 0);
+    graphics.lineTo(this.width, 0);
+    graphics.lineTo(this.width, this.height);
+    graphics.lineTo(0, this.height);
+    graphics.closePath();
+    graphics.fillPath();
+    graphics.strokePath();
+    this.add(graphics);
+*/
     scene.add.existing(this)
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
-  private getProjectedQuad() {
-    const rad = Phaser.Math.DegToRad(this.logicalBounds.rotation);
-    const cos = Math.cos(rad);
-    const sin = Math.sin(rad);
-
-    const hw = this.logicalBounds.width / 2;
-    const hh = this.logicalBounds.height / 2;
-
-    const getCorner = (lx: number, ly: number) => {
-        const bx = this.logicalBounds.boardX + lx * cos - ly * sin;
-        const by = this.logicalBounds.boardY + lx * sin + ly * cos;
-        return ProjectionSystem.toPoint3D({ x: bx, y: by });
-    };
-
-    return {
-        tl: getCorner(-hw, -hh),
-        tr: getCorner(hw, -hh),
-        br: getCorner(hw, hh),
-        bl: getCorner(-hw, hh)
-    };
-  }
-
   private initializeView() {
     this.backgroundGraphics = this.scene.add.graphics();
+    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
 
-    this.drawBackground(0xffffff, 0x4488cc);
-
-    const centerProj = ProjectionSystem.toPoint3D({ x: this.logicalBounds.boardX, y: this.logicalBounds.boardY });
-
-    this.setDepth(centerProj.z);
-
-    this.mark = this.scene.add.image(centerProj.x, centerProj.y, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
-    this.mark.setScale(4 * centerProj.scale);
-    this.mark.setOrigin(0.5, 0.5);
-    this.mark.setAlpha(0.8);
-    this.mark.setAngle(this.logicalBounds.rotation);
+    ZoneSlotViewRenderer.render(this.backgroundGraphics, this.mark, this);
 
     this.add([ this.backgroundGraphics, this.mark ]);
-  }
-
-  private drawBackground(color: number, borderColor?: number) {
-    this.backgroundGraphics.clear();
-    const quad = this.getProjectedQuad();
-    
-    const alpha = (color === 0xffffff) ? 0.45 : 0.35;
-    
-    this.backgroundGraphics.fillStyle(color, alpha);
-    if (borderColor) {
-        this.backgroundGraphics.lineStyle(2, borderColor, 0.8);
-    } else {
-        this.backgroundGraphics.lineStyle(2, 0x4488cc, 0.8);
-    }
-    
-    this.backgroundGraphics.beginPath();
-    this.backgroundGraphics.moveTo(quad.tl.x, quad.tl.y);
-    this.backgroundGraphics.lineTo(quad.tr.x, quad.tr.y);
-    this.backgroundGraphics.lineTo(quad.br.x, quad.br.y);
-    this.backgroundGraphics.lineTo(quad.bl.x, quad.bl.y);
-    this.backgroundGraphics.closePath();
-    
-    this.backgroundGraphics.fillPath();
-    this.backgroundGraphics.strokePath();
   }
 
   public setCard(cardView: CardView | null) {
@@ -115,12 +77,10 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
       this.cardView = cardView;
       this.add(this.cardView);
 
-      const centerProj = ProjectionSystem.toPoint3D({ x: this.logicalBounds.boardX, y: this.logicalBounds.boardY });
-
-      this.cardView.setPosition(centerProj.x, centerProj.y);
-      this.cardView.setOriginalPosition(centerProj.x, centerProj.y);
-      this.cardView.setScale(centerProj.scale);
-      this.cardView.setAngle(this.logicalBounds.rotation); 
+      this.cardView.setPosition(0, 0);
+      this.cardView.setOriginalPosition(0, 0);
+      this.cardView.setScale(this.centerPoint.scale);
+      this.cardView.setAngle(this.slotRotation); 
     } else {
       this.zoneSlot.combatant = null;
       if (this.cardView) {
@@ -135,7 +95,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   }
 
   public setBackgroundColor(color: number, borderColor?: number): void {
-    this.drawBackground(color, borderColor);
+    ZoneSlotViewRenderer.renderBackground(this.backgroundGraphics, this.corners, color, borderColor);
   }
 
   public applyAnimation(animation: ZoneSlotAnimations) {

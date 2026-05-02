@@ -6,11 +6,12 @@ import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
-import BattlefieldLayout, { PlayerPosition } from '@/core/BattlefieldLayout';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import Player from '@/domain/Player';
 import Zone from '@/domain/Zone';
+import CardView from '@/game/cards/CardView';
+import { BattlefieldSide, MAX_PLAYERS_PER_BATTLEFIELD_SIDE } from '@/domain/Battlefield';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -20,7 +21,7 @@ class GameScene extends Scene {
     public readonly cardController: CardController;
     public readonly handController: HandController;
 
-    private battlefield: Phaser.GameObjects.Container;
+    private battlefieldContainer: Phaser.GameObjects.Container;
     private cameraSystem: CameraSystem;
     public zones: ZoneView[];
 
@@ -45,7 +46,7 @@ class GameScene extends Scene {
         
         const { width, height } = this.scale;
 
-        this.battlefield = this.add.container(width / 2, height * 0.42);
+        this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
         
         this.cameraSystem = new CameraSystem(this);
         this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
@@ -65,32 +66,35 @@ class GameScene extends Scene {
 
     private renderZones() {
         this.zones = [];
-        this.battlefield.removeAll(true);
+        this.battlefieldContainer.removeAll(true);
 
         const battlefield = StoreSystem.getBattlefield();
-        const floor = new BattlefieldView(this, battlefield);
-        this.battlefield.add(floor);
-
-        const sidePositions = [
-            PlayerPosition.BOTTOM,
-            PlayerPosition.TOP,
-            PlayerPosition.LEFT,
-            PlayerPosition.RIGHT
+        const battlefieldView = new BattlefieldView(this, battlefield);
+        this.battlefieldContainer.add(battlefieldView);
+        
+        const battlefieldSides = [
+            BattlefieldSide.BOTTOM,
+            BattlefieldSide.TOP,
+            BattlefieldSide.LEFT,
+            BattlefieldSide.RIGHT
         ];
 
         const zones = this.getOrMockZones();
         let zoneIdx = 0;
 
-        sidePositions.forEach((side) => {
-            for (let i = 0; i < Constants.MAX_PLAYERS_PER_BATTLEFIELD_SIDE; i++) {
+        battlefieldSides.forEach((side) => {
+            for (let i = 0; i < MAX_PLAYERS_PER_BATTLEFIELD_SIDE; i++) {
                 const zoneData = zones[zoneIdx++];
                 if (!zoneData) continue;
 
-                const layout = BattlefieldLayout.getPlayerLayout(side, i);
-                const zoneView = new ZoneView(this, zoneData, layout);
-                
+                const zoneView = new ZoneView(this, zoneData, {
+                    position: battlefield.getPlayerZonePosition(side, i),
+                    rotation: battlefield.getRotationForSide(side),
+                    slotSize: CardView.SIZE
+                });
+
                 this.zones.push(zoneView);
-                this.battlefield.add(zoneView);
+                this.battlefieldContainer.add(zoneView);
             }
         });
 
@@ -98,7 +102,7 @@ class GameScene extends Scene {
 
     private getOrMockZones(): Zone[] {
         let zones = StoreSystem.getZones();
-        const totalNeeded = 4 * Constants.MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
+        const totalNeeded = 4 * MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
 
         if (zones.length < totalNeeded) {
             const players: Player[] = [];

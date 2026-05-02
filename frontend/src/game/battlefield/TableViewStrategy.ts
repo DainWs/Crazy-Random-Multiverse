@@ -1,12 +1,10 @@
-import ProjectionSystem, { Corners3D, Point3D } from "@/core/ProjectionSystem";
-import Battlefield, { Corners2D, Point2D } from "@/domain/Battlefield";
+import Battlefield from "@/domain/Battlefield";
 import BattlefieldSkin from "@/domain/BattlefieldSkin";
 import BattlefieldViewStrategy from "@/game/battlefield/BattlefieldViewStrategy";
+import ProjectionSystem from "@/core/ProjectionSystem";
+import { Corner, Corners, Point } from "@/domain/Geometry";
 
 type Graphics = Phaser.GameObjects.Graphics
-type Corner = 'TL' | 'TR' | 'BL' | 'BR';
-type Corners = Corners2D | Corners3D;
-type Point = Point2D | Point3D;
 
 const TABLE_LEG_HEIGHT = 300;
 
