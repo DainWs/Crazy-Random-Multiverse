@@ -127,7 +127,6 @@ class HandView extends Phaser.GameObjects.Container {
   public onHoverCard(hoverCard: CardView) {
     if (!this.cardListenersEnabled) return;
     const hoverIndex = this.cards.indexOf(hoverCard);
-    console.log("onHoverCard", hoverIndex);
 
     if (hoverIndex != -1 && (this.hoverIndex === NONE_CARD_IS_HOVER || this.hoverIndex !== hoverIndex)) {
       this.hoverIndex = hoverIndex;
