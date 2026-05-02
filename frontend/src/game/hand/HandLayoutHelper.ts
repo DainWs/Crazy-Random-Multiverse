@@ -31,9 +31,12 @@ class HandLayoutHelper {
   }
 
   public setBoundPositionTo(camera: Camera2D) {
-    const paddingX = -100;
-    this.handBounds.x = camera.x + paddingX + (this.handBounds.width / 2);
-    this.handBounds.y = (camera.y + camera.height) + 180;
+    const marginX = 0;
+    const marginBottom = 0;
+    
+    // Position the hand exactly at the bottom-left corner
+    this.handBounds.x = marginX + (this.handBounds.width / 2);
+    this.handBounds.y = camera.height - (CardView.HEIGHT / 2) - marginBottom;
   }
 
   public calculateSlotPositionFromIndex(

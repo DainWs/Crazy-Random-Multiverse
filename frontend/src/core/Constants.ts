@@ -9,7 +9,3 @@ export const DRAG_DISTANCE_THRESHOLD = 10;
  * to consider the action as a drag start instead of a click.
  */
 export const DRAG_TIME_THRESHOLD = 100;
-
-
-// ── Camera ──────────────────────────────────────────────────
-export const CAMERA_DEFAULT_ZOOM = 0.55;

@@ -126,6 +126,10 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
 
+        if (this.cameraSystem) {
+            this.cameraSystem.update(delta);
+        }
+
         const playerZone = StoreSystem.getPlayerZone();
         if (!playerZone.isAlive()) {
             this.scene.start('GameOver');

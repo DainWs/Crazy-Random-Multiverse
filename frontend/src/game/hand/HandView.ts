@@ -42,6 +42,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.scale = 1
     this.depth = 499;
     this.cardsDepth = this.depth + 1;
+    this.setScrollFactor(0);
 
     this.initializeView();
     this.setInteractive(new Phaser.Geom.Rectangle(0, 0, this.width, this.height), Phaser.Geom.Rectangle.Contains);
@@ -80,6 +81,7 @@ class HandView extends Phaser.GameObjects.Container {
       const incomingCard = incomingCards[i];
 
       const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(i, newCardLength);
+      incomingCard.setScrollFactor(0);
       incomingCard.setOriginalPosition(slotPosition.x, slotPosition.y);
       incomingCard.setOriginalDepth(this.cardsDepth + i);
 
@@ -94,6 +96,7 @@ class HandView extends Phaser.GameObjects.Container {
   public removeCard(card: CardView) {
     if (!this.cards.includes(card)) return;
     this.interactionManager.deattachListeners(this, card);
+    card.setScrollFactor(1);
 
     const index = this.cards.indexOf(card);
     if (this.hoverIndex == index) {
