@@ -4,6 +4,7 @@ import CardView from "@/game/cards/CardView";
 import HandAnimator from "@/game/hand/HandAnimator";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";
 import HandLayoutHelper, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
+import { GameScene } from "@/scenes/Game";
 
 interface HandViewOptions {
   spaceBetweenCards?: SpaceBetweenCardOptions;
@@ -28,49 +29,47 @@ class HandView extends Phaser.GameObjects.Container {
   private cardListenersEnabled: boolean;
 
   constructor(
-    scene: Phaser.Scene,
+    scene: GameScene,
     options: Partial<HandViewOptions> = defaultOptions
   ) {
     super(scene);
     this.options = { ...defaultOptions, ...options };
     this.interactionManager = new HandInteractionManager();
-    this.layoutHelper = new HandLayoutHelper(this.options.maxCards, this.options.spaceBetweenCards);
+    this.layoutHelper = new HandLayoutHelper(scene.cameraSystem, this.options.maxCards, this.options.spaceBetweenCards);
     this.animator = new HandAnimator();
-     this.hoverIndex = NONE_CARD_IS_HOVER;
+    this.hoverIndex = NONE_CARD_IS_HOVER;
     this.cards = [];
     this.cardListenersEnabled = true;
     this.scale = 1
     this.depth = 499;
     this.cardsDepth = this.depth + 1;
-    this.setScrollFactor(0);
-
+    
     this.initializeView();
-    this.setInteractive(new Phaser.Geom.Rectangle(0, 0, this.width, this.height), Phaser.Geom.Rectangle.Contains);
+    this.setScrollFactor(0);
+    this.setInteractive(this.layoutHelper.getInteractiveBounds(), Phaser.Geom.Rectangle.Contains);
     this.scene.add.existing(this);
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
   private initializeView() {
-    const camera = this.scene.cameras.main;
-    camera.on(Phaser.Cameras.Scene2D.Events.FOLLOW_UPDATE, this.updatePositionFromCamera);
-    this.updatePositionFromCamera();
+    this.scene.cameras.main.on(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, this.updateBounds, this);
+    this.updateBounds();
 
     if (showDebugBoxes) {
-      this.scene.add.rectangle(this.x, this.y, this.width, this.height, 0xFFFF00)
+      const debugBox = this.scene.add.rectangle(0, 0, this.width, this.height, 0xFFFF00)
+      debugBox.setDepth(- 10);
+      this.add(debugBox);
     }
   }
 
-  private updatePositionFromCamera() {
-    const camera = this.scene.cameras.main;
-    this.layoutHelper.setBoundPositionTo(camera);
-    this.x = this.layoutHelper.handBounds.x;
-    this.y = this.layoutHelper.handBounds.y;
-    this.width = this.layoutHelper.handBounds.width;
-    this.height = this.layoutHelper.handBounds.height;
-    this.setSize(this.width, this.height);
+  private updateBounds() {
+    this.layoutHelper.updateBounds();
+    const { x, y, width, height } = this.layoutHelper.handBounds;
+    this.setPosition(x, y);
+    this.setSize(width, height);
     
     if (this.input && this.input.hitArea) {
-      (this.input.hitArea as Phaser.Geom.Rectangle).setTo(0, 0, this.width, this.height);
+      (this.input.hitArea as Phaser.Geom.Rectangle).setTo(0, 0, width, height);
     }
   }
 
@@ -87,10 +86,17 @@ class HandView extends Phaser.GameObjects.Container {
 
       this.interactionManager.attachListeners(this, incomingCard);
       this.cards[i] = incomingCard;
+      this.add(incomingCard);
     }
 
+    // From TOP of camera
+    const fromPoint = {
+      x: 0, 
+      y: -(this.y + this.height + CardView.HEIGHT) 
+    };
+
     const onCompleteAnimation = () => this.updateCards();
-    this.animator.animateIncomingCards(this.cards, incomingCards, onCompleteAnimation);
+    this.animator.animateIncomingCards(fromPoint, this.cards, incomingCards, onCompleteAnimation);
   }
 
   public removeCard(card: CardView) {
@@ -104,6 +110,7 @@ class HandView extends Phaser.GameObjects.Container {
     }
 
     this.cards.splice(index, 1);
+    this.remove(card, false);
     this.updateCards();
   }
 
@@ -172,11 +179,6 @@ class HandView extends Phaser.GameObjects.Container {
     this.cardListenersEnabled = false;
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();
-  }
-
-  protected preDestroy(): void {
-    super.preDestroy();
-    this.scene.cameras.main.off(Phaser.Cameras.Scene2D.Events.FOLLOW_UPDATE, this.updatePositionFromCamera);
   }
 }
 

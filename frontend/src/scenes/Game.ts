@@ -18,17 +18,19 @@ class GameScene extends Scene {
     public background: Phaser.GameObjects.Image;
 
     public readonly actionSystem: ActionSystem;
+    public readonly cameraSystem: CameraSystem;
     public readonly cardController: CardController;
     public readonly handController: HandController;
 
     private battlefieldContainer: Phaser.GameObjects.Container;
-    private cameraSystem: CameraSystem;
     public zones: ZoneView[];
 
     public constructor() {
         super('Game');
 
         this.actionSystem = new ActionSystem('game-code');
+        this.cameraSystem = new CameraSystem();
+
         this.cardController = new CardController(this);
 
         const cardViewFactory = new CardViewFactory(this.cardController);
@@ -36,6 +38,12 @@ class GameScene extends Scene {
     }
 
     public init() {
+        const { width, height } = this.scale;
+        this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
+
+        this.cameraSystem.initialize(this);
+        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
+
         this.handController.init();
     }
 
@@ -43,13 +51,6 @@ class GameScene extends Scene {
         this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
-        
-        const { width, height } = this.scale;
-
-        this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
-        
-        this.cameraSystem = new CameraSystem(this);
-        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
 
         this.renderAll();
     }
@@ -125,10 +126,6 @@ class GameScene extends Scene {
 
     override update(time: number, delta: number): void {
         super.update(time, delta);
-
-        if (this.cameraSystem) {
-            this.cameraSystem.update(delta);
-        }
 
         const playerZone = StoreSystem.getPlayerZone();
         if (!playerZone.isAlive()) {

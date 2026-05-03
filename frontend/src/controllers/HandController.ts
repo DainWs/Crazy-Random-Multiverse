@@ -2,14 +2,15 @@ import CardViewFactory from "@/controllers/CardViewFactory";
 import Card from "@/domain/Card";
 import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
+import { GameScene } from "@/scenes/Game";
 
 class HandController {
-  private readonly scene: Phaser.Scene;
+  private readonly scene: GameScene;
   private readonly cardViewFactory: CardViewFactory;
 
   private handView: HandView;
 
-  public constructor(scene: Phaser.Scene, cardViewFactory: CardViewFactory) {
+  public constructor(scene: GameScene, cardViewFactory: CardViewFactory) {
     this.scene = scene;
     this.cardViewFactory = cardViewFactory;
   }

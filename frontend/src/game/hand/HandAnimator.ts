@@ -1,3 +1,4 @@
+import { Point2D } from "@/domain/Geometry";
 import { MOVE_TO_DURATION } from "@/game/cards/CardTweens";
 import CardView from "@/game/cards/CardView";
 
@@ -5,13 +6,14 @@ type OnCompleteCallback = () => void;
 const NoneCallback = () => {};
 
 class HandAnimator {
-  public animateIncomingCards(handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
+  public animateIncomingCards(fromPoint: Point2D, handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
     this.setInteractiveForCardViews(handCards, false);
 
     const tweenDelay = 200;
     for (let i = 0; i < incomingCards.length; i++) {
       const cardView = incomingCards[i];
       const originalPosition = cardView.getOriginalPosition();
+      cardView.setPosition(fromPoint.x, fromPoint.y);
       cardView.applyTween('move_to_hand', originalPosition.x, originalPosition.y, tweenDelay * i);
     }
 

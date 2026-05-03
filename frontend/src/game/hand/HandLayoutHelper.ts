@@ -1,6 +1,6 @@
+import CameraSystem from "@/core/CameraSystem";
+import { Point2D } from "@/domain/Geometry";
 import CardView from "@/game/cards/CardView";
-
-type Camera2D = Phaser.Cameras.Scene2D.Camera;
 
 type SpaceBetweenCardOptions = {
   min: number;
@@ -11,14 +11,19 @@ type SpaceBetweenCardOptions = {
 const defaultOptions: SpaceBetweenCardOptions = {
   min: 20,
   max: 250,
-  decayFactor: 0.2
+  decayFactor: 0.2,
 };
+
+const MARGIN_X = 0;
+const MARGIN_Y = 0;
 
 class HandLayoutHelper {
   public readonly handBounds: Phaser.Geom.Rectangle;
   public readonly options: SpaceBetweenCardOptions;
+  private readonly cameraSystem: CameraSystem;
 
-  public constructor(maxCards: number, options?: Partial<SpaceBetweenCardOptions>) {
+  public constructor(cameraSystem: CameraSystem, maxCards: number, options?: Partial<SpaceBetweenCardOptions>) {
+    this.cameraSystem = cameraSystem;
     this.options = { ...defaultOptions, ...options };
     this.handBounds = this.createBounds(maxCards);
   }
@@ -26,17 +31,29 @@ class HandLayoutHelper {
   private createBounds(maxCards: number): Phaser.Geom.Rectangle {
     const spaceBetweenCards = this.calculateSpaceBetweenCards(maxCards);
     const totalWidth = (maxCards - 1) * spaceBetweenCards + CardView.WIDTH;
-    const totalHeight = CardView.HEIGHT * 1.30;
-    return new Phaser.Geom.Rectangle(0, 0, totalWidth, totalHeight);
+    const totalHeight = CardView.HEIGHT;
+    const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
+
+    return new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight);
   }
 
-  public setBoundPositionTo(camera: Camera2D) {
-    const marginX = 0;
-    const marginBottom = 0;
-    
+  public updateBounds() {
+    const totalWidth = this.handBounds.width;
+    const totalHeight = this.handBounds.height;
+
+    const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
+    this.handBounds.setPosition(x, y);
+  }
+
+  private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {
+    const halfWidth = totalWidth / 2;
+    const halfHeight = totalHeight / 2;
     // Position the hand exactly at the bottom-left corner
-    this.handBounds.x = marginX + (this.handBounds.width / 2);
-    this.handBounds.y = camera.height - (CardView.HEIGHT / 2) - marginBottom;
+    const cameraCorners = this.cameraSystem.getCameraCorners();
+    const x = cameraCorners.bl.x + (MARGIN_X + halfWidth);
+    const y = cameraCorners.bl.y - (MARGIN_Y + halfHeight);
+    console.log("cornerbl", cameraCorners.bl.x, cameraCorners.bl.y);
+    return { x, y };
   }
 
   public calculateSlotPositionFromIndex(
@@ -46,9 +63,9 @@ class HandLayoutHelper {
     const spaceBetweenCards = this.calculateSpaceBetweenCards(cardLength);
     const xOffset = CardView.WIDTH / 2 + (index * spaceBetweenCards);
     
-    const x = (this.handBounds.x - this.handBounds.width / 2) + xOffset;
+    const x = xOffset - (this.handBounds.width / 2);
     const y = this.handBounds.y;
-    return { x, y };
+    return { x, y: 0 };
   }
   
   public calculateSpaceBetweenCards(cardLength: number) {
@@ -61,7 +78,10 @@ class HandLayoutHelper {
   public calculateXOffsetForSlicedCard(cardLength: number) {
     return CardView.WIDTH - this.calculateSpaceBetweenCards(cardLength);
   }
-
+ 
+  public getInteractiveBounds(): Phaser.Geom.Rectangle {
+    return new Phaser.Geom.Rectangle(0, 0, this.handBounds.width, this.handBounds.height);
+  }
 }
 
 export type { SpaceBetweenCardOptions}
