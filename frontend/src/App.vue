@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { AUTO } from 'phaser';
+import { AUTO, Scale } from 'phaser';
 import { Boot } from '@/scenes/Boot';
 import { GameOver } from '@/scenes/GameOver';
 import { GameLoad } from '@/scenes/GameLoad';
@@ -11,8 +11,11 @@ import useAppController from '@/AppController';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    scale: {
+        mode: Scale.RESIZE,
+        width: window.innerWidth,
+        height: window.innerHeight
+    },
     parent: 'game-container',
     pixelArt: true,
     transparent: true,
@@ -44,7 +47,8 @@ defineExpose({ scene, game });
 </template>
 
 <style>
-html, body {
+html,
+body {
     background-image: url(assets/background_gold.png);
     background-position: center center;
 }
