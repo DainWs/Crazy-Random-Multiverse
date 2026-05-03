@@ -13,7 +13,7 @@ class CombatantViewStrategy implements CardViewStrategy {
   }
 
   public createTooltip(scene: Phaser.Scene, cardView: CardView) {
-    const tooltip = new CardTooltipView(scene, cardView.width / 2 + 10, 0);
+    const tooltip = new CardTooltipView(scene);
     tooltip.setNameText(cardView.card.name);
     tooltip.setDescriptionText(`${cardView.card.rarity}\n\n${cardView.card.description}`);
     return tooltip;

@@ -1,6 +1,7 @@
 import Card from "@/domain/Card";
 import CardView from "@/game/cards/CardView";
 
+// TODO Must change, let's make the preview appear on the right in big
 class CardTooltipView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Rectangle;
   private nameText: Phaser.GameObjects.Text;
@@ -9,8 +10,8 @@ class CardTooltipView extends Phaser.GameObjects.Container {
   private readonly margin: number;
   private readonly padding: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y);
+  constructor(scene: Phaser.Scene) {
+    super(scene);
     this.setDepth(10);
     this.margin = 20;
     this.padding = 8;
