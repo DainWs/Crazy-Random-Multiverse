@@ -20,6 +20,12 @@ class HandController {
 
     this.scene.children.add(this.handView);
     this.scene.events.on('grabCard', this.onGrabCard.bind(this));
+    this.scene.input.on('gameout', () => this.handView.disableCardListeners());
+    this.scene.input.on('gameover', () => this.handView.enableCardListeners());
+  }
+
+  public update() {
+    this.handView.updateBounds();
   }
 
   public addCards(...cards: Card[]) {

@@ -1,5 +1,5 @@
 import { Point2D } from "@/domain/Geometry";
-import { MOVE_TO_DURATION } from "@/game/cards/CardTweens";
+import { MOVE_TO_DURATION, SLIDE_TO_DURATION } from "@/game/cards/CardTweens";
 import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 
@@ -7,7 +7,17 @@ type OnCompleteCallback = () => void;
 const NoneCallback = () => {};
 
 class HandAnimator {
+
+  private animationInProgress: boolean;
+
+  constructor() {
+    this.animationInProgress = false;
+  }
+
   public animateHandExpansion(handView: HandView, targetY: number, duration: number = 250) {
+    if (this.animationInProgress) return;
+    this.animationInProgress = true;
+
     handView.scene.tweens.add({
       targets: handView,
       y: targetY,
@@ -15,12 +25,13 @@ class HandAnimator {
       ease: 'Cubic.easeOut',
       overwrite: true,
       persist: false
-    });
+    }).on('complete', () => this.animationInProgress = false);
   }
 
 
   public animateIncomingCards(fromPoint: Point2D, handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
     this.setInteractiveForCardViews(handCards, false);
+    this.animationInProgress = true;
 
     const tweenDelay = 200;
     for (let i = 0; i < incomingCards.length; i++) {
@@ -32,6 +43,7 @@ class HandAnimator {
 
     setTimeout(() => {
       this.setInteractiveForCardViews(handCards, true);
+      this.animationInProgress = false;
       onComplete();
     }, MOVE_TO_DURATION + (incomingCards.length * tweenDelay));
   }

@@ -4,6 +4,7 @@ import CardView from "@/game/cards/CardView";
 
 type Rectangle = Phaser.Geom.Rectangle & {
   scale: number;
+  zoom: number;
 };
 
 type SpaceBetweenCardOptions = {
@@ -36,7 +37,8 @@ class HandLayoutHelper {
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
 
     const rectangle = new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight) as Rectangle;
-    rectangle.scale = 1 / this.cameraSystem.getCamera().zoom;
+    rectangle.zoom = this.cameraSystem.getCamera().zoom;
+    rectangle.scale = 1 / rectangle.zoom;
     return rectangle;
   }
 
@@ -46,7 +48,8 @@ class HandLayoutHelper {
 
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
     this.handBounds.setPosition(x, y);
-    this.handBounds.scale = 1 / this.cameraSystem.getCamera().zoom;
+    this.handBounds.zoom = this.cameraSystem.getCamera().zoom;
+    this.handBounds.scale = 1 / this.handBounds.zoom;
   }
 
   private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {

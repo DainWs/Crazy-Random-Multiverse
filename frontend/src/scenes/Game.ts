@@ -90,6 +90,7 @@ class GameScene extends Scene {
 
     override update(time: number, delta: number): void {
         super.update(time, delta);
+        this.handController.update();
 
         const playerZone = StoreSystem.getPlayerZone();
         if (!playerZone.isAlive()) {

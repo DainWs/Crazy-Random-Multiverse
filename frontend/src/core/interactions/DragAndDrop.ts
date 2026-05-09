@@ -31,6 +31,7 @@ class CardDragAndDropManager {
     this.setSource(getSourceGameObjectAtCursor(scene));
 
     if (this.sourceGameObject instanceof HandView) {
+      this.sourceGameObject.hideCards();
       this.sourceGameObject.disableCardListeners();
     }
     // (1) this.setSource(this.getInteractableSourceFromParent(scene));

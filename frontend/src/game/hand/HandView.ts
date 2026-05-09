@@ -54,7 +54,6 @@ class HandView extends Phaser.GameObjects.Container {
   }
 
   private initializeView() {
-    this.scene.cameras.main.on('postrender', this.updateBounds, this);
     this.updateBounds();
 
     if (showDebugBoxes) {
@@ -64,14 +63,14 @@ class HandView extends Phaser.GameObjects.Container {
     }
   }
 
-  private updateBounds() {
+  public updateBounds() {
     this.layoutHelper.updateBounds();
     const { x, y, width, height, scale } = this.getExpandedLayoutBounds();
 
     this.setScale(scale);
     this.setPosition(x, y);
     this.setSize(width, height);
-    
+
     if (this.input && this.input.hitArea) {
       (this.input.hitArea as Phaser.Geom.Rectangle).setTo(0, 0, width, height);
     }
@@ -79,7 +78,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   public addCards(...incomingCards: CardView[]) {
     const newCardLength = this.cards.length + incomingCards.length;
-    console.log("addCards", incomingCards, this.cards);
+
     for (let i = 0; i < incomingCards.length; i++) {
       const newIndex = this.cards.length + i;
       const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(i, newCardLength);
@@ -87,7 +86,6 @@ class HandView extends Phaser.GameObjects.Container {
       const incomingCard = incomingCards[i];
       incomingCard.setOriginalPosition(slotPosition.x, slotPosition.y);
       incomingCard.setOriginalDepth(this.cardsDepth + newIndex);
-      console.log(incomingCard.position)
 
       this.interactionManager.attachListeners(this, incomingCard);
       this.cards.push(incomingCard);
@@ -178,9 +176,9 @@ class HandView extends Phaser.GameObjects.Container {
 
   private getExpandedLayoutBounds(isExpanded: boolean = this.isExpanded, hidePercent = 0.75) {
     this.isExpanded = isExpanded;
-    const { x, y, width, height, scale } = this.layoutHelper.handBounds;
+    const { x, y, width, height, scale, zoom } = this.layoutHelper.handBounds;
 
-    const hiddenSize = CardView.HEIGHT * hidePercent;
+    const hiddenSize = (CardView.HEIGHT * hidePercent) / zoom;
     let expandedY = y + hiddenSize;
     if (isExpanded) {
       expandedY -= hiddenSize;
@@ -193,20 +191,22 @@ class HandView extends Phaser.GameObjects.Container {
     return this.cards;
   }
 
+  public hideCards() {
+    this.hoverIndex = NONE_CARD_IS_HOVER;
+    this.sliceCardsToShowHoverIndex();
+
+    const { y } = this.getExpandedLayoutBounds(false, 1);
+    this.animator.animateHandExpansion(this, y, 100);
+  }
+
   public enableCardListeners() {
     this.cardListenersEnabled = true;
-
-    const { y } = this.getExpandedLayoutBounds(false);
-    this.animator.animateHandExpansion(this, y, 300);
   }
 
   public disableCardListeners() {
     this.cardListenersEnabled = false;
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();
-
-    const { y } = this.getExpandedLayoutBounds(false, 1);
-    this.animator.animateHandExpansion(this, y, 100);
   }
 }
 
