@@ -2,6 +2,10 @@ import CameraSystem from "@/core/CameraSystem";
 import { Point2D } from "@/domain/Geometry";
 import CardView from "@/game/cards/CardView";
 
+type Rectangle = Phaser.Geom.Rectangle & {
+  scale: number;
+};
+
 type SpaceBetweenCardOptions = {
   min: number;
   max: number;
@@ -14,11 +18,8 @@ const defaultOptions: SpaceBetweenCardOptions = {
   decayFactor: 0.2,
 };
 
-const MARGIN_X = 0;
-const MARGIN_Y = 0;
-
 class HandLayoutHelper {
-  public readonly handBounds: Phaser.Geom.Rectangle;
+  public readonly handBounds: Rectangle;
   public readonly options: SpaceBetweenCardOptions;
   private readonly cameraSystem: CameraSystem;
 
@@ -28,13 +29,15 @@ class HandLayoutHelper {
     this.handBounds = this.createBounds(maxCards);
   }
 
-  private createBounds(maxCards: number): Phaser.Geom.Rectangle {
+  private createBounds(maxCards: number): Rectangle {
     const spaceBetweenCards = this.calculateSpaceBetweenCards(maxCards);
     const totalWidth = (maxCards - 1) * spaceBetweenCards + CardView.WIDTH;
     const totalHeight = CardView.HEIGHT;
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
 
-    return new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight);
+    const rectangle = new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight) as Rectangle;
+    rectangle.scale = 1 / this.cameraSystem.getCamera().zoom;
+    return rectangle;
   }
 
   public updateBounds() {
@@ -43,16 +46,16 @@ class HandLayoutHelper {
 
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
     this.handBounds.setPosition(x, y);
+    this.handBounds.scale = 1 / this.cameraSystem.getCamera().zoom;
   }
 
   private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {
+    const screenHeight = this.cameraSystem.getScale().height;
     const halfWidth = totalWidth / 2;
     const halfHeight = totalHeight / 2;
-    // Position the hand exactly at the bottom-left corner
-    const cameraCorners = this.cameraSystem.getCameraCorners();
-    const x = cameraCorners.bl.x + (MARGIN_X + halfWidth);
-    const y = cameraCorners.bl.y - (MARGIN_Y + halfHeight);
-    return { x, y };
+    const x = halfWidth;
+    const y = screenHeight - halfHeight;
+    return this.cameraSystem.getHUDPosition(x, y);
   }
 
   public calculateSlotPositionFromIndex(

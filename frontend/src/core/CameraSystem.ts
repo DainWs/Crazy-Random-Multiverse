@@ -38,6 +38,22 @@ class CameraSystem {
     public getCamera(): Phaser.Cameras.Scene2D.Camera {
         return this.camera;
     }
+
+    public getScale(): Phaser.Scale.ScaleManager {
+        return this.gameScene.scale;
+    }
+
+    public getHUDPosition(screenX: number, screenY: number): Point2D {
+        const { width, height } = this.gameScene.scale;
+        const zoom = this.camera.zoom;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        return {
+            x: (screenX - centerX) / zoom + centerX,
+            y: (screenY - centerY) / zoom + centerY
+        };
+    }
 }
 
 export default CameraSystem;
