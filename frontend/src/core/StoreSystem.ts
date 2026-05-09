@@ -2,34 +2,32 @@ import Player from "@/domain/Player";
 import User from "@/domain/User";
 import Zone from "@/domain/Zone";
 import * as ExternalStoreApi from "@/api/LocalStorageApi";
-import GameCode from "@/domain/GameCode";
+import GameConfiguration from "@/domain/GameConfiguration";
 import Card from "@/domain/Card";
 import Battlefield from "@/domain/Battlefield";
-import { DEFAULT_SKIN } from "@/domain/BattlefieldSkin";
 
 
 type PlayerHand = Card[];
 type PlayerZone = Zone;
-type Zones = Zone[];
+
+type GameState = {
+  gameConfiguration: GameConfiguration;
+  battlefield: Battlefield;
+  zones: Zone[];
+  player: Player;
+  playerZone: PlayerZone;
+  playerHand: PlayerHand;
+}
 
 type Store = {
   user?: User;
-  player?: Player;
-  playerHand?: PlayerHand;
-  playerZone?: PlayerZone;
-  zones?: Zones;
-  currentGameCode?: GameCode;
-  battlefield?: Battlefield;
+  gameState?: GameState;
 }
 
 const store: Store = {};
 
-function getGameCode(): GameCode | null {
-  return store.currentGameCode || null;
-}
-
-function setGameCode(gameCode: GameCode): void {
-  store.currentGameCode = gameCode;
+function initializeGame(gameState: GameState) {
+  store.gameState = gameState;
 }
 
 function getUser(): User {
@@ -45,79 +43,80 @@ function setUser(user: User): void {
   ExternalStoreApi.saveUser(user);
 }
 
-function getPlayer(): Player {
-  if (!store.player) {
-    const user = getUser();
-    store.player = new Player(user.code, user.name);
+function getGameConfiguration(): GameConfiguration {
+  if (!store.gameState?.gameConfiguration) {
+    throw new Error('Game not initialized');
   }
 
-  return store.player;
+  return store.gameState.gameConfiguration;
+}
+
+function getPlayer(): Player {
+  if (!store.gameState?.player) {
+    throw new Error('Game not initialized');
+  }
+
+  return store.gameState.player;
 }
 
 function getPlayerHand(): PlayerHand {
-  if (!store.playerHand) {
-    store.playerHand = ExternalStoreApi.loadHand();
+  if (!store.gameState?.playerHand) {
+    throw new Error('Game not initialized');
   }
 
-  return store.playerHand;
+  return store.gameState.playerHand;
 }
 
-function setPlayerHand(hand: PlayerHand): void {
-  store.playerHand = hand;
-  ExternalStoreApi.saveHand(hand);
+function setPlayerHand(playerHand: PlayerHand): void {
+  store.gameState!.playerHand = playerHand;
 }
 
 function getPlayerZone(): PlayerZone {
-  if (!store.playerZone) {
-    const player = getPlayer();
-    store.playerZone = new Zone(player, 'BASE');
+  if (!store.gameState?.playerZone) {
+    throw new Error('Game not initialized');
   }
 
-  return store.playerZone;
+  return store.gameState.playerZone;
 }
 
-function setPlayerZone(zone: PlayerZone): void {
-  store.playerZone = zone;
+function setPlayerZone(playerZone: PlayerZone): void {
+  store.gameState!.playerZone = playerZone;
 }
 
-function getZones(): Zones {
-  if (!store.zones) {
-    store.zones = [];
+function getZones(): Zone[] {
+  if (!store.gameState?.zones) {
+    throw new Error('Game not initialized');
   }
 
-  return store.zones;
+  return store.gameState.zones;
 }
 
-function setZones(zones: Zones): void {
-  store.zones = zones;
+function setZones(zones: Zone[]): void {
+  store.gameState!.zones = zones;
 }
 
 function getBattlefield(): Battlefield {
-  if (!store.battlefield) {
-    store.battlefield = new Battlefield(DEFAULT_SKIN);
+  if (!store.gameState?.battlefield) {
+    throw new Error('Game not initialized');
   }
 
-  return store.battlefield;
-}
-
-function setBattlefield(battlefield: Battlefield): void {
-  store.battlefield = battlefield;
+  return store.gameState.battlefield;
 }
 
 const StoreSystem = {
-  getGameCode,
-  setGameCode,
+  initializeGame,
   getUser,
   setUser,
+  getGameConfiguration,
   getPlayer,
-  getPlayerHand,
-  setPlayerHand,
   getPlayerZone,
   setPlayerZone,
+  getPlayerHand,
+  setPlayerHand,
   getZones,
   setZones,
-  getBattlefield,
-  setBattlefield
+  getBattlefield
 }
 
+export type { GameState };
 export default StoreSystem;

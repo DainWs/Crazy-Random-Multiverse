@@ -1,18 +1,21 @@
 import Owner, { PlayerCode } from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
+import Team from '@/domain/Team';
 import { ZoneOrganizationsType, getZoneOrganization } from '@/domain/ZoneOrganizations';
 import ZoneSlot, { AllowedCombatant } from '@/domain/ZoneSlot';
 
 class Zone {
   public readonly owner: Owner;
   public readonly type: ZoneOrganizationsType;
+  public team: Team;
   public health: number;
   public maxHealth: number;
   public slots: ZoneSlot[][];
 
-  public constructor(owner: Owner, type: ZoneOrganizationsType = 'BASE') {
+  public constructor(owner: Owner, team: Team, type: ZoneOrganizationsType = 'BASE') {
     this.owner = owner;
     this.type = type;
+    this.team = team;
 
     this.health = 0;
     this.maxHealth = 0;

@@ -1,4 +1,4 @@
-import GameCode from '@/domain/GameCode';
+import { GameCode } from "@/domain/GameConfiguration";
 import Card from '@/domain/Card';
 import Player from '@/domain/Player';
 import Position from '@/domain/Position';

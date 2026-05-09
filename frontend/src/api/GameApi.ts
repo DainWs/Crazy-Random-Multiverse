@@ -1,5 +1,5 @@
 import Action from "@/domain/Action";
-import GameCode from "@/domain/GameCode";
+import { GameCode } from "@/domain/GameConfiguration";
 
 const sendAction = async (action: Action) => {
   console.log(`Sending action: ${action}`);

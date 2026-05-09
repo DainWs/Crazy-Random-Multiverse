@@ -1,4 +1,4 @@
-import GameCode from "@/domain/GameCode";
+import { GameCode } from "@/domain/GameConfiguration";
 import Action from "@/domain/Action";
 import ActionEvent from "@/domain/ActionEvent";
 import ActionPattern from "@/core/actions/ActionPattern";

@@ -4,7 +4,7 @@ import ActionResolver from "@/core/actions/ActionResolver";
 import CardMovePattern from "@/core/actions/CardMovePattern";
 import CardPutPattern from "@/core/actions/CardPutPattern";
 import ActionEvent from "@/domain/ActionEvent";
-import GameCode from "@/domain/GameCode";
+import { GameCode } from "@/domain/GameConfiguration";
 import { GameScene } from "@/scenes/Game";
 
 // TODO pensar seriamente si esta clase va a ser necesaria al final
