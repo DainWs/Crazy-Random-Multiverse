@@ -5,13 +5,8 @@ class GameOver extends Phaser.Scene {
     private background: Phaser.GameObjects.Image;
     private gameOverText : Phaser.GameObjects.Text;
 
-    private readonly isWinner: boolean;
-
     public constructor () {
         super('GameOver');
-
-        const playerZone = StoreSystem.getPlayerZone();
-        this.isWinner = (playerZone.health > 0);
     }
 
     public create () {
@@ -21,14 +16,20 @@ class GameOver extends Phaser.Scene {
         this.background = this.add.image(512, 384, 'background');
         this.background.setAlpha(0.5);
 
-        if (this.isWinner) {
-            this.gameOverText = this.getWinnerText();
-        } else {
-            this.gameOverText = this.getLoserText();
-        }
+        this.gameOverText = this.getGameOverText();
 
         this.children.add(this.gameOverText);
         this.events.emit('current-scene-ready', this);
+    }
+
+    private getGameOverText(): Phaser.GameObjects.Text {
+        const playerZone = StoreSystem.getPlayerZone();
+
+        if (playerZone.health > 0) {
+            return this.getWinnerText();
+        }
+
+        return this.getLoserText();
     }
 
     private getWinnerText(): Phaser.GameObjects.Text {

@@ -138,6 +138,7 @@ class ZoneView extends Phaser.GameObjects.Container {
       scale: slotScreen.scale,
       width: this.options.slotSize.width,
       height: this.options.slotSize.height,
+      depth: 0,
       rotation: this.options.rotation,
       corners: {
         tl: projectCorner({ x: -hw, y: -hh }),

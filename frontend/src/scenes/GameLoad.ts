@@ -2,9 +2,12 @@ import { Scene } from 'phaser';
 import Zone from '@/domain/Zone';
 import Player from '@/domain/Player';
 import cardFactory from '@/domain/cardFactory';
-import StoreSystem from '@/core/StoreSystem';
+import StoreSystem, { GameState } from '@/core/StoreSystem';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
 import { sendReady } from '@/api/GameApi';
+import Battlefield from '@/domain/Battlefield';
+import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
+import GameConfiguration from '@/domain/GameConfiguration';
 
 class GameLoadScene extends Scene {
     constructor() {
@@ -80,9 +83,34 @@ class GameLoadScene extends Scene {
     }
 
     private loadGameData() {
-        const player = StoreSystem.getPlayer();
-        StoreSystem.setGameCode('game-code');
-        StoreSystem.setPlayerHand([
+        const gameState = this.createGameState();
+        StoreSystem.initializeGame(gameState);
+    }
+
+    // TODO remove this method and receive the game state from the GameEngine
+    public createGameState(): GameState {
+        const PLAYER_COUNT = 10;
+        const gameConfiguration = new GameConfiguration('Code:1', 'pvp', PLAYER_COUNT);
+        const user = StoreSystem.getUser();
+        const player = new Player(user.code, user.name);
+        const playerZone = new Zone(player, 'friendly', 'BASE');
+        const battlefield = new Battlefield(DEFAULT_SKIN, gameConfiguration, playerZone);
+        const zones = this.getMockedZones(battlefield, playerZone);
+        battlefield.addZones(zones);
+
+        return {
+            gameConfiguration: gameConfiguration,
+            battlefield: battlefield,
+            zones: zones,
+            player: player,
+            playerZone: playerZone,
+            playerHand: this.getPlayerMockedHand(),
+        };
+    }
+
+    // TODO remove this method and receive the game state from the GameEngine
+    private getPlayerMockedHand() {
+        return [
             cardFactory.createLeaderCard(),
             cardFactory.createWarriorCard({ rarity: 'COMMON', code: 1 }),
             cardFactory.createWarriorCard({ rarity: 'MITHIC', code: 1 }),
@@ -93,24 +121,38 @@ class GameLoadScene extends Scene {
             cardFactory.createSpellCard(),
             cardFactory.createSpellCard(),
             cardFactory.createSpellCard()
-        ]);
-        StoreSystem.setPlayerZone(new Zone(player, 'BASE'));
-        StoreSystem.setZones([
-            new Zone(new Player('AI_01', 'AI_01'), 'BASE'),
-            new Zone(new Player('AI_02', 'AI_02'), 'BASE'),
-            new Zone(new Player('AI_03', 'AI_03'), 'BASE'),
-            new Zone(new Player('AI_04', 'AI_04'), 'BASE')
-        ])
+        ];
     }
-    
+
+    // TODO remove this method and receive the game state from the GameEngine
+    private getMockedZones(battlefield: Battlefield, playerZone: Zone) {
+        const zones: Zone[] = [playerZone];
+
+        const maxAlies = 0;
+        const maxEnemies = battlefield.gameConfiguration.playerCount - (maxAlies + 1);
+
+        for (let i = 0; i < maxAlies; i++) {
+            const allyPlayer = new Player(`Ally:${i.toString()}`, `Ally ${i}`);
+            const allyPlayerZone = new Zone(allyPlayer, 'friendly', 'BASE');
+            zones.push(allyPlayerZone);
+        }
+
+        for (let i = 0; i < maxEnemies; i++) {
+            const enemyPlayer = new Player(`Enemy:${i.toString()}`, `Enemy ${i}`);
+            const enemyPlayerZone = new Zone(enemyPlayer, 'enemy', 'BASE');
+            zones.push(enemyPlayerZone);
+        }
+
+        return zones;
+    }
 
     async create() {
-        const gameCode = StoreSystem.getGameCode();
-        if (gameCode) {
-            await sendReady(gameCode);
+        const gameConfiguration = StoreSystem.getGameConfiguration();
+        if (gameConfiguration) {
+            await sendReady(gameConfiguration.gameCode);
             this.scene.start('Game');
         } else {
-            console.error("No game code found in StoreSystem");
+            console.error("No game configuration found in StoreSystem");
             this.scene.start('MainMenu');
         }
     }
