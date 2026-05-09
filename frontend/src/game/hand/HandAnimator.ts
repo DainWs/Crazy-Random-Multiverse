@@ -7,11 +7,11 @@ type OnCompleteCallback = () => void;
 const NoneCallback = () => {};
 
 class HandAnimator {
-  public animateHandExpansion(handView: HandView, targetY: number) {
+  public animateHandExpansion(handView: HandView, targetY: number, duration: number = 250) {
     handView.scene.tweens.add({
       targets: handView,
       y: targetY,
-      duration: 250,
+      duration,
       ease: 'Cubic.easeOut',
       overwrite: true,
       persist: false

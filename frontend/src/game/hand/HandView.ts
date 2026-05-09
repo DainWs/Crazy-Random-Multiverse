@@ -48,8 +48,8 @@ class HandView extends Phaser.GameObjects.Container {
     
     this.initializeView();
     this.setInteractive(this.layoutHelper.getInteractiveBounds(), Phaser.Geom.Rectangle.Contains);
+    this.setScrollFactor(0);
     scene.add.existing(this);
-    scene.cameraSystem.showOnlyInUICamera(this);
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
@@ -58,9 +58,9 @@ class HandView extends Phaser.GameObjects.Container {
     this.updateBounds();
 
     if (showDebugBoxes) {
-      const debugBox = this.scene.add.rectangle(0, 0, this.width, this.height, 0xFFFF00)
-      debugBox.setDepth(- 10);
-      this.add(debugBox);
+      //const debugBox = this.scene.add.rectangle(0, 0, this.width, this.height, 0xFFFF00)
+      //debugBox.setDepth(- 10);
+      //this.add(debugBox);
     }
   }
 
@@ -68,6 +68,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.layoutHelper.updateBounds();
     const { x, y, width, height } = this.getExpandedLayoutBounds();
 
+    this.setScale(1);
     this.setPosition(x, y);
     this.setSize(width, height);
     
@@ -78,18 +79,19 @@ class HandView extends Phaser.GameObjects.Container {
 
   public addCards(...incomingCards: CardView[]) {
     const newCardLength = this.cards.length + incomingCards.length;
-
-    for (let i = this.cards.length; i < newCardLength; i++) {
+    console.log("addCards", incomingCards, this.cards);
+    for (let i = 0; i < incomingCards.length; i++) {
+      const newIndex = this.cards.length + i;
       const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(i, newCardLength);
 
       const incomingCard = incomingCards[i];
       incomingCard.setOriginalPosition(slotPosition.x, slotPosition.y);
-      incomingCard.setOriginalDepth(this.cardsDepth + i);
-      console.log(this.cardsDepth + i)
+      incomingCard.setOriginalDepth(this.cardsDepth + newIndex);
+      console.log(incomingCard.position)
 
       this.interactionManager.attachListeners(this, incomingCard);
-      this.cards[i] = incomingCard;
-      this.add(incomingCard);
+      this.cards.push(incomingCard);
+      this.addAt(incomingCard, newIndex);
     }
 
     // From TOP of camera
@@ -139,8 +141,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   public onHoverCard(hoverCard: CardView) {
     if (!this.cardListenersEnabled) return;
-    this.isExpanded = true;
-    const { y } = this.getExpandedLayoutBounds();
+    const { y } = this.getExpandedLayoutBounds(true);
     this.animator.animateHandExpansion(this, y);
 
     const hoverIndex = this.cards.indexOf(hoverCard);
@@ -152,8 +153,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   public onUnhoverCard(unhoverCard: CardView) {
     if (!this.cardListenersEnabled) return;
-    this.isExpanded = false;
-    const { y } = this.getExpandedLayoutBounds();
+    const { y } = this.getExpandedLayoutBounds(false);
     this.animator.animateHandExpansion(this, y);
 
     const unhoverIndex = this.cards.indexOf(unhoverCard);
@@ -176,13 +176,13 @@ class HandView extends Phaser.GameObjects.Container {
     }
   }
 
-  private getExpandedLayoutBounds() {
+  private getExpandedLayoutBounds(isExpanded: boolean = this.isExpanded, hidePercent = 0.75) {
+    this.isExpanded = isExpanded;
     const { x, y, width, height } = this.layoutHelper.handBounds;
 
-    const hidePercent = 0.75;
     const hiddenSize = CardView.HEIGHT * hidePercent;
     let expandedY = y + hiddenSize;
-    if (this.isExpanded) {
+    if (isExpanded) {
       expandedY -= hiddenSize;
     }
 
@@ -195,12 +195,18 @@ class HandView extends Phaser.GameObjects.Container {
 
   public enableCardListeners() {
     this.cardListenersEnabled = true;
+
+    const { y } = this.getExpandedLayoutBounds(false);
+    this.animator.animateHandExpansion(this, y, 300);
   }
 
   public disableCardListeners() {
     this.cardListenersEnabled = false;
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();
+
+    const { y } = this.getExpandedLayoutBounds(false, 1);
+    //this.animator.animateHandExpansion(this, y, 100);
   }
 }
 

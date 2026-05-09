@@ -48,10 +48,10 @@ class HandLayoutHelper {
   private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {
     const halfWidth = totalWidth / 2;
     const halfHeight = totalHeight / 2;
-    // Position the hand exactly at the bottom-left corner of the UI screen
-    const uiCorners = this.cameraSystem.getUIScreenCorners();
-    const x = uiCorners.bl.x + (MARGIN_X + halfWidth);
-    const y = uiCorners.bl.y - (MARGIN_Y + halfHeight);
+    // Position the hand exactly at the bottom-left corner
+    const cameraCorners = this.cameraSystem.getCameraCorners();
+    const x = cameraCorners.bl.x + (MARGIN_X + halfWidth);
+    const y = cameraCorners.bl.y - (MARGIN_Y + halfHeight);
     return { x, y };
   }
 

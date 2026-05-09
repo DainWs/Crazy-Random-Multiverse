@@ -9,6 +9,7 @@ type TargetGameObject = ZoneSlotView | CardView;
 
 class CardDragAndDropManager {
   private sourceGameObject: SourceGameObject | undefined;
+  private sourceGameObjectIndex: number | undefined;
 
   public onGrabCard(scene: Phaser.Scene, card: CardView) {
     if (!card.canBeClicked()) return false;
@@ -17,12 +18,13 @@ class CardDragAndDropManager {
     scene.input.manager.canvas.style.cursor = "grabbing";
     card.applyAnimation('startDrag');
 
-    // TODO no se hasta que punto sale rentable hacer esto (1), pero es necesario para que el drag and drop funcione correctamente
+    
+    // TODO i dont know how far is profitable to do this (1), but it is necessary for the drag and drop to work correctly
     // (1) const worldMatrix = card.getWorldTransformMatrix();
     // (1) this.originalParent = card.parentContainer || scene;
     // (1) this.originalPositionInParent = { x: card.x, y: card.y };
 
-    // TODO: no se si esto (2) es necesario, pero es necesario para que el drag and drop funcione correctamente
+    // TODO: i dont know if this (2) is necessary, but it is necessary for the drag and drop to work correctly
     // (2) scene.add.existing(card);
     // (1) card.setPosition(worldMatrix.getX(), worldMatrix.getY());
 
@@ -81,14 +83,16 @@ class CardDragAndDropManager {
     }
   }
 
-  public onDragCard(_: Phaser.Scene, draggedCardView: CardView, dragX: number, dragY: number) {
+  public onDragCard(_scene: Phaser.Scene, draggedCardView: CardView, dragX: number, dragY: number) {
     draggedCardView.stopTweens();
+    draggedCardView.setScale(0.7);
     draggedCardView.setPosition(dragX, dragY);
-    console.log("card drag", draggedCardView.x, draggedCardView.y);
   }
 
   public onDropCard(scene: Phaser.Scene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
-    console.log("drop ", this.sourceGameObject, " -> ", targetGameObject)
+    if (!targetGameObject) {
+      targetGameObject = getTopGameObjectAtCursor(scene, "ZoneSlotView") as TargetGameObject;
+    }
 
     let success = false;
     if (targetGameObject instanceof ZoneSlotView) {
@@ -114,6 +118,7 @@ class CardDragAndDropManager {
     }
 
     this.sourceGameObject = undefined;
+    this.sourceGameObjectIndex = undefined;
   }
 }
 
