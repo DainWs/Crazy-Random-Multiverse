@@ -45,6 +45,7 @@ class GameScene extends Scene {
         this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
 
         this.cameraSystem.initialize(this);
+        this.cameraSystem.showOnlyInMainCamera(this.battlefieldContainer);
         this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
 
         this.handController.init();

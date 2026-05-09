@@ -63,4 +63,5 @@ class Battlefield {
   }
 }
 
+export {BattlefieldSide}
 export default Battlefield;

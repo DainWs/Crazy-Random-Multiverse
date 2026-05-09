@@ -22,7 +22,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     orientedBoundingBox: OrientedBoundingBox3D,
     zoneSlot: ZoneSlot
   ) {
-    super(scene, 0, 0);
+    super(scene, orientedBoundingBox.x, orientedBoundingBox.y);
     this.scale = 1;
     this.width = orientedBoundingBox.width;
     this.height = orientedBoundingBox.height;
@@ -42,22 +42,12 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
       this.corners.bl.x, this.corners.bl.y
     ]);
     this.setInteractive(polygon, Phaser.Geom.Polygon.Contains, true);
-/*
-    const graphics = this.scene.add.graphics();
-    graphics.clear();
-    graphics.fillStyle(0xffffff, 0.05);
-    graphics.lineStyle(1, 0x4488cc, 0.5);
-    graphics.beginPath();
-    graphics.moveTo(0, 0);
-    graphics.lineTo(this.width, 0);
-    graphics.lineTo(this.width, this.height);
-    graphics.lineTo(0, this.height);
-    graphics.closePath();
-    graphics.fillPath();
-    graphics.strokePath();
-    this.add(graphics);
-*/
-    scene.add.existing(this)
+
+    const debugGraphics = this.scene.add.graphics();
+    debugGraphics.lineStyle(2, 0xff0000, 1);
+    debugGraphics.strokePoints(polygon.points, true);
+    this.add(debugGraphics);
+
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 

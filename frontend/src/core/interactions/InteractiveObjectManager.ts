@@ -45,11 +45,15 @@ function getGameObjectsAtCursor(scene: Phaser.Scene, ...onlyOfTypes: Interactive
   const objects = copyInteractableObjects(onlyOfTypes);
 
   const pointer = scene.input.activePointer;
-  const camera = scene.cameras.main;
+  const cameras = scene.cameras.cameras;
   const results: InteractiveGameObject[] = [];
-  scene.input.manager.hitTest(pointer, [...objects], camera, results);
 
-  return results.filter(isAInteractiveGameObject) as GameObject[]; // TODO replace this filter with onlyOfType filter
+  for (const camera of cameras) {
+    scene.input.manager.hitTest(pointer, [...objects], camera, results);
+  }
+
+  const uniqueResults = [...new Set(results)];
+  return uniqueResults.filter(isAInteractiveGameObject) as GameObject[];
 }
 
 function copyInteractableObjects(onlyOfTypes: InteractiveGameObjectType[]) {

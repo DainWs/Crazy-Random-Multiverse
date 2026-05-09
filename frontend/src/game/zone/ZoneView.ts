@@ -45,8 +45,6 @@ class ZoneView extends Phaser.GameObjects.Container {
     this.setPosition(zoneScreen.x, zoneScreen.y);
 
     this.initializeView();
-
-    this.scene.add.existing(this);
   }
 
   private initializeView() {
@@ -57,24 +55,11 @@ class ZoneView extends Phaser.GameObjects.Container {
       const obb = this.resolveOBBForSlot(position);
       const zoneSlotView = new ZoneSlotView(this.scene as GameScene, obb, zoneSlot);
 
-      // Place ZoneSlotView in ZoneView local-space at the screen-space offset
-      zoneSlotView.setPosition(obb.x, obb.y);
-
       if (!this.slots[position.row]) this.slots[position.row] = [];
       this.slots[position.row][position.column] = zoneSlotView;
       this.add(zoneSlotView);
     }
-    // utilizado para saber donde esta el pivot del contenedor
-    const graphics2 = this.scene.add.graphics();
-    graphics2.clear();
-    graphics2.fillStyle(0xff00ff, 0.5);
-    graphics2.lineStyle(1, 0x4488cc, 0.5);
-    graphics2.beginPath();
-    graphics2.fillCircle(0, 0, 100);
-    graphics2.closePath();
-    graphics2.fillPath();
-    graphics2.strokePath();
-    this.add(graphics2);
+
   }
 
   /**
