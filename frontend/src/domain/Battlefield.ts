@@ -52,7 +52,7 @@ class Battlefield {
     const enemyCountPerSide = Math.ceil(this.enemyZones.length / 3);
     
     this.maxPlayersPerSide = Math.max(friendlyCount, enemyCountPerSide, 1);
-    this.sideSize = BASE_BOARD_SIDE + (this.maxPlayersPerSide - 1) * this.playerSpacing;
+    this.sideSize = Battlefield.sideSizeForPlayerCount(this.maxPlayersPerSide, this.playerSpacing);
   }
 
   public getSideSize(): number {
@@ -76,6 +76,10 @@ class Battlefield {
       bl: { x: -w, y:  w }, // Bottom-left
       br: { x:  w, y:  w } // Bottom-right
     };
+  }
+
+  public static sideSizeForPlayerCount(playerCount: number, playerSpacing: number = PLAYER_SPACING): number {
+    return BASE_BOARD_SIDE + (playerCount - 1) * playerSpacing;
   }
 }
 

@@ -1,6 +1,7 @@
 import { Corners2D, Point2D } from "@/domain/Geometry";
 import { GameScene } from "@/scenes/Game";
 import CameraMovementManager from "@/core/cameras/CameraMovementManager";
+import StoreSystem from "@/core/StoreSystem";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
@@ -15,7 +16,17 @@ class CameraSystem {
     }
 
     public setupBattlefieldCamera(centerX: number, centerY: number) {
-        this.camera.setZoom(CameraMovementManager.defaultZoom);
+        const battlefield = StoreSystem.getBattlefield();
+        const sideSize = battlefield.getSideSize();
+
+        const { defaultZoomReference, defaultZoom } = CameraMovementManager;
+        const idealZoom = Phaser.Math.Clamp(
+            defaultZoom * (defaultZoomReference / sideSize),
+            CameraMovementManager.minZoom, 
+            CameraMovementManager.maxZoom
+        );
+
+        this.camera.setZoom(idealZoom);
         this.camera.centerOn(centerX, centerY);
     }
 
