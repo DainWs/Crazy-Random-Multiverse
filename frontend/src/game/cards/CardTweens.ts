@@ -2,7 +2,7 @@ import { CardView } from "@/game/cards/CardView";
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
-type CardTween = 'hover' | 'unhover' | 'hand_horizontal_slide' | 'move_to_hand';
+type CardTween = 'hover' | 'unhover' | 'hand_horizontal_slide' | 'move_to_hand' | 'preview_in_zone_slot';
 type CardTweenProvider = (card: CardView, args: unknown[]) => TweenConfig;
 
 function noneTween(card: CardView) {
@@ -59,6 +59,19 @@ function moveToTween(card: CardView, [x, y, delay]: unknown[]): TweenConfig {
   };
 }
 
-export { SLIDE_TO_DURATION, MOVE_TO_DURATION };
-export { noneTween,  hoverTween, unhoverTween, slideToTween, moveToTween };
+const PREVIEW_IN_ZONE_SLOT_DURATION = 200;
+function previewInZoneSlotTween(card: CardView, [x, y, scale, rotation]: unknown[]): TweenConfig {
+  return {
+    targets: card,
+    x, y,
+    scale: scale,
+    angle: rotation,
+    duration: PREVIEW_IN_ZONE_SLOT_DURATION,
+    ease: 'Power1',
+    persist: false
+  };
+}
+
+export { SLIDE_TO_DURATION, MOVE_TO_DURATION, PREVIEW_IN_ZONE_SLOT_DURATION };
+export { noneTween,  hoverTween, unhoverTween, slideToTween, moveToTween, previewInZoneSlotTween };
 export type { CardTween, CardTweenProvider };

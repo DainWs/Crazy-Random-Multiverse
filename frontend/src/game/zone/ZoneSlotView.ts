@@ -12,6 +12,8 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
   private mark: Phaser.GameObjects.Image;
   private cardView: CardView | null;
 
+  private previewedCardView?: CardView | null;
+
   public readonly zoneSlot: ZoneSlot;
   public readonly centerPoint: Point3D;
   public readonly corners: Corners3D;
@@ -77,6 +79,23 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
         this.remove(this.cardView);
       }
       this.cardView = null;
+    }
+  }
+
+  public previewCard(cardView: CardView) {
+    if (!this.previewedCardView) {
+      this.previewedCardView = cardView;
+
+      const worldMatrix = this.getWorldTransformMatrix();
+      const tweenArgs = [worldMatrix.tx, worldMatrix.ty, this.centerPoint.scale, this.slotRotation];
+      cardView.applyTween('preview_in_zone_slot', ...tweenArgs);
+    }
+  }
+
+  public stopPreviewingCard() {
+    if (this.previewedCardView) {
+      this.previewedCardView.stopTweens();
+      this.previewedCardView = null;
     }
   }
 

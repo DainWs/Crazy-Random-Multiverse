@@ -9,6 +9,7 @@ cardTweens.set('hover', Tweens.hoverTween);
 cardTweens.set('unhover', Tweens.unhoverTween);
 cardTweens.set('hand_horizontal_slide', Tweens.slideToTween);
 cardTweens.set('move_to_hand', Tweens.moveToTween);
+cardTweens.set('preview_in_zone_slot', Tweens.previewInZoneSlotTween);
 
 const cardAnimations = new Map<CardAnimation, CardAnimationApplier>();
 cardAnimations.set('startDrag', Animations.startDragAnimation);
@@ -17,6 +18,7 @@ cardAnimations.set('endDrag', Animations.endDragAnimation);
 function playTween(card: CardView, tween: CardTween, ...args: unknown[]): Phaser.Tweens.Tween {
   const provider = cardTweens.get(tween) ?? Tweens.noneTween;
   const tweenConfig = provider(card, args);
+  console.log(tweenConfig);
   return card.scene.tweens.add(tweenConfig);
 }
 
