@@ -5,6 +5,18 @@ import StoreSystem from "@/core/StoreSystem";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
+type MaxPlayersPerSide = number;
+type CameraConfiguration = { 
+    zoom: number,
+    yOffset: number
+}
+const DEFAULT_CONFIGURATION: CameraConfiguration = {zoom: 0.40, yOffset: 0};
+const CAMERA_CONFIGURATIONS = new Map<MaxPlayersPerSide, CameraConfiguration>();
+CAMERA_CONFIGURATIONS.set(1, {zoom: 1.1, yOffset: -100});
+CAMERA_CONFIGURATIONS.set(2, {zoom: 0.85, yOffset: -60});
+CAMERA_CONFIGURATIONS.set(3, {zoom: 0.65, yOffset: 50});
+CAMERA_CONFIGURATIONS.set(4, {zoom: 0.52, yOffset: 180});
+
 class CameraSystem {
     private gameScene: GameScene;
     private camera: Camera;
@@ -17,17 +29,11 @@ class CameraSystem {
 
     public setupBattlefieldCamera(centerX: number, centerY: number) {
         const battlefield = StoreSystem.getBattlefield();
-        const sideSize = battlefield.getSideSize();
+        const maxPlayersPerSide = battlefield.getMaxPlayersPerSide();
+        const cameraConfiguration = CAMERA_CONFIGURATIONS.get(maxPlayersPerSide) || DEFAULT_CONFIGURATION;
 
-        const { defaultZoomReference, defaultZoom } = CameraMovementManager;
-        const idealZoom = Phaser.Math.Clamp(
-            defaultZoom * (defaultZoomReference / sideSize),
-            CameraMovementManager.minZoom, 
-            CameraMovementManager.maxZoom
-        );
-
-        this.camera.setZoom(idealZoom);
-        this.camera.centerOn(centerX, centerY);
+        this.camera.setZoom(cameraConfiguration.zoom);
+        this.camera.centerOn(centerX, centerY + cameraConfiguration.yOffset);
     }
 
     public getCameraCorners(): Corners2D {
@@ -61,8 +67,8 @@ class CameraSystem {
         const centerY = height / 2;
 
         return {
-            x: (screenX - centerX) / zoom + centerX,
-            y: (screenY - centerY) / zoom + centerY
+            x: this.camera.scrollX + (screenX - centerX) / zoom + centerX,
+            y: this.camera.scrollY + (screenY - centerY) / zoom + centerY
         };
     }
 }

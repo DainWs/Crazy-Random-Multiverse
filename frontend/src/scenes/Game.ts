@@ -2,19 +2,13 @@ import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
-import StoreSystem, { GameState } from '@/core/StoreSystem';
+import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
-import Player from '@/domain/Player';
-import Zone from '@/domain/Zone';
-import Battlefield from '@/domain/Battlefield';
-import GameConfiguration from '@/domain/GameConfiguration';
-import * as ExternalStoreApi from "@/api/LocalStorageApi";
-import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -67,19 +61,16 @@ class GameScene extends Scene {
         
         const uiContainer = this.add.container(0, 0);
         
-        const playerCountText = this.add.text(0, 0, `Players: ${playerCount}`, { fontSize: '16px', color: '#fff' })
-            .setScrollFactor(0);
+        const playerCountText = this.add.text(0, 0, `Players: ${playerCount}`, { fontSize: '16px', color: '#fff' });
         uiContainer.add(playerCountText);
 
         const decrementPlayerCountText = this.add.text(0, 24, '[ - ]', { fontSize: '24px', color: '#fff' })
             .setInteractive({ useHandCursor: true })
-            .setScrollFactor(0)
             .on('pointerdown', () => this.scene.start('GameLoad', { playerCount: playerCount - 1 }));
         uiContainer.add(decrementPlayerCountText);
 
         const incrementPlayerCountText = this.add.text(68, 24, '[ + ]', { fontSize: '24px', color: '#fff' })
             .setInteractive({ useHandCursor: true })
-            .setScrollFactor(0)
             .on('pointerdown', () => this.scene.start('GameLoad', { playerCount: playerCount + 1 }));
         uiContainer.add(incrementPlayerCountText);
         this.add.existing(uiContainer);

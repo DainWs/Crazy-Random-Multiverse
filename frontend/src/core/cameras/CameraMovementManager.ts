@@ -3,8 +3,6 @@
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
-const DEFAULT_ZOOM_REFERENCE = 5000;
-const DEFAULT_ZOOM = 0.55;
 const ZOOM_STEP = 0.15;
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.5;
@@ -53,8 +51,6 @@ function onPointerMove(camera: Camera, pointer: Phaser.Input.Pointer) {
 }
 
 const CameraMovementManager = {
-  defaultZoomReference: DEFAULT_ZOOM_REFERENCE,
-  defaultZoom: DEFAULT_ZOOM,
   zoomStep: ZOOM_STEP,
   minZoom: MIN_ZOOM,
   maxZoom: MAX_ZOOM,

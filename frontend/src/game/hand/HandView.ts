@@ -46,21 +46,15 @@ class HandView extends Phaser.GameObjects.Container {
     this.depth = 499;
     this.cardsDepth = this.depth + 1;
     
-    this.initializeView();
+    this.updateBounds();
     this.setInteractive(this.layoutHelper.getInteractiveBounds(), Phaser.Geom.Rectangle.Contains);
-    this.setScrollFactor(0);
     scene.add.existing(this);
     InteractiveObjectManager.registerGameObject(this.scene, this);
-  }
 
-  private initializeView() {
-    this.updateBounds();
-
-    if (showDebugBoxes) {
-      //const debugBox = this.scene.add.rectangle(0, 0, this.width, this.height, 0xFFFF00)
-      //debugBox.setDepth(- 10);
-      //this.add(debugBox);
-    }
+    // Intentaremos sincronizarlo aquí para analizar la vibración
+    this.scene.events.on('prerender', () => {
+      this.updateBounds();
+    });
   }
 
   public updateBounds() {
