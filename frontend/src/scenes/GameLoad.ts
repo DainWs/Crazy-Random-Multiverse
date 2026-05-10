@@ -10,11 +10,18 @@ import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
 import GameConfiguration from '@/domain/GameConfiguration';
 
 class GameLoadScene extends Scene {
+    private playerCount: number = 2;
+    private alreadyProcessed: boolean = false;
+
     constructor() {
         super('GameLoad');
     }
 
-    init() {
+    init(data: { playerCount?: number }) {
+        if (data?.playerCount) {
+            this.playerCount = data.playerCount;
+        }
+
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
 
@@ -31,9 +38,13 @@ class GameLoadScene extends Scene {
     }
 
     preload() {
-        this.loadAssets();
-        this.generateOverlays();
+        if (!this.alreadyProcessed) {
+            this.loadAssets();
+            this.generateOverlays();
+        }
+
         this.loadGameData();
+        this.alreadyProcessed = true;
     }
 
     private loadAssets() {
@@ -89,7 +100,7 @@ class GameLoadScene extends Scene {
 
     // TODO remove this method and receive the game state from the GameEngine
     public createGameState(): GameState {
-        const PLAYER_COUNT = 10;
+        const PLAYER_COUNT = this.playerCount;
         const gameConfiguration = new GameConfiguration('Code:1', 'pvp', PLAYER_COUNT);
         const user = StoreSystem.getUser();
         const player = new Player(user.code, user.name);

@@ -56,6 +56,41 @@ class GameScene extends Scene {
         this.input.setPollAlways();
 
         this.renderAll();
+        this.createDebugUI();
+    }
+
+    private updateDebugUI = () => {};
+    
+    // TODO: Remove in production, for removal find commit with "remove_debug_ui"
+    private createDebugUI() {
+        const playerCount = StoreSystem.getGameConfiguration().playerCount;
+        
+        const uiContainer = this.add.container(0, 0);
+        
+        const playerCountText = this.add.text(0, 0, `Players: ${playerCount}`, { fontSize: '16px', color: '#fff' })
+            .setScrollFactor(0);
+        uiContainer.add(playerCountText);
+
+        const decrementPlayerCountText = this.add.text(0, 24, '[ - ]', { fontSize: '24px', color: '#fff' })
+            .setInteractive({ useHandCursor: true })
+            .setScrollFactor(0)
+            .on('pointerdown', () => this.scene.start('GameLoad', { playerCount: playerCount - 1 }));
+        uiContainer.add(decrementPlayerCountText);
+
+        const incrementPlayerCountText = this.add.text(68, 24, '[ + ]', { fontSize: '24px', color: '#fff' })
+            .setInteractive({ useHandCursor: true })
+            .setScrollFactor(0)
+            .on('pointerdown', () => this.scene.start('GameLoad', { playerCount: playerCount + 1 }));
+        uiContainer.add(incrementPlayerCountText);
+        this.add.existing(uiContainer);
+
+        this.updateDebugUI = () => {
+            const halfWidth = uiContainer.width / 2;
+            const halfHeight = uiContainer.height / 2;
+            const position = this.cameraSystem.getHUDPosition(halfWidth, halfHeight);
+            uiContainer.setScale(1 / this.cameraSystem.getCamera().zoom);
+            uiContainer.setPosition(position.x, position.y);
+        };
     }
 
     private renderAll() {
@@ -91,6 +126,7 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
+        this.updateDebugUI();
 
         const playerZone = StoreSystem.getPlayerZone();
         if (!playerZone.isAlive()) {
