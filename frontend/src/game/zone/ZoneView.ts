@@ -2,7 +2,7 @@ import { GameScene } from "@/scenes/Game";
 import Zone from "@/domain/Zone";
 import { ZonePosition } from "@/domain/Position";
 import ZoneSlotView from "@/game/zone/ZoneSlotView"
-import { Point2D, Point3D, Size2D, Rotation, OrientedBoundingBox3D } from "@/domain/Geometry";
+import { Point2D, Point3D, Size2D, Rotation, OrientedBoundingBox3D, Corners3D } from "@/domain/Geometry";
 import ProjectionSystem from "@/core/ProjectionSystem";
 
 interface ZoneViewOptions {
@@ -64,57 +64,14 @@ class ZoneView extends Phaser.GameObjects.Container {
 
   /**
    * Computes the OrientedBoundingBox3D for a slot in ZoneSlotView-local screen-space.
-   *
-   * Steps:
-   *  1. Resolve local slot offset (in board-space, relative to zone center).
-   *  2. Rotate that offset by the zone rotation (board-space rotation).
-   *  3. Add to zone board-space position → slot board-space world position.
-   *  4. Project slot center → screen position; offset relative to ZoneView.
-   *  5. Project each corner from board-space → screen; make relative to slot center.
    */
   private resolveOBBForSlot(position: ZonePosition): OrientedBoundingBox3D {
-    const rad = Phaser.Math.DegToRad(this.options.rotation);
-    const cos = Math.cos(rad);
-    const sin = Math.sin(rad);
-
-    const rotateOffset = (offset: Point2D): Point2D => ({
-      x: offset.x * cos - offset.y * sin,
-      y: offset.x * sin + offset.y * cos,
-    });
-
-    // 1-3: slot center in board-space
-    const localOffset = this.resolveOffsetForPosition(position);
-    const rotatedOffset = rotateOffset(localOffset);
-    const slotBoard: Point2D = {
-      x: this.options.position.x + rotatedOffset.x,
-      y: this.options.position.y + rotatedOffset.y,
-    };
-
-    // 4: project slot center
+    const slotBoard = this.calculateSlotBoardPosition(position);
     const slotScreen = ProjectionSystem.toPoint3D(slotBoard);
 
     // Position of slot within ZoneView local screen-space
     const localX = slotScreen.x - this.x;
     const localY = slotScreen.y - this.y;
-
-    // 5: project each corner from board-space, relative to slot screen center
-    const hw = this.options.slotSize.width / 2;
-    const hh = this.options.slotSize.height / 2;
-
-    const projectCorner = (cornerOffset: Point2D): Point3D => {
-      const rotated = rotateOffset(cornerOffset);
-      const boardPos: Point2D = {
-        x: slotBoard.x + rotated.x,
-        y: slotBoard.y + rotated.y,
-      };
-      const screen = ProjectionSystem.toPoint3D(boardPos);
-      return {
-        x: screen.x - slotScreen.x,
-        y: screen.y - slotScreen.y,
-        z: screen.z,
-        scale: screen.scale,
-      };
-    };
 
     return {
       x: localX,
@@ -125,12 +82,56 @@ class ZoneView extends Phaser.GameObjects.Container {
       height: this.options.slotSize.height,
       depth: 0,
       rotation: this.options.rotation,
-      corners: {
-        tl: projectCorner({ x: -hw, y: -hh }),
-        tr: projectCorner({ x:  hw, y: -hh }),
-        bl: projectCorner({ x: -hw, y:  hh }),
-        br: projectCorner({ x:  hw, y:  hh }),
-      },
+      corners: this.projectCorners(slotBoard, slotScreen),
+    };
+  }
+
+  private calculateSlotBoardPosition(position: ZonePosition): Point2D {
+    const localOffset = this.resolveOffsetForPosition(position);
+    const rotatedOffset = this.rotateBoardOffset(localOffset);
+    
+    return {
+      x: this.options.position.x + rotatedOffset.x,
+      y: this.options.position.y + rotatedOffset.y,
+    };
+  }
+
+  private projectCorners(slotBoard: Point2D, slotScreen: Point3D): Corners3D {
+    const halfWidth = this.options.slotSize.width / 2;
+    const halfHeight = this.options.slotSize.height / 2;
+
+    const projectCorner = (cornerOffset: Point2D): Point3D => {
+      const rotated = this.rotateBoardOffset(cornerOffset);
+      const boardPos: Point2D = {
+        x: slotBoard.x + rotated.x,
+        y: slotBoard.y + rotated.y,
+      };
+      
+      const screen = ProjectionSystem.toPoint3D(boardPos);
+      return {
+        x: screen.x - slotScreen.x,
+        y: screen.y - slotScreen.y,
+        z: screen.z,
+        scale: screen.scale,
+      };
+    };
+
+    return {
+      tl: projectCorner({ x: -halfWidth, y: -halfHeight }),
+      tr: projectCorner({ x:  halfWidth, y: -halfHeight }),
+      bl: projectCorner({ x: -halfWidth, y:  halfHeight }),
+      br: projectCorner({ x:  halfWidth, y:  halfHeight }),
+    };
+  }
+
+  private rotateBoardOffset(offset: Point2D): Point2D {
+    const rad = Phaser.Math.DegToRad(this.options.rotation);
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    return {
+      x: offset.x * cos - offset.y * sin,
+      y: offset.x * sin + offset.y * cos,
     };
   }
 
