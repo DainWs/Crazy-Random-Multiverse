@@ -17,19 +17,19 @@ const FRIENDLY_ROTATION = ROTATION_MAP.get(FRIENDLY_SIDE)!;
 const ENEMY_SIDE_ITERATOR = [BattlefieldSide.TOP, BattlefieldSide.LEFT, BattlefieldSide.RIGHT];
 
 function createAllZoneViews(scene: GameScene, battlefield: Battlefield) {
-  const centerSideIndex = Math.floor(battlefield.maxPlayersPerSide / 2);
+  const mainPlayerIndex = Math.floor(battlefield.maxPlayersPerSide / 2);
   const layout = new ZoneLayout(battlefield, ENEMY_SIDE_ITERATOR);
 
-  const zoneViews: ZoneView[] = [];
-  zoneViews.push(createMyZoneView(scene, battlefield, layout, centerSideIndex));
-  zoneViews.push(...createFriendlyZoneViews(scene, battlefield, layout, centerSideIndex));
-  zoneViews.push(...createEnemyZoneViews(scene, battlefield, layout));
-  return zoneViews;
+  return [
+    createMyZoneView(scene, battlefield, layout, mainPlayerIndex),
+    ...createFriendlyZoneViews(scene, battlefield, layout, mainPlayerIndex),
+    ...createEnemyZoneViews(scene, battlefield, layout)
+  ];
 }
 
 function createMyZoneView(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, mainPlayerIndex: number) {
   const zoneView = new ZoneView(scene, battlefield.myZone,  {
-    position: layout.getPlayerZonePosition(FRIENDLY_SIDE, mainPlayerIndex),
+    position: layout.getPlayerZonePosition(FRIENDLY_SIDE, mainPlayerIndex, mainPlayerIndex),
     rotation: FRIENDLY_ROTATION,
     slotSize: SLOT_SIZE
   });
