@@ -18,7 +18,6 @@ cardAnimations.set('endDrag', Animations.endDragAnimation);
 function playTween(card: CardView, tween: CardTween, ...args: unknown[]): Phaser.Tweens.Tween {
   const provider = cardTweens.get(tween) ?? Tweens.noneTween;
   const tweenConfig = provider(card, args);
-  console.log(tweenConfig);
   return card.scene.tweens.add(tweenConfig);
 }
 

@@ -91,7 +91,6 @@ class CardDragAndDropManager {
   }
 
   public onDropCard(scene: Phaser.Scene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
-    console.log("on drop card", droppedCard, targetGameObject);
     if (!targetGameObject) {
       targetGameObject = getTopGameObjectAtCursor(scene, "ZoneSlotView") as TargetGameObject;
     }

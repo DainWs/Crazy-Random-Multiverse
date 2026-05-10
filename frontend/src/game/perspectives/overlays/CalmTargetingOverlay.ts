@@ -53,12 +53,9 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
   }
 
   private drawTargets(): void {
-    console.log(this.collector())
     for (const targetArea of this.collector()) {
       const centerX = targetArea.x + targetArea.width / 2;
       const centerY = targetArea.y + targetArea.height / 2;
-      console.log(targetArea.x);
-      console.log(targetArea.y);
       const targetImage = this.scene.add.image(centerX, centerY, 'unknown');
       targetImage.setDepth(this.depth);
 

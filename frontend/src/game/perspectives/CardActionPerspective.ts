@@ -39,7 +39,6 @@ class CardActionPerspective implements Perspective {
     }
 
     private targetAreaCollector(): TargetArea[] {
-        console.log("wow " + this.currentZone)
         if (!this.currentZone) return [];
         const targetAreas: TargetArea[] = [];
 

@@ -112,7 +112,6 @@ class GameScene extends Scene {
         this.battlefieldContainer.add(battlefieldView);
 
         const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield);
-        console.log("zoneviews", zoneViews);
         for (const zoneView of zoneViews) {
             this.zones.push(zoneView);
             this.battlefieldContainer.add(zoneView);

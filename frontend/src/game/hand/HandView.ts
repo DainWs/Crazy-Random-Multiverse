@@ -123,7 +123,6 @@ class HandView extends Phaser.GameObjects.Container {
 
   public updateCards() {
     const cardLength = this.cards.length;
-    console.log("updateCards", cardLength);
 
     for (let i = 0; i < this.cards.length; i++) {
       const position = this.layoutHelper.calculateSlotPositionFromIndex(i, cardLength);
@@ -203,10 +202,10 @@ class HandView extends Phaser.GameObjects.Container {
     this.cardListenersEnabled = true;
   }
 
-  public disableCardListeners() {
+  public disableCardListeners(sliceCards = true) {
     this.cardListenersEnabled = false;
     this.hoverIndex = NONE_CARD_IS_HOVER;
-    this.sliceCardsToShowHoverIndex();
+    if (sliceCards) this.sliceCardsToShowHoverIndex();
   }
 }
 
