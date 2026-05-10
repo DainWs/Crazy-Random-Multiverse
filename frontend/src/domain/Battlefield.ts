@@ -5,7 +5,6 @@ import Zone from "@/domain/Zone";
 
 const BASE_BOARD_SIDE = 3200;
 const PLAYER_SPACING = 900;
-const MAX_PLAYERS_PER_BATTLEFIELD_SIDE = 3;
 
 enum BattlefieldSide {
   BOTTOM = 'bottom',
@@ -15,9 +14,9 @@ enum BattlefieldSide {
 }
 
 class Battlefield {
-  public readonly sideSize: number;
+  private sideSize: number;
+  private maxPlayersPerSide: number;
   public readonly playerSpacing: number;
-  public readonly maxPlayersPerSide: number;
 
   public readonly skin: BattlefieldSkin;
   public readonly gameConfiguration: GameConfiguration;
@@ -27,15 +26,14 @@ class Battlefield {
   public readonly enemyZones: Zone[];
 
   constructor(skin: BattlefieldSkin, gameConfiguration: GameConfiguration, myZone: Zone) {
-    this.maxPlayersPerSide = MAX_PLAYERS_PER_BATTLEFIELD_SIDE;
     this.playerSpacing = PLAYER_SPACING;
-    this.sideSize = BASE_BOARD_SIDE + (this.maxPlayersPerSide - 1) * this.playerSpacing;
-
     this.skin = skin;
     this.gameConfiguration = gameConfiguration;
     this.myZone = myZone;
     this.friendlyZones = [];
     this.enemyZones = [];
+    
+    this.recalculateDimensions();
   }
 
   public addZones(zones: Zone[]) {
@@ -45,6 +43,24 @@ class Battlefield {
       if (zone.team === 'enemy') this.enemyZones.push(zone);
       if (zone.team === 'friendly') this.friendlyZones.push(zone);
     }
+
+    this.recalculateDimensions();
+  }
+
+  private recalculateDimensions() {
+    const friendlyCount = this.friendlyZones.length + 1;
+    const enemyCountPerSide = Math.ceil(this.enemyZones.length / 3);
+    
+    this.maxPlayersPerSide = Math.max(friendlyCount, enemyCountPerSide, 1);
+    this.sideSize = BASE_BOARD_SIDE + (this.maxPlayersPerSide - 1) * this.playerSpacing;
+  }
+
+  public getSideSize(): number {
+    return this.sideSize;
+  }
+
+  public getMaxPlayersPerSide(): number {
+    return this.maxPlayersPerSide;
   }
 
   public getCenter(): Point2D {

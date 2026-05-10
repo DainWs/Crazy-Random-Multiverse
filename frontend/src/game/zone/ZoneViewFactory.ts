@@ -17,7 +17,7 @@ const FRIENDLY_ROTATION = ROTATION_MAP.get(FRIENDLY_SIDE)!;
 const ENEMY_SIDE_ITERATOR = [BattlefieldSide.TOP, BattlefieldSide.LEFT, BattlefieldSide.RIGHT];
 
 function createAllZoneViews(scene: GameScene, battlefield: Battlefield) {
-  const mainPlayerIndex = Math.floor(battlefield.maxPlayersPerSide / 2);
+  const mainPlayerIndex = Math.floor(battlefield.getMaxPlayersPerSide() / 2);
   const layout = new ZoneLayout(battlefield, ENEMY_SIDE_ITERATOR);
 
   return [

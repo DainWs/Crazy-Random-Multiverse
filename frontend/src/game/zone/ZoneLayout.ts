@@ -16,7 +16,7 @@ class ZoneLayout {
     this.battlefield = battlefield;
     this.enemySideIterator = enemySideIterator;
     this.playerSpacing = battlefield.playerSpacing;
-    this.halfWidth = battlefield.sideSize / 2;
+    this.halfWidth = battlefield.getSideSize() / 2;
     this.offset = battlefield.skin.gridStep * 2 + PLAYER_ZONE_HALF_HEIGHT;
     this.playersOnSide = this.calculatePlayersOnSide();
   }
