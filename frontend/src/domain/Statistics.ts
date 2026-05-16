@@ -1,8 +1,10 @@
 type DamageType = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorType = 'PHYSICAL' | 'MAGIC';
 
+type StatisticType = 'Damage' | 'Armor' | 'Health';
+
 interface Statistic {
-  type: 'Damage' | 'Armor' | 'Health';
+  type: StatisticType;
   value: number;
   valueType?: DamageType | ArmorType;
   maxValue?: number;
@@ -44,5 +46,5 @@ function Health(value: number, maxValue: number): Statistic {
   }
 }
 
-export type { DamageType, ArmorType, Statistic };
+export type { StatisticType, DamageType, ArmorType, Statistic };
 export { Damage, Armor, Health };
