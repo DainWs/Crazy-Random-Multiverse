@@ -7,7 +7,7 @@ import { CardAnimation, CardAnimationApplier } from "@/game/cards/CardAnimations
 const cardTweens = new Map<CardTween, CardTweenProvider>();
 cardTweens.set('hover', Tweens.hoverTween);
 cardTweens.set('unhover', Tweens.unhoverTween);
-cardTweens.set('hand_horizontal_slide', Tweens.slideToTween);
+cardTweens.set('horizontal_slide', Tweens.slideToTween);
 cardTweens.set('move_to_hand', Tweens.moveToTween);
 cardTweens.set('preview_in_zone_slot', Tweens.previewInZoneSlotTween);
 

@@ -57,7 +57,7 @@ class HandAnimator {
   }
 
   public sliceCard(cardView: CardView, x: number, y: number): void {
-    cardView.applyTween('hand_horizontal_slide', x, y);
+    cardView.applyTween('horizontal_slide', x, y);
   }
 }
 

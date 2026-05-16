@@ -2,7 +2,7 @@ import { CardView } from "@/game/cards/CardView";
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
-type CardTween = 'hover' | 'unhover' | 'hand_horizontal_slide' | 'move_to_hand' | 'preview_in_zone_slot';
+type CardTween = 'hover' | 'unhover' | 'horizontal_slide' | 'move_to_hand' | 'preview_in_zone_slot';
 type CardTweenProvider = (card: CardView, args: unknown[]) => TweenConfig;
 
 function noneTween(card: CardView) {
