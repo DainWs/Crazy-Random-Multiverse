@@ -1,4 +1,4 @@
-import CardStackHelper from "@/game/cards/CardStackHelper";
+import CardStackHelper, { BEHIND_CARD_OFFSET } from "@/game/cards/CardStackHelper";
 import CardView from "@/game/cards/CardView";
 
 class CombatantStackHelper implements CardStackHelper {
@@ -6,7 +6,7 @@ class CombatantStackHelper implements CardStackHelper {
   private readonly offset: number;
   private cardBehind?: CardView;
 
-  public constructor(combatant: CardView, offset = 20) {
+  public constructor(combatant: CardView, offset = BEHIND_CARD_OFFSET) {
     this.combatant = combatant;
     this.offset = offset;
   }
@@ -21,20 +21,42 @@ class CombatantStackHelper implements CardStackHelper {
     }
 
     this.cardBehind = equipment;
+    const [xWithOffset, yWithOffset] = this.calculateOffsetPosition();
+    this.cardBehind.setOriginalPosition(xWithOffset, yWithOffset);
+    this.cardBehind.setOriginalDepth(this.combatant.depth - 1);
+    this.cardBehind.setAngle(this.combatant.angle);
+    this.cardBehind.reset();
+    this.cardBehind.disableInteractive();
 
-    const originalBounds = this.combatant.getOriginalBounds();
-    const { x, y, z, w } = originalBounds.position;
-    const { width, height } = originalBounds.size;
-    const { scaleX, scaleY } = originalBounds.scale;
+    this.combatant.addAt(this.cardBehind, 0);
+    this.combatant.scene.input.setDraggable(this.cardBehind, false);
 
-    equipment.setOriginalPosition(x - this.offset, y - this.offset, z, w);
-    equipment.setOriginalDepth(originalBounds.depth - 1);
-    equipment.setOriginalSize(width, height);
-    equipment.setOriginalScale(scaleX, scaleY);
-    equipment.reset();
+    this.combatant.on('pointerout', () => this.hideStackedCards());
+    this.combatant.on('pointerover', () => this.showStackedCards());
+  }
 
-    this.combatant.scene.input.setDraggable(equipment, false);
-    equipment.setInteractive({ useHandCursor: false });
+  public showStackedCards() {
+    const [xWithOffset, yWithOffset] = this.calculateShowPosition();
+    this.cardBehind?.applyTween('horizontal_slide', xWithOffset, yWithOffset);
+  }
+
+  public hideStackedCards() {
+    const [xWithOffset, yWithOffset] = this.calculateOffsetPosition();
+    this.cardBehind?.applyTween('horizontal_slide', xWithOffset, yWithOffset);
+  }
+
+  private calculateShowPosition() {
+    if (this.combatant.angle === 90) return [0, this.offset + CardView.WIDTH];
+    if (this.combatant.angle === 180) return [this.offset + CardView.WIDTH, 0];
+    if (this.combatant.angle === -90) return [0, -(this.offset + CardView.WIDTH)];
+    return [-(this.offset + CardView.WIDTH), 0];
+  }
+
+  private calculateOffsetPosition() {
+    if (this.combatant.angle === 90) return [0, this.offset];
+    if (this.combatant.angle === 180) return [this.offset, 0];
+    if (this.combatant.angle === -90) return [0, -this.offset];
+    return [-this.offset, 0];
   }
 
   public hasCardStacked(): boolean {
@@ -43,66 +65,6 @@ class CombatantStackHelper implements CardStackHelper {
 
   public getCardBehind(): CardView | undefined {
     return this.cardBehind;
-  }
-
-
-  // Propagations
-  public propagatePosition(x?: number, y?: number, z?: number, w?: number): void {
-    const xWithOffset = x ? x - this.offset : undefined;
-    const yWithOffset = y ? y - this.offset : undefined;
-    this.cardBehind?.setPosition(xWithOffset, yWithOffset, z, w);
-  }
-
-  public propagateSize(width: number, height: number): void {
-    this.cardBehind?.setSize(width, height);
-  }
-
-  public propagateScale(scaleX: number, scaleY: number): void {
-    this.cardBehind?.setScale(scaleX, scaleY);
-  }
-
-  public propagateDepth(depth: number): void {
-    this.cardBehind?.setDepth(depth - 1);
-  }
-
-
-  // Original propagations
-  public propagateOriginalPosition(x: number, y: number): void {
-    this.cardBehind?.setOriginalPosition(x - this.offset, y - this.offset);
-  }
-
-  public propagateOriginalSize(width: number, height: number): void {
-    this.cardBehind?.setOriginalSize(width, height);
-  }
-
-  public propagateOriginalScale(scale: number): void {
-    this.cardBehind?.setOriginalScale(scale);
-  }
-
-  public propagateOriginalDepth(depth: number): void {
-    this.cardBehind?.setOriginalDepth(depth - 1);
-  }
-
-
-  // Reset propagations
-  public propagatePositionReset(): void {
-    this.cardBehind?.resetPosition();
-  }
-
-  public propagateSizeReset(): void {
-    this.cardBehind?.resetSize();
-  }
-
-  public propagateScaleReset(): void {
-    this.cardBehind?.resetScale();
-  }
-
-  public propagateDepthReset(): void {
-    this.cardBehind?.resetDepth();
-  }
-
-  public propagateReset(): void {
-    this.cardBehind?.reset();
   }
 }
 

@@ -57,13 +57,12 @@ class CardView extends Phaser.GameObjects.Container {
     card: Card
   ) {
     super(scene);
-    this.x = this.scene.cameras.main.x - CardView.WIDTH;
-    this.y = this.scene.cameras.main.y - CardView.HEIGHT;
-    this.scaleX = 1;
-    this.scaleY = 1;
+    this.scale = 1;
+    this.depth = 10;
+    this.x = 0;
+    this.y = 0;
     this.width = CardView.WIDTH;
     this.height = CardView.HEIGHT;
-    this.depth = 10;
     this.setSize(this.width, this.height);
 
     this.originalBounds = { 
@@ -161,22 +160,14 @@ class CardView extends Phaser.GameObjects.Container {
 
   // Bounds modification methods
   public setPosition(x?: number, y?: number, z?: number, w?: number): this {
-    this.stackHelper?.propagatePosition(x, y, z, w);
     return super.setPosition(x, y, z, w);
   }
 
   public setDepth(depth: number): this {
-    this.stackHelper?.propagateDepth(depth);
     return super.setDepth(depth);
   }
 
-  public setSize(width: number, height: number): this {
-    this.stackHelper?.propagateSize(width, height);
-    return super.setSize(width, height);
-  }
-
   public setScale(scaleX: number, scaleY?: number): this {
-    this.stackHelper?.propagateScale(scaleX, scaleY);
     return super.setScale(scaleX, scaleY);
   }
 
@@ -186,7 +177,6 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   public setOriginalPosition(originalX: number, originalY: number, originalZ?: number, originalW?: number) {
-    this.stackHelper?.propagateOriginalPosition(originalX, originalY, originalZ, originalW);
     this.originalBounds.position = { x: originalX, y: originalY, z: originalZ, w: originalW };
   }
 
@@ -195,7 +185,6 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   public setOriginalDepth(originalDepth: number) {
-    this.stackHelper?.propagateOriginalDepth(originalDepth);
     this.originalBounds.depth = originalDepth;
   }
 
@@ -203,17 +192,7 @@ class CardView extends Phaser.GameObjects.Container {
     return this.originalBounds.depth;
   }
 
-  public setOriginalSize(originalWidth: number, originalHeight: number) {
-    this.stackHelper?.propagateOriginalSize(originalWidth, originalHeight);
-    this.originalBounds.size = { width: originalWidth, height: originalHeight };
-  }
-
-  public getOriginalSize(): OriginalSize {
-    return this.originalBounds.size; 
-  }
-
   public setOriginalScale(originalScaleX: number, originalScaleY?: number) {
-    this.stackHelper?.propagateOriginalScale(originalScaleX, originalScaleY);
     this.originalBounds.scale = { scaleX: originalScaleX, scaleY: originalScaleY };
   }
 
@@ -224,32 +203,21 @@ class CardView extends Phaser.GameObjects.Container {
 
   // Reset bounds methods
   public reset(): void {
-    this.stackHelper?.propagateReset();
     this.resetPosition();
-    this.resetSize();
     this.resetScale();
     this.resetDepth();
   }
 
   public resetPosition(): void {
-    this.stackHelper?.propagatePositionReset();
     const { x, y, z, w } = this.originalBounds.position;
     this.setPosition(x, y, z, w);
   }
 
-  public resetSize(): void {
-    this.stackHelper?.propagateSizeReset();
-    const { width, height } = this.originalBounds.size;
-    this.setSize(width, height);
-  }
-
   public resetDepth(): void {
-    this.stackHelper?.propagateDepthReset();
     this.setDepth(this.originalBounds.depth);
   }
 
   public resetScale(): void {
-    this.stackHelper?.propagateScaleReset();
     const { scaleX, scaleY } = this.originalBounds.scale;
     this.setScale(scaleX, scaleY);
   }
