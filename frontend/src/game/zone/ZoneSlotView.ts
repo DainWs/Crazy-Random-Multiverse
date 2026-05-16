@@ -6,6 +6,7 @@ import ZoneSlot from "@/domain/ZoneSlot";
 import { CardView } from "@/game/cards/CardView";
 import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
+import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 
 class ZoneSlotView extends Phaser.GameObjects.Container {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
@@ -64,22 +65,18 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.add([ this.backgroundGraphics, this.mark ]);
   }
 
-  public setCard(cardView: CardView | null) {
-    if (cardView) {
-      this.zoneSlot.combatant = cardView.card as CombatantCard;
+  public setCard(cardView: CardView) {
+    this.zoneSlot.combatant = cardView.card as CombatantCard;
+    this.cardView = cardView;
+    this.add(this.cardView);
 
-      this.cardView = cardView;
-      this.add(this.cardView);
+    zoneSlotCardHelper.applyCardTransformations(this, cardView);
+  }
 
-      this.cardView.setPosition(0, 0);
-      this.cardView.setOriginalPosition(0, 0);
-      this.cardView.setScale(this.centerPoint.scale);
-      this.cardView.setAngle(this.slotRotation); 
-    } else {
-      this.zoneSlot.combatant = null;
-      if (this.cardView) {
-        this.remove(this.cardView);
-      }
+  public removeCard() {
+    this.zoneSlot.combatant = null;
+    if (this.cardView) {
+      this.remove(this.cardView);
       this.cardView = null;
     }
   }
@@ -88,9 +85,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     if (!this.previewedCardView) {
       this.previewedCardView = cardView;
 
-      const worldMatrix = this.getWorldTransformMatrix();
-      const tweenArgs = [worldMatrix.tx, worldMatrix.ty, this.centerPoint.scale, this.slotRotation];
-      cardView.applyTween('preview_in_zone_slot', ...tweenArgs);
+      zoneSlotCardHelper.previewCard(this, cardView);
     }
   }
 

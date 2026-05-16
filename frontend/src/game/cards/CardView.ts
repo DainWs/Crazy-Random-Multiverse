@@ -9,6 +9,30 @@ import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatche
 import CardAnimator from "@/game/cards/CardAnimator";
 import { Size2D } from "@/domain/Geometry";
 
+type OriginalPosition = {
+  x: number;
+  y: number;
+  z?: number;
+  w?: number;
+}
+
+type OriginalSize = {
+  width: number;
+  height: number;
+}
+
+type OriginalScale = {
+  scaleX: number;
+  scaleY: number | undefined;
+}
+
+type OriginalBounds = {
+  position: OriginalPosition;
+  size: OriginalSize;
+  scale: OriginalScale;
+  depth: number;
+}
+
 class CardView extends Phaser.GameObjects.Container {
   public static readonly WIDTH: number = 200;
   public static readonly HEIGHT: number = 300;
@@ -25,9 +49,7 @@ class CardView extends Phaser.GameObjects.Container {
 
   private allowClicks: boolean; // TODO search a way to improve this
 
-  private originalDepth: number; // TODO maybe this is not needed if we use getDepth() and default depth
-  private originalX: number;
-  private originalY: number;
+  private originalBounds: OriginalBounds;
 
   constructor(
     scene: Phaser.Scene,
@@ -37,14 +59,19 @@ class CardView extends Phaser.GameObjects.Container {
     super(scene);
     this.x = this.scene.cameras.main.x - CardView.WIDTH;
     this.y = this.scene.cameras.main.y - CardView.HEIGHT;
-    this.originalX = this.x;
-    this.originalY = this.y;
-    this.depth = 10;
-    this.originalDepth = this.depth;
-    this.scale = 1;
+    this.scaleX = 1;
+    this.scaleY = 1;
     this.width = CardView.WIDTH;
     this.height = CardView.HEIGHT;
+    this.depth = 10;
     this.setSize(this.width, this.height);
+
+    this.originalBounds = { 
+      position: { x: this.x, y: this.y }, 
+      size: { width: this.width, height: this.height },
+      scale: { scaleX: this.scaleX, scaleY: this.scaleY },
+      depth: this.depth 
+    };
 
     this.card = card;
 
@@ -112,14 +139,6 @@ class CardView extends Phaser.GameObjects.Container {
     return this.allowClicks;
   }
 
-
-
-
-
-
-
-
-
   public showTooltip(): void { 
     this.tooltip?.show(this);
   }
@@ -140,6 +159,7 @@ class CardView extends Phaser.GameObjects.Container {
     this.scene.tweens.killTweensOf(this);
   }
 
+  // Bounds modification methods
   public setPosition(x?: number, y?: number, z?: number, w?: number): this {
     this.stackHelper?.propagatePosition(x, y, z, w);
     return super.setPosition(x, y, z, w);
@@ -150,36 +170,91 @@ class CardView extends Phaser.GameObjects.Container {
     return super.setDepth(depth);
   }
 
-  public setOriginalPosition(originalX: number, originalY: number) {
-    this.stackHelper?.propagateOriginalPosition(originalX, originalY);
-    this.originalX = originalX;
-    this.originalY = originalY;
+  public setSize(width: number, height: number): this {
+    this.stackHelper?.propagateSize(width, height);
+    return super.setSize(width, height);
   }
 
-  public getOriginalPosition(): { x: number, y: number } {
-    return { x: this.originalX, y: this.originalY }; 
+  public setScale(scaleX: number, scaleY?: number): this {
+    this.stackHelper?.propagateScale(scaleX, scaleY);
+    return super.setScale(scaleX, scaleY);
+  }
+
+  // Original bounds methods
+  public getOriginalBounds(): OriginalBounds {
+    return this.originalBounds;
+  }
+
+  public setOriginalPosition(originalX: number, originalY: number, originalZ?: number, originalW?: number) {
+    this.stackHelper?.propagateOriginalPosition(originalX, originalY, originalZ, originalW);
+    this.originalBounds.position = { x: originalX, y: originalY, z: originalZ, w: originalW };
+  }
+
+  public getOriginalPosition(): OriginalPosition {
+    return this.originalBounds.position; 
   }
 
   public setOriginalDepth(originalDepth: number) {
     this.stackHelper?.propagateOriginalDepth(originalDepth);
-    this.originalDepth = originalDepth;
+    this.originalBounds.depth = originalDepth;
   }
 
   public getOriginalDepth(): number {
-    return this.originalDepth;
+    return this.originalBounds.depth;
+  }
+
+  public setOriginalSize(originalWidth: number, originalHeight: number) {
+    this.stackHelper?.propagateOriginalSize(originalWidth, originalHeight);
+    this.originalBounds.size = { width: originalWidth, height: originalHeight };
+  }
+
+  public getOriginalSize(): OriginalSize {
+    return this.originalBounds.size; 
+  }
+
+  public setOriginalScale(originalScaleX: number, originalScaleY?: number) {
+    this.stackHelper?.propagateOriginalScale(originalScaleX, originalScaleY);
+    this.originalBounds.scale = { scaleX: originalScaleX, scaleY: originalScaleY };
+  }
+
+  public getOriginalScale(): OriginalScale {
+    return this.originalBounds.scale; 
+  }
+
+
+  // Reset bounds methods
+  public reset(): void {
+    this.stackHelper?.propagateReset();
+    this.resetPosition();
+    this.resetSize();
+    this.resetScale();
+    this.resetDepth();
   }
 
   public resetPosition(): void {
     this.stackHelper?.propagatePositionReset();
-    this.setPosition(this.originalX, this.originalY);
-    this.setDepth(this.originalDepth);
+    const { x, y, z, w } = this.originalBounds.position;
+    this.setPosition(x, y, z, w);
+  }
+
+  public resetSize(): void {
+    this.stackHelper?.propagateSizeReset();
+    const { width, height } = this.originalBounds.size;
+    this.setSize(width, height);
   }
 
   public resetDepth(): void {
     this.stackHelper?.propagateDepthReset();
-    this.setDepth(this.originalDepth);
+    this.setDepth(this.originalBounds.depth);
   }
 
+  public resetScale(): void {
+    this.stackHelper?.propagateScaleReset();
+    const { scaleX, scaleY } = this.originalBounds.scale;
+    this.setScale(scaleX, scaleY);
+  }
+
+  // Others
   protected preDestroy(): void {
     super.preDestroy();
     InteractiveObjectManager.unregisterGameObject(this.scene, this);
