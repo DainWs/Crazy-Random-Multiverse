@@ -25,10 +25,13 @@ class CardDragAndDropManager {
     this.setSource(getSourceGameObjectAtCursor(scene));
     this.targetGameObject = undefined;
 
-    if (this.sourceGameObject instanceof HandView) {
+    if (this.sourceGameObject) {
       this.sourceGameObjectIndex = this.sourceGameObject.getIndex(card);
       this.sourceGameObject.remove(card);
       scene.add.existing(card);
+    }
+
+    if (this.sourceGameObject instanceof HandView) {
       this.sourceGameObject.hideCards();
       this.sourceGameObject.disableCardListeners();
     }
@@ -106,7 +109,7 @@ class CardDragAndDropManager {
   public onDragEnd(scene: Phaser.Scene, card: CardView) {
     scene.input.manager.canvas.style.cursor = "grab";
 
-    if (this.sourceGameObject instanceof HandView && !this.successfullyDropped) {
+    if (this.sourceGameObject && !this.successfullyDropped) {
       this.sourceGameObject.addAt(card, this.sourceGameObjectIndex!);
     }
 
