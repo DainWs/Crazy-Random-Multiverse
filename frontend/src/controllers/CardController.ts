@@ -1,3 +1,4 @@
+import { EquipmentCard } from "@/domain/Card";
 import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
@@ -68,6 +69,8 @@ class CardController {
 
     sourceHandView.removeCard(equipmentCardView);
     targetCardView.stack(equipmentCardView);
+
+    targetCardView.card.equipment = equipmentCardView.card as EquipmentCard;
     // TODO propagar evento al backend
     return true;
   }
