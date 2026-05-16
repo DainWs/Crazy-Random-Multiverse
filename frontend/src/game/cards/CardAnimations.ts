@@ -13,7 +13,7 @@ function startDragAnimation(cardView: CardView): void {
 }
 
 function endDragAnimation(cardView: CardView): void {
-  cardView.setScale(1);
+  cardView.resetScale();
   cardView.resetDepth();
   cardView.setAlpha(1);
   cardView.hideTooltip();

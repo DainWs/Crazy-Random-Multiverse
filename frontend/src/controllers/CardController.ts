@@ -49,7 +49,7 @@ class CardController {
       return false;
     }
 
-    fromZoneSlot.setCard(null);
+    fromZoneSlot.removeCard();
     toZoneSlot.setCard(card);
     // TODO propagar evento al backend
     return true;

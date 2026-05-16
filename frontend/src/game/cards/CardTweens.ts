@@ -6,30 +6,40 @@ type CardTween = 'hover' | 'unhover' | 'hand_horizontal_slide' | 'move_to_hand' 
 type CardTweenProvider = (card: CardView, args: unknown[]) => TweenConfig;
 
 function noneTween(card: CardView) {
+  const originalScale = card.getOriginalScale();
   return {
     targets: card,
-    scale: 1,
+    scaleX: originalScale.scaleX,
+    scaleY: originalScale.scaleY,
     duration: 0,
     ease: 'Linear',
     persist: false
   };
 };
 
+const HOVER_DURATION = 150;
 function hoverTween(card: CardView): TweenConfig {
+  const originalScale = card.getOriginalScale();
+  const scaleX = originalScale.scaleX;
+  const scaleY = originalScale.scaleY ?? scaleX;
   return {
     targets: card,
-    scale: 1.035,
-    duration: 150,
+    scaleX: scaleX * 1.035,
+    scaleY: scaleY * 1.035,
+    duration: HOVER_DURATION,
     ease: 'Power1',
     persist: false
   };
 }
 
+const UNHOVER_DURATION = 150;
 function unhoverTween(card: CardView): TweenConfig {
+  const originalScale = card.getOriginalScale();
   return {
     targets: card,
-    scale: 1,
-    duration: 150,
+    scaleX: originalScale.scaleX,
+    scaleY: originalScale.scaleY,
+    duration: UNHOVER_DURATION,
     ease: 'Power1',
     persist: false
   }
@@ -61,10 +71,15 @@ function moveToTween(card: CardView, [x, y, delay]: unknown[]): TweenConfig {
 
 const PREVIEW_IN_ZONE_SLOT_DURATION = 200;
 function previewInZoneSlotTween(card: CardView, [x, y, scale, rotation]: unknown[]): TweenConfig {
+  const targetScale = typeof scale === 'number' ?
+    { x: scale, y: scale } :
+    scale as { x: number, y: number };
+
   return {
     targets: card,
     x, y,
-    scale: scale,
+    scaleX: targetScale.x,
+    scaleY: targetScale.y,
     angle: rotation,
     duration: PREVIEW_IN_ZONE_SLOT_DURATION,
     ease: 'Power1',

@@ -113,8 +113,8 @@ class CardDragAndDropManager {
       this.sourceGameObject.addAt(card, this.sourceGameObjectIndex!);
     }
 
-    card.resetPosition();
     card.applyAnimation('endDrag');
+    card.reset();
 
     if (this.sourceGameObject instanceof ZoneSlotView) {
       this.sourceGameObject?.applyAnimation('unhighlight');

@@ -159,8 +159,7 @@ class HandView extends Phaser.GameObjects.Container {
   
     for (let i = 0; i < this.cards.length; i++) {
       const card = this.cards[i];
-      let x = card.getOriginalPosition().x;
-      let y = card.getOriginalPosition().y;
+      let { x, y } = card.getOriginalPosition();
 
       if (i > this.hoverIndex) x += xOffset;
       this.animator.sliceCard(card, x, y);
