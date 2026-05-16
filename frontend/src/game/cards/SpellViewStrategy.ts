@@ -2,14 +2,15 @@ import { showDebugBoxes } from "@/env";
 import { CardView } from "@/game/cards/CardView";
 import CardViewStrategy from "@/game/cards/CardViewStrategy";
 import * as TextUtils from "@/game/utils/TextUtils";
+import { GameScene } from "@/scenes/Game";
 
 class SpellViewStrategy implements CardViewStrategy {
   public createStackHelper(_: Phaser.Scene, _2: CardView) {
     return undefined;
   }
 
-  public createTooltip(_: Phaser.Scene, _2: CardView) {
-    return undefined;
+  public createTooltip(scene: Phaser.Scene, _2: CardView) {
+    return (scene as GameScene).getCardTooltipView();
   }
 
   public createObjects(scene: Phaser.Scene, cardView: CardView, totalWidth: number, totalHeight: number) {
@@ -46,6 +47,10 @@ class SpellViewStrategy implements CardViewStrategy {
     textContainer.add(descriptionText);
     gameObjects.push(textContainer);
     return gameObjects;
+  }
+
+  public updateObjects(_: Phaser.Scene, _1: CardView, _2: number, _3: number) {
+    return;
   }
 }
 

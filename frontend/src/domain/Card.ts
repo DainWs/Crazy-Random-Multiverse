@@ -1,4 +1,4 @@
-import { Armor, Damage, Health } from "@/domain/Statistics";
+import { Armor, Damage, Health, Statistic, StatisticType } from "@/domain/Statistics";
 import Skill from "@/domain/Skills";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
@@ -86,6 +86,13 @@ class Card {
     this.description = options.description;
     this.type = options.type;
     this.rarity = options.rarity;
+  }
+
+  public getStatistic(statisticType: StatisticType): Statistic | undefined {
+    if (statisticType == 'Damage') return this.damage;
+    if (statisticType == 'Armor') return this.armor;
+    if (statisticType == 'Health') return this.health;
+    throw new Error(`Unknown statistic type: ${statisticType}`);
   }
 
   public isType(type: CardType, rarity?: CardRarity): boolean {

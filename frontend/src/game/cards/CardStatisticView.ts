@@ -11,16 +11,20 @@ class CardStatisticView extends Phaser.GameObjects.Container {
 
   private iconPosition: IconPosition;
 
-  public readonly statistic: Statistic;
+  private statistic: Statistic;
+  private affectedAmount: number;
 
-  constructor(
+  public constructor(
     scene: Phaser.Scene,
-    statistic: Statistic
+    statistic: Statistic,
+    affectedAmount: number = 0
   ) {
     super(scene);
+    this.name = statistic.type;
     this.iconPosition = 'left';
 
     this.statistic = statistic;
+    this.affectedAmount = affectedAmount;
 
     if (showDebugBoxes) {
       this.box = this.scene.add.rectangle(0, 0);
@@ -37,17 +41,24 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
+  public update(statistic: Statistic, affectedAmount: number = 0) {
+    this.statistic = statistic;
+    this.affectedAmount = affectedAmount;
+    this.updateChildren();
+  }
+
   private updateChildren() {
     const gap = this.width * 0.03;
 
     const textWidth = this.displayWidth;
     const textHeight = this.displayHeight * 0.7;
     const fontSize = Math.floor(textHeight * 2);
+    const textColor = this.getTextColor();
     this.statisticText.setPosition(0, 0);
     this.statisticText.setSize(textWidth, textHeight);
     this.statisticText.setOrigin(0.5, 0.5);
-    this.statisticText.setFontSize(fontSize)
-    this.statisticText.setColor('#000000');
+    this.statisticText.setFontSize(fontSize);
+    this.statisticText.setColor(textColor);
     TextUtils.fitText(this.statisticText, textWidth, textHeight);
 
     const iconSize = this.width * 0.5;
@@ -59,6 +70,12 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     if (showDebugBoxes && this.box) {
       this.box.setSize(textWidth, textHeight);
     }
+  }
+
+  private getTextColor() {
+    if (this.affectedAmount > 0) return '#00b800ff';
+    if (this.affectedAmount < 0) return '#e30000ff';
+    return '#000000';
   }
 
   private getIconPosition(iconSize: number, gap: number) {
@@ -80,7 +97,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     return { x: 0, y: ySide };
   }
   
-  setPosition(x?: number, y?: number, z?: number, w?: number): this {
+  public setPosition(x?: number, y?: number, z?: number, w?: number): this {
     super.setPosition(x, y, z, w);
 
     if (this.statisticIcon && this.statisticText) {
@@ -90,7 +107,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     return this;
   }
 
-  setSize(width: number, height: number): this {
+  public setSize(width: number, height: number): this {
     super.setSize(width, height);
 
     if (this.statisticIcon && this.statisticText) {
@@ -100,7 +117,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     return this;
   }
 
-  setDisplaySize(width: number, height: number): this {
+  public setDisplaySize(width: number, height: number): this {
     super.setDisplaySize(width, height);
 
     if (this.statisticIcon && this.statisticText) {
@@ -110,18 +127,18 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     return this;
   }
 
-  setIconPosition(position: IconPosition): this {
+  public setIconPosition(position: IconPosition): this {
     this.iconPosition = position;
     this.updateChildren();
     return this;
   }
 
-  setTextColor(color: string): this {
+  public setTextColor(color: string): this {
     this.statisticText.setColor(color);
     return this;
   }
 
-  setIconVisibility(visible: boolean): this {
+  public setIconVisibility(visible: boolean): this {
     this.statisticIcon.setVisible(visible);
     return this;
   }

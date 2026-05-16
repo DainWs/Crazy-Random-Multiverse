@@ -4,7 +4,7 @@ import { CardAnimation } from "@/game/cards/CardAnimations";
 import { CardTween } from "@/game/cards/CardTweens";
 import Card, { CardAudioType } from "@/domain/Card";
 import CardStackHelper from "@/game/cards/CardStackHelper";
-import { CardTooltipView } from "@/game/cards/CardTooltipView";
+import CardTooltipView from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import CardAnimator from "@/game/cards/CardAnimator";
 import { Size2D } from "@/domain/Geometry";
@@ -42,7 +42,7 @@ class CardView extends Phaser.GameObjects.Container {
   private cardImage: Phaser.GameObjects.Image;
 
   // TODO when mouse over stacked card, it should show the tooltip of the stacked card, this include to slide the cards to show the stacked card
-  private stackHelper?: CardStackHelper; 
+  private stackHelper?: CardStackHelper;
   private tooltip?: CardTooltipView;
 
   public readonly card: Card;

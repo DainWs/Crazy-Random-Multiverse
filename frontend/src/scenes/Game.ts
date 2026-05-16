@@ -1,5 +1,6 @@
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
+import CardTooltipView from '@/game/cards/CardTooltipView';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
@@ -18,7 +19,8 @@ class GameScene extends Scene {
     public readonly cameraSystem: CameraSystem;
     public readonly cardController: CardController;
     public readonly handController: HandController;
-
+    
+    private cardTooltipView: CardTooltipView;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
@@ -33,11 +35,12 @@ class GameScene extends Scene {
         const cardViewFactory = new CardViewFactory(this.cardController);
         this.handController = new HandController(this, cardViewFactory);
     }
-
+    
     public init() {
         const { width, height } = this.scale;
         this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
-
+        this.cardTooltipView = new CardTooltipView(this);
+        
         this.cameraSystem.initialize(this);
         this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
 
@@ -130,6 +133,10 @@ class GameScene extends Scene {
             this.scene.start('GameOver');
             return;
         }
+    }
+
+    public getCardTooltipView(): CardTooltipView {
+        return this.cardTooltipView;
     }
 }
 
