@@ -22,19 +22,18 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "strictPropertyInitialization": false,
-        "baseUrl": "",
         "paths": {
-            "@/*": ["src/*"]
-        }
+            "@/*": ["./src/*", "./test/*"]
+        },
+        "types": ["vitest"]
     },
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
+        "src/**/*.vue",
+        "test/**/*.ts",
     ],
     "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
+        { "path": "./tsconfig.node.json" }
     ]
 }

@@ -5,10 +5,10 @@ https://chatgpt.com/share/6aa67e84-95bc-83eb-b3bc-28bb010d6782
 ## 🔴 P0 — Critical
 
 ### Backend connectivity
-- [ ] Replace STOMP with Socket.IO
-- [ ] Implement Socket.IO connection
-- [ ] Implement Socket.IO game event handling
-- [ ] Implement Socket.IO reconnection
+- [x] Replace STOMP with Socket.IO
+- [x] Implement Socket.IO connection
+- [x] Implement Socket.IO game event handling
+- [x] Implement Socket.IO reconnection
 - [ ] Implement REST `POST /game/{gameCode}/action`
 - [ ] Implement `PUT_ACTION`
 - [ ] Implement `MOVE_ACTION`

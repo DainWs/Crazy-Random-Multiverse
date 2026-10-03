@@ -1,5 +1,4 @@
 **/*.vue
-test/*
 
 .prettierrc.json
 eslint.config.js

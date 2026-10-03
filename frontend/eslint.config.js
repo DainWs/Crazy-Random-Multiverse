@@ -18,12 +18,13 @@ export default [
     ]
   },
   {
-    files: ['src/**/*.ts', 'src/**/*.vue'],
+    files: ['src/**/*.ts', 'src/**/*.vue', 'test/**/*.ts'],
     languageOptions: {
       parserOptions: {
         parser: tseslint.parser,
         ecmaVersion: 2020,
-        sourceType: 'module'
+        sourceType: 'module',
+        project: ['./tsconfig.json', './tsconfig.test.json']
       }
     },
     rules: {
