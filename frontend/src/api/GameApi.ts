@@ -1,5 +1,14 @@
+import socketService from "@/api/SocketService";
 import Action from "@/domain/Action";
 import { GameCode } from "@/domain/GameConfiguration";
+
+const joinGame = async (gameCode: GameCode, playerCode?: string) => {
+  socketService.joinGame(gameCode, playerCode);
+}
+
+const leaveGame = async (gameCode?: GameCode) => {
+  socketService.leaveGame(gameCode);
+}
 
 const sendAction = async (action: Action) => {
   console.log(`Sending action: ${action}`);
