@@ -1,5 +1,21 @@
 import CardStackHelper, { BEHIND_CARD_OFFSET } from "@/game/cards/CardStackHelper";
-import CardView from "@/game/cards/CardView";
+import { CARD_WIDTH } from "@/game/cards/CardDimensions";
+import type CardView from "@/game/cards/CardView";
+
+function calculateStackedCardOffset(angle: number, offset: number): [number, number] {
+  if (angle === 90) return [0, offset];
+  if (angle === 180) return [offset, 0];
+  if (angle === -90) return [0, -offset];
+  return [-offset, 0];
+}
+
+function calculateRevealedCardOffset(angle: number, offset: number, cardWidth: number = CARD_WIDTH): [number, number] {
+  const totalOffset = offset + cardWidth;
+  if (angle === 90) return [0, totalOffset];
+  if (angle === 180) return [totalOffset, 0];
+  if (angle === -90) return [0, -totalOffset];
+  return [-totalOffset, 0];
+}
 
 class CombatantStackHelper implements CardStackHelper {
   private readonly combatant: CardView;
@@ -45,18 +61,12 @@ class CombatantStackHelper implements CardStackHelper {
     this.cardBehind?.applyTween('horizontal_slide', xWithOffset, yWithOffset);
   }
 
-  private calculateShowPosition() {
-    if (this.combatant.angle === 90) return [0, this.offset + CardView.WIDTH];
-    if (this.combatant.angle === 180) return [this.offset + CardView.WIDTH, 0];
-    if (this.combatant.angle === -90) return [0, -(this.offset + CardView.WIDTH)];
-    return [-(this.offset + CardView.WIDTH), 0];
+  public calculateShowPosition(): [number, number] {
+    return calculateRevealedCardOffset(this.combatant.angle, this.offset, CARD_WIDTH);
   }
 
-  private calculateOffsetPosition() {
-    if (this.combatant.angle === 90) return [0, this.offset];
-    if (this.combatant.angle === 180) return [this.offset, 0];
-    if (this.combatant.angle === -90) return [0, -this.offset];
-    return [-this.offset, 0];
+  public calculateOffsetPosition(): [number, number] {
+    return calculateStackedCardOffset(this.combatant.angle, this.offset);
   }
 
   public hasCardStacked(): boolean {
@@ -68,4 +78,5 @@ class CombatantStackHelper implements CardStackHelper {
   }
 }
 
+export { calculateStackedCardOffset, calculateRevealedCardOffset };
 export default CombatantStackHelper;

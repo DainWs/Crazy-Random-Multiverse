@@ -3,25 +3,53 @@ interface FitTextOptions {
 }
 
 type GameText = Phaser.GameObjects.Text;
+type Measure = (fontSize: number) => TextBounds;
 
-function fitText(text: GameText, width: number, height: number, options: FitTextOptions = {}) {
-  const { minFontSize = 6 } = options;
+interface TextBounds {
+  width: number;
+  height: number;
+}
 
-  let fontSize = Number(`${text.style.fontSize}`.replace('px', ''));
-  let stopRunning = false;
-
-  while (fontSize >= minFontSize && !stopRunning) {
-    fontSize = Number(`${fontSize}`.replace('px', '')) - 1;
-    text.setFontSize(fontSize);
-
-    const textBounds = text.getBounds();
-
-    const fitHorizontally = textBounds.width <= width;
-    const fitVertically = textBounds.height <= height;
-    if (fitHorizontally && fitVertically) {
-      stopRunning = true;
-    }
+const createDefaultMeasure = (text: GameText): Measure => {
+  return (size: number) => {
+    text.setFontSize(size);
+    return text.getBounds();
   }
 }
 
-export { fitText }
+function calculateFittingFontSize(
+  initialFontSize: number,
+  targetWidth: number,
+  targetHeight: number,
+  measure: (fontSize: number) => TextBounds,
+  minFontSize = 6
+): number {
+  let fontSize = initialFontSize;
+
+  while (fontSize >= minFontSize) {
+    const bounds = measure(fontSize);
+    if (bounds.width <= targetWidth && bounds.height <= targetHeight) {
+      return fontSize;
+    }
+    fontSize--;
+  }
+
+  return minFontSize;
+}
+
+function fitText(text: GameText, width: number, height: number, options: FitTextOptions = {}) {
+  const { minFontSize = 6 } = options;
+  const initialFontSize = Number(`${text.style.fontSize}`.replace('px', ''));
+
+  const finalFontSize = calculateFittingFontSize(
+    initialFontSize,
+    width, height,
+    createDefaultMeasure(text),
+    minFontSize
+  );
+
+  text.setFontSize(finalFontSize);
+}
+
+export type { FitTextOptions, TextBounds, Measure };
+export { fitText, calculateFittingFontSize, createDefaultMeasure };

@@ -1,11 +1,33 @@
-import { Point2D } from "@/domain/Geometry";
-import { CardView } from "@/game/cards/CardView";
-import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import { Corners3D, Point2D } from "@/domain/Geometry";
+import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import type CardView from "@/game/cards/CardView";
+import type ZoneSlotView from "@/game/zone/ZoneSlotView";
 
-const Distance = Phaser.Math.Distance;
+function distanceBetween(x1: number, y1: number, x2: number, y2: number): number {
+  return Math.hypot(x2 - x1, y2 - y1);
+}
+
+function calculateCardTargetScale(
+  corners: Corners3D,
+  cardWidth: number = CARD_WIDTH,
+  cardHeight: number = CARD_HEIGHT
+): Point2D {
+  const visualWidthTop = distanceBetween(corners.tl.x, corners.tl.y, corners.tr.x, corners.tr.y);
+  const visualWidthBottom = distanceBetween(corners.bl.x, corners.bl.y, corners.br.x, corners.br.y);
+  const visualHeightLeft = distanceBetween(corners.tl.x, corners.tl.y, corners.bl.x, corners.bl.y);
+  const visualHeightRight = distanceBetween(corners.tr.x, corners.tr.y, corners.br.x, corners.br.y);
+
+  const targetWidth = (visualWidthTop + visualWidthBottom) / 2;
+  const targetHeight = (visualHeightLeft + visualHeightRight) / 2;
+
+  return {
+    x: targetWidth / cardWidth,
+    y: targetHeight / cardHeight
+  };
+}
 
 function applyCardTransformations(zoneSlotView: ZoneSlotView, cardView: CardView) {
-  const scale = getCardTargetScale(zoneSlotView);
+  const scale = calculateCardTargetScale(zoneSlotView.corners);
 
   cardView.setOriginalPosition(0, 0);
   cardView.setOriginalScale(scale.x, scale.y);
@@ -15,31 +37,17 @@ function applyCardTransformations(zoneSlotView: ZoneSlotView, cardView: CardView
 }
 
 function previewCard(zoneSlotView: ZoneSlotView, cardView: CardView) {
-  const {tx, ty} = zoneSlotView.getWorldTransformMatrix();
-  const scale = getCardTargetScale(zoneSlotView);
+  const { tx, ty } = zoneSlotView.getWorldTransformMatrix();
+  const scale = calculateCardTargetScale(zoneSlotView.corners);
   const tweenArgs = [tx, ty, scale, zoneSlotView.rotation];
   cardView.applyTween('preview_in_zone_slot', ...tweenArgs);
 }
 
-function getCardTargetScale(zoneSlotView: ZoneSlotView): Point2D {
-  const { corners } = zoneSlotView;
-  const visualWidthTop = Distance.Between(corners.tl.x, corners.tl.y, corners.tr.x, corners.tr.y);
-  const visualWidthBottom = Distance.Between(corners.bl.x, corners.bl.y, corners.br.x, corners.br.y);
-  const visualHeightLeft = Distance.Between(corners.tl.x, corners.tl.y, corners.bl.x, corners.bl.y);
-  const visualHeightRight = Distance.Between(corners.tr.x, corners.tr.y, corners.br.x, corners.br.y);
-
-  const targetWidth = (visualWidthTop + visualWidthBottom) / 2;
-  const targetHeight = (visualHeightLeft + visualHeightRight) / 2;
-
-  return {
-    x: targetWidth / CardView.WIDTH,
-    y: targetHeight / CardView.HEIGHT
-  };
-}
-
 const zoneSlotCardHelper = {
   applyCardTransformations,
-  previewCard
-}
+  previewCard,
+  calculateCardTargetScale
+};
 
+export { calculateCardTargetScale };
 export default zoneSlotCardHelper;

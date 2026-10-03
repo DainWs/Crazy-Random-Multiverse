@@ -8,6 +8,8 @@ import CardTooltipView from "@/game/cards/CardTooltipView";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
 import CardAnimator from "@/game/cards/CardAnimator";
 import { Size2D } from "@/domain/Geometry";
+import { CARD_WIDTH, CARD_HEIGHT, CARD_SIZE } from "@/game/cards/CardDimensions";
+import Phaser from 'phaser';
 
 type OriginalPosition = {
   x: number;
@@ -34,9 +36,9 @@ type OriginalBounds = {
 }
 
 class CardView extends Phaser.GameObjects.Container {
-  public static readonly WIDTH: number = 200;
-  public static readonly HEIGHT: number = 300;
-  public static readonly SIZE: Size2D = { width: CardView.WIDTH, height: CardView.HEIGHT };
+  public static readonly WIDTH: number = CARD_WIDTH;
+  public static readonly HEIGHT: number = CARD_HEIGHT;
+  public static readonly SIZE: Size2D = CARD_SIZE;
 
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
@@ -65,11 +67,11 @@ class CardView extends Phaser.GameObjects.Container {
     this.height = CardView.HEIGHT;
     this.setSize(this.width, this.height);
 
-    this.originalBounds = { 
-      position: { x: this.x, y: this.y }, 
+    this.originalBounds = {
+      position: { x: this.x, y: this.y },
       size: { width: this.width, height: this.height },
       scale: { scaleX: this.scaleX, scaleY: this.scaleY },
-      depth: this.depth 
+      depth: this.depth
     };
 
     this.card = card;
@@ -138,7 +140,7 @@ class CardView extends Phaser.GameObjects.Container {
     return this.allowClicks;
   }
 
-  public showTooltip(): void { 
+  public showTooltip(): void {
     this.tooltip?.show(this);
   }
 
@@ -181,7 +183,7 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   public getOriginalPosition(): OriginalPosition {
-    return this.originalBounds.position; 
+    return this.originalBounds.position;
   }
 
   public setOriginalDepth(originalDepth: number) {
@@ -197,7 +199,7 @@ class CardView extends Phaser.GameObjects.Container {
   }
 
   public getOriginalScale(): OriginalScale {
-    return this.originalBounds.scale; 
+    return this.originalBounds.scale;
   }
 
 

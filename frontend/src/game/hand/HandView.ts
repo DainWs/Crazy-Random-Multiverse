@@ -5,6 +5,7 @@ import HandAnimator from "@/game/hand/HandAnimator";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";
 import HandLayoutHelper, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
 import { GameScene } from "@/scenes/Game";
+import Phaser from 'phaser';
 
 interface HandViewOptions {
   spaceBetweenCards?: SpaceBetweenCardOptions;
@@ -45,7 +46,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.scale = 1
     this.depth = 499;
     this.cardsDepth = this.depth + 1;
-    
+
     this.updateBounds();
     this.setInteractive(this.layoutHelper.getInteractiveBounds(), Phaser.Geom.Rectangle.Contains);
     scene.add.existing(this);
@@ -88,8 +89,8 @@ class HandView extends Phaser.GameObjects.Container {
 
     // From TOP of camera
     const fromPoint = {
-      x: 0, 
-      y: -(this.y + this.height + CardView.HEIGHT) 
+      x: 0,
+      y: -(this.y + this.height + CardView.HEIGHT)
     };
 
     const onCompleteAnimation = () => this.updateCards();
@@ -156,7 +157,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   private sliceCardsToShowHoverIndex() {
     const xOffset = this.layoutHelper.calculateXOffsetForSlicedCard(this.cards.length);
-  
+
     for (let i = 0; i < this.cards.length; i++) {
       const card = this.cards[i];
       let { x, y } = card.getOriginalPosition();

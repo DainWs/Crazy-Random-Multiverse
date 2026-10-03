@@ -1,38 +1,29 @@
 import CameraSystem from "@/core/CameraSystem";
 import { Point2D } from "@/domain/Geometry";
 import CardView from "@/game/cards/CardView";
+import HandLayoutCalculator, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
 
 type Rectangle = Phaser.Geom.Rectangle & {
   scale: number;
   zoom: number;
 };
 
-type SpaceBetweenCardOptions = {
-  min: number;
-  max: number;
-  decayFactor: number;
-}
-
-const defaultOptions: SpaceBetweenCardOptions = {
-  min: 20,
-  max: 250,
-  decayFactor: 0.2,
-};
-
+/**
+ * the boundary between the calculator, CameraSystem and Phaser.Geom.Rectangle
+ */
 class HandLayoutHelper {
   public readonly handBounds: Rectangle;
-  public readonly options: SpaceBetweenCardOptions;
+  public readonly calculator: HandLayoutCalculator;
   private readonly cameraSystem: CameraSystem;
 
   public constructor(cameraSystem: CameraSystem, maxCards: number, options?: Partial<SpaceBetweenCardOptions>) {
     this.cameraSystem = cameraSystem;
-    this.options = { ...defaultOptions, ...options };
+    this.calculator = new HandLayoutCalculator(options);
     this.handBounds = this.createBounds(maxCards);
   }
 
   private createBounds(maxCards: number): Rectangle {
-    const spaceBetweenCards = this.calculateSpaceBetweenCards(maxCards);
-    const totalWidth = (maxCards - 1) * spaceBetweenCards + CardView.WIDTH;
+    const totalWidth = this.calculator.calculateTotalWidth(maxCards, CardView.WIDTH);
     const totalHeight = CardView.HEIGHT;
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
 
@@ -54,40 +45,31 @@ class HandLayoutHelper {
 
   private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {
     const screenHeight = this.cameraSystem.getScale().height;
-    const halfWidth = totalWidth / 2;
-    const halfHeight = totalHeight / 2;
-    const x = halfWidth;
-    const y = screenHeight - halfHeight;
-    return this.cameraSystem.getHUDPosition(x, y);
+    const basePosition = this.calculator.calculateHandBasePosition(totalWidth, totalHeight, screenHeight);
+    return this.cameraSystem.getHUDPosition(basePosition.x, basePosition.y);
   }
 
-  public calculateSlotPositionFromIndex(
-    index: number, 
-    cardLength: number
-  ) {
-    const spaceBetweenCards = this.calculateSpaceBetweenCards(cardLength);
-    const xOffset = CardView.WIDTH / 2 + (index * spaceBetweenCards);
-    
-    const x = xOffset - (this.handBounds.width / 2);
-    const y = this.handBounds.y;
-    return { x, y: 0 };
-  }
-  
-  public calculateSpaceBetweenCards(cardLength: number) {
-    if (cardLength <= 0) return 0;
-    const spacingRange = this.options.max - this.options.min;
-    const decay = Math.exp(-this.options.decayFactor * (cardLength - 1));
-    return this.options.min + spacingRange * decay;
+  public calculateSlotPositionFromIndex(index: number, cardLength: number): Point2D {
+    return this.calculator.calculateSlotPositionFromIndex(
+      index,
+      cardLength,
+      this.handBounds.width,
+      CardView.WIDTH
+    );
   }
 
-  public calculateXOffsetForSlicedCard(cardLength: number) {
-    return CardView.WIDTH - this.calculateSpaceBetweenCards(cardLength);
+  public calculateSpaceBetweenCards(cardLength: number): number {
+    return this.calculator.calculateSpaceBetweenCards(cardLength);
   }
- 
+
+  public calculateXOffsetForSlicedCard(cardLength: number): number {
+    return this.calculator.calculateXOffsetForSlicedCard(cardLength, CardView.WIDTH);
+  }
+
   public getInteractiveBounds(): Phaser.Geom.Rectangle {
     return new Phaser.Geom.Rectangle(0, 0, this.handBounds.width, this.handBounds.height);
   }
 }
 
-export type { SpaceBetweenCardOptions}
+export type { SpaceBetweenCardOptions };
 export default HandLayoutHelper;
