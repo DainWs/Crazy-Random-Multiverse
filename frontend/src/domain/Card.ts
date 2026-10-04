@@ -3,19 +3,19 @@ import Skill from "@/domain/Skills";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
-type WarriorTexture = 
-  | 'card' 
-  | 'common-card' 
+type WarriorTexture =
+  | 'card'
+  | 'common-card'
   | 'uncommon-card'
-  | 'rare-card' 
-  | 'epic-card' 
-  | 'legendary-card' 
+  | 'rare-card'
+  | 'epic-card'
+  | 'legendary-card'
   | 'mithic-card';
 
-type CardTexture = 
+type CardTexture =
   | WarriorTexture
-  | 'leader-card' 
-  | 'equipment-card' 
+  | 'leader-card'
+  | 'equipment-card'
   | 'spell-card';
 
 type CardAudioType = 'put' | 'attack' | 'die';
@@ -132,7 +132,7 @@ class Card {
       const number = (type == 'attack') ? Math.floor(Math.random() * 3) + 1 : 1;
       return `${this.rarity?.toLowerCase()}-${type}-${this.code.number()}-${number}`;
     }
-  
+
     return `${this.type.toLowerCase()}-${type}-${this.code.number()}`;
   }
 
@@ -140,7 +140,7 @@ class Card {
     if (this.isType("WARRIOR")) {
       return `${this.rarity?.toLowerCase()}-${this.code.number()}`;
     }
-  
+
     return `${this.type.toLowerCase()}-${this.code.number()}`;
   }
 
@@ -148,7 +148,7 @@ class Card {
     if (this.isType("WARRIOR")) {
       return `${this.rarity?.toLowerCase()}-card` as WarriorTexture;
     }
-  
+
     return `${this.type.toLowerCase()}-card` as CardTexture;
   }
 

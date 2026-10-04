@@ -1,10 +1,10 @@
 import { Point2D } from "@/domain/Geometry";
-import { MOVE_TO_DURATION, SLIDE_TO_DURATION } from "@/game/cards/CardTweens";
+import { MOVE_TO_DURATION, SLIDE_TO_DURATION } from "@/core/visual_effects/CardTweens";
 import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 
 type OnCompleteCallback = () => void;
-const NoneCallback = () => {};
+const NoneCallback = () => { };
 
 class HandAnimator {
 

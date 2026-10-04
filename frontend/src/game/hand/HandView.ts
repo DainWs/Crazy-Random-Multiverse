@@ -1,5 +1,4 @@
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
-import { showDebugBoxes } from "@/env";
 import CardView from "@/game/cards/CardView";
 import HandAnimator from "@/game/hand/HandAnimator";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";

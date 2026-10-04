@@ -1,6 +1,6 @@
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
-import CardTooltipView from '@/game/cards/CardTooltipView';
+import GlobalCardTooltipView from '@/game/cards/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
@@ -19,8 +19,8 @@ class GameScene extends Scene {
     public readonly cameraSystem: CameraSystem;
     public readonly cardController: CardController;
     public readonly handController: HandController;
-    
-    private cardTooltipView: CardTooltipView;
+
+    private cardTooltipView: GlobalCardTooltipView;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
@@ -35,19 +35,19 @@ class GameScene extends Scene {
         const cardViewFactory = new CardViewFactory(this.cardController);
         this.handController = new HandController(this, cardViewFactory);
     }
-    
+
     public init() {
         const { width, height } = this.scale;
         this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
-        this.cardTooltipView = new CardTooltipView(this);
-        
+        this.cardTooltipView = new GlobalCardTooltipView(this);
+
         this.cameraSystem.initialize(this);
         this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
 
         this.handController.init();
     }
 
-    public create() {    
+    public create() {
         this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
@@ -56,14 +56,14 @@ class GameScene extends Scene {
         this.createDebugUI();
     }
 
-    private updateDebugUI = () => {};
-    
+    private updateDebugUI = () => { };
+
     // TODO: Remove in production, for removal find commit with "remove_debug_ui"
     private createDebugUI() {
         const playerCount = StoreSystem.getGameConfiguration().playerCount;
-        
+
         const uiContainer = this.add.container(0, 0);
-        
+
         const playerCountText = this.add.text(0, 0, `Players: ${playerCount}`, { fontSize: '16px', color: '#fff' });
         uiContainer.add(playerCountText);
 
@@ -135,7 +135,7 @@ class GameScene extends Scene {
         }
     }
 
-    public getCardTooltipView(): CardTooltipView {
+    public getCardTooltipView(): GlobalCardTooltipView {
         return this.cardTooltipView;
     }
 }

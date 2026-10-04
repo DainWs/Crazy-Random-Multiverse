@@ -1,14 +1,13 @@
 import CardController from "@/controllers/CardController";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
-import { CardAnimation } from "@/game/cards/CardAnimations";
-import { CardTween } from "@/game/cards/CardTweens";
-import Card, { CardAudioType } from "@/domain/Card";
-import CardStackHelper from "@/game/cards/CardStackHelper";
-import CardTooltipView from "@/game/cards/CardTooltipView";
+import type { Size2D } from "@/domain/Geometry";
+import type { CardAnimation, CardTween } from "@/core/visual_effects";
+import type { CardAudioType } from "@/domain/Card";
+import type { CardStackLayoutHelper, CardTooltip, CardRender } from "@/game/cards/CardViewStrategy";
+import type Card from "@/domain/Card";
 import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
-import CardAnimator from "@/game/cards/CardAnimator";
-import { Size2D } from "@/domain/Geometry";
 import { CARD_WIDTH, CARD_HEIGHT, CARD_SIZE } from "@/game/cards/CardDimensions";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
 import Phaser from 'phaser';
 
 type OriginalPosition = {
@@ -43,15 +42,18 @@ class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
 
+  private tooltip?: CardTooltip;
   // TODO when mouse over stacked card, it should show the tooltip of the stacked card, this include to slide the cards to show the stacked card
-  private stackHelper?: CardStackHelper;
-  private tooltip?: CardTooltipView;
+  private stackHelper?: CardStackLayoutHelper;
+  private stackedCard: CardView;
+  private cardRender: CardRender;
 
   public readonly card: Card;
 
   private allowClicks: boolean; // TODO search a way to improve this
 
   private originalBounds: OriginalBounds;
+
 
   constructor(
     scene: Phaser.Scene,
@@ -91,9 +93,10 @@ class CardView extends Phaser.GameObjects.Container {
     this.add([this.cardImage, this.background]);
 
     const cardViewStrategy = dispatchCardViewStrategy(this.card);
-    this.stackHelper = cardViewStrategy.createStackHelper(this.scene, this);
+    this.stackHelper = cardViewStrategy.createStackLayoutHelper(this.scene, this);
     this.tooltip = cardViewStrategy.createTooltip(this.scene, this);
-    this.add(cardViewStrategy.createObjects(this.scene, this, this.displayWidth, this.displayHeight));
+    this.cardRender = cardViewStrategy.createRender();
+    this.add(this.cardRender.render(this.scene, this, this.displayWidth, this.displayHeight));
   }
 
   private initializeBackground() {
@@ -117,13 +120,27 @@ class CardView extends Phaser.GameObjects.Container {
 
   public hasCardStacked(): boolean {
     if (!this.stackHelper) return false;
-    return this.stackHelper.hasCardStacked();
+    return !!this.stackedCard
   }
 
   public stack(card: CardView) {
-    if (this.stackHelper && this.stackHelper.canStackMore()) {
-      this.stackHelper.stack(card);
-      card.allowClicks = false; // TODO deprecated and temporal
+    if (this.stackHelper && this.stackedCard === undefined) {
+      this.stackedCard = card;
+
+      const [xWithOffset, yWithOffset] = this.stackHelper.calculateOffset(this.angle);
+      this.stackedCard.setOriginalPosition(xWithOffset, yWithOffset);
+      this.stackedCard.setOriginalDepth(this.depth - 1);
+      this.stackedCard.setAngle(this.angle);
+      this.stackedCard.reset();
+      this.stackedCard.disableInteractive();
+
+      this.addAt(this.stackedCard, 0);
+      this.scene.input.setDraggable(this.stackedCard, false);
+
+      this.on('pointerout', () => this.stackHelper?.hideCard(this, this.stackedCard));
+      this.on('pointerover', () => this.stackHelper?.revealCard(this, this.stackedCard));
+
+      this.stackedCard.allowClicks = false; // TODO deprecated and temporal
     }
   }
 
@@ -229,6 +246,7 @@ class CardView extends Phaser.GameObjects.Container {
     super.preDestroy();
     InteractiveObjectManager.unregisterGameObject(this.scene, this);
   }
+
 }
 
 export { CardView };

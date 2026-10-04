@@ -1,8 +1,8 @@
 import CardView from "@/game/cards/CardView";
-import * as Tweens from "@/game/cards/CardTweens";
-import * as Animations from "@/game/cards/CardAnimations";
-import { CardTween, CardTweenProvider } from "@/game/cards/CardTweens";
-import { CardAnimation, CardAnimationApplier } from "@/game/cards/CardAnimations";
+import * as Tweens from "@/core/visual_effects/CardTweens";
+import * as Animations from "@/core/visual_effects/CardAnimations";
+import { CardTween, CardTweenProvider } from "@/core/visual_effects/CardTweens";
+import { CardAnimation, CardAnimationApplier } from "@/core/visual_effects/CardAnimations";
 
 const cardTweens = new Map<CardTween, CardTweenProvider>();
 cardTweens.set('hover', Tweens.hoverTween);
