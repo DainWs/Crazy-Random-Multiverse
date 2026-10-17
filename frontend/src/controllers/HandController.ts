@@ -1,18 +1,16 @@
+import type { GameScene } from "@/scenes/Game";
+import type CardView from "@/game/cards/CardView";
+import type Card from "@/domain/Card";
 import CardViewFactory from "@/controllers/CardViewFactory";
-import Card from "@/domain/Card";
-import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
-import { GameScene } from "@/scenes/Game";
 
 class HandController {
   private readonly scene: GameScene;
-  private readonly cardViewFactory: CardViewFactory;
 
   private handView: HandView;
 
-  public constructor(scene: GameScene, cardViewFactory: CardViewFactory) {
+  public constructor(scene: GameScene) {
     this.scene = scene;
-    this.cardViewFactory = cardViewFactory;
   }
 
   public init() {
@@ -34,7 +32,7 @@ class HandController {
   }
 
   private createCardViews(cards: Card[]): CardView[] {
-    return cards.map(card => this.cardViewFactory.createCardView(this.scene, card));
+    return cards.map(card => CardViewFactory.createCardView(this.scene, card));
   }
 
   public clearCards() {

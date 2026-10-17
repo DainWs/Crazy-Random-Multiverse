@@ -1,12 +1,36 @@
 
 
-
-type Camera = Phaser.Cameras.Scene2D.Camera;
-
 const ZOOM_STEP = 0.15;
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.5;
 const ZOOM_DURATION = 50;
+
+/**
+ * Pure zoom calculation functions, independent of Phaser runtime.
+ */
+
+type ZoomConfig = {
+  step: number;
+  min: number;
+  max: number;
+};
+
+const DEFAULT_ZOOM_CONFIG: ZoomConfig = {
+  step: ZOOM_STEP,
+  min: MIN_ZOOM,
+  max: MAX_ZOOM
+};
+
+function calculateNewZoom(currentZoom: number, deltaY: number, config: ZoomConfig = DEFAULT_ZOOM_CONFIG): number | null {
+  const zoomChange = deltaY > 0 ? -config.step : config.step;
+  const newZoom = currentZoom + zoomChange;
+  if (newZoom >= config.min && newZoom <= config.max) {
+    return newZoom;
+  }
+  return null;
+}
+
+type Camera = Phaser.Cameras.Scene2D.Camera;
 
 function initialize(scene: Phaser.Scene, camera: Camera) {
   // Zoom out (scroll down = deltaY > 0) or zoom in (scroll up = deltaY < 0)
@@ -26,13 +50,8 @@ function initialize(scene: Phaser.Scene, camera: Camera) {
 }
 
 function onWheel(camera: Camera, deltaY: number) {
-  let zoomChange = ZOOM_STEP;
-  if (deltaY > 0) {
-    zoomChange = -ZOOM_STEP;
-  }
-
-  const newZoom = camera.zoom + zoomChange;
-  if (newZoom >= MIN_ZOOM && newZoom <= MAX_ZOOM) {
+  const newZoom = calculateNewZoom(camera.zoom, deltaY);
+  if (newZoom !== null) {
     camera.zoomTo(newZoom, ZOOM_DURATION);
     setTimeout(() => onZoomComplete(camera, newZoom), ZOOM_DURATION + 100);
   }
@@ -59,4 +78,6 @@ const CameraMovementManager = {
   initialize
 }
 
+export type { ZoomConfig };
+export { calculateNewZoom, DEFAULT_ZOOM_CONFIG };
 export default CameraMovementManager;

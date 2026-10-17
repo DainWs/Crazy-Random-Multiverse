@@ -1,7 +1,8 @@
+import type CardView from "@/game/cards/CardView";
+import type { GameScene } from "@/scenes/Game";
 import CardMouseOver from "@/core/interactions/CardMouseOver";
 import CardDragAndDropManager, { TargetGameObject } from "@/core/interactions/DragAndDrop";
 import CardClickHandler from "@/core/interactions/CardClickHandler";
-import { CardView } from "@/game/cards/CardView";
 
 type Pointer = Phaser.Input.Pointer;
 
@@ -9,22 +10,12 @@ const mouseOver = new CardMouseOver();
 const dragAndDrop = new CardDragAndDropManager();
 const clickHandler = new CardClickHandler();
 
-function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
+function handleCardInputs(scene: GameScene, card: CardView): void {
   card.on("pointerover", () => mouseOver.onPointerOver(scene, card));
   card.on("pointerout", () => mouseOver.onPointerOut(scene, card));
   card.on("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
   card.on("pointerdown", (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer));
 
-    // TODO Capturar evento para dragstart en HandController para Acciones
-    // TODO Capturar evento para dragstart en ZoneController para Acciones
-    // TODO Capturar evento para onDrop en ZoneController para Acciones
-
-    // TODO Capturar evento para dragenter en ZoneSlotView para animaciones
-    // TODO Capturar evento para dragleave en ZoneSlotView para animaciones
-    
-    // TODO Capturar evento para dragstart en CardView para animaciones
-    // TODO Capturar evento para drag en CardView para animaciones
-    // TODO Capturar evento para drop en CardView para animaciones
   card.on("dragstart", () => dragAndDrop.onGrabCard(scene, card));
   card.on("dragend", () => dragAndDrop.onDragEnd(scene, card));
   card.on("dragenter", createDragEnterWrapper(scene, card));
@@ -33,7 +24,7 @@ function handleCardInputs(scene: Phaser.Scene, card: CardView): void {
   card.on("drop", createDropWrapper(scene, card));
 }
 
-function removeHandledCard(scene: Phaser.Scene, card: CardView): void {
+function removeHandledCard(scene: GameScene, card: CardView): void {
   card.off("pointerover", () => mouseOver.onPointerOver(scene, card));
   card.off("pointerout", () => mouseOver.onPointerOut(scene, card));
   card.off("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
@@ -47,19 +38,19 @@ function removeHandledCard(scene: Phaser.Scene, card: CardView): void {
   card.off("drop", createDropWrapper(scene, card));
 }
 
-function createDragEnterWrapper(scene: Phaser.Scene, card: CardView) {
+function createDragEnterWrapper(scene: GameScene, card: CardView) {
   return (_: Pointer, target: TargetGameObject) => dragAndDrop.onDragEnter(scene, card, target);
 }
 
-function createDragLeaveWrapper(scene: Phaser.Scene, card: CardView) {
+function createDragLeaveWrapper(scene: GameScene, card: CardView) {
   return (_: Pointer, target: TargetGameObject) => dragAndDrop.onDragLeave(scene, card, target);
 }
 
-function createDragWrapper(scene: Phaser.Scene, card: CardView) {
+function createDragWrapper(scene: GameScene, card: CardView) {
   return (_: Pointer, dragX: number, dragY: number) => dragAndDrop.onDragCard(scene, card, dragX, dragY);
 }
 
-function createDropWrapper(scene: Phaser.Scene, card: CardView) {
+function createDropWrapper(scene: GameScene, card: CardView) {
   return (_: Pointer, target: TargetGameObject) => dragAndDrop.onDropCard(scene, card, target);
 }
 

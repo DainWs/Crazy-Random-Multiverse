@@ -1,7 +1,8 @@
-import { CardView } from "@/game/cards/CardView";
-import CalmTargetingOverlay, { TargetArea } from "@/game/perspectives/overlays/CalmTargetingOverlay";
-import Perspective from "@/game/perspectives/Perspective";
-import ZoneView from "@/game/zone/ZoneView";
+import type { CardView } from "@/game/cards/CardView";
+import type Perspective from "@/game/perspectives/Perspective";
+import type ZoneView from "@/game/zone/ZoneView";
+import type { TargetArea } from "@/game/perspectives/overlays/CalmTargetingOverlay";
+import CalmTargetingOverlay from "@/game/perspectives/overlays/CalmTargetingOverlay";
 
 type SelectedCard = CardView
 type TargetZone = ZoneView;

@@ -1,6 +1,9 @@
+import type { GameScene } from "@/scenes/Game";
+import type CardView from "@/game/cards/CardView";
 import { dispatchAction } from "@/core/interactions/CardInteractionDispatcher";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
-import CardView from "@/game/cards/CardView";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
+import CombatantView from "@/game/cards/CombatantView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
@@ -13,12 +16,14 @@ class CardDragAndDropManager {
   private sourceGameObjectIndex: number | undefined;
   private targetGameObject: TargetGameObject | undefined;
 
-  public onGrabCard(scene: Phaser.Scene, card: CardView) {
+  // On grab card
+
+  public onGrabCard(scene: GameScene, card: CardView) {
     if (!card.canBeClicked()) return false;
-    card.stopTweens();
+    scene.tweens.killTweensOf(card);
 
     scene.input.manager.canvas.style.cursor = "grabbing";
-    card.applyAnimation('startDrag');
+    CardAnimator.playAnimation(scene, card, 'startDrag');
 
     this.successfullyDropped = false;
 
@@ -50,16 +55,18 @@ class CardDragAndDropManager {
     }
   }
 
-  public onDragEnter(_: Phaser.Scene, card: CardView, targetGameObject: TargetGameObject) {
+  // Drag enter
+
+  public onDragEnter(_: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
     if (!targetGameObject) return false;
     if (targetGameObject === this.sourceGameObject) return false;
   
-    if (targetGameObject instanceof ZoneSlotView) {
-      this.onZoneSlotDragEnter(card, targetGameObject);
+    if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
+      this.onZoneSlotDragEnter(cardView, targetGameObject);
     }
   }
 
-  private onZoneSlotDragEnter(cardView: CardView, targetGameObject: ZoneSlotView) {
+  private onZoneSlotDragEnter(cardView: CombatantView, targetGameObject: ZoneSlotView) {
     if (targetGameObject.zoneSlot.canPlaceCard(cardView.card)) {
       this.targetGameObject = targetGameObject;
       targetGameObject.previewCard(cardView);
@@ -67,13 +74,15 @@ class CardDragAndDropManager {
     }
   }
 
-  public onDragLeave(_1: Phaser.Scene, cardView: CardView, targetGameObject: TargetGameObject) {
-    if (targetGameObject instanceof ZoneSlotView) {
+  // Drag leave
+
+  public onDragLeave(_1: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
+    if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragLeave(cardView, targetGameObject);
     }
   }
 
-  private onZoneSlotDragLeave(_: CardView, targetGameObject: ZoneSlotView) {
+  private onZoneSlotDragLeave(_: CombatantView, targetGameObject: ZoneSlotView) {
     if (this.targetGameObject === targetGameObject) {
       this.targetGameObject = undefined;
       targetGameObject.stopPreviewingCard();
@@ -82,18 +91,21 @@ class CardDragAndDropManager {
     targetGameObject?.applyAnimation('unhighlight');
   }
 
-  public onDragCard(_scene: Phaser.Scene, draggedCardView: CardView, dragX: number, dragY: number) {
-    if (this.targetGameObject) return;
+  // On drag
 
-    draggedCardView.stopTweens();
+  public onDragCard(scene: GameScene, draggedCardView: CardView, _dragX: number, _dragY: number) {
+    if (this.targetGameObject) return;
+    scene.tweens.killTweensOf(draggedCardView);
     draggedCardView.setScale(0.7);
     draggedCardView.setAngle(0);
 
-    const activePointer = _scene.input.activePointer;
+    const activePointer = scene.input.activePointer;
     draggedCardView.setPosition(activePointer.worldX, activePointer.worldY);
   }
 
-  public onDropCard(scene: Phaser.Scene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
+  // On drop
+
+  public onDropCard(scene: GameScene, droppedCard: CardView, targetGameObject: TargetGameObject | undefined) {
     if (!targetGameObject) {
       targetGameObject = getTopGameObjectAtCursor(scene, "ZoneSlotView") as TargetGameObject;
     }
@@ -106,14 +118,16 @@ class CardDragAndDropManager {
     return this.successfullyDropped;
   }
 
-  public onDragEnd(scene: Phaser.Scene, card: CardView) {
+  // On drag end
+
+  public onDragEnd(scene: GameScene, card: CardView) {
     scene.input.manager.canvas.style.cursor = "grab";
 
     if (this.sourceGameObject && !this.successfullyDropped) {
       this.sourceGameObject.addAt(card, this.sourceGameObjectIndex!);
     }
 
-    card.applyAnimation('endDrag');
+    CardAnimator.playAnimation(scene, card, 'endDrag');
     card.reset();
 
     if (this.sourceGameObject instanceof ZoneSlotView) {
@@ -130,7 +144,7 @@ class CardDragAndDropManager {
   }
 }
 
-function getSourceGameObjectAtCursor(scene: Phaser.Scene): SourceGameObject | undefined {
+function getSourceGameObjectAtCursor(scene: GameScene): SourceGameObject | undefined {
   return getTopGameObjectAtCursor(scene, "HandView", "ZoneSlotView") as SourceGameObject | undefined;
 }
 

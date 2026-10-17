@@ -1,13 +1,13 @@
 import type { StatisticType } from "@/domain/Statistics";
-import type { CardRender } from "@/game/cards/CardViewStrategy";
-import type CardView from "@/game/cards/CardView";
-import type Card from "@/domain/Card";
+import type { CardRender } from "@/game/cards/renders/CardRender";
 import * as TextUtils from "@/game/utils/TextUtils";
 import { CardStatisticView } from "@/game/cards/components/CardStatisticView";
 import { showDebugBoxes } from "@/env";
+import CombatantView from "@/game/cards/CombatantView";
+import { CombatantCard } from "@/domain/Card";
 
-const render = (scene: Phaser.Scene, cardView: CardView, width: number, height: number) => {
-  const card = cardView.card;
+const render = (scene: Phaser.Scene, view: CombatantView, width: number, height: number) => {
+  const card = view.combatant;
   return [
     ...defineCardName(scene, width, height, card.name),
     ...defineDamageStat(scene, width, height, card),
@@ -44,7 +44,7 @@ function defineCardName(scene: Phaser.Scene, totalWidth: number, totalHeight: nu
   return gameObjects as Phaser.GameObjects.GameObject[];
 }
 
-function defineDamageStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: Card) {
+function defineDamageStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: CombatantCard) {
   const damageStat = card.damage;
   if (!damageStat) return [];
 
@@ -63,7 +63,7 @@ function defineDamageStat(scene: Phaser.Scene, totalWidth: number, totalHeight: 
   return [damage];
 }
 
-function defineHealthStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: Card) {
+function defineHealthStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: CombatantCard) {
   const healthStat = card.health;
   if (!healthStat) return [];
 
@@ -82,7 +82,7 @@ function defineHealthStat(scene: Phaser.Scene, totalWidth: number, totalHeight: 
   return [health];
 }
 
-function defineArmorStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: Card) {
+function defineArmorStat(scene: Phaser.Scene, totalWidth: number, totalHeight: number, card: CombatantCard) {
   const armorStat = card.armor;
   if (!armorStat) return [];
 
@@ -99,18 +99,18 @@ function defineArmorStat(scene: Phaser.Scene, totalWidth: number, totalHeight: n
   return [armor];
 }
 
-const update = (_: Phaser.Scene, cardView: CardView, _2: number, _3: number) => {
-  updateStatisticView(cardView, 'Damage');
-  updateStatisticView(cardView, 'Health');
-  updateStatisticView(cardView, 'Armor');
+const update = (_: Phaser.Scene, view: CombatantView, _2: number, _3: number) => {
+  updateStatisticView(view, 'Damage');
+  updateStatisticView(view, 'Health');
+  updateStatisticView(view, 'Armor');
 }
 
-function updateStatisticView(cardView: CardView, statisticType: StatisticType) {
-  const cardStatisticView = cardView.getByName(statisticType) as CardStatisticView;
+function updateStatisticView(view: CombatantView, statisticType: StatisticType) {
+  const cardStatisticView = view.getByName(statisticType) as CardStatisticView;
   if (!cardStatisticView) return;
 
-  const statistic = cardView.card.getStatistic(statisticType);
-  const equipmentStatistic = cardView.card.equipment?.getStatistic(statisticType);
+  const statistic = view.combatant.getStatistic(statisticType);
+  const equipmentStatistic = view.combatant.equipment?.getStatistic(statisticType);
 
   if (!statistic) return;
   cardStatisticView.update(statistic, equipmentStatistic?.value);
@@ -121,4 +121,5 @@ const combatantRender: CardRender = {
   update
 }
 
+export type { CardRender }
 export default combatantRender;

@@ -1,4 +1,4 @@
-import CardView from "@/game/cards/CardView";
+import type CardView from "@/game/cards/CardView";
 import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
 import ZoneView from "@/game/zone/ZoneView";
 import * as Constants from "@/core/Constants";

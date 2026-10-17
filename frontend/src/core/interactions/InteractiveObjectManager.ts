@@ -1,5 +1,6 @@
+import type { GameScene } from "@/scenes/Game";
 import CardInputManager from "@/core/interactions/CardInputManager";
-import { CardView } from "@/game/cards/CardView";
+import CardView from "@/game/cards/CardView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
@@ -22,7 +23,7 @@ function registerGameObject(scene: Phaser.Scene, gameObject: InteractiveGameObje
   interactableObjects.add(gameObject);
 
   if (gameObject instanceof CardView) {
-    CardInputManager.handleCardInputs(scene, gameObject);
+    CardInputManager.handleCardInputs(scene as GameScene, gameObject);
   }
 }
 
@@ -30,7 +31,7 @@ function unregisterGameObject(scene: Phaser.Scene, gameObject: InteractiveGameOb
   interactableObjects.delete(gameObject);
 
   if (gameObject instanceof CardView) {
-    CardInputManager.removeHandledCard(scene, gameObject);
+    CardInputManager.removeHandledCard(scene as GameScene, gameObject);
   }
 }
 

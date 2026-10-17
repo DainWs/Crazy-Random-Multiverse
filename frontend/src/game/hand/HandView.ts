@@ -1,10 +1,11 @@
+import type { GameScene } from "@/scenes/Game";
+import type CardView from "@/game/cards/CardView";
+import type { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
+import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
-import CardView from "@/game/cards/CardView";
-import HandAnimator from "@/game/hand/HandAnimator";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";
-import HandLayoutHelper, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
-import { GameScene } from "@/scenes/Game";
-import Phaser from 'phaser';
+import HandLayoutHelper from "@/game/hand/HandLayoutHelper";
+import HandAnimator from "@/game/hand/HandAnimator";
 
 interface HandViewOptions {
   spaceBetweenCards?: SpaceBetweenCardOptions;
@@ -89,7 +90,7 @@ class HandView extends Phaser.GameObjects.Container {
     // From TOP of camera
     const fromPoint = {
       x: 0,
-      y: -(this.y + this.height + CardView.HEIGHT)
+      y: -(this.y + this.height + CARD_HEIGHT)
     };
 
     const onCompleteAnimation = () => this.updateCards();
@@ -159,10 +160,11 @@ class HandView extends Phaser.GameObjects.Container {
 
     for (let i = 0; i < this.cards.length; i++) {
       const card = this.cards[i];
-      let { x, y } = card.getOriginalPosition();
+      const originalPosition = card.getOriginalPosition();
+      let { x } = originalPosition;
 
       if (i > this.hoverIndex) x += xOffset;
-      this.animator.sliceCard(card, x, y);
+      this.animator.sliceCard(card, x, originalPosition.y);
     }
   }
 
@@ -170,7 +172,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.isExpanded = isExpanded;
     const { x, y, width, height, scale, zoom } = this.layoutHelper.handBounds;
 
-    const hiddenSize = (CardView.HEIGHT * hidePercent) / zoom;
+    const hiddenSize = (CARD_HEIGHT * hidePercent) / zoom;
     let expandedY = y + hiddenSize;
     if (isExpanded) {
       expandedY -= hiddenSize;

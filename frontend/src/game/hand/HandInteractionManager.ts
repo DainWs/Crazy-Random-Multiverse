@@ -1,8 +1,13 @@
-import CardView from "@/game/cards/CardView";
-import HandView from "@/game/hand/HandView";
+import type CardView from "@/game/cards/CardView";
+import type HandView from "@/game/hand/HandView";
+
+type InteractionHandler = {
+  over: () => void;
+  out: () => void;
+}
 
 class HandInteractionManager {
-  private handlers = new Map<CardView, { over: () => void, out: () => void }>();
+  private handlers = new Map<CardView, InteractionHandler>();
 
   public attachListeners(handView: HandView, card: CardView) {
     const over = () => handView.onHoverCard(card);

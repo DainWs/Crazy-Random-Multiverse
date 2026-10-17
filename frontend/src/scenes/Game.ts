@@ -1,6 +1,5 @@
 import CardController from '@/controllers/CardController';
-import CardViewFactory from '@/controllers/CardViewFactory';
-import GlobalCardTooltipView from '@/game/cards/GlobalCardTooltipView';
+import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
@@ -31,9 +30,7 @@ class GameScene extends Scene {
         this.cameraSystem = new CameraSystem();
 
         this.cardController = new CardController(this);
-
-        const cardViewFactory = new CardViewFactory(this.cardController);
-        this.handController = new HandController(this, cardViewFactory);
+        this.handController = new HandController(this);
     }
 
     public init() {

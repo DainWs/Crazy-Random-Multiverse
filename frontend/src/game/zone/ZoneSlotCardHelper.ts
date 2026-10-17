@@ -1,7 +1,8 @@
-import { Corners3D, Point2D } from "@/domain/Geometry";
-import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
-import type CardView from "@/game/cards/CardView";
 import type ZoneSlotView from "@/game/zone/ZoneSlotView";
+import type { Corners3D, Point2D } from "@/domain/Geometry";
+import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
+import CombatantView from "@/game/cards/CombatantView";
 
 function distanceBetween(x1: number, y1: number, x2: number, y2: number): number {
   return Math.hypot(x2 - x1, y2 - y1);
@@ -26,21 +27,21 @@ function calculateCardTargetScale(
   };
 }
 
-function applyCardTransformations(zoneSlotView: ZoneSlotView, cardView: CardView) {
+function applyCardTransformations(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {
   const scale = calculateCardTargetScale(zoneSlotView.corners);
 
-  cardView.setOriginalPosition(0, 0);
-  cardView.setOriginalScale(scale.x, scale.y);
-  cardView.setOriginalDepth(zoneSlotView.depth + 1);
-  cardView.setAngle(zoneSlotView.rotation);
-  cardView.reset();
+  combatantView.setOriginalPosition(0, 0);
+  combatantView.setOriginalScale(scale.x, scale.y);
+  combatantView.setOriginalDepth(zoneSlotView.depth + 1);
+  combatantView.setAngle(zoneSlotView.rotation);
+  combatantView.reset();
 }
 
-function previewCard(zoneSlotView: ZoneSlotView, cardView: CardView) {
+function previewCard(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {
   const { tx, ty } = zoneSlotView.getWorldTransformMatrix();
   const scale = calculateCardTargetScale(zoneSlotView.corners);
   const tweenArgs = [tx, ty, scale, zoneSlotView.rotation];
-  cardView.applyTween('preview_in_zone_slot', ...tweenArgs);
+  CardAnimator.playTween(combatantView, 'preview_in_zone_slot', ...tweenArgs);
 }
 
 const zoneSlotCardHelper = {

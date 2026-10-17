@@ -1,6 +1,6 @@
-import CameraSystem from "@/core/CameraSystem";
-import { Point2D } from "@/domain/Geometry";
-import CardView from "@/game/cards/CardView";
+import type CameraSystem from "@/core/CameraSystem";
+import type { Point2D } from "@/domain/Geometry";
+import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import HandLayoutCalculator, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
 
 type Rectangle = Phaser.Geom.Rectangle & {
@@ -23,8 +23,8 @@ class HandLayoutHelper {
   }
 
   private createBounds(maxCards: number): Rectangle {
-    const totalWidth = this.calculator.calculateTotalWidth(maxCards, CardView.WIDTH);
-    const totalHeight = CardView.HEIGHT;
+    const totalWidth = this.calculator.calculateTotalWidth(maxCards, CARD_WIDTH);
+    const totalHeight = CARD_HEIGHT;
     const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
 
     const rectangle = new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight) as Rectangle;
@@ -54,7 +54,7 @@ class HandLayoutHelper {
       index,
       cardLength,
       this.handBounds.width,
-      CardView.WIDTH
+      CARD_WIDTH
     );
   }
 
@@ -63,7 +63,7 @@ class HandLayoutHelper {
   }
 
   public calculateXOffsetForSlicedCard(cardLength: number): number {
-    return this.calculator.calculateXOffsetForSlicedCard(cardLength, CardView.WIDTH);
+    return this.calculator.calculateXOffsetForSlicedCard(cardLength, CARD_WIDTH);
   }
 
   public getInteractiveBounds(): Phaser.Geom.Rectangle {

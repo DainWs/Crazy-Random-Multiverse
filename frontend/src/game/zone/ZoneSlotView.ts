@@ -1,19 +1,18 @@
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
-import { CombatantCard } from "@/domain/Card";
 import ZoneSlot from "@/domain/ZoneSlot";
-import { CardView } from "@/game/cards/CardView";
 import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
+import CombatantView from "@/game/cards/CombatantView";
 
-class ZoneSlotView extends Phaser.GameObjects.Container {
+class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
-  private cardView: CardView | null;
+  private cardView: CombatantView | null;
 
-  private previewedCardView?: CardView | null;
+  private previewedCardView?: CombatantView | null;
 
   public readonly zoneSlot: ZoneSlot;
   public readonly centerPoint: Point3D;
@@ -65,12 +64,12 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     this.add([ this.backgroundGraphics, this.mark ]);
   }
 
-  public setCard(cardView: CardView) {
-    this.zoneSlot.combatant = cardView.card as CombatantCard;
-    this.cardView = cardView;
+  public setCard(combatantView: CombatantView) {
+    this.zoneSlot.combatant = combatantView.combatant;
+    this.cardView = combatantView;
     this.add(this.cardView);
 
-    zoneSlotCardHelper.applyCardTransformations(this, cardView);
+    zoneSlotCardHelper.applyCardTransformations(this, combatantView);
   }
 
   public removeCard() {
@@ -81,22 +80,26 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
     }
   }
 
-  public previewCard(cardView: CardView) {
+  public previewCard(view: CombatantView) {
     if (!this.previewedCardView) {
-      this.previewedCardView = cardView;
+      this.previewedCardView = view;
 
-      zoneSlotCardHelper.previewCard(this, cardView);
+      zoneSlotCardHelper.previewCard(this, view);
     }
   }
 
   public stopPreviewingCard() {
     if (this.previewedCardView) {
-      this.previewedCardView.stopTweens();
+      this.scene.tweens.killTweensOf(this.previewedCardView);
       this.previewedCardView = null;
     }
   }
 
-  public getCard(): CardView | null {
+  public getCard(): CombatantView | null {
+    return this.cardView;
+  }
+
+  public getCombatant(): CombatantView | null {
     return this.cardView;
   }
 
@@ -120,6 +123,10 @@ class ZoneSlotView extends Phaser.GameObjects.Container {
       this.cardView.destroy();
       this.cardView = null;
     }
+  }
+
+  public get combatant(): CombatantView | null {
+    return this.cardView;
   }
 }
 

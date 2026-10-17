@@ -1,8 +1,9 @@
-import CardView from "@/game/cards/CardView";
+import type CardView from "@/game/cards/CardView";
+import type { CardTween, CardTweenProvider } from "@/core/visual_effects/CardTweens";
+import type { CardAnimation, CardAnimationApplier } from "@/core/visual_effects/CardAnimations";
 import * as Tweens from "@/core/visual_effects/CardTweens";
 import * as Animations from "@/core/visual_effects/CardAnimations";
-import { CardTween, CardTweenProvider } from "@/core/visual_effects/CardTweens";
-import { CardAnimation, CardAnimationApplier } from "@/core/visual_effects/CardAnimations";
+import { GameScene } from "@/scenes/Game";
 
 const cardTweens = new Map<CardTween, CardTweenProvider>();
 cardTweens.set('hover', Tweens.hoverTween);
@@ -21,9 +22,9 @@ function playTween(card: CardView, tween: CardTween, ...args: unknown[]): Phaser
   return card.scene.tweens.add(tweenConfig);
 }
 
-function playAnimation(card: CardView, animation: CardAnimation): void {
+function playAnimation(scene: GameScene, card: CardView, animation: CardAnimation): void {
   const apply = cardAnimations.get(animation) ?? Animations.noneAnimation;
-  apply(card);
+  apply(scene, card);
 }
 
 const CardAnimator = {

@@ -1,4 +1,4 @@
-import { CardView } from "@/game/cards/CardView";
+import type CardView from "@/game/cards/CardView";
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 

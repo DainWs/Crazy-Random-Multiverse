@@ -1,63 +1,24 @@
-import CardController from "@/controllers/CardController";
-import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
-import type { Size2D } from "@/domain/Geometry";
-import type { CardAnimation, CardTween } from "@/core/visual_effects";
-import type { CardAudioType } from "@/domain/Card";
-import type { CardStackLayoutHelper, CardTooltip, CardRender } from "@/game/cards/CardViewStrategy";
+import type { CardRender } from "@/game/cards/renders/CardRender";
+import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/cards/CardBounds";
 import type Card from "@/domain/Card";
-import { dispatchCardViewStrategy } from "@/game/cards/CardViewStrategyDispatcher";
-import { CARD_WIDTH, CARD_HEIGHT, CARD_SIZE } from "@/game/cards/CardDimensions";
-import CardAnimator from "@/core/visual_effects/CardAnimator";
-import Phaser from 'phaser';
+import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 
-type OriginalPosition = {
-  x: number;
-  y: number;
-  z?: number;
-  w?: number;
-}
 
-type OriginalSize = {
-  width: number;
-  height: number;
-}
-
-type OriginalScale = {
-  scaleX: number;
-  scaleY: number | undefined;
-}
-
-type OriginalBounds = {
-  position: OriginalPosition;
-  size: OriginalSize;
-  scale: OriginalScale;
-  depth: number;
-}
-
-class CardView extends Phaser.GameObjects.Container {
-  public static readonly WIDTH: number = CARD_WIDTH;
-  public static readonly HEIGHT: number = CARD_HEIGHT;
-  public static readonly SIZE: Size2D = CARD_SIZE;
-
-  private background: Phaser.GameObjects.Image;
-  private cardImage: Phaser.GameObjects.Image;
-
-  private tooltip?: CardTooltip;
-  // TODO when mouse over stacked card, it should show the tooltip of the stacked card, this include to slide the cards to show the stacked card
-  private stackHelper?: CardStackLayoutHelper;
-  private stackedCard: CardView;
-  private cardRender: CardRender;
-
-  public readonly card: Card;
-
-  private allowClicks: boolean; // TODO search a way to improve this
+abstract class CardView extends Phaser.GameObjects.Container {
 
   private originalBounds: OriginalBounds;
 
+  private background: Phaser.GameObjects.Image;
+  private cardImage: Phaser.GameObjects.Image;
+  public abstract get cardRender(): CardRender;
+  
+  public readonly card: Card;
+
+  protected allowClicks: boolean; // TODO search a way to improve this
 
   constructor(
     scene: Phaser.Scene,
-    cardController: CardController,
     card: Card
   ) {
     super(scene);
@@ -65,8 +26,8 @@ class CardView extends Phaser.GameObjects.Container {
     this.depth = 10;
     this.x = 0;
     this.y = 0;
-    this.width = CardView.WIDTH;
-    this.height = CardView.HEIGHT;
+    this.width = CARD_WIDTH;
+    this.height = CARD_HEIGHT;
     this.setSize(this.width, this.height);
 
     this.originalBounds = {
@@ -87,25 +48,20 @@ class CardView extends Phaser.GameObjects.Container {
     InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
-  private initializeView() {
+  protected initializeView() {
     this.initializeBackground();
     this.initializeCardImage();
     this.add([this.cardImage, this.background]);
-
-    const cardViewStrategy = dispatchCardViewStrategy(this.card);
-    this.stackHelper = cardViewStrategy.createStackLayoutHelper(this.scene, this);
-    this.tooltip = cardViewStrategy.createTooltip(this.scene, this);
-    this.cardRender = cardViewStrategy.createRender();
-    this.add(this.cardRender.render(this.scene, this, this.displayWidth, this.displayHeight));
+    this.add(this.cardRender.render(this.scene, this, this.width, this.height));
   }
 
-  private initializeBackground() {
+  protected initializeBackground() {
     this.background = this.scene.add.image(0, 0, this.card.getTexture());
     this.background.setScale(this.scaleX, this.scaleY);
     this.background.setDisplaySize(this.width, this.height);
   }
 
-  private initializeCardImage() {
+  protected initializeCardImage() {
     let cardImage = this.card.getImage();
     if (!this.scene.textures.exists(cardImage)) {
       cardImage = 'warrior-0';
@@ -118,63 +74,14 @@ class CardView extends Phaser.GameObjects.Container {
     this.cardImage.setOrigin(0.5, 0.5);
   }
 
-  public hasCardStacked(): boolean {
-    if (!this.stackHelper) return false;
-    return !!this.stackedCard
-  }
-
-  public stack(card: CardView) {
-    if (this.stackHelper && this.stackedCard === undefined) {
-      this.stackedCard = card;
-
-      const [xWithOffset, yWithOffset] = this.stackHelper.calculateOffset(this.angle);
-      this.stackedCard.setOriginalPosition(xWithOffset, yWithOffset);
-      this.stackedCard.setOriginalDepth(this.depth - 1);
-      this.stackedCard.setAngle(this.angle);
-      this.stackedCard.reset();
-      this.stackedCard.disableInteractive();
-
-      this.addAt(this.stackedCard, 0);
-      this.scene.input.setDraggable(this.stackedCard, false);
-
-      this.on('pointerout', () => this.stackHelper?.hideCard(this, this.stackedCard));
-      this.on('pointerover', () => this.stackHelper?.revealCard(this, this.stackedCard));
-
-      this.stackedCard.allowClicks = false; // TODO deprecated and temporal
-    }
-  }
-
-  public playSoundForAction(type: CardAudioType) {
-    const audioResource = this.card.getAudio(type);
-    if (this.scene.cache.audio.exists(audioResource)) {
-      this.scene.sound.play(audioResource, { volume: 0.5 });
-    } else {
-      console.warn(`Audio key "${audioResource}" not found in cache.`);
-    }
-  }
+  // General
 
   public canBeClicked(): boolean {
     return this.allowClicks;
   }
 
-  public showTooltip(): void {
-    this.tooltip?.show(this);
-  }
-
-  public hideTooltip(): void {
-    this.tooltip?.hide();
-  }
-
-  public applyAnimation(animation: CardAnimation): void {
-    CardAnimator.playAnimation(this, animation);
-  }
-
-  public applyTween(tween: CardTween, ...args: unknown[]): void {
-    CardAnimator.playTween(this, tween, ...args);
-  }
-
-  public stopTweens() {
-    this.scene.tweens.killTweensOf(this);
+  public disableClicks(): void {
+    this.allowClicks = false;
   }
 
   // Bounds modification methods
@@ -246,7 +153,6 @@ class CardView extends Phaser.GameObjects.Container {
     super.preDestroy();
     InteractiveObjectManager.unregisterGameObject(this.scene, this);
   }
-
 }
 
 export { CardView };

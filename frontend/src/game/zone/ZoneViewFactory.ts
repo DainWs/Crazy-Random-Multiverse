@@ -1,7 +1,7 @@
 import Battlefield, { BattlefieldSide } from "@/domain/Battlefield";
 import { Rotation } from "@/domain/Geometry";
 import ZoneView from "@/game/zone/ZoneView";
-import CardView from "@/game/cards/CardView";
+import { CARD_SIZE } from "@/game/cards/CardDimensions";
 import { GameScene } from "@/scenes/Game";
 import ZoneLayout from "@/game/zone/ZoneLayout";
 
@@ -11,7 +11,7 @@ ROTATION_MAP.set(BattlefieldSide.TOP, 180);
 ROTATION_MAP.set(BattlefieldSide.LEFT, 90);
 ROTATION_MAP.set(BattlefieldSide.RIGHT, -90);
 
-const SLOT_SIZE = CardView.SIZE;
+const SLOT_SIZE = CARD_SIZE;
 const FRIENDLY_SIDE = BattlefieldSide.BOTTOM;
 const FRIENDLY_ROTATION = ROTATION_MAP.get(FRIENDLY_SIDE)!;
 const ENEMY_SIDE_ITERATOR = [BattlefieldSide.TOP, BattlefieldSide.LEFT, BattlefieldSide.RIGHT];

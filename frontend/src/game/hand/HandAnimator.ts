@@ -1,7 +1,8 @@
-import { Point2D } from "@/domain/Geometry";
+import type { Point2D } from "@/domain/Geometry";
+import type CardView from "@/game/cards/CardView";
+import type HandView from "@/game/hand/HandView";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
 import { MOVE_TO_DURATION, SLIDE_TO_DURATION } from "@/core/visual_effects/CardTweens";
-import CardView from "@/game/cards/CardView";
-import HandView from "@/game/hand/HandView";
 
 type OnCompleteCallback = () => void;
 const NoneCallback = () => { };
@@ -38,7 +39,7 @@ class HandAnimator {
       const cardView = incomingCards[i];
       const originalPosition = cardView.getOriginalPosition();
       cardView.setPosition(fromPoint.x, fromPoint.y);
-      cardView.applyTween('move_to_hand', originalPosition.x, originalPosition.y, tweenDelay * i);
+      CardAnimator.playTween(cardView, 'move_to_hand', originalPosition.x, originalPosition.y, tweenDelay * i);
     }
 
     setTimeout(() => {
@@ -57,7 +58,7 @@ class HandAnimator {
   }
 
   public sliceCard(cardView: CardView, x: number, y: number): void {
-    cardView.applyTween('horizontal_slide', x, y);
+    CardAnimator.playTween(cardView, 'horizontal_slide', x, y);
   }
 }
 

@@ -1,11 +1,11 @@
-import type { CardRender } from "@/game/cards/CardViewStrategy";
-import type CardView from "@/game/cards/CardView";
+import type { CardRender } from "@/game/cards/renders/CardRender";
 import { showDebugBoxes } from "@/env";
 import * as TextUtils from "@/game/utils/TextUtils";
+import SpellView from "@/game/cards/SpellView";
 
-const render = (scene: Phaser.Scene, cardView: CardView, width: number, height: number) => {
+const render = (scene: Phaser.Scene, cardView: SpellView, width: number, height: number) => {
   return [
-    ...defineDescriptionStat(scene, width, height, cardView.card.description)
+    ...defineDescriptionStat(scene, width, height, cardView.spell.description)
   ];
 }
 
@@ -39,7 +39,7 @@ function defineDescriptionStat(scene: Phaser.Scene, totalWidth: number, totalHei
   return gameObjects;
 }
 
-const update = (_: Phaser.Scene, _1: CardView, _2: number, _3: number) => {
+const update = (_: Phaser.Scene, _1: SpellView, _2: number, _3: number) => {
   return;
 }
 
@@ -48,4 +48,5 @@ const spellRender: CardRender = {
   update
 }
 
+export type { CardRender };
 export default spellRender;

@@ -1,4 +1,5 @@
 import type CardView from "@/game/cards/CardView";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
 
 const BEHIND_CARD_OFFSET = 20;
 
@@ -10,12 +11,12 @@ interface CardStackLayoutHelper {
 
 const revealCard = (combatant: CardView, stackedCard: CardView) => {
   const [xWithOffset, yWithOffset] = calculateRevealedOffset(combatant.angle, combatant.width);
-  stackedCard.applyTween('horizontal_slide', xWithOffset, yWithOffset);
+  CardAnimator.playTween(stackedCard, 'horizontal_slide', xWithOffset, yWithOffset);
 }
 
 const hideCard = (combatant: CardView, stackedCard: CardView) => {
   const [xWithOffset, yWithOffset] = calculateOffset(combatant.angle);
-  stackedCard.applyTween('horizontal_slide', xWithOffset, yWithOffset);
+  CardAnimator.playTween(stackedCard, 'horizontal_slide', xWithOffset, yWithOffset);
 }
 
 function calculateOffset(angle: number, index: number = 1): [number, number] {
