@@ -1,41 +1,57 @@
 import type CardView from "@/game/cards/CardView";
 import type { GameScene } from "@/scenes/Game";
-import CardMouseOver from "@/core/interactions/CardMouseOver";
-import CardDragAndDropManager, { TargetGameObject } from "@/core/interactions/DragAndDrop";
-import CardClickHandler from "@/core/interactions/CardClickHandler";
+import type { TargetGameObject } from "@/core/interactions/DragAndDrop";
+import mouseOver from "@/core/interactions/CardMouseOver";
+import dragAndDrop from "@/core/interactions/DragAndDrop";
+import clickHandler from "@/core/interactions/CardClickHandler";
 
 type Pointer = Phaser.Input.Pointer;
 
-const mouseOver = new CardMouseOver();
-const dragAndDrop = new CardDragAndDropManager();
-const clickHandler = new CardClickHandler();
+type CardEventListenerMap = Map<string, (...args: any[]) => void>;
+const cardListeners = new WeakMap<CardView, CardEventListenerMap>();
 
 function handleCardInputs(scene: GameScene, card: CardView): void {
-  card.on("pointerover", () => mouseOver.onPointerOver(scene, card));
-  card.on("pointerout", () => mouseOver.onPointerOut(scene, card));
-  card.on("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
-  card.on("pointerdown", (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer));
+  const listeners: CardEventListenerMap = new Map();
 
-  card.on("dragstart", () => dragAndDrop.onGrabCard(scene, card));
-  card.on("dragend", () => dragAndDrop.onDragEnd(scene, card));
-  card.on("dragenter", createDragEnterWrapper(scene, card));
-  card.on("dragleave", createDragLeaveWrapper(scene, card));
-  card.on("drag", createDragWrapper(scene, card));
-  card.on("drop", createDropWrapper(scene, card));
+  const onPointerOver = () => mouseOver.onPointerOver(scene, card);
+  const onPointerOut = () => mouseOver.onPointerOut(scene, card);
+  const onPointerUp = (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer);
+  const onPointerDown = (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer);
+
+  const onDragStart = () => dragAndDrop.onGrabCard(scene, card);
+  const onDragEnd = () => dragAndDrop.onDragEnd(scene, card);
+  const onDragEnter = createDragEnterWrapper(scene, card);
+  const onDragLeave = createDragLeaveWrapper(scene, card);
+  const onDrag = createDragWrapper(scene, card);
+  const onDrop = createDropWrapper(scene, card);
+
+  listeners.set("pointerover", onPointerOver);
+  listeners.set("pointerout", onPointerOut);
+  listeners.set("pointerup", onPointerUp);
+  listeners.set("pointerdown", onPointerDown);
+  listeners.set("dragstart", onDragStart);
+  listeners.set("dragend", onDragEnd);
+  listeners.set("dragenter", onDragEnter);
+  listeners.set("dragleave", onDragLeave);
+  listeners.set("drag", onDrag);
+  listeners.set("drop", onDrop);
+
+  cardListeners.set(card, listeners);
+
+  for (const [event, fn] of listeners) {
+    card.on(event, fn);
+  }
 }
 
-function removeHandledCard(scene: GameScene, card: CardView): void {
-  card.off("pointerover", () => mouseOver.onPointerOver(scene, card));
-  card.off("pointerout", () => mouseOver.onPointerOut(scene, card));
-  card.off("pointerup", (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer));
-  card.off("pointerdown", (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer));
+function removeHandledCard(_scene: GameScene, card: CardView): void {
+  const listeners = cardListeners.get(card);
+  if (!listeners) return;
 
-  card.off("dragstart", () => dragAndDrop.onGrabCard(scene, card));
-  card.off("dragend", () => dragAndDrop.onDragEnd(scene, card));
-  card.off("dragenter", createDragEnterWrapper(scene, card));
-  card.off("dragleave", createDragLeaveWrapper(scene, card));
-  card.off("drag", createDragWrapper(scene, card));
-  card.off("drop", createDropWrapper(scene, card));
+  for (const [event, fn] of listeners) {
+    card.off(event, fn);
+  }
+
+  cardListeners.delete(card);
 }
 
 function createDragEnterWrapper(scene: GameScene, card: CardView) {

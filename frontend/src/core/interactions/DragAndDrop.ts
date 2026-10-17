@@ -60,7 +60,7 @@ class CardDragAndDropManager {
   public onDragEnter(_: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
     if (!targetGameObject) return false;
     if (targetGameObject === this.sourceGameObject) return false;
-  
+
     if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragEnter(cardView, targetGameObject);
     }
@@ -87,7 +87,7 @@ class CardDragAndDropManager {
       this.targetGameObject = undefined;
       targetGameObject.stopPreviewingCard();
     }
-    
+
     targetGameObject?.applyAnimation('unhighlight');
   }
 
@@ -148,5 +148,7 @@ function getSourceGameObjectAtCursor(scene: GameScene): SourceGameObject | undef
   return getTopGameObjectAtCursor(scene, "HandView", "ZoneSlotView") as SourceGameObject | undefined;
 }
 
+const dragAndDrop = new CardDragAndDropManager();
+
 export type { SourceGameObject, TargetGameObject };
-export default CardDragAndDropManager;
+export default dragAndDrop;

@@ -1,6 +1,7 @@
 import { Statistic } from "@/domain/Statistics";
 import * as TextUtils from "@/game/utils/TextUtils";
 import { showDebugBoxes } from "@/env";
+import Phaser from 'phaser';
 
 type IconPosition = 'left' | 'right' | 'top' | 'bottom';
 
@@ -96,7 +97,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
 
     return { x: 0, y: ySide };
   }
-  
+
   public setPosition(x?: number, y?: number, z?: number, w?: number): this {
     super.setPosition(x, y, z, w);
 
@@ -142,7 +143,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     this.statisticIcon.setVisible(visible);
     return this;
   }
-    
+
 }
 
 

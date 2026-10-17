@@ -3,7 +3,7 @@ import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/car
 import type Card from "@/domain/Card";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
-
+import Phaser from "phaser";
 
 abstract class CardView extends Phaser.GameObjects.Container {
 
@@ -12,7 +12,7 @@ abstract class CardView extends Phaser.GameObjects.Container {
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
   public abstract get cardRender(): CardRender;
-  
+
   public readonly card: Card;
 
   protected allowClicks: boolean; // TODO search a way to improve this
