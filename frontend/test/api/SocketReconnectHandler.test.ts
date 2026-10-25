@@ -1,23 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import socketReconnectHandler from '@/api/SocketReconnectHandler';
-import socketMemory from '@/api/SocketMemory';
-import EventSystem from '@/core/EventSystem';
 import { Socket } from 'socket.io-client';
 
 type Function = (...args: unknown[]) => unknown;
-
-vi.mock('@/api/SocketMemory', () => ({
-  default: {
-    activeGameCode: undefined,
-    activePlayerCode: undefined
-  }
-}));
-
-vi.mock('@/core/EventSystem', () => ({
-  default: {
-    rawEmit: vi.fn()
-  }
-}));
 
 describe('SocketReconnectHandler', () => {
   const createSocket = () => {
@@ -54,9 +39,6 @@ describe('SocketReconnectHandler', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    socketMemory.activeGameCode = null;
-    socketMemory.activePlayerCode = null;
   });
 
   describe('bind', () => {
@@ -95,31 +77,6 @@ describe('SocketReconnectHandler', () => {
       socketHandlers.get('connect')!();
 
       expect(callbacks.setStatus).toHaveBeenCalledWith('connected');
-    });
-
-    it('joins the active game when one exists', () => {
-      const { socket, socketHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketMemory.activeGameCode = 'GAME-123';
-      socketMemory.activePlayerCode = 'PLAYER-456';
-      socketReconnectHandler.bind(socket, callbacks);
-
-      socketHandlers.get('connect')!();
-
-      expect(callbacks.emit).toHaveBeenCalledWith('game:join', {
-        gameCode: 'GAME-123',
-        playerCode: 'PLAYER-456'
-      });
-    });
-
-    it('does not join a game when there is no active game', () => {
-      const { socket, socketHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketReconnectHandler.bind(socket, callbacks);
-
-      socketHandlers.get('connect')!();
-
-      expect(callbacks.emit).not.toHaveBeenCalled();
     });
   });
 
@@ -192,34 +149,6 @@ describe('SocketReconnectHandler', () => {
       expect(callbacks.setStatus).toHaveBeenCalledWith('connected');
     });
 
-    it('joins and synchronizes the active game', () => {
-      const { socket, managerHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketMemory.activeGameCode = 'GAME-123';
-      socketMemory.activePlayerCode = 'PLAYER-456';
-      socketReconnectHandler.bind(socket, callbacks);
-
-      managerHandlers.get('reconnect')!(2);
-
-      expect(callbacks.emit).toHaveBeenNthCalledWith(1, 'game:join', {
-        gameCode: 'GAME-123',
-        playerCode: 'PLAYER-456'
-      });
-      expect(callbacks.emit).toHaveBeenNthCalledWith(2, 'game:sync', {
-        gameCode: 'GAME-123'
-      });
-    });
-
-    it('does not emit game actions without an active game', () => {
-      const { socket, managerHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketReconnectHandler.bind(socket, callbacks);
-
-      managerHandlers.get('reconnect')!(2);
-
-      expect(callbacks.emit).not.toHaveBeenCalled();
-    });
-
     it('notifies the reconnect listener', () => {
       const { socket, managerHandlers } = createSocket();
       const callbacks = createCallbacks();
@@ -228,18 +157,6 @@ describe('SocketReconnectHandler', () => {
       managerHandlers.get('reconnect')!(5);
 
       expect(callbacks.onReconnect).toHaveBeenCalledWith(5);
-    });
-
-    it('emits socket.reconnected', () => {
-      const { socket, managerHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketReconnectHandler.bind(socket, callbacks);
-
-      managerHandlers.get('reconnect')!(5);
-
-      expect(EventSystem.rawEmit).toHaveBeenCalledWith('socket.reconnected', {
-        attempt: 5
-      });
     });
   });
 

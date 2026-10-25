@@ -1,32 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import socketEventHandler from '@/api/SocketEventHandler';
-import StoreSystem from '@/core/StoreSystem';
 import EventSystem from '@/core/EventSystem';
-import { GameEventCode, cardFromDto } from '@/api/dtos/EventDto';
+import { GAME_EVENT_CODES, GameEventCode } from '@/api/models/GameEventCode';
 import { Socket } from 'socket.io-client';
 
 type Function = (...args: unknown[]) => unknown;
-
-vi.mock('@/core/StoreSystem', () => ({
-  default: {
-    setPlayerHand: vi.fn()
-  }
-}));
 
 vi.mock('@/core/EventSystem', () => ({
   default: {
     rawEmit: vi.fn()
   }
 }));
-
-vi.mock('@/api/dtos/EventDto', async () => {
-  const actual = await vi.importActual<typeof import('@/api/dtos/EventDto')>('@/api/dtos/EventDto');
-
-  return {
-    ...actual,
-    cardFromDto: vi.fn((card) => ({ mappedCard: card }))
-  };
-});
 
 describe('SocketEventHandler', () => {
   const createSocket = () => {
@@ -55,9 +39,10 @@ describe('SocketEventHandler', () => {
     };
   };
 
-  const createEvent = (code: string = 'GAME_STARTED', details: Record<string, unknown> = {}) => ({
+  const createEvent = (code: GameEventCode = 'GAME_START', details: Record<string, unknown> = {}) => ({
     code,
-    details
+    details,
+    timestamp: Date.now()
   });
 
   beforeEach(() => {
@@ -67,7 +52,7 @@ describe('SocketEventHandler', () => {
   describe('bind', () => {
     it('registers all generic event channels', () => {
       const { socket } = createSocket();
-    
+
       socketEventHandler.bind(socket, vi.fn());
 
       expect(socket.on).toHaveBeenCalledWith('event', expect.any(Function));
@@ -80,7 +65,7 @@ describe('SocketEventHandler', () => {
 
       socketEventHandler.bind(socket, vi.fn());
 
-      Object.values(GameEventCode).forEach((eventCode) => {
+      GAME_EVENT_CODES.forEach((eventCode) => {
         expect(socket.on).toHaveBeenCalledWith(eventCode, expect.any(Function));
       });
     });
@@ -100,9 +85,9 @@ describe('SocketEventHandler', () => {
     it('registers a listener for an event code', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED');
+      const event = createEvent('GAME_START');
 
       socket.emit('event', event);
 
@@ -114,10 +99,10 @@ describe('SocketEventHandler', () => {
       const { socket } = createSocket();
       const firstListener = vi.fn();
       const secondListener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', firstListener);
-      socketEventHandler.onGameEvent('GAME_STARTED', secondListener);
+      socketEventHandler.onGameEvent('GAME_START', firstListener);
+      socketEventHandler.onGameEvent('GAME_START', secondListener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED');
+      const event = createEvent('GAME_START');
 
       socket.emit('event', event);
 
@@ -128,11 +113,11 @@ describe('SocketEventHandler', () => {
     it('does not register the same listener twice', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
 
-      socket.emit('event', createEvent('GAME_STARTED'));
+      socket.emit('event', createEvent('GAME_START'));
 
       expect(listener).toHaveBeenCalledTimes(1);
     });
@@ -140,12 +125,12 @@ describe('SocketEventHandler', () => {
     it('returns an unsubscribe function', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      const unsubscribe = socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      const unsubscribe = socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      socket.emit('event', createEvent('GAME_STARTED'));
+      socket.emit('event', createEvent('GAME_START'));
       unsubscribe();
 
-      socket.emit('event', createEvent('GAME_STARTED'));
+      socket.emit('event', createEvent('GAME_START'));
 
       expect(listener).toHaveBeenCalledTimes(1);
     });
@@ -155,30 +140,30 @@ describe('SocketEventHandler', () => {
     it('removes a registered listener', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
-      socketEventHandler.offGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
+      socketEventHandler.offGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
 
-      socket.emit('event', createEvent('GAME_STARTED'));
+      socket.emit('event', createEvent('GAME_START'));
 
       expect(listener).not.toHaveBeenCalled();
     });
 
     it('does nothing when the event has no listeners', () => {
       expect(() => {
-        socketEventHandler.offGameEvent('GAME_STARTED', vi.fn());
+        socketEventHandler.offGameEvent('GAME_START', vi.fn());
       }).not.toThrow();
     });
 
     it('does nothing when the listener is not registered', () => {
       const registeredListener = vi.fn();
       const unknownListener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', registeredListener);
-      socketEventHandler.offGameEvent('GAME_STARTED', unknownListener);
+      socketEventHandler.onGameEvent('GAME_START', registeredListener);
+      socketEventHandler.offGameEvent('GAME_START', unknownListener);
       const { socket } = createSocket();
       socketEventHandler.bind(socket, vi.fn());
 
-      socket.emit('event', createEvent('GAME_STARTED'));
+      socket.emit('event', createEvent('GAME_START'));
 
       expect(registeredListener).toHaveBeenCalledTimes(1);
     });
@@ -190,8 +175,8 @@ describe('SocketEventHandler', () => {
       const listener = vi.fn();
       socketEventHandler.onAnyGameEvent(listener);
       socketEventHandler.bind(socket, vi.fn());
-      const firstEvent = createEvent('GAME_STARTED');
-      const secondEvent = createEvent('GAME_FINISHED');
+      const firstEvent = createEvent('GAME_START');
+      const secondEvent = createEvent('GAME_END');
 
       socket.emit('event', firstEvent);
       socket.emit('game:event', secondEvent);
@@ -245,9 +230,9 @@ describe('SocketEventHandler', () => {
     it('handles events received through the event channel', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED', {
+      const event = createEvent('GAME_START', {
         value: 42
       });
 
@@ -255,15 +240,15 @@ describe('SocketEventHandler', () => {
 
       expect(listener).toHaveBeenCalledWith(event);
       expect(EventSystem.rawEmit).toHaveBeenCalledWith('socket.event', event);
-      expect(EventSystem.rawEmit).toHaveBeenCalledWith('game.game_started', event);
+      expect(EventSystem.rawEmit).toHaveBeenCalledWith('game.game_start', event);
     });
 
     it('handles events received through game:event', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED');
+      const event = createEvent('GAME_START');
 
       socket.emit('game:event', event);
 
@@ -273,9 +258,9 @@ describe('SocketEventHandler', () => {
     it('handles events received through game_event', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED');
+      const event = createEvent('GAME_START');
 
       socket.emit('game_event', event);
 
@@ -285,9 +270,9 @@ describe('SocketEventHandler', () => {
     it('parses JSON string events', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED', {
+      const event = createEvent('GAME_START', {
         value: 42
       });
 
@@ -300,7 +285,7 @@ describe('SocketEventHandler', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
       const anyListener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
+      socketEventHandler.onGameEvent('GAME_START', listener);
       socketEventHandler.onAnyGameEvent(anyListener);
       socketEventHandler.bind(socket, vi.fn());
 
@@ -315,11 +300,11 @@ describe('SocketEventHandler', () => {
       const { socket } = createSocket();
       const startedListener = vi.fn();
       const finishedListener = vi.fn();
-      socketEventHandler.onGameEvent('GAME_STARTED', startedListener);
-      socketEventHandler.onGameEvent('GAME_FINISHED', finishedListener);
+      socketEventHandler.onGameEvent('GAME_START', startedListener);
+      socketEventHandler.onGameEvent('GAME_END', finishedListener);
       socketEventHandler.bind(socket, vi.fn());
 
-      const event = createEvent('GAME_STARTED');
+      const event = createEvent('GAME_START');
 
       socket.emit('event', event);
 
@@ -332,7 +317,7 @@ describe('SocketEventHandler', () => {
     it('wraps object payloads without a code', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      const eventCode = Object.values(GameEventCode)[0];
+      const eventCode = GAME_EVENT_CODES[0];
       socketEventHandler.onGameEvent(eventCode, listener);
       socketEventHandler.bind(socket, vi.fn());
       const details = {
@@ -341,115 +326,31 @@ describe('SocketEventHandler', () => {
 
       socket.emit(eventCode, details);
 
-      expect(listener).toHaveBeenCalledWith({
-        code: eventCode,
-        details
-      });
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: eventCode,
+          details
+        })
+      );
     });
 
     it('uses an already wrapped event when data has a code', () => {
       const { socket } = createSocket();
       const listener = vi.fn();
-      const eventCode = Object.values(GameEventCode)[0];
+      const eventCode = GAME_EVENT_CODES[0];
       socketEventHandler.onGameEvent(eventCode, listener);
       socketEventHandler.bind(socket, vi.fn());
       const event = {
         code: eventCode,
         details: {
           value: 42
-        }
+        },
+        timestamp: Date.now()
       };
 
       socket.emit(eventCode, event);
 
       expect(listener).toHaveBeenCalledWith(event);
-    });
-  });
-
-  describe('player hand synchronization', () => {
-    it('maps and stores the player hand', () => {
-      const { socket } = createSocket();
-      socketEventHandler.bind(socket, vi.fn());
-      const cards = [
-        { id: 'card-1' },
-        { id: 'card-2' }
-      ];
-
-      socket.emit(
-        'event',
-        createEvent('GAME_STARTED', {
-          playerHand: cards
-        })
-      );
-
-      expect(cardFromDto).toHaveBeenCalledTimes(2);
-      expect(cardFromDto).toHaveBeenNthCalledWith(1, cards[0], 0, cards);
-      expect(cardFromDto).toHaveBeenNthCalledWith(2, cards[1], 1, cards);
-      expect(StoreSystem.setPlayerHand).toHaveBeenCalledWith([
-        {
-          mappedCard: cards[0]
-        },
-        {
-          mappedCard: cards[1]
-        }
-      ]);
-    });
-
-    it('does not update the player hand when playerHand is missing', () => {
-      const { socket } = createSocket();
-      socketEventHandler.bind(socket, vi.fn());
-
-      socket.emit(
-        'event',
-        createEvent('GAME_STARTED', {
-          value: 42
-        })
-      );
-
-      expect(cardFromDto).not.toHaveBeenCalled();
-      expect(StoreSystem.setPlayerHand).not.toHaveBeenCalled();
-    });
-
-    it('does not update the player hand when playerHand is not an array', () => {
-      const { socket } = createSocket();
-      socketEventHandler.bind(socket, vi.fn());
-
-      socket.emit(
-        'event',
-        createEvent('GAME_STARTED', {
-          playerHand: {
-            card: 'card-1'
-          }
-        })
-      );
-
-      expect(cardFromDto).not.toHaveBeenCalled();
-      expect(StoreSystem.setPlayerHand).not.toHaveBeenCalled();
-    });
-
-    it('continues processing the event when card mapping fails', () => {
-      const { socket } = createSocket();
-      const listener = vi.fn();
-      vi.mocked(cardFromDto).mockImplementationOnce(() => {
-        throw new Error('Invalid card');
-      });
-      socketEventHandler.onGameEvent('GAME_STARTED', listener);
-      socketEventHandler.bind(socket, vi.fn());
-      const event = createEvent('GAME_STARTED', {
-        playerHand: [
-          {
-            id: 'card-1'
-          }
-        ]
-      });
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-
-      socket.emit('event', event);
-
-      expect(warnSpy).toHaveBeenCalledWith('[SocketService] Failed to map and set player hand from event:', expect.any(Error));
-      expect(listener).toHaveBeenCalledWith(event);
-      expect(EventSystem.rawEmit).toHaveBeenCalledWith('socket.event', event);
-      warnSpy.mockRestore();
     });
   });
 

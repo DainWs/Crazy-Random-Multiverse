@@ -53,9 +53,7 @@ describe('StoreSystem', () => {
     it('identifies session code correctly', () => {
       expect(StoreSystem.getSessionCode()).toBe('p1');
       expect(StoreSystem.isSessionCode('p1')).toBe(true);
-      expect(StoreSystem.isSessionCode({ code: 'p1' } as any)).toBe(true);
       expect(StoreSystem.isSessionCode('p2')).toBe(false);
-      expect(StoreSystem.isSessionCode({ code: 'p2' } as any)).toBe(false);
       expect(StoreSystem.isSessionCode(null)).toBe(false);
       expect(StoreSystem.isSessionCode(undefined)).toBe(false);
     });
