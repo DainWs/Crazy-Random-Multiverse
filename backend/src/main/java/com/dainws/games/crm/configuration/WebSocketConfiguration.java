@@ -1,6 +1,7 @@
 package com.dainws.games.crm.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.session.MapSession;
@@ -11,6 +12,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 
 @Configuration
 @EnableWebSocketMessageBroker
+@ConditionalOnProperty(value = "crm.communication.websocket.enabled", havingValue = "true")
 public class WebSocketConfiguration extends AbstractSessionWebSocketMessageBrokerConfigurer<MapSession> {
 
 	@Value("${websocket.broker:/topic}")
@@ -24,19 +26,19 @@ public class WebSocketConfiguration extends AbstractSessionWebSocketMessageBroke
 
 	@Value("${websocket.endpoint:/ws}")
 	private String endpoint;
-
+	
 	@Override
 	protected void configureStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint(this.endpoint)
-			.addInterceptors(new HttpSessionHandshakeInterceptor())
-			.setAllowedOrigins("*"); // TODO be carefull CSRF attack
-		
+				.addInterceptors(new HttpSessionHandshakeInterceptor())
+				.setAllowedOrigins("*"); // TODO be carefull CSRF attack
+
 		registry.addEndpoint(this.endpoint)
-			.addInterceptors(new HttpSessionHandshakeInterceptor())
-			.setAllowedOrigins("*") // TODO be carefull CSRF attack
-			.withSockJS();
+				.addInterceptors(new HttpSessionHandshakeInterceptor())
+				.setAllowedOrigins("*") // TODO be carefull CSRF attack
+				.withSockJS();
 	}
-	
+
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		registry.enableSimpleBroker(this.simpleBroker);

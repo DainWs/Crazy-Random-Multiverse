@@ -1,9 +1,10 @@
-package com.dainws.games.crm.controller;
+package com.dainws.games.crm.controller.events;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -17,41 +18,29 @@ import com.dainws.games.crm.controller.dto.domain.ExceptionCodeDto;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserClient;
 import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.repositories.UserRepository;
 
 @Component
-public class CommunicationClient implements UserClient, ExceptionPublisher {
+@ConditionalOnProperty(value = "crm.communication.websocket.enabled", havingValue = "true")
+public class WebSocketCommunicationClient implements CommunicationClient {
 
 	private SimpMessagingTemplate messagingTemplate;
 	private UserRepository userRepository;
 	private Logger logger;
 
-	public CommunicationClient(UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
+	public WebSocketCommunicationClient(UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
 		this.userRepository = userRepository;
 		this.messagingTemplate = messagingTemplate;
-		this.logger = LoggerFactory.getLogger(CommunicationClient.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(WebSocketCommunicationClient.class.getCanonicalName());
 	}
 
 	@Override
-	public void publish(List<Player> to, ExceptionCode exceptionCode) {
-		for (Player player : to) {
-			this.sendExceptionCode(player, exceptionCode);
-		}
-	}
-	
-	@Override
-	public void publish(Player to, ExceptionCode exceptionCode) {
-		this.sendExceptionCode(to, exceptionCode);
-	}
-	
 	public void sendExceptionCode(Player player, ExceptionCode code) {
 		if (this.canSendTo(player)) {
 			this.logger.info("Enviando error {}, al cliente {}", code, player.getName());
@@ -63,6 +52,7 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 		}
 	}
 
+	@Override
 	public void sendEvent(Player player, Event event) {
 		if (this.canSendTo(player)) {
 			this.logger.info("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
@@ -81,7 +71,7 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 
 		return false;
 	}
-	
+
 	private User getUserFrom(Player player) {
 		UserCode code = UserCode.from(player.getCode());
 		return this.userRepository.find(code);

@@ -1,0 +1,17 @@
+{"properties": [
+	{
+	  "name": "crm.jpa.type",
+	  "type": "java.lang.String",
+	  "description": "Specifies jpa database type, default = \"MEMORY\""
+	},
+	{
+	  "name": "crm.communication.socket-io.enabled",
+	  "type": "java.lang.String",
+	  "description": "Enables Socket-io based connections"
+	},
+	{
+	  "name": "crm.communication.websocket.enabled",
+	  "type": "java.lang.String",
+	  "description": "Enables websocket based connection"
+	}
+]}

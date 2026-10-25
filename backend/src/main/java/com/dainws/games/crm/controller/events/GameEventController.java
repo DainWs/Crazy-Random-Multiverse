@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
-import com.dainws.games.crm.controller.CommunicationClient;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -50,6 +49,8 @@ public class GameEventController {
 			}
 		}
 	}
+	
+	// TODO other events are missing here
 
 	private void sendEventToEveryPlayer(Event event) {
 		Game game = event.getDetails().getGame();
