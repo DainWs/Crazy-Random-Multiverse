@@ -259,3 +259,6 @@ https://chatgpt.com/share/6aa67e84-95bc-83eb-b3bc-28bb010d6782
 - [ ] Test reconnection
 - [ ] Test spectator mode
 - [ ] Test game completion
+
+## 🟢 P4 — Review
+- [ ] Finish remaining TODOs in comments
