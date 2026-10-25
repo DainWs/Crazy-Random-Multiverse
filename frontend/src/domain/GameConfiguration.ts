@@ -1,5 +1,6 @@
 type GameCode = string;
-type GameMode = 'pvp' | 'pve';
+type GameMode = 'CLASSIC' | 'PLAYER_VS_AI';
+
 
 const MAX_PLAYER_COUNTS = 12;
 

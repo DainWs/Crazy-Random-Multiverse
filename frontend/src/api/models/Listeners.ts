@@ -3,6 +3,7 @@ import type { EventDto } from '@/api/dtos/EventDto';
 
 type Listener<T> = (arg: T) => void;
 type ListenerList<T> = Iterable<Listener<T>> | undefined;
+type CancelListenerCallback = () => void;
 
 type GameEventListener = Listener<EventDto>;
 type StatusChangeListener = Listener<ConnectionStatus>;
@@ -21,5 +22,5 @@ function notifyListeners<T>(listeners: ListenerList<T>, context: string, arg: T)
   }
 }
 
-export type { Listener, GameEventListener, StatusChangeListener, ReconnectListener, ErrorListener };
+export type { Listener, CancelListenerCallback, GameEventListener, StatusChangeListener, ReconnectListener, ErrorListener };
 export { notifyListeners };

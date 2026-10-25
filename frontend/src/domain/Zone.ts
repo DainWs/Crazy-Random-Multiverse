@@ -4,7 +4,10 @@ import Team from '@/domain/Team';
 import { ZoneOrganizationsType, getZoneOrganization } from '@/domain/ZoneOrganizations';
 import ZoneSlot, { AllowedCombatant } from '@/domain/ZoneSlot';
 
+type ZoneId = string;
+
 class Zone {
+  public readonly code: ZoneId;
   public readonly owner: Owner;
   public readonly type: ZoneOrganizationsType;
   public team: Team;
@@ -13,6 +16,7 @@ class Zone {
   public slots: ZoneSlot[][];
 
   public constructor(owner: Owner, team: Team, type: ZoneOrganizationsType = 'BASE') {
+    this.code = owner.code;
     this.owner = owner;
     this.type = type;
     this.team = team;
@@ -49,7 +53,7 @@ class Zone {
     if (playerIdentifier instanceof Owner) {
       return this.owner.code == playerIdentifier.code;
     }
-  
+
     return this.owner.code == playerIdentifier;
   }
 

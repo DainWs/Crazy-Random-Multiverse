@@ -1,7 +1,5 @@
-import { Socket } from 'socket.io-client';
-import EventSystem from '@/core/EventSystem';
-import socketMemory from '@/api/SocketMemory';
 import type { ConnectionStatus } from '@/api/models/ConnectionStatus';
+import { Socket } from 'socket.io-client';
 
 interface LifecycleCallbacks {
   setStatus: (status: ConnectionStatus) => void;
@@ -30,10 +28,6 @@ function createOnConnect(socket: Socket, callbacks: LifecycleCallbacks) {
   return () => {
     console.log('[SocketService] Connected to Socket.IO server. Socket ID:', socket.id);
     callbacks.setStatus('connected');
-
-    if (socketMemory.activeGameCode) {
-      joinActiveGame(callbacks, false);
-    }
   }
 }
 
@@ -69,13 +63,7 @@ function createOnReconnect(callbacks: LifecycleCallbacks) {
   return (attempt: number) => {
     console.log(`[SocketService] Successfully reconnected after ${attempt} attempts.`);
     callbacks.setStatus('connected');
-
-    if (socketMemory.activeGameCode) {
-      joinActiveGame(callbacks, true);
-    }
-
     callbacks.onReconnect(attempt);
-    EventSystem.rawEmit('socket.reconnected', { attempt });
   }
 }
 
@@ -95,20 +83,9 @@ function createOnReconnectFailed(callbacks: LifecycleCallbacks) {
 
 /// Utils 
 
-function joinActiveGame(callbacks: LifecycleCallbacks, synchronize: boolean) {
-  callbacks.emit('game:join', {
-    gameCode: socketMemory.activeGameCode,
-    playerCode: socketMemory.activePlayerCode,
-  });
-
-  if (synchronize) {
-    callbacks.emit('game:sync', { gameCode: socketMemory.activeGameCode });
-  }
-}
-
 const socketReconnectHandler: SocketReconnectHandler = {
   bind: bindReconnectHandlers,
 }
-  
+
 export type { SocketReconnectHandler }
 export default socketReconnectHandler;

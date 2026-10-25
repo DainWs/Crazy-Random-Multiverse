@@ -101,7 +101,7 @@ class GameLoadScene extends Scene {
     // TODO remove this method and receive the game state from the GameEngine
     public createGameState(): GameState {
         const PLAYER_COUNT = this.playerCount;
-        const gameConfiguration = new GameConfiguration('Code:1', 'pvp', PLAYER_COUNT);
+        const gameConfiguration = new GameConfiguration('Code:1', 'CLASSIC', PLAYER_COUNT);
         const user = StoreSystem.getUser();
         const player = new Player(user.code, user.name);
         const playerZone = new Zone(player, 'friendly', 'BASE');
@@ -112,6 +112,8 @@ class GameLoadScene extends Scene {
         return {
             gameConfiguration: gameConfiguration,
             battlefield: battlefield,
+            turn: 1,
+            round: 1,
             zones: zones,
             player: player,
             playerZone: playerZone,

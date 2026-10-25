@@ -1,22 +1,20 @@
+import type { EventDto } from '@/api/dtos/EventDto';
+import type { ExceptionCodeDto } from '@/api/dtos/ExceptionDto';
+import type { GameEventCode } from '@/api/models/GameEventCode';
+import type { GameEventListener, CancelListenerCallback } from '@/api/models/Listeners';
+import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
+import { notifyListeners } from '@/api/models/Listeners';
 import { Socket } from 'socket.io-client';
-import StoreSystem from '@/core/StoreSystem';
 import EventSystem from '@/core/EventSystem';
-import {
-  EventDto,
-  GameEventCode,
-  cardFromDto,
-  ExceptionCodeDto
-} from '@/api/dtos/EventDto';
-import { GameEventListener, notifyListeners } from '@/api/models/Listeners';
 
 type ErrorCallback = (error: ExceptionCodeDto) => void;
 type RawEvent = string | EventDto;
 
 interface SocketEventHandler {
   bind: (socket: Socket, onError: ErrorCallback) => void;
-  onGameEvent: (eventCode: GameEventCode | string, listener: GameEventListener) => () => void;
-  offGameEvent: (eventCode: GameEventCode | string, listener: GameEventListener) => void;
-  onAnyGameEvent: (listener: GameEventListener) => () => void;
+  onGameEvent: (eventCode: GameEventCode, listener: GameEventListener) => CancelListenerCallback;
+  offGameEvent: (eventCode: GameEventCode, listener: GameEventListener) => void;
+  onAnyGameEvent: (listener: GameEventListener) => CancelListenerCallback;
   offAnyGameEvent: (listener: GameEventListener) => void;
 }
 
@@ -29,14 +27,8 @@ const bindEventHandlers = (socket: Socket, onError: ErrorCallback): void => {
     socket.on(channel, handleIncomingEvent);
   }
 
-  Object.values(GameEventCode).forEach((eventCode) => {
-    socket.on(eventCode, (data) => {
-      if (data && typeof data === 'object' && !data.code) {
-        handleIncomingEvent({ code: eventCode, details: data });
-      } else {
-        handleIncomingEvent(data);
-      }
-    });
+  GAME_EVENT_CODES.forEach((eventCode) => {
+    socket.on(eventCode, (data) => onEventCode(eventCode, data));
   });
 
   const errorChannels = ['error', 'game:error', 'exception'];
@@ -49,7 +41,15 @@ const bindEventHandlers = (socket: Socket, onError: ErrorCallback): void => {
   }
 }
 
-const onGameEvent = (eventCode: GameEventCode | string, listener: GameEventListener): () => void => {
+function onEventCode(eventCode: GameEventCode, data: any): void {
+  if (data && typeof data === 'object' && !data.code) {
+    handleIncomingEvent({ code: eventCode, details: data, timestamp: Date.now() });
+  } else {
+    handleIncomingEvent(data);
+  }
+}
+
+const onGameEvent = (eventCode: GameEventCode, listener: GameEventListener): CancelListenerCallback => {
   if (!eventListeners.has(eventCode)) {
     eventListeners.set(eventCode, new Set());
   }
@@ -58,13 +58,13 @@ const onGameEvent = (eventCode: GameEventCode | string, listener: GameEventListe
   return () => offGameEvent(eventCode, listener);
 }
 
-const offGameEvent = (eventCode: GameEventCode | string, listener: GameEventListener): void => {
+const offGameEvent = (eventCode: GameEventCode, listener: GameEventListener): void => {
   const listeners = eventListeners.get(eventCode);
   if (listeners) listeners.delete(listener);
   if (listeners && listeners.size === 0) eventListeners.delete(eventCode);
 }
 
-const onAnyGameEvent = (listener: GameEventListener): () => void => {
+const onAnyGameEvent = (listener: GameEventListener): CancelListenerCallback => {
   anyEventListeners.add(listener);
   return () => offAnyGameEvent(listener);
 }
@@ -78,7 +78,7 @@ function handleIncomingEvent(rawEvent: RawEvent): void {
   const event: EventDto = parseRawEvent(rawEvent);
 
   console.log('[SocketService] Received game event:', event.code, event);
-  syncGameStateFromEvent(event);
+  // TODO maybe its a good idea to syncronize the game here? syncGameStateFromEvent(event);
 
   notifyListeners(anyEventListeners, 'any event listener', event);
   if (event.code) {
@@ -96,18 +96,6 @@ function parseRawEvent(rawEvent: RawEvent): EventDto {
     return JSON.parse(rawEvent);
   }
   return rawEvent;
-}
-
-function syncGameStateFromEvent(event: EventDto): void {
-  try {
-    const details = event.details;
-    if (details?.playerHand && Array.isArray(details.playerHand)) {
-      const hand = details.playerHand.map(cardFromDto);
-      StoreSystem.setPlayerHand(hand);
-    }
-  } catch (err) {
-    console.warn('[SocketService] Failed to map and set player hand from event:', err);
-  }
 }
 
 const socketEventHandler: SocketEventHandler = {
