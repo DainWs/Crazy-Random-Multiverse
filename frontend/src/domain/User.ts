@@ -1,6 +1,8 @@
 
+type UserCode = string;
+
 class User {
-  public readonly code: string;
+  public readonly code: UserCode;
   public readonly name: string;
 
   public constructor(code: string, name: string) {
@@ -9,4 +11,5 @@ class User {
   }
 }
 
+export type { UserCode }
 export default User;

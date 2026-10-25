@@ -15,9 +15,9 @@ https://chatgpt.com/share/6aa67e84-95bc-83eb-b3bc-28bb010d6782
 - [ ] Implement `ATTACK_ACTION`
 - [ ] Implement `PASS_TURN`
 - [ ] Implement REST error handling
-- [ ] Map `ActionDto` correctly
-- [ ] Map backend `EventDto` correctly
-- [ ] Identify the local player correctly
+- [x] Map `ActionDto` correctly
+- [x] Map backend `EventDto` correctly
+- [x] Identify the local player correctly
 
 ### Game state
 - [ ] Create the authoritative frontend game-state layer

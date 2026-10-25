@@ -4,6 +4,8 @@ import Player from '@/domain/Player';
 import Position from '@/domain/Position';
 import ActionEvent from '@/domain/ActionEvent';
 
+type ActionType = 'PUT_ACTION' | 'MOVE_ACTION' | 'ATTACK_ACTION' | 'PASS_TURN';
+
 type NoneCard = null;
 
 class Action {
@@ -26,4 +28,5 @@ class Action {
   }
 }
 
+export type { ActionType }
 export default Action;

@@ -1,5 +1,5 @@
-import Player from "@/domain/Player";
-import User from "@/domain/User";
+import Player, { PlayerCode } from "@/domain/Player";
+import User, { UserCode } from "@/domain/User";
 import Zone from "@/domain/Zone";
 import * as ExternalStoreApi from "@/api/LocalStorageApi";
 import GameConfiguration from "@/domain/GameConfiguration";
@@ -7,12 +7,17 @@ import Card from "@/domain/Card";
 import Battlefield from "@/domain/Battlefield";
 
 
+type SessionCode = UserCode | PlayerCode;
+
 type PlayerHand = Card[];
 type PlayerZone = Zone;
 
 type GameState = {
   gameConfiguration: GameConfiguration;
   battlefield: Battlefield;
+  turn: number; // TODO manage turns
+  round: number; // TODO manage round
+
   zones: Zone[];
   player: Player;
   playerZone: PlayerZone;
@@ -28,6 +33,19 @@ const store: Store = {};
 
 function initializeGame(gameState: GameState) {
   store.gameState = gameState;
+}
+
+function isSessionCode(code: PlayerCode | UserCode | null | undefined): boolean {
+  if (!code) return false;
+  return getSessionCode() === code;
+}
+
+function getSessionCode(): SessionCode {
+  if (store.gameState?.player?.code) {
+    return store.gameState.player.code;
+  }
+
+  return getUser().code;
 }
 
 function getUser(): User {
@@ -105,6 +123,8 @@ function getBattlefield(): Battlefield {
 
 const StoreSystem = {
   initializeGame,
+  getSessionCode,
+  isSessionCode,
   getUser,
   setUser,
   getGameConfiguration,

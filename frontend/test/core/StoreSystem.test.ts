@@ -11,6 +11,8 @@ describe('StoreSystem', () => {
   const createMockGameState = (): GameState => ({
     gameConfiguration: { playerCount: 4 } as any,
     battlefield: { getMaxPlayersPerSide: () => 2 } as any,
+    turn: 1,
+    round: 1,
     zones: [{ owner: { code: 'p1' } }, { owner: { code: 'p2' } }] as any[],
     player: { code: 'p1', name: 'Player 1' } as any,
     playerZone: { owner: { code: 'p1' } } as any,
@@ -46,6 +48,16 @@ describe('StoreSystem', () => {
       const player = StoreSystem.getPlayer();
       expect(player.code).toBe('p1');
       expect(player.name).toBe('Player 1');
+    });
+
+    it('identifies session code correctly', () => {
+      expect(StoreSystem.getSessionCode()).toBe('p1');
+      expect(StoreSystem.isSessionCode('p1')).toBe(true);
+      expect(StoreSystem.isSessionCode({ code: 'p1' } as any)).toBe(true);
+      expect(StoreSystem.isSessionCode('p2')).toBe(false);
+      expect(StoreSystem.isSessionCode({ code: 'p2' } as any)).toBe(false);
+      expect(StoreSystem.isSessionCode(null)).toBe(false);
+      expect(StoreSystem.isSessionCode(undefined)).toBe(false);
     });
 
     it('returns and updates player hand', () => {

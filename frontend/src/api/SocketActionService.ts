@@ -1,15 +1,18 @@
-import socketMemory from "@/api/SocketMemory";
+import type { GameCode } from "@/domain/GameConfiguration";
+import type { PlayerCode } from "@/domain/Player";
 import socketService from "@/api/SocketService";
+import socketMemory from "@/api/SocketMemory";
+import StoreSystem from "@/core/StoreSystem";
 
 interface SocketActionService {
-  joinGame(gameCode: string, playerCode?: string): void;
-  leaveGame(gameCode?: string): void;
+  joinGame(gameCode: GameCode, playerCode: PlayerCode): void;
+  leaveGame(gameCode: GameCode): void;
 }
 
 /**
  * Join a game room
  */
-function joinGame(gameCode: string, playerCode?: string): void {
+function joinGame(gameCode: GameCode, playerCode: PlayerCode): void {
   socketMemory.activeGameCode = gameCode;
   if (playerCode) {
     socketMemory.activePlayerCode = playerCode;
@@ -23,7 +26,7 @@ function joinGame(gameCode: string, playerCode?: string): void {
 /**
  * Leave a game room
  */
-function leaveGame(gameCode?: string): void {
+function leaveGame(gameCode: GameCode): void {
   const code = gameCode || socketMemory.activeGameCode;
   if (code && socketService.isConnected()) {
     socketService.emit('game:leave', { gameCode: code, playerCode: socketMemory.activePlayerCode });

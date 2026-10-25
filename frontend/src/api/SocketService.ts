@@ -6,12 +6,15 @@ import type { SocketReconnectHandler } from '@/api/SocketReconnectHandler';
 import type { SocketEventHandler } from '@/api/SocketEventHandler';
 import type { SocketActionService } from '@/api/SocketActionService';
 import type { StatusChangeListener, ReconnectListener, ErrorListener, GameEventListener } from '@/api/models/Listeners';
-import { ExceptionCodeDto, GameEventCode } from '@/api/dtos/EventDto';
+import type { ExceptionCodeDto } from '@/api/dtos/ExceptionDto';
+import type { GameCode } from '@/domain/GameConfiguration';
+import type { PlayerCode } from '@/domain/Player';
 import { notifyListeners } from '@/api/models/Listeners';
 import { createIOSocket } from '@/api/models/SocketFactory';
 import socketReconnectHandler from '@/api/SocketReconnectHandler';
 import socketEventHandler from '@/api/SocketEventHandler';
 import socketActionService from '@/api/SocketActionService';
+import { GameEventCode } from '@/api/models/GameEventCode';
 
 type SocketOptions = {
   reconnectHandler: SocketReconnectHandler;
@@ -74,12 +77,12 @@ class SocketService {
     }
   }
 
-  public getStatus(): ConnectionStatus { 
-    return this.status; 
+  public getStatus(): ConnectionStatus {
+    return this.status;
   }
 
-  public isConnected(): boolean { 
-    return this.status === 'connected' && !!this.socket?.connected; 
+  public isConnected(): boolean {
+    return this.status === 'connected' && !!this.socket?.connected;
   }
 
   public emit(event: string, ...args: unknown[]): void {
@@ -90,11 +93,11 @@ class SocketService {
     }
   }
 
-  public joinGame(gameCode: string, playerCode?: string): void {
+  public joinGame(gameCode: GameCode, playerCode: PlayerCode): void {
     this.actionService.joinGame(gameCode, playerCode);
   }
 
-  public leaveGame(gameCode?: string): void {
+  public leaveGame(gameCode: GameCode): void {
     this.actionService.leaveGame(gameCode);
   }
 
