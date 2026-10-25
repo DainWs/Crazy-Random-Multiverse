@@ -1,11 +1,10 @@
-import { sendAction, sendPassTurnAction } from "@/api/GameApi";
-import ActionPattern from "@/core/actions/ActionPattern";
-import ActionResolver from "@/core/actions/ActionResolver";
+import type { GameCode } from "@/domain/GameConfiguration";
+import type ActionPattern from "@/core/actions/ActionPattern";
+import type ActionResolver from "@/core/actions/ActionResolver";
+import type ActionEvent from "@/domain/ActionEvent";
 import CardMovePattern from "@/core/actions/CardMovePattern";
 import CardPutPattern from "@/core/actions/CardPutPattern";
-import ActionEvent from "@/domain/ActionEvent";
-import { GameCode } from "@/domain/GameConfiguration";
-import { GameScene } from "@/scenes/Game";
+import { gameApi } from "@/api";
 
 // TODO pensar seriamente si esta clase va a ser necesaria al final
 const resolvers: Array<ActionResolver> = [];
@@ -16,7 +15,7 @@ const resolvers: Array<ActionResolver> = [];
 class ActionSystem {
     private readonly gameCode: GameCode;
     private readonly resolvers: Array<ActionResolver>;
-    
+
     public constructor(gameCode: GameCode) {
         this.gameCode = gameCode;
         this.resolvers = [];
@@ -45,14 +44,14 @@ class ActionSystem {
         if (completedResolvers.length > 0) {
             const resolver = completedResolvers[0];
             const action = resolver.createAction(this.gameCode);
-            await sendAction(action);
+            await gameApi.sendAction(action);
             this.resetResolvers();
         }
     }
-    
+
     public async passTurn(): Promise<void> {
         this.resetResolvers();
-        await sendPassTurnAction(this.gameCode);
+        await gameApi.sendPassTurnAction(this.gameCode);
     }
 
     public cancelCurrentAction(): void {

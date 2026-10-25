@@ -4,10 +4,10 @@ import Player from '@/domain/Player';
 import cardFactory from '@/domain/cardFactory';
 import StoreSystem, { GameState } from '@/core/StoreSystem';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
-import { sendReady } from '@/api/GameApi';
+import GameConfiguration from '@/domain/GameConfiguration';
 import Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
-import GameConfiguration from '@/domain/GameConfiguration';
+import { gameApi } from '@/api';
 
 class GameLoadScene extends Scene {
     private playerCount: number = 2;
@@ -162,7 +162,7 @@ class GameLoadScene extends Scene {
     async create() {
         const gameConfiguration = StoreSystem.getGameConfiguration();
         if (gameConfiguration) {
-            await sendReady(gameConfiguration.gameCode);
+            await gameApi.sendReady(gameConfiguration.gameCode);
             this.scene.start('Game');
         } else {
             console.error("No game configuration found in StoreSystem");

@@ -1,11 +1,12 @@
-import Player, { PlayerCode } from "@/domain/Player";
-import User, { UserCode } from "@/domain/User";
-import Zone from "@/domain/Zone";
-import * as ExternalStoreApi from "@/api/LocalStorageApi";
-import GameConfiguration from "@/domain/GameConfiguration";
-import Card from "@/domain/Card";
-import Battlefield from "@/domain/Battlefield";
-
+import type { PlayerCode } from "@/domain/Player";
+import type { UserCode } from "@/domain/User";
+import type Player from "@/domain/Player";
+import type User from "@/domain/User";
+import type Zone from "@/domain/Zone";
+import type GameConfiguration from "@/domain/GameConfiguration";
+import type Card from "@/domain/Card";
+import type Battlefield from "@/domain/Battlefield";
+import { localStorageApi as ExternalStoreApi } from "@/api";
 
 type SessionCode = UserCode | PlayerCode;
 
