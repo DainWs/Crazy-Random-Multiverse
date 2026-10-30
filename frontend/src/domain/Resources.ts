@@ -1,13 +1,16 @@
+import { CardType } from "@/domain/Card";
+
 type Resource = {
   id: string;
   path: string;
 };
 
 type CardResource = {
-  code: string
+  code: number;
+  type: CardType;
   name: string;
   description: string;
-  imagePath: string;
+  image: Resource;
   audios: Resource[];
 }
 

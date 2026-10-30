@@ -7,11 +7,16 @@ import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOver
 import GameConfiguration from '@/domain/GameConfiguration';
 import Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
+import type { CardResource, GameResources, Resource } from '@/domain/Resources';
 import { gameApi } from '@/api';
+import { CardType } from '@/domain/Card';
 
 class GameLoadScene extends Scene {
     private playerCount: number = 2;
     private alreadyProcessed: boolean = false;
+    private progressBar!: Phaser.GameObjects.Rectangle;
+    private totalItemsToLoad: number = 0;
+    private loadedItemsCount: number = 0;
 
     constructor() {
         super('GameLoad');
@@ -22,71 +27,157 @@ class GameLoadScene extends Scene {
             this.playerCount = data.playerCount;
         }
 
-        //  A simple progress bar. This is the outline of the bar.
+        // Barra de progreso (marco y relleno)
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        this.progressBar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
 
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
-
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
-        this.load.on('progress', (progress: number) => {
-
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
-        });
+        this.totalItemsToLoad = 0;
+        this.loadedItemsCount = 0;
+        this.updateProgressBar(0);
     }
 
-    preload() {
+    private updateProgressBar(ratio: number) {
+        const clamped = Math.min(Math.max(ratio, 0), 1);
+        if (this.progressBar) {
+            this.progressBar.width = 4 + (460 * clamped);
+        }
+    }
+
+    private incrementProgress() {
+        this.loadedItemsCount++;
+        const ratio = this.totalItemsToLoad > 0 ? this.loadedItemsCount / this.totalItemsToLoad : 1;
+        this.updateProgressBar(ratio);
+    }
+
+    async preload() {
         if (!this.alreadyProcessed) {
-            this.loadAssets();
+            this.loadBaseAssets();
             this.generateOverlays();
         }
 
         this.loadGameData();
         this.alreadyProcessed = true;
+
+        const gameConfiguration = StoreSystem.getGameConfiguration();
+        let manifest: GameResources | null = null;
+
+        if (gameConfiguration) {
+            try {
+                manifest = await gameApi.loadGameResourceManifest(gameConfiguration.gameCode);
+            } catch (error) {
+                console.warn('[GameLoad] Failed to load game resource manifest, proceeding with defaults:', error);
+            }
+        }
+
+        if (manifest) {
+            this.registerManifestResources(manifest);
+        }
+
+        // Si hay recursos encolados en Phaser Loader, escuchar eventos por archivo para actualizar la barra
+        this.load.on('filecomplete', () => {
+            this.incrementProgress();
+        });
+
+        this.load.once('complete', () => {
+            this.updateProgressBar(1);
+            this.onLoadingFinished();
+        });
+
+        // Iniciar la descarga en Phaser Loader
+        this.load.start();
     }
 
-    private loadAssets() {
+    private loadBaseAssets() {
         this.load.setPath('assets');
-        this.load.image('unknown', 'unknown.png');
+        this.enqueueImage('unknown', 'unknown.png');
 
-        this.load.image('statistic-icon_unknown', 'unknown.png');
-        this.load.image('statistic-icon_true_damage', 'true_sword.png');
-        this.load.image('statistic-icon_physical_damage', 'sword.png');
-        this.load.image('statistic-icon_magic_damage', 'staff.png');
-        this.load.image('statistic-icon_physical_armor', 'shield.png');
-        this.load.image('statistic-icon_magic_armor', 'magic_shield.png');
-        this.load.image('statistic-icon_health', 'hearth.png');
+        this.enqueueImage('statistic-icon_unknown', 'unknown.png');
+        this.enqueueImage('statistic-icon_true_damage', 'true_sword.png');
+        this.enqueueImage('statistic-icon_physical_damage', 'sword.png');
+        this.enqueueImage('statistic-icon_magic_damage', 'staff.png');
+        this.enqueueImage('statistic-icon_physical_armor', 'shield.png');
+        this.enqueueImage('statistic-icon_magic_armor', 'magic_shield.png');
+        this.enqueueImage('statistic-icon_health', 'hearth.png');
 
-        this.load.image('common-card', 'card-common.png');
-        this.load.image('uncommon-card', 'card-uncommon.png');
-        this.load.image('rare-card', 'card-rare.png');
-        this.load.image('epic-card', 'card-epic.png');
-        this.load.image('legendary-card', 'card-legendary.png');
-        this.load.image('mithic-card', 'card-mithic.png');
+        this.enqueueImage('common-card', 'card-common.png');
+        this.enqueueImage('uncommon-card', 'card-uncommon.png');
+        this.enqueueImage('rare-card', 'card-rare.png');
+        this.enqueueImage('epic-card', 'card-epic.png');
+        this.enqueueImage('legendary-card', 'card-legendary.png');
+        this.enqueueImage('mithic-card', 'card-mithic.png');
 
-        this.load.image('leader-card', 'card-leader.png');
-        this.load.image('equipment-card', 'card-equipment.png');
-        this.load.image('spell-card', 'card-spell.png');
+        this.enqueueImage('leader-card', 'card-leader.png');
+        this.enqueueImage('equipment-card', 'card-equipment.png');
+        this.enqueueImage('spell-card', 'card-spell.png');
 
-        this.load.image('zoneslot-mark-warrior', 'warrior_mark.png');
-        this.load.image('zoneslot-mark-leader', 'leader_mark.png');
+        this.enqueueImage('zoneslot-mark-warrior', 'warrior_mark.png');
+        this.enqueueImage('zoneslot-mark-leader', 'leader_mark.png');
 
-        this.load.image('warrior-0', 'logo.png');
-        this.load.image('common-1', 'common-01.png');
-        this.load.audio('common-put-1-1', 'common-put-01.mp3');
-        this.load.audio('common-attack-1-1', 'common-attack-01-1.mp3');
-        this.load.audio('common-attack-1-2', 'common-attack-01-2.mp3');
-        this.load.audio('common-attack-1-3', 'common-attack-01-3.mp3');
-        this.load.audio('common-die-1-1', 'common-die-01.mp3');
+        this.enqueueImage('warrior-0', 'logo.png');
+        this.enqueueImage('common-1', 'common-01.png');
+        this.enqueueAudio('common-put-1-1', 'common-put-01.mp3');
+        this.enqueueAudio('common-attack-1-1', 'common-attack-01-1.mp3');
+        this.enqueueAudio('common-attack-1-2', 'common-attack-01-2.mp3');
+        this.enqueueAudio('common-attack-1-3', 'common-attack-01-3.mp3');
+        this.enqueueAudio('common-die-1-1', 'common-die-01.mp3');
 
-        this.load.image('mithic-1', 'mithic-01.png');
-        this.load.audio('mithic-put-1-1', 'mithic-put-01.mp3');
-        this.load.audio('mithic-attack-1-1', 'mithic-attack-01-1.mp3');
-        this.load.audio('mithic-attack-1-2', 'mithic-attack-01-1.mp3');
-        this.load.audio('mithic-attack-1-3', 'mithic-attack-01-1.mp3');
-        this.load.audio('mithic-die-1-1', 'mithic-die-01.mp3');
+        this.enqueueImage('mithic-1', 'mithic-01.png');
+        this.enqueueAudio('mithic-put-1-1', 'mithic-put-01.mp3');
+        this.enqueueAudio('mithic-attack-1-1', 'mithic-attack-01-1.mp3');
+        this.enqueueAudio('mithic-attack-1-2', 'mithic-attack-01-1.mp3');
+        this.enqueueAudio('mithic-attack-1-3', 'mithic-attack-01-1.mp3');
+        this.enqueueAudio('mithic-die-1-1', 'mithic-die-01.mp3');
+    }
+
+    private registerManifestResources(manifest: GameResources) {
+        // 1. Descargar recursos generales (images y audios)
+        this.enqueueImages(manifest.images);
+        this.enqueueAudios(manifest.audios);
+
+        // 2. Registrar los demás recursos con su URL (ej: cartas en registry para carga bajo demanda)
+        this.enqueueCards(manifest.cards);
+    }
+
+    private enqueueCards(cardResources: CardResource[]) {
+        for (const cardResource of cardResources) {
+            this.enqueueCard(cardResource);
+        }
+    }
+
+    private enqueueCard(cardResource: CardResource) {
+        const { code, type, image, audios } = cardResource;
+
+        const resourceId = `${type.toLowerCase()}-${code}` as `${CardType}-${number}`;
+
+        this.registry.set(`${resourceId}-summary`, cardResource);
+        this.registry.set(`${resourceId}`, image.path);
+
+        for (const audio of audios) {
+            const audioId = audio.id as `${number}-${number}`;
+            this.registry.set(`${resourceId}-${audioId}`, audio.path);
+        }
+    }
+
+    private enqueueImages(imageResources: Resource[]) {
+        for (const image of imageResources) {
+            this.enqueueImage(image.id, image.path);
+        }
+    }
+
+    private enqueueImage(key: string, path: string) {
+        this.totalItemsToLoad++;
+        this.load.image(key, path);
+    }
+
+    private enqueueAudios(audioResources: Resource[]) {
+        for (const audio of audioResources) {
+            this.enqueueAudio(audio.id, audio.path);
+        }
+    }
+
+    private enqueueAudio(key: string, path: string) {
+        this.totalItemsToLoad++;
+        this.load.audio(key, path);
     }
 
     private generateOverlays() {
@@ -159,7 +250,14 @@ class GameLoadScene extends Scene {
         return zones;
     }
 
-    async create() {
+    create() {
+        // Si no hubiera archivos pendientes por cargar en el loader, finalizamos directamente
+        if (!this.load.isLoading() && this.totalItemsToLoad === 0) {
+            this.onLoadingFinished();
+        }
+    }
+
+    private async onLoadingFinished() {
         const gameConfiguration = StoreSystem.getGameConfiguration();
         if (gameConfiguration) {
             await gameApi.sendReady(gameConfiguration.gameCode);
