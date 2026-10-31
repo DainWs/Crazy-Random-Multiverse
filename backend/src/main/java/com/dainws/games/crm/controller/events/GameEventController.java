@@ -42,6 +42,7 @@ public class GameEventController {
 		EventDetails detailsWithoutCard = new EventDetails(details.getGame());
 		detailsWithoutCard.setTargetPlayer(targetPlayer);
 		Event eventWithoutCard = new Event(EventCode.PLAYER_RECEIVE_CARD, detailsWithoutCard);
+		eventWithoutCard.setSequence(event.getSequence());
 
 		for (Player player : details.getGame().getPlayers()) {
 			if (!player.equals(targetPlayer)) {
