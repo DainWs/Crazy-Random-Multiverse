@@ -54,6 +54,15 @@ public class ZoneWithLeader extends Zone {
 	}
 
 	@Override
+	public boolean canSwapCombatants(Coordinate first, Coordinate second) {
+		if (this.isLeaderSlot(first) || this.isLeaderSlot(second)) {
+			return false;
+		}
+
+		return super.canSwapCombatants(first, second);
+	}
+
+	@Override
 	public boolean canPutCombatant(Coordinate coordinate, Combatant combatant) {
 		boolean isLeaderCoordinate = LEADER_COORDINATE.equals(coordinate);
 		boolean isLeaderType = combatant.isType(CardType.LEADER);

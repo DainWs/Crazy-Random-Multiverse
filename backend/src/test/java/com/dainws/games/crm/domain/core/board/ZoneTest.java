@@ -22,6 +22,7 @@ class ZoneTest {
 	private static final int FIRST_ROW = 0;
 	private static final int SECOND_ROW = 1;
 	private static final int FIRST_COLUMN = 0;
+	private static final int SECOND_COLUMN = 1;
 	private static final String CODE_PROPERTY = "codeValue";
 
 	@Test
@@ -161,6 +162,85 @@ class ZoneTest {
 		Coordinate warriorCoordinate = new Coordinate(SECOND_ROW, FIRST_COLUMN);
 
 		assertThat(zone.isLeaderSlot(warriorCoordinate)).isFalse();
+	}
+
+	@Test
+	void testGivenTwoOccupiedCoordinates_whenCanSwapCombatants_thenIsTrue() throws NotAllowedException {
+		Zone zone = this.createZoneWithFirstRowFilled();
+		Coordinate first = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Coordinate second = new Coordinate(FIRST_ROW, SECOND_COLUMN);
+
+		assertThat(zone.canSwapCombatants(first, second)).isTrue();
+	}
+
+	@Test
+	void testGivenOneEmptyCoordinate_whenCanSwapCombatants_thenIsFalse() throws NotAllowedException {
+		Zone zone = this.createZoneWithFirstRowFilled();
+		Coordinate occupied = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Coordinate empty = new Coordinate(SECOND_ROW, FIRST_COLUMN);
+
+		assertThat(zone.canSwapCombatants(occupied, empty)).isFalse();
+	}
+
+	@Test
+	void testGivenSameCoordinate_whenCanSwapCombatants_thenIsFalse() throws NotAllowedException {
+		Zone zone = this.createZoneWithFirstRowFilled();
+		Coordinate coordinate = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+
+		assertThat(zone.canSwapCombatants(coordinate, coordinate)).isFalse();
+	}
+
+	@Test
+	void testGivenZoneWithLeader_whenCanSwapWithTheLeaderSlot_thenIsFalse() throws NotAllowedException {
+		ZoneWithLeader zone = this.createZoneWithLeader();
+		Coordinate leaderCoordinate = ZoneWithLeader.LEADER_COORDINATE;
+		Coordinate warriorCoordinate = new Coordinate(SECOND_ROW, FIRST_COLUMN);
+		zone.putCombatant(leaderCoordinate, CardBuilder.buildLeader());
+		zone.putCombatant(warriorCoordinate, CardBuilder.buildCommonWarrior());
+
+		boolean canSwap = zone.canSwapCombatants(leaderCoordinate, warriorCoordinate);
+
+		assertThat(canSwap).isFalse();
+	}
+
+	@Test
+	void testGivenTwoOccupiedCoordinates_whenSwapCombatants_thenFirstCoordinateHasTheSecondCombatant() throws NotAllowedException {
+		Zone zone = this.createZone();
+		Coordinate first = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Coordinate second = new Coordinate(FIRST_ROW, SECOND_COLUMN);
+		Warrior firstWarrior = CardBuilder.buildCommonWarrior();
+		Warrior secondWarrior = CardBuilder.buildCommonWarrior();
+		zone.putCombatant(first, firstWarrior);
+		zone.putCombatant(second, secondWarrior);
+
+		zone.swapCombatants(first, second);
+
+		assertThat(zone.getCombatant(first)).isSameAs(secondWarrior);
+	}
+
+	@Test
+	void testGivenTwoOccupiedCoordinates_whenSwapCombatants_thenSecondCoordinateHasTheFirstCombatant() throws NotAllowedException {
+		Zone zone = this.createZone();
+		Coordinate first = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Coordinate second = new Coordinate(FIRST_ROW, SECOND_COLUMN);
+		Warrior firstWarrior = CardBuilder.buildCommonWarrior();
+		Warrior secondWarrior = CardBuilder.buildCommonWarrior();
+		zone.putCombatant(first, firstWarrior);
+		zone.putCombatant(second, secondWarrior);
+
+		zone.swapCombatants(first, second);
+
+		assertThat(zone.getCombatant(second)).isSameAs(firstWarrior);
+	}
+
+	@Test
+	void testGivenEmptyCoordinate_whenSwapCombatants_thenThrowsNotAllowed() {
+		Zone zone = this.createZone();
+		Coordinate first = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Coordinate second = new Coordinate(FIRST_ROW, SECOND_COLUMN);
+		ThrowingCallable swap = () -> zone.swapCombatants(first, second);
+
+		assertThatThrownBy(swap).isInstanceOf(NotAllowedException.class);
 	}
 
 	@Test
