@@ -22,8 +22,12 @@ public class MoveAction extends PlayerTurnAction {
 		Zone targetZone = context.getTargetZone();
 
 		Combatant combatant = this.getSourceCombatantFrom(context);
-		sourceZone.removeCombatant(fromCoordinate);
-		targetZone.putCombatant(toCoordinate, combatant);
+		if (targetZone.hasCombatant(toCoordinate)) {
+			targetZone.swapCombatants(fromCoordinate, toCoordinate);
+		} else {
+			targetZone.putCombatant(toCoordinate, combatant);
+			sourceZone.removeCombatant(fromCoordinate);
+		}
 
 		this.logTrace("{0} ha sido movido desde {1} a {2}", combatant, fromCoordinate, toCoordinate);
 		this.notifyActionEvent(EventCode.PLAYER_MOVE_CARD, context);
@@ -53,12 +57,20 @@ public class MoveAction extends PlayerTurnAction {
 			throw new PlayerActionException("selected_source_is_leader", sourcePlayer);
 		}
 
-		if (targetZone.hasCombatant(context.getTargetCoordinate())) {
-			throw new PlayerActionException("selected_target_position_already_has_combatant", sourcePlayer);
-		}
-
-		if (!targetZone.canPutCombatant(context.getTargetCoordinate(), combatant)) {
+		if (!this.isTargetAllowed(context, combatant)) {
 			throw new PlayerActionException("selected_target_position_not_allowed", sourcePlayer);
 		}
+	}
+
+	private boolean isTargetAllowed(ActionContext context, Combatant combatant) {
+		Zone targetZone = context.getTargetZone();
+		Coordinate fromCoordinate = context.getSourceCoordinate();
+		Coordinate toCoordinate = context.getTargetCoordinate();
+
+		if (targetZone.hasCombatant(toCoordinate)) {
+			return targetZone.canSwapCombatants(fromCoordinate, toCoordinate);
+		}
+
+		return targetZone.canPutCombatant(toCoordinate, combatant);
 	}
 }

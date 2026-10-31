@@ -122,6 +122,22 @@ public abstract class Zone {
 
 	public abstract ZoneType getType();
 
+	public boolean canSwapCombatants(Coordinate first, Coordinate second) {
+		return !first.equals(second) && this.hasCombatant(first)
+				&& this.hasCombatant(second);
+	}
+
+	public void swapCombatants(Coordinate first, Coordinate second)
+			throws NotAllowedException {
+		if (!this.canSwapCombatants(first, second)) {
+			throw new NotAllowedException("zone.coordinate.cannot_swap");
+		}
+
+		Combatant firstCombatant = this.getCombatant(first);
+		this.combatants[first.getRow()][first.getColumn()] = this.getCombatant(second);
+		this.combatants[second.getRow()][second.getColumn()] = firstCombatant;
+	}
+
 	public boolean canPutCombatant(Coordinate coordinate, Combatant combatant) {
 		if (!this.validate(coordinate)) return false;
 		if (this.hasCombatant(coordinate)) return false;
