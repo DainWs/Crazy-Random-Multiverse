@@ -11,6 +11,7 @@ public class CommunicationMapper {
 	public EventDto mapToDto(Event event, Player receiver) {
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());
+		eventDto.setSequence(event.getSequence());
 		EventDetails details = event.getDetails();
 		if (details != null) {
 			eventDto.setDetails(this.mapEventDetailsToDto(details, receiver));

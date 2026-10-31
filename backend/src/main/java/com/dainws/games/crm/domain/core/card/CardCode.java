@@ -14,6 +14,10 @@ public final class CardCode {
 	public long code() {
 		return this.code;
 	}
+
+	public String codeText() {
+		return String.valueOf(this.code);
+	}
 	
 	public CardType type() {
 		return type;
@@ -44,5 +48,9 @@ public final class CardCode {
 	public String toString() {
 		String typeLowercase = this.type.name().toLowerCase();
 		return "%s.%s".formatted(typeLowercase, this.code);
+	}
+
+	public static CardCode from(String code, CardType type) {
+		return new CardCode(Long.parseLong(code), type);
 	}
 }

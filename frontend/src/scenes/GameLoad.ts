@@ -216,8 +216,8 @@ class GameLoadScene extends Scene {
     private getPlayerMockedHand() {
         return [
             cardFactory.createLeaderCard(),
-            cardFactory.createWarriorCard({ rarity: 'COMMON', code: 1 }),
-            cardFactory.createWarriorCard({ rarity: 'MITHIC', code: 1 }),
+            cardFactory.createWarriorCard({ rarity: 'COMMON', code: '1' }),
+            cardFactory.createWarriorCard({ rarity: 'MITHIC', code: '1' }),
             cardFactory.createWarriorCard({}),
             cardFactory.createWarriorCard({}),
             cardFactory.createEquipmentCard(),

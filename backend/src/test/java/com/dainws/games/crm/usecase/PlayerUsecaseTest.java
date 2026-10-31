@@ -12,6 +12,7 @@ import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionType;
@@ -22,13 +23,14 @@ class PlayerUsecaseTest {
 
 	private static final String USER_CODE = "user-1";
 	private static final String OTHER_USER_CODE = "user-2";
+	private static final String CARD_CODE = "42";
 
 	@Test
 	void testGivenEquipAction_whenPerformAction_thenEquipIsPerformed() throws IllegalAccessException {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
 		ActionDto actionDto = this.createActionDto(gameCode, ActionType.EQUIP_ACTION);
-		actionDto.setSourceCardCode(new CardCodeDto());
+		actionDto.setSourceCardCode(this.createCardCodeDto());
 		actionDto.setTargetPosition(new PositionDto());
 
 		new PlayerUsecase(facade).performAction(gameCode, this.createUser(USER_CODE), actionDto);
@@ -58,6 +60,13 @@ class PlayerUsecaseTest {
 		assertThatThrownBy(() -> playerUsecase.performAction(gameCode, otherUser, actionDto))
 				.isInstanceOf(IllegalAccessException.class);
 		assertThat(facade.performedActions).isEmpty();
+	}
+
+	private CardCodeDto createCardCodeDto() {
+		CardCodeDto cardCodeDto = new CardCodeDto();
+		cardCodeDto.setCode(CARD_CODE);
+		cardCodeDto.setType(CardType.EQUIPMENT);
+		return cardCodeDto;
 	}
 
 	private ActionDto createActionDto(GameCode gameCode, ActionType type) {

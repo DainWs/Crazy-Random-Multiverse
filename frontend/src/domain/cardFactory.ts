@@ -9,8 +9,8 @@ typeBasedFactoryMethods.set("LEADER", createLeaderCard);
 typeBasedFactoryMethods.set("EQUIPMENT", createEquipmentCard);
 typeBasedFactoryMethods.set("SPELL", createSpellCard);
 
-const createCardCode = (value?: number, type?: CardType): CardCode => {
-  if (!value) value = Math.floor(Math.random() * 10000);
+const createCardCode = (value?: string, type?: CardType): CardCode => {
+  if (!value) value = String(Math.floor(Math.random() * 10000));
   if (!type) type = getRandomCardType();
   return new CardCode(value, type);
 }
@@ -23,7 +23,7 @@ const createSkillCode = (value?: number): SkillCode => {
 const createCard = (code?: CardCode, name?: string, description?: string) => {
   if (!code) code = createCardCode();
   if (code.type == "WARRIOR") {
-    return createWarriorCard({ code: code.number(), name, description });
+    return createWarriorCard({ code: code.code, name, description });
   }
 
   const cardFactoryMethod = typeBasedFactoryMethods.get(code.type) as CardAbstractFactoryMethod;
@@ -43,7 +43,7 @@ function createLeaderCard(code?: CardCode, name?: string, description?: string,
 }
 
 /** Purposely function: typeBasedFactoryMethods binding  */
-function createWarriorCard(options: {code?: number, name?: string, description?: string, 
+function createWarriorCard(options: {code?: string, name?: string, description?: string, 
   rarity?: CardRarity, 
   damage?: number, damageType?: DamageType, 
   armor?: number, armorType?: ArmorType, 

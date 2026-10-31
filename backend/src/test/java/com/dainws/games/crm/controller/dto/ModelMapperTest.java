@@ -113,6 +113,15 @@ class ModelMapperTest {
 	}
 
 	@Test
+	void testGivenWarrior_whenMapCard_thenCardCodeTravelsAsText() {
+		Warrior warrior = CardBuilder.buildCommonWarrior();
+
+		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
+
+		assertThat(cardDto.getCode().getCode()).isEqualTo(String.valueOf(warrior.getCode().code()));
+	}
+
+	@Test
 	void testGivenEquippedWarrior_whenMapCard_thenDtoContainsEquipment() {
 		Warrior warrior = CardBuilder.buildCommonWarrior();
 		warrior.equip(CardBuilder.buildEquipment());

@@ -82,7 +82,7 @@ public final class ActionMapper {
 	}
 
 	private static CardCode toCardCode(CardCodeDto dto) {
-		return new CardCode(dto.getCode(), dto.getType());
+		return CardCode.from(dto.getCode(), dto.getType());
 	}
 
 	private static Coordinate toPosition(PositionDto dto) {

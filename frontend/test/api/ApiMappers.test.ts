@@ -34,7 +34,7 @@ describe('API Models and DTO Mappers', () => {
   describe('CardDto', () => {
     it('toCard maps DTO to domain Card with stats and equipment', () => {
       const cardDto: CardDto = {
-        code: { code: 10, type: 'WARRIOR' },
+        code: { code: '10', type: 'WARRIOR' },
         name: 'Knight',
         description: 'Brave knight',
         type: 'WARRIOR',
@@ -44,7 +44,7 @@ describe('API Models and DTO Mappers', () => {
         armorType: 'PHYSICAL' as const,
         health: 10,
         equipment: {
-          code: { code: 20, type: 'EQUIPMENT' as const },
+          code: { code: '20', type: 'EQUIPMENT' as const },
           name: 'Sword',
           description: 'Iron sword',
           type: 'EQUIPMENT' as const,
@@ -54,7 +54,7 @@ describe('API Models and DTO Mappers', () => {
       const card = toCard(cardDto);
 
       expect(card).toBeInstanceOf(Card);
-      expect(card.code.code).toBe(10);
+      expect(card.code.code).toBe('10');
       expect(card.damage?.value).toBe(5);
       expect(card.armor?.value).toBe(2);
       expect(card.health?.value).toBe(10);
@@ -63,7 +63,7 @@ describe('API Models and DTO Mappers', () => {
 
     it('toCard maps the runtime state sent by the server', () => {
       const cardDto: CardDto = {
-        code: { code: 11, type: 'WARRIOR' },
+        code: { code: '11', type: 'WARRIOR' },
         name: 'Archer',
         description: 'Quick archer',
         type: 'WARRIOR',
@@ -80,15 +80,21 @@ describe('API Models and DTO Mappers', () => {
     });
 
     it('toCard defaults the runtime state to false when the server omits it', () => {
-      const card = toCard({ code: { code: 12, type: 'SPELL' }, name: 'Bolt', description: 'Bolt', type: 'SPELL' });
+      const card = toCard({ code: { code: '12', type: 'SPELL' }, name: 'Bolt', description: 'Bolt', type: 'SPELL' });
 
       expect(card.isProtected).toBe(false);
       expect(card.isAttackAvailable).toBe(false);
       expect(card.isTargetable).toBe(false);
     });
 
+    it('toCardCode keeps every digit of a code that does not fit in a number', () => {
+      const hugeCode = '9007199254740993';
+
+      expect(toCardCodeDto(toCardCode({ code: hugeCode, type: 'WARRIOR' }))?.code).toBe(hugeCode);
+    });
+
     it('toCardCode and toCardCodeDto convert bidirectionally', () => {
-      const dto = { code: 5, type: 'SPELL' as const };
+      const dto = { code: '5', type: 'SPELL' as const };
       const domainCode = toCardCode(dto);
 
       expect(domainCode).toBeInstanceOf(CardCode);
