@@ -6,7 +6,7 @@ import java.util.Objects;
 public class User {
 	private String name;
 	private Locale locale;
-	private String sessionId;
+	private volatile String sessionId;
 	private UserCode userCode;
 	private UserPlatform platform;
 
@@ -35,6 +35,10 @@ public class User {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public boolean isConnected() {
+		return this.sessionId != null;
 	}
 
 	public String getSessionId() {

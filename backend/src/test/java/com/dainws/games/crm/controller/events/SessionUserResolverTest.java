@@ -15,8 +15,8 @@ import com.dainws.games.crm.domain.UserCode;
 
 class SessionUserResolverTest {
 
-	private MapSessionRepository sessionRepository;
-	private SessionUserResolver resolver;
+	MapSessionRepository sessionRepository;
+	SessionUserResolver resolver;
 
 	@BeforeEach
 	void beforeEach() {

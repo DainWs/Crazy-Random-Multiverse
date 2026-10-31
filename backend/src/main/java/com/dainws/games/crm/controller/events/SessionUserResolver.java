@@ -47,7 +47,8 @@ public class SessionUserResolver {
 			byte[] bytes = Base64.getDecoder().decode(cookieValue);
 			return Optional.of(new String(bytes, StandardCharsets.UTF_8));
 		} catch (IllegalArgumentException exception) {
-			this.logger.debug("The session cookie is not valid Base64", exception);
+			// Ignored on purpose: a malformed cookie means the request has no session
+			this.logger.debug("The session cookie is not valid Base64");
 			return Optional.empty();
 		}
 	}

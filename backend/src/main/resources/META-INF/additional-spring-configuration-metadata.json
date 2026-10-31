@@ -5,6 +5,11 @@
 	  "description": "Specifies jpa database type, default = \"MEMORY\""
 	},
 	{
+	  "name": "crm.user.cleanup-interval",
+	  "type": "java.lang.String",
+	  "description": "Time between two runs of the task that deletes the users without an open socket, as an ISO-8601 duration, default = \"PT15M\""
+	},
+	{
 	  "name": "crm.communication.socket-io.enabled",
 	  "type": "java.lang.String",
 	  "description": "Enables Socket-io based connections"

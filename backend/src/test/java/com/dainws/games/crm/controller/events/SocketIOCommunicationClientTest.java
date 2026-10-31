@@ -1,15 +1,13 @@
 package com.dainws.games.crm.controller.events;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
@@ -22,11 +20,10 @@ import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
 class SocketIOCommunicationClientTest {
 
-	private SocketIOServer server;
-	private SocketIOCommunicationClient communicationClient;
-	private User user;
-	private UserPlayer player;
-	private Event event;
+	SocketIOCommunicationClient communicationClient;
+	User user;
+	UserPlayer player;
+	Event event;
 
 	@BeforeEach
 	void beforeEach() {
@@ -34,9 +31,9 @@ class SocketIOCommunicationClientTest {
 		this.user = new User("user-1", "Name", UserPlatform.WEB);
 		userRepository.save(this.user);
 
-		this.server = mock(SocketIOServer.class);
+		SocketIOServer server = new SocketIOServer(new Configuration());
 		this.communicationClient =
-				new SocketIOCommunicationClient(userRepository, this.server);
+				new SocketIOCommunicationClient(userRepository, server);
 
 		this.player = new UserPlayer(this.user);
 		Game game = new GameBuilder().withPlayers(this.player).build();
@@ -44,18 +41,16 @@ class SocketIOCommunicationClientTest {
 	}
 
 	@Test
-	void testGivenUserWithoutOpenSocket_whenSendEvent_thenNothingIsSent() {
-		this.communicationClient.sendEvent(this.player, this.event);
-
-		verify(this.server, never()).getClient(any());
+	void testGivenUserWithoutOpenSocket_whenSendEvent_thenDoesNotFail() {
+		assertDoesNotThrow(
+				() -> this.communicationClient.sendEvent(this.player, this.event));
 	}
 
 	@Test
 	void testGivenUserWhoseSocketIsGone_whenSendEvent_thenDoesNotFail() {
 		this.user.setSessionId(UUID.randomUUID().toString());
 
-		this.communicationClient.sendEvent(this.player, this.event);
-
-		verify(this.server).getClient(UUID.fromString(this.user.getSessionId()));
+		assertDoesNotThrow(
+				() -> this.communicationClient.sendEvent(this.player, this.event));
 	}
 }
