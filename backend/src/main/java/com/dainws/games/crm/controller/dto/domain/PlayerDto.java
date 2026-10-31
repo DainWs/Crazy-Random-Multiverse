@@ -10,10 +10,10 @@ public class PlayerDto {
 	private String name;
 
 	@JsonProperty("isSpectator")
-	private boolean isSpectator;
+	private boolean spectator;
 	
 	@JsonProperty("isAlive")
-	private boolean isAlive;	
+	private boolean alive;
 
 	public void setCode(String code) {
 		this.code = code;
@@ -31,19 +31,19 @@ public class PlayerDto {
 		return name;
 	}
 	
-	public void setSpectator(boolean isSpectator) {
-		this.isSpectator = isSpectator;
+	public void setSpectator(boolean spectator) {
+		this.spectator = spectator;
 	}
 	
 	public boolean isSpectator() {
-		return isSpectator;
+		return spectator;
 	}
 	
-	public void setAlive(boolean isAlive) {
-		this.isAlive = isAlive;
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 	
 	public boolean isAlive() {
-		return isAlive;
+		return alive;
 	}
 }

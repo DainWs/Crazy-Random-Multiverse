@@ -22,6 +22,7 @@ import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
 import com.dainws.games.crm.usecase.dto.PositionDto;
@@ -84,8 +85,12 @@ public class ModelMapper {
 		ZoneDto zoneDto = new ZoneDto();
 		zoneDto.setOwner(mapPlayerToDto(owner));
 		zoneDto.setType(playerZone.getType().text());
-		zoneDto.setHealth(playerZone.getZoneHealth().getValue());
-		zoneDto.setMaxHealth(playerZone.getZoneHealth().getMaxValue());
+
+		Health zoneHealth = playerZone.getZoneHealth();
+		if (!zoneHealth.isInfinite()) {
+			zoneDto.setHealth(zoneHealth.getValue());
+			zoneDto.setMaxHealth(zoneHealth.getMaxValue());
+		}
 
 		Combatant[][] combatants = playerZone.getCombatants();
 		ZoneSlotDto[][] slotDtos = new ZoneSlotDto[combatants.length][];

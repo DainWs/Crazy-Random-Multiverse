@@ -194,6 +194,18 @@ class ModelMapperTest {
 	}
 
 	@Test
+	void testGivenZoneWithoutLeader_whenMapZone_thenHealthIsNotSent() {
+		Player owner = this.createOwner();
+		ZoneWithLeader zone = new ZoneWithLeader(2, 2);
+		zone.setOwner(owner);
+		Player viewer = new PlayerBuilder().withCode("viewer").build();
+
+		ZoneDto zoneDto = ModelMapper.mapPlayerZoneToDto(zone, owner, viewer);
+
+		assertThat(zoneDto.getHealth()).isNull();
+	}
+
+	@Test
 	void testGivenZone_whenMapZone_thenTypeIsTheTextOfTheZoneType() {
 		Player owner = new PlayerBuilder().withCode("owner").build();
 		DummyZone zone = new DummyZone();

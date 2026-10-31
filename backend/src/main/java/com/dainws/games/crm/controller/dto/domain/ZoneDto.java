@@ -1,5 +1,6 @@
 package com.dainws.games.crm.controller.dto.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
 public class ZoneDto {
@@ -9,10 +10,10 @@ public class ZoneDto {
 	@NotNull
 	private String type;
 
-	@NotNull
+	@Nullable
 	private Double health;
 
-	@NotNull
+	@Nullable
 	private Double maxHealth;
 
 	@NotNull
