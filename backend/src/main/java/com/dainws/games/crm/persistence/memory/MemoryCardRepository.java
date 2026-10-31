@@ -1,10 +1,10 @@
 package com.dainws.games.crm.persistence.memory;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.dainws.games.crm.domain.core.card.Card;
@@ -23,7 +23,7 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	private Map<CardCode, Card> cards;
 
 	public MemoryCardRepository() {
-		this.cards = new HashMap<>();
+		this.cards = new ConcurrentHashMap<>();
 	}
 
 	public void set(Card card) {
@@ -36,7 +36,7 @@ public class MemoryCardRepository implements CardRepository, Deck {
 
 	@Override
 	public boolean has(CardCode cardCode) {
-		return this.cards.containsKey(cardCode);
+		return cardCode != null && this.cards.containsKey(cardCode);
 	}
 
 	@Override
