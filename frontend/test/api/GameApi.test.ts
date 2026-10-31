@@ -25,11 +25,11 @@ describe('GameApi', () => {
     expect(result).toEqual(mockResources);
   });
 
-  it('sendReady posts to /game/{gameCode}/ready', async () => {
+  it('sendReady posts to /game/{gameCode}/ready with the code in Base64 URL-safe', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
 
-    await sendReady('game-123');
+    await sendReady('game/special+code');
 
-    expect(fetchSpy).toHaveBeenCalledWith('/game/game-123/ready', { method: 'POST' });
+    expect(fetchSpy).toHaveBeenCalledWith(`/game/${toBase64UrlSafe('game/special+code')}/ready`, { method: 'POST' });
   });
 });
