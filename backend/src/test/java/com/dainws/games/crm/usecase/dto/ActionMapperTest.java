@@ -74,6 +74,46 @@ class ActionMapperTest {
 				.isEqualTo(PlayerCode.from(PLAYER_CODE));
 	}
 
+	@Test
+	void testGivenPutDtoWithoutSourceCard_whenMap_thenSourceCardCodeIsNull() {
+		ActionDto actionDto = this.createActionDto();
+
+		ActionContextTemplate template = ActionMapper.mapPutActionDto(actionDto);
+
+		assertThat(template.getSourceCardCode()).isNull();
+	}
+
+	@Test
+	void testGivenPutDtoWithoutTargetPosition_whenMap_thenTargetCoordinateIsNull() {
+		ActionDto actionDto = this.createActionDto();
+
+		ActionContextTemplate template = ActionMapper.mapPutActionDto(actionDto);
+
+		assertThat(template.getTargetCoordinate()).isNull();
+	}
+
+	@Test
+	void testGivenDtoWithoutSourcePlayer_whenMapPassTurn_thenSourcePlayerCodeIsNull() {
+		ActionDto actionDto = this.createActionDto();
+		actionDto.setSourcePlayerCode(null);
+
+		ActionContextTemplate template =
+				ActionMapper.mapPassTurnActionDto(actionDto);
+
+		assertThat(template.getSourcePlayerCode()).isNull();
+	}
+
+	@Test
+	void testGivenDtoWithoutGame_whenMapPassTurn_thenGameCodeIsNull() {
+		ActionDto actionDto = this.createActionDto();
+		actionDto.setGameCode(null);
+
+		ActionContextTemplate template =
+				ActionMapper.mapPassTurnActionDto(actionDto);
+
+		assertThat(template.getGameCode()).isNull();
+	}
+
 	private CardCodeDto createCardCodeDto() {
 		CardCodeDto cardCodeDto = new CardCodeDto();
 		cardCodeDto.setCode(String.valueOf(CARD_CODE));
