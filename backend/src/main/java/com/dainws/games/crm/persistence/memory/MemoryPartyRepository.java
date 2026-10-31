@@ -1,8 +1,8 @@
 package com.dainws.games.crm.persistence.memory;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class MemoryPartyRepository implements PartyRepository {
 	private Logger logger;
 
 	public MemoryPartyRepository() {
-		this.parties = new HashMap<>();
+		this.parties = new ConcurrentHashMap<>();
 		this.logger = LoggerFactory.getLogger(MemoryPartyRepository.class.getCanonicalName());
 	}
 

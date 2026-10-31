@@ -1,7 +1,7 @@
 package com.dainws.games.crm.persistence.memory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ public class MemoryGameRepository implements GameRepository {
 	private Logger logger;
 
 	public MemoryGameRepository() {
-		this.games = new HashMap<>();
+		this.games = new ConcurrentHashMap<>();
 		this.logger = LoggerFactory.getLogger(MemoryGameRepository.class.getCanonicalName());
 	}
 
@@ -34,7 +34,7 @@ public class MemoryGameRepository implements GameRepository {
 
 	@Override
 	public boolean exists(GameCode gameCode) {
-		return this.games.containsKey(gameCode);
+		return gameCode != null && this.games.containsKey(gameCode);
 	}
 
 	@Override
