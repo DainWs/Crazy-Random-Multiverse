@@ -213,6 +213,7 @@ Rejected outright in review:
 - Direct console output (`System.out`, `console.log`) in production code
 - Magic values
 - Untyped dictionaries crossing layers
+- Code used only by tests outside the tests folder: production files hold nothing that exists only to be tested or to build fixtures
 - Business logic or game rules in the controller, in the `api` layer or in a Phaser view
 - The frontend mutating the authoritative game state before the backend confirms
 - Tests that verify calls instead of results
