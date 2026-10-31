@@ -11,6 +11,8 @@ import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
+import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
@@ -63,6 +65,62 @@ class MoveActionTest extends PlayerTurnActionTest {
 		targetZone.putCombatant(coordinate, filledWithCard);
 
 		assertFalse(turnAction.perform(actionContext));
+	}
+
+	@Test
+	void testGivenTargetPlayerWithAnotherZone_whenPerform_thenDoNotPerformAction() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		Player otherPlayer = this.getPlayerWithoutTurn(actionContext.getGame());
+		actionContext.setTargetPlayer(otherPlayer);
+
+		boolean isPerformed = turnAction.perform(actionContext);
+
+		assertFalse(isPerformed);
+		assertTrue(actionContext.getSourceZone().hasCombatant(actionContext.getSourceCoordinate()));
+	}
+
+	@Test
+	void testGivenLeaderAsSource_whenPerform_thenDoNotPerformAction() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		Leader leader = new CardBuilder().buildFullValidLeader();
+		ZoneWithLeader zone = new ZoneWithLeader();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
+		actionContext.getBoard().setZone(actionContext.getSourcePlayer(), zone);
+		actionContext.setSourceCard(leader);
+		actionContext.setSourceCoordinate(ZoneWithLeader.LEADER_COORDINATE);
+		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+
+		boolean isPerformed = turnAction.perform(actionContext);
+
+		assertFalse(isPerformed);
+		assertThat(zone.getLeader()).isEqualTo(leader);
+		assertThat(zone.countCombatants()).isEqualTo(1);
+	}
+
+	@Test
+	void testGivenTargetRowWithPreviousRowNotFilled_whenPerform_thenDoNotPerformAction() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+
+		boolean isPerformed = turnAction.perform(actionContext);
+
+		assertFalse(isPerformed);
+	}
+
+	@Test
+	void testGivenTargetRowWithPreviousRowNotFilled_whenPerform_thenCombatantStaysInSourceCoordinate()
+			throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+
+		turnAction.perform(actionContext);
+
+		Zone zone = actionContext.getSourceZone();
+		assertThat(zone.getCombatant(actionContext.getSourceCoordinate())).isEqualTo(actionContext.getSourceCard());
 	}
 
 	@Override
