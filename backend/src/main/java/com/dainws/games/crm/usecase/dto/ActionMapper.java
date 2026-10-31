@@ -74,18 +74,34 @@ public final class ActionMapper {
 	}
 
 	private static GameCode toGameCode(String gameCodeDto) {
+		if (gameCodeDto == null) {
+			return null;
+		}
+
 		return GameCode.from(gameCodeDto);
 	}
 
 	private static PlayerCode toPlayerCode(String playerCodeDto) {
+		if (playerCodeDto == null) {
+			return null;
+		}
+
 		return PlayerCode.from(playerCodeDto);
 	}
 
 	private static CardCode toCardCode(CardCodeDto dto) {
+		if (dto == null) {
+			return null;
+		}
+
 		return CardCode.from(dto.getCode(), dto.getType());
 	}
 
 	private static Coordinate toPosition(PositionDto dto) {
+		if (dto == null) {
+			return null;
+		}
+
 		return new Coordinate(dto.getRow(), dto.getColumn());
 	}
 }
