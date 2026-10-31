@@ -27,6 +27,11 @@ interface CardDto {
 
   // Combatant 
   equipment?: CardDto;
+
+  // Runtime state, only meaningful for cards inside game.zones
+  protected?: boolean;
+  attackAvailable?: boolean;
+  targetable?: boolean;
 }
 
 function toCardCodeDto(cardCode: CardCode | undefined): CardCodeDto | undefined {
@@ -76,6 +81,9 @@ const toCard = (dto: CardDto): Card => {
   card.damage = toDamage(dto);
   card.armor = toArmor(dto);
   card.health = toHealth(dto);
+  card.isProtected = dto.protected ?? false;
+  card.isAttackAvailable = dto.attackAvailable ?? false;
+  card.isTargetable = dto.targetable ?? false;
 
   if (dto.equipment) {
     card.equipment = toCard(dto.equipment) as EquipmentCard;

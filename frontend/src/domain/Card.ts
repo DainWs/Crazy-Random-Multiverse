@@ -78,6 +78,9 @@ class Card {
   public activeSkill?: Skill;
   public passiveSkill?: Skill;
   public equipment?: EquipmentCard;
+  public isProtected: boolean;
+  public isTargetable: boolean;
+  public isAttackAvailable: boolean;
 
   public constructor(options: CardOptions) {
     this.uuid = self.crypto.randomUUID();
@@ -86,6 +89,10 @@ class Card {
     this.description = options.description;
     this.type = options.type;
     this.rarity = options.rarity;
+
+    this.isProtected = false;
+    this.isTargetable = false;
+    this.isAttackAvailable = false;
   }
 
   public getStatistic(statisticType: StatisticType): Statistic | undefined {

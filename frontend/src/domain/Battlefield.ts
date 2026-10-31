@@ -40,8 +40,8 @@ class Battlefield {
     const notMyZones = zones.filter(z => z.owner.code !== this.myZone.owner.code);
 
     for (const zone of notMyZones) {
-      if (zone.team === 'enemy') this.enemyZones.push(zone);
-      if (zone.team === 'friendly') this.friendlyZones.push(zone);
+      if (zone.team === 'ENEMY') this.enemyZones.push(zone);
+      if (zone.team === 'FRIENDLY') this.friendlyZones.push(zone);
     }
 
     this.recalculateDimensions();

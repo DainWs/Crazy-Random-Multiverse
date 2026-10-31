@@ -15,7 +15,6 @@ interface ZoneSlotDto {
 interface ZoneDto {
   owner: PlayerDto;
   type: ZoneOrganizationsType;
-  team: Team;
   health: number;
   maxHealth: number;
   combatants: ZoneSlotDto[][];
@@ -35,8 +34,8 @@ function toRowZoneSlots(slotsInRow: ZoneSlotDto[], row: number): ZoneSlot[] {
   return slotsInRow.map((zoneSlotDto, column) => toZoneSlot(zoneSlotDto, row, column));
 }
 
-function toZone(zoneDto: ZoneDto): Zone {
-  const zone = new Zone(toPlayer(zoneDto.owner), zoneDto.team, zoneDto.type);
+function toZone(zoneDto: ZoneDto, team: Team): Zone {
+  const zone = new Zone(toPlayer(zoneDto.owner), team, zoneDto.type);
   zone.health = zoneDto.health;
   zone.maxHealth = zoneDto.maxHealth;
   zone.slots = zoneDto.combatants.map(toRowZoneSlots);

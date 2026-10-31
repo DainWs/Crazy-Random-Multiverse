@@ -61,6 +61,32 @@ describe('API Models and DTO Mappers', () => {
       expect(card.equipment?.name).toBe('Sword');
     });
 
+    it('toCard maps the runtime state sent by the server', () => {
+      const cardDto: CardDto = {
+        code: { code: 11, type: 'WARRIOR' },
+        name: 'Archer',
+        description: 'Quick archer',
+        type: 'WARRIOR',
+        protected: true,
+        attackAvailable: true,
+        targetable: false
+      };
+
+      const card = toCard(cardDto);
+
+      expect(card.isProtected).toBe(true);
+      expect(card.isAttackAvailable).toBe(true);
+      expect(card.isTargetable).toBe(false);
+    });
+
+    it('toCard defaults the runtime state to false when the server omits it', () => {
+      const card = toCard({ code: { code: 12, type: 'SPELL' }, name: 'Bolt', description: 'Bolt', type: 'SPELL' });
+
+      expect(card.isProtected).toBe(false);
+      expect(card.isAttackAvailable).toBe(false);
+      expect(card.isTargetable).toBe(false);
+    });
+
     it('toCardCode and toCardCodeDto convert bidirectionally', () => {
       const dto = { code: 5, type: 'SPELL' as const };
       const domainCode = toCardCode(dto);

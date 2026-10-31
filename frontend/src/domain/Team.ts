@@ -1,4 +1,4 @@
 
-type Team = "friendly" | "enemy";
+type Team = "FRIENDLY" | "ENEMY";
 
 export default Team;
