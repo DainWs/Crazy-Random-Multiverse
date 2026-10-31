@@ -156,6 +156,8 @@ Not tied to a phase.
 - [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one
 - [ ] `AIvsAIGameIntegationTest` times out in about half of the runs (the game between AIs does not always end in 10 seconds); find out why
 - [ ] The user id is the HTTP session id and the parties share it with their members, which makes it equivalent to a credential: separate a public user id from the session id
+- [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
+- [ ] A person tests a real browser connection with the session cookie; the frontend does not call `connect()` yet (see Phase 2)
 - [ ] A newly placed card must not act on the turn it is placed (SPECS section 4): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 
 ## Post-MVP
