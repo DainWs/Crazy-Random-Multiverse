@@ -7,14 +7,17 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.persistence.memory.MemoryEventSequence;
 
 @Component
 public class SpringEventPublisher implements EventPublisher {
 
 	private ApplicationEventPublisher applicationEventPublisher;
+	private MemoryEventSequence eventSequence;
 
-	public SpringEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+	public SpringEventPublisher(ApplicationEventPublisher applicationEventPublisher, MemoryEventSequence eventSequence) {
 		this.applicationEventPublisher = applicationEventPublisher;
+		this.eventSequence = eventSequence;
 	}
 
 	@Override
@@ -29,6 +32,7 @@ public class SpringEventPublisher implements EventPublisher {
 
 	@Override
 	public void publish(Event event) {
+		event.setSequence(this.eventSequence.next(event.getGameCode()));
 		this.applicationEventPublisher.publishEvent(event);
 	}
 }

@@ -42,7 +42,7 @@ describe('SocketEventHandler', () => {
   const createEvent = (code: GameEventCode = 'GAME_START', details: Record<string, unknown> = {}) => ({
     code,
     details,
-    timestamp: Date.now()
+    sequence: 1
   });
 
   beforeEach(() => {
@@ -345,7 +345,7 @@ describe('SocketEventHandler', () => {
         details: {
           value: 42
         },
-        timestamp: Date.now()
+        sequence: 1
       };
 
       socket.emit(eventCode, event);

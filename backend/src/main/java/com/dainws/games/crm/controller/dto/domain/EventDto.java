@@ -11,7 +11,8 @@ public class EventDto {
 	@JsonProperty("details")
 	private EventDetailsDto details;
 
-	// TODO add a per-game sequence number (ROADMAP, Phase 1)
+	@JsonProperty("sequence")
+	private int sequence;
 
 	public EventDto() {
 	}
@@ -22,6 +23,14 @@ public class EventDto {
 
 	public void setCode(EventCode code) {
 		this.code = code;
+	}
+
+	public int getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
 	public EventDetailsDto getDetails() {

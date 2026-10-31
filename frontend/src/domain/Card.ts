@@ -22,20 +22,16 @@ type CardAudioType = 'put' | 'attack' | 'die';
 type Resource = string;
 
 class CardCode {
-  public readonly code: number;
+  public readonly code: string;
   public readonly type: CardType;
 
-  public constructor(code: number, type: CardType) {
+  public constructor(code: string, type: CardType) {
     this.code = code;
     this.type = type;
   }
 
   public equals(that: CardCode) {
     return this.code == that.code && this.type == that.type;
-  }
-
-  public number() {
-    return this.code;
   }
 
   public text() {
@@ -137,18 +133,18 @@ class Card {
   public getAudio(type: CardAudioType): Resource {
     if (this.isType("WARRIOR")) {
       const number = (type == 'attack') ? Math.floor(Math.random() * 3) + 1 : 1;
-      return `${this.rarity?.toLowerCase()}-${type}-${this.code.number()}-${number}`;
+      return `${this.rarity?.toLowerCase()}-${type}-${this.code.code}-${number}`;
     }
 
-    return `${this.type.toLowerCase()}-${type}-${this.code.number()}`;
+    return `${this.type.toLowerCase()}-${type}-${this.code.code}`;
   }
 
   public getImage(): Resource {
     if (this.isType("WARRIOR")) {
-      return `${this.rarity?.toLowerCase()}-${this.code.number()}`;
+      return `${this.rarity?.toLowerCase()}-${this.code.code}`;
     }
 
-    return `${this.type.toLowerCase()}-${this.code.number()}`;
+    return `${this.type.toLowerCase()}-${this.code.code}`;
   }
 
   public getTexture(): CardTexture {

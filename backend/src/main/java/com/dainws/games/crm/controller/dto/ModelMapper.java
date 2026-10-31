@@ -145,7 +145,7 @@ public class ModelMapper {
 	public static CardDto mapCardToDto(Card card) {
 		CardDto cardDto = new CardDto();
 		CardCodeDto cardCodeDto = new CardCodeDto();
-		cardCodeDto.setCode(card.getCode().code());
+		cardCodeDto.setCode(card.getCode().codeText());
 		cardCodeDto.setType(card.getCode().type());
 		cardDto.setCode(cardCodeDto);
 		

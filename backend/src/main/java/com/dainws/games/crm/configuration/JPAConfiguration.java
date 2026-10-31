@@ -12,6 +12,7 @@ import com.dainws.games.crm.domain.repositories.PartyRepository;
 import com.dainws.games.crm.domain.repositories.UserRepository;
 import com.dainws.games.crm.persistence.JPAActionContextFactory;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
+import com.dainws.games.crm.persistence.memory.MemoryEventSequence;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
@@ -45,7 +46,13 @@ public class JPAConfiguration {
 	}
 	
 	@Bean
-	JPAActionContextFactory jPAActionContextFactory(
+	@ConditionalOnMissingBean(MemoryEventSequence.class)
+	MemoryEventSequence eventSequence() {
+		return new MemoryEventSequence();
+	}
+	
+	@Bean
+	JPAActionContextFactory jpaActionContextFactory(
 			GameRepository gameRepository, CardRepository cardRepository) {
 		return new JPAActionContextFactory(gameRepository, cardRepository);
 	}

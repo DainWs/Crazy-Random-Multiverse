@@ -6,7 +6,7 @@ type Resource = {
 };
 
 type CardResource = {
-  code: number;
+  code: string;
   type: CardType;
   name: string;
   description: string;

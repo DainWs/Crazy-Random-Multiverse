@@ -19,6 +19,7 @@ interface EventDetailsDto {
 interface EventDto {
   code: GameEventCode;
   details: EventDetailsDto;
+  sequence?: number;
 }
 
 export type { EventDetailsDto, EventDto };

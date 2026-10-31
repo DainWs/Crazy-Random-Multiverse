@@ -5,16 +5,16 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import jakarta.validation.constraints.NotNull;
 
 public class CardCodeDto {
-	private long code;
+	private String code;
 	
 	@NotNull
 	private CardType type;
 	
-	public long getCode() {
+	public String getCode() {
 		return code;
 	}
 	
-	public void setCode(long code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 	

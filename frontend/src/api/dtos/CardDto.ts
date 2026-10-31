@@ -4,7 +4,7 @@ import { Armor, Damage, Health } from "@/domain/Statistics";
 import Card, { CardCode } from "@/domain/Card";
 
 interface CardCodeDto {
-  code: number;
+  code: string;
   type: CardType;
 }
 
