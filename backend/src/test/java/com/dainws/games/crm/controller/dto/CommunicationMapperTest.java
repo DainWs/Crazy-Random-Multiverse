@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.controller.dto.domain.EventDto;
@@ -21,7 +22,12 @@ class CommunicationMapperTest {
 	private static final int SEQUENCE = 7;
 	private static final int PLAYERS = 2;
 
-	private CommunicationMapper mapper = new CommunicationMapper();
+	CommunicationMapper mapper;
+
+	@BeforeEach
+	void beforeEach() {
+		this.mapper = new CommunicationMapper();
+	}
 
 	@Test
 	void testGivenEventWithSequence_whenMapToDto_thenDtoHasTheSameSequence() {
