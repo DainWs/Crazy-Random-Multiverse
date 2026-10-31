@@ -49,6 +49,18 @@ public class CardDto {
 	@JsonProperty("maxHealth")
 	private Double maxHealth;
 
+	@JsonProperty("equipment")
+	private CardDto equipment;
+
+	@JsonProperty("protected")
+	private boolean protectedCard;
+
+	@JsonProperty("attackAvailable")
+	private boolean attackAvailable;
+
+	@JsonProperty("targetable")
+	private boolean targetable;
+
 	public CardCodeDto getCode() {
 		return code;
 	}
@@ -147,5 +159,37 @@ public class CardDto {
 		if (maxHealth == 0) {
 			this.maxHealth = null;
 		}
+	}
+
+	public CardDto getEquipment() {
+		return equipment;
+	}
+
+	public void setEquipment(CardDto equipment) {
+		this.equipment = equipment;
+	}
+
+	public boolean isProtectedCard() {
+		return protectedCard;
+	}
+
+	public void setProtectedCard(boolean protectedCard) {
+		this.protectedCard = protectedCard;
+	}
+
+	public boolean isAttackAvailable() {
+		return attackAvailable;
+	}
+
+	public void setAttackAvailable(boolean attackAvailable) {
+		this.attackAvailable = attackAvailable;
+	}
+
+	public boolean isTargetable() {
+		return targetable;
+	}
+
+	public void setTargetable(boolean targetable) {
+		this.targetable = targetable;
 	}
 }

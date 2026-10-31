@@ -59,7 +59,7 @@ public class WebSocketCommunicationClient implements CommunicationClient {
 
 			User user = this.getUserFrom(player);
 			String sessionId = user.getSessionId();
-			EventDto eventDto = new CommunicationMapper().mapToDto(event);
+			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
 			this.messagingTemplate.convertAndSendToUser(sessionId, "/topic/event", eventDto, createHeaders(sessionId));
 		}
 	}

@@ -9,6 +9,7 @@ import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.controller.dto.domain.PartyListDto;
 import com.dainws.games.crm.controller.dto.domain.PlayerDto;
 import com.dainws.games.crm.controller.dto.domain.ZoneDto;
+import com.dainws.games.crm.controller.dto.domain.ZoneSlotDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.Game;
@@ -58,17 +59,18 @@ public class ModelMapper {
 		return partyDto;
 	}
 
-	public GameDto mapGameToDto(Game game) {
+	public static GameDto mapGameToDto(Game game, Player viewer) {
 		GameDto gameDto = new GameDto();
 		gameDto.setCode(game.getCode().toString());
-		gameDto.setPlayerWithTurn(this.mapPlayerToDto(game.getPlayerWithTurn()));
+		gameDto.setPlayerWithTurn(mapPlayerToDto(game.getPlayerWithTurn()));
 
 		Board board = game.getBoard();
 		List<ZoneDto> playerZones = new ArrayList<>();
 		for (Player player : game.getPlayers()) {
 			Zone playerZone = board.getZoneOf(player);
-			if (playerZone.isAlive()) {
-				playerZones.add(this.mapPlayerZoneToDto(playerZone, player));
+
+			if (player.isAlive() && playerZone.isAlive()) {
+				playerZones.add(mapPlayerZoneToDto(playerZone, player, viewer));
 			}
 		}
 
@@ -76,51 +78,71 @@ public class ModelMapper {
 		return gameDto;
 	}
 
-	public ZoneDto mapPlayerZoneToDto(Zone playerZone, Player player) {
+	public static ZoneDto mapPlayerZoneToDto(Zone playerZone, Player owner, Player viewer) {
+		boolean isEnemyZone = playerZone.isEnemy(viewer);
+
 		ZoneDto zoneDto = new ZoneDto();
-		zoneDto.setOwner(this.mapPlayerToDto(player));
+		zoneDto.setOwner(mapPlayerToDto(owner));
+		zoneDto.setType(playerZone.getType().text());
 		zoneDto.setHealth(playerZone.getZoneHealth().getValue());
 		zoneDto.setMaxHealth(playerZone.getZoneHealth().getMaxValue());
 
 		Combatant[][] combatants = playerZone.getCombatants();
-		CardDto[][] combatantDtos = new CardDto[combatants.length][];
+		ZoneSlotDto[][] slotDtos = new ZoneSlotDto[combatants.length][];
 		for (int rowIndex = 0; rowIndex < combatants.length; rowIndex++) {
-			combatantDtos[rowIndex] = new CardDto[combatants[rowIndex].length];
+			slotDtos[rowIndex] = new ZoneSlotDto[combatants[rowIndex].length];
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
-				
-				if (playerZone.hasCombatant(coordinate)) {
-					Combatant combatant = playerZone.getCombatant(coordinate);
-					combatantDtos[rowIndex][columnIndex] = this.mapCardToDto(combatant);
-				}
+				slotDtos[rowIndex][columnIndex] = mapSlotToDto(playerZone, coordinate, isEnemyZone);
 			}
 		}
 
-		zoneDto.setCombatants(combatantDtos);
+		zoneDto.setCombatants(slotDtos);
 		return zoneDto;
 	}
 
-	public PlayerDto mapPlayerToDto(Player player) {
+	private static ZoneSlotDto mapSlotToDto(Zone zone, Coordinate coordinate, boolean isEnemyZone) {
+		ZoneSlotDto slotDto = new ZoneSlotDto();
+		slotDto.setAllowedCombatant(zone.isLeaderSlot(coordinate) ? CardType.LEADER : CardType.WARRIOR);
+
+		if (zone.hasCombatant(coordinate)) {
+			slotDto.setCombatant(mapCombatantInZoneToDto(zone, coordinate, isEnemyZone));
+		}
+
+		return slotDto;
+	}
+
+	private static CardDto mapCombatantInZoneToDto(Zone zone, Coordinate coordinate, boolean isEnemyZone) {
+		Combatant combatant = zone.getCombatant(coordinate);
+
+		CardDto cardDto = mapCardToDto(combatant);
+		cardDto.setProtectedCard(zone.isProtectedAt(coordinate));
+		cardDto.setAttackAvailable(combatant.canAttack());
+		cardDto.setTargetable(isEnemyZone && !cardDto.isProtectedCard());
+		return cardDto;
+	}
+
+	public static PlayerDto mapPlayerToDto(Player player) {
 		PlayerDto playerDto = new PlayerDto();
 		playerDto.setCode(player.getCode());
 		playerDto.setName(player.getName());
 		playerDto.setSpectator(player.isSpectator());
-		playerDto.setAlive(!player.isSpectator());
+		playerDto.setAlive(player.isAlive());
 		return playerDto;
 	}
 
-	public PositionDto mapCoordinateToDto(Coordinate coordinate) {
+	public static PositionDto mapCoordinateToDto(Coordinate coordinate) {
 		PositionDto positionDto = new PositionDto();
 		positionDto.setRow(coordinate.getRow());
 		positionDto.setColumn(coordinate.getColumn());
 		return positionDto;
 	}
 	
-	public Coordinate mapDtoToCoordinate(PositionDto dto) {
+	public static Coordinate mapDtoToCoordinate(PositionDto dto) {
 		return new Coordinate(dto.getRow(), dto.getColumn());
 	}
 
-	public CardDto mapCardToDto(Card card) {
+	public static CardDto mapCardToDto(Card card) {
 		CardDto cardDto = new CardDto();
 		CardCodeDto cardCodeDto = new CardCodeDto();
 		cardCodeDto.setCode(card.getCode().code());
@@ -158,6 +180,10 @@ public class ModelMapper {
 			cardDto.setArmorType(leader.getArmor().getType());
 			cardDto.setHealth(leader.getHealth().getValue());
 			cardDto.setMaxHealth(leader.getHealth().getMaxValue());
+		}
+
+		if (card instanceof Combatant combatant && combatant.getEquipment() != null) {
+			cardDto.setEquipment(mapCardToDto(combatant.getEquipment()));
 		}
 
 		return cardDto;

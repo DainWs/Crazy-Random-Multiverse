@@ -11,7 +11,7 @@ public class EventDto {
 	@JsonProperty("details")
 	private EventDetailsDto details;
 
-	// TODO add timestamp
+	// TODO add a per-game sequence number (ROADMAP, Phase 1)
 
 	public EventDto() {
 	}

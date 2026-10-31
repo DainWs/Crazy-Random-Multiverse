@@ -29,6 +29,7 @@ public class Board {
 	public void setZone(Player player, Zone zone) {
 		assert(!player.isSpectator());
 		
+		zone.setOwner(player);
 		this.zones.put(player.getPlayerCode(), zone);
 	}
 	

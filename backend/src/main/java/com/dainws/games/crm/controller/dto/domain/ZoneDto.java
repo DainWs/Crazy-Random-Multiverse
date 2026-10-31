@@ -6,8 +6,8 @@ public class ZoneDto {
 	@NotNull
 	private PlayerDto owner;
 
-	// TODO add team
-	// TODO add zone type
+	@NotNull
+	private String type;
 
 	@NotNull
 	private Double health;
@@ -15,9 +15,8 @@ public class ZoneDto {
 	@NotNull
 	private Double maxHealth;
 
-	// TODO change to ZoneSlot[][]
 	@NotNull
-	private CardDto[][] combatants;
+	private ZoneSlotDto[][] combatants;
 
 	public void setOwner(PlayerDto owner) {
 		this.owner = owner;
@@ -25,6 +24,14 @@ public class ZoneDto {
 
 	public PlayerDto getOwner() {
 		return owner;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public Double getHealth() {
@@ -49,11 +56,11 @@ public class ZoneDto {
 		}
 	}
 
-	public void setCombatants(CardDto[][] combatants) {
+	public void setCombatants(ZoneSlotDto[][] combatants) {
 		this.combatants = combatants;
 	}
 
-	public CardDto[][] getCombatants() {
+	public ZoneSlotDto[][] getCombatants() {
 		return combatants;
 	}
 }

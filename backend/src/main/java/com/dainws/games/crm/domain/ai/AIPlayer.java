@@ -23,9 +23,4 @@ public class AIPlayer extends Player {
 		AIGameContext context = new AIGameContext(game, this);
 		this.behavior.performBehavior(context);
 	}
-
-	@Override
-	public boolean isSpectator() {
-		return false;
-	}
 }

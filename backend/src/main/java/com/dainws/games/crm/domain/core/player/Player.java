@@ -20,6 +20,7 @@ public abstract class Player {
 
 	public void die() {
 		this.isAlive = false;
+		this.changeToSpectator();
 	}
 
 	public boolean isAlive() {

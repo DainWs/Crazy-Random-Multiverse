@@ -2,6 +2,7 @@ package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
@@ -36,13 +37,28 @@ public class MoveAction extends PlayerTurnAction {
 
 	private void checkContext(ActionContext context) throws PlayerActionException {
 		Player sourcePlayer = context.getSourcePlayer();
-
-		if (!context.getSourceZone().hasCombatant(context.getSourceCoordinate())) {
+		Zone sourceZone = context.getSourceZone();
+		Zone targetZone = context.getTargetZone();
+		Combatant combatant = this.getSourceCombatantFrom(context);
+	
+		if (!sourceZone.hasCombatant(context.getSourceCoordinate())) {
 			throw new PlayerActionException("selected_source_position_has_none_combatant", sourcePlayer);
 		}
 
-		if (context.getTargetZone().hasCombatant(context.getTargetCoordinate())) {
+		if (!sourceZone.equals(targetZone)) {
+			throw new PlayerActionException("selected_target_zone_is_not_source_zone", sourcePlayer);
+		}
+
+		if (this.getSourceCombatantFrom(context).isType(CardType.LEADER)) {
+			throw new PlayerActionException("selected_source_is_leader", sourcePlayer);
+		}
+
+		if (targetZone.hasCombatant(context.getTargetCoordinate())) {
 			throw new PlayerActionException("selected_target_position_already_has_combatant", sourcePlayer);
+		}
+
+		if (!targetZone.canPutCombatant(context.getTargetCoordinate(), combatant)) {
+			throw new PlayerActionException("selected_target_position_not_allowed", sourcePlayer);
 		}
 	}
 }

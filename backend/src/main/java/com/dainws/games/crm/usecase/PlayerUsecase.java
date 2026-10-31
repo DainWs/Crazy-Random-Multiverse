@@ -26,6 +26,8 @@ public class PlayerUsecase {
 		this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 		this.actionResolver.put(ActionType.MOVE_ACTION, this::moveAction);
 		this.actionResolver.put(ActionType.ATTACK_ACTION, this::attackAction);
+		this.actionResolver.put(ActionType.EQUIP_ACTION, this::equipAction);
+		this.actionResolver.put(ActionType.SURRENDER_ACTION, this::surrenderAction);
 		this.actionResolver.put(ActionType.PASS_TURN, this::passTurnAction);
 	}
 	
@@ -58,6 +60,16 @@ public class PlayerUsecase {
 		this.actionFacade.playerAttackCard(contextTemplate);
 	}
 	
+	private void equipAction(ActionDto actionDto) {
+		ActionContextTemplate contextTemplate = ActionMapper.mapEquipActionDto(actionDto);
+		this.actionFacade.playerEquipCard(contextTemplate);
+	}
+
+	private void surrenderAction(ActionDto actionDto) {
+		ActionContextTemplate contextTemplate = ActionMapper.mapSurrenderActionDto(actionDto);
+		this.actionFacade.playerSurrender(contextTemplate);
+	}
+
 	private void passTurnAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapPassTurnActionDto(actionDto);
 		this.actionFacade.playerPassTurn(contextTemplate);
