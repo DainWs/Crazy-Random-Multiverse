@@ -37,6 +37,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 - [x] Replace STOMP with Socket.IO
 - [x] Implement Socket.IO connection
+- [ ] Open the Socket.IO connection from the application (nothing calls `connect()` yet)
 - [x] Implement Socket.IO game event handling
 - [x] Implement Socket.IO reconnection
 - [x] Map `ActionDto` correctly
@@ -57,6 +58,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Remove mocked game state, zones and hand
 - [ ] Replace mocked `GameLoad` flow with real backend state
 - [ ] Update Phaser views from authoritative state
+- [ ] Map the backend rows (row 0 is the leader row) to the frontend zone organization, so the leader is shown nearest to the local player
 - [ ] Implement real initial hand synchronization and hand updates
 - [ ] Remove played cards from the hand after backend confirmation
 - [ ] Animate newly received cards
@@ -88,6 +90,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Replace local game-over detection with the backend game-end event
 - [ ] Determine winner from backend; victory and defeat screens
 - [ ] Disable interaction after game end
+- [ ] Reject server-side any action when the game is not in progress (`PlayerTurnAction` only checks the turn today)
 - [ ] Show protected cards and exposed leader state
 - [ ] Clear targeting state after an action, turn change or invalid action
 
@@ -151,12 +154,15 @@ Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one
+- [ ] `AIvsAIGameIntegationTest` times out in about half of the runs (the game between AIs does not always end in 10 seconds); find out why
+- [ ] The user id is the HTTP session id and the parties share it with their members, which makes it equivalent to a credential: separate a public user id from the session id
 - [ ] A newly placed card must not act on the turn it is placed (SPECS section 4): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 
 ## Post-MVP
 
 - Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
 - Teams: a team model in the backend (from the game configuration and from spells) and its exposure to the frontend (for example a `team` in each `ZoneDto`)
+- Grace period on disconnect: delete a user only after a configurable time without reconnecting (today a periodic task deletes every user without an open socket, so one can be deleted a moment after dropping)
 - Discussion: defensive programming between actions and the domain. Some rules are validated twice (for example `MoveAction.checkContext` and `Zone.putCombatant`); decide where each rule lives
 - Infinite stats and true damage
 - Advanced AI system

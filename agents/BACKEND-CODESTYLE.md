@@ -293,6 +293,7 @@ return Card.builder(code) //
 
 - Plain classes with private non-`final` fields, setters if they are used in responses and getters if they are used as requests.
 - Serialization annotations (`@JsonProperty`, `@JsonFormat`, etc.) go on the properties (fields), not on the getters.
+- The name of a field is the same as the property of its getter and setter. A boolean is named without the `is` prefix (`alive`, not `isAlive`) and carries the contract name in `@JsonProperty("isAlive")`: a field `isAlive` next to a getter `isAlive()` is serialized twice, as `isAlive` and as `alive`.
 - Validations (`@NotNull`, `@NotBlank`) go on the field, above `@JsonProperty`.
 - DTOs contain no logic. The conversion lives in the `*Mapper`.
 - A `long` is never sent in a DTO as a number: it travels as a `String` and the mapper converts it. The JavaScript `number` is a 64-bit float that only holds integers exactly up to 2^53 - 1, so a `long` can arrive corrupted at the client.

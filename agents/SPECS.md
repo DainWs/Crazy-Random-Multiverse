@@ -17,7 +17,7 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 
 ### 2.1 Backend ↔ frontend contract
 
-**Connection.** The client opens a Socket.IO connection to the backend (port 9092, path `/socket.io`; the client may override both). The client sends the HTTP session cookie (`SESSION`) in the handshake. The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user. When a socket drops, only the socket is unbound: the user, its party and its game are kept. Reconnection is performed by the Socket.IO client. `crm.communication.socket-io.origin` (default `*`) is the origin allowed to connect; browsers refuse cookies when it is `*`, so production sets the explicit origin if the client connects from another origin.
+**Connection.** The client opens a Socket.IO connection to the backend (port 9092, path `/socket.io`; the client may override both). The client sends the HTTP session cookie (`SESSION`) in the handshake. The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user. When a socket drops, only the socket is unbound: the user, its party and its game are kept until a periodic task deletes the users without an open socket (every 15 minutes, `crm.user.cleanup-interval`). Reconnection is performed by the Socket.IO client. `crm.communication.socket-io.origin` (default `*`) is the origin allowed to connect; browsers refuse cookies when it is `*`, so production sets the explicit origin if the client connects from another origin.
 
 **Server → client channels.**
 
@@ -27,7 +27,7 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 | `error` | `ExceptionCodeDto`: `{ key }`, an `exception.*` key for a rejected action |
 | `party:info` | `PartyDto` |
 
-`EventDetailsDto` always carries `game` (a `GameDto` snapshot) and optionally `sourcePlayer`, `sourceCard`, `sourcePosition`, `targetPlayer`, `targetCard`, `targetPosition`. Event names are the `EventCode` values (`GAME_START`, `TURN_CHANGE`, `PLAYER_PUT_CARD`, ...). Every event carries `sequence`: a number per game, increased by one for each published event and assigned in publication order. The counter lives with the in-memory state, so it restarts together with the games when the server restarts.
+`EventDetailsDto` always carries `game` (a `GameDto` snapshot) and optionally `sourcePlayer`, `sourceCard`, `sourcePosition`, `targetPlayer`, `targetCard`, `targetPosition`. Event names are the `EventCode` values (`GAME_START`, `TURN_CHANGE`, `PLAYER_PUT_CARD`, ...). A field with no value is not sent (the Socket.IO serializer omits `null`), so the frontend types of those fields are optional. Every event carries `sequence`: a number per game, increased by one for each published event and assigned in publication order. The counter lives with the in-memory state, so it restarts together with the games when the server restarts.
 
 **Identifiers.** Codes travel as plain text inside JSON bodies (events and actions). They are encoded as Base64 URL-safe only when they are part of a URL path. Card codes (`CardCodeDto.code`) travel as decimal text so that no digit is lost in JavaScript: the backend keeps them as a `long` and the frontend as a `string`.
 
@@ -46,7 +46,7 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 
 **Hand.** `PLAYER_RECEIVE_CARD` is sent with `targetPlayer` and `targetCard` only to the player who receives the card; the other players receive the same event without the card. After a connection the hand is restored from `GAME_SYNC`, not from these events.
 
-**Zones and slots.** `ZoneDto.combatants` is a matrix of `ZoneSlotDto` (`{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant: CardDto | null }`). Row indices are absolute: in a zone with a leader, row 0 is the leader row and a higher index is closer to the center of the table. The frontend inverts them visually so the leader is nearest to the local player. `ZoneDto.type` is `BASE` for a zone with a leader slot and `NO_LEADER` otherwise. `ZoneDto` carries no team: the teams concept is Post-MVP.
+**Zones and slots.** `ZoneDto.combatants` is a matrix of `ZoneSlotDto` (`{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant: CardDto | null }`). Row indices are absolute: in a zone with a leader, row 0 is the leader row and a higher index is closer to the center of the table. The frontend shows the leader nearest to the local player, so it must invert them for display. `ZoneDto.type` is the text of the type that each zone declares: `BASE` for a zone with a leader slot. `ZoneDto` carries no team: the teams concept is Post-MVP. `health` and `maxHealth` are absent when the zone has infinite health (a zone that has no leader yet); the frontend reads them as infinite.
 
 **Card runtime state.** Each `CardDto` inside `game.zones` carries, computed by the server for the player who receives the event:
 
@@ -54,7 +54,7 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 - `attackAvailable`: the card has not used its attacks this turn.
 - `targetable`: the card is not protected and belongs to another player.
 
-A combatant also carries its attached `equipment` (a `CardDto`). These three flags are meaningless on `sourceCard` and `targetCard`. The server also rejects an attack on a protected card.
+A combatant also carries its attached `equipment` (a `CardDto`). These three flags are only meaningful in `game.zones`: they are always `false` in `sourceCard`, `targetCard` and `hand`. The server also rejects an attack on a protected card.
 
 ## 3. Players and game flow
 
@@ -104,7 +104,7 @@ Each player zone has leader and warrior slots arranged in rows.
 - At most 6 warriors on the board plus the leader.
 - Row 2 must be filled before row 1.
 - Moving a card has no cooldown: a player may move cards as many times as they want during their turn.
-- A card moves only inside its owner's zone, to a free slot whose previous row is filled. The leader cannot be moved.
+- A card moves only inside its owner's zone. To a free slot whose previous row is filled, checked with the card still in its origin, so a move may leave a gap behind. To an occupied slot, the two cards swap places. The leader cannot be moved or swapped. A swap is published as `PLAYER_MOVE_CARD`.
 - A placed card has a one-turn cooldown before it can act.
 - Each card may attack once per turn unless the card says otherwise.
 
