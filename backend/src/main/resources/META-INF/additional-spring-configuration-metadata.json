@@ -10,6 +10,11 @@
 	  "description": "Enables Socket-io based connections"
 	},
 	{
+	  "name": "crm.communication.socket-io.origin",
+	  "type": "java.lang.String",
+	  "description": "Origin allowed to open Socket.IO connections, default = \"*\". Browsers refuse cookies with \"*\", so set the explicit origin when the client connects from another origin"
+	},
+	{
 	  "name": "crm.communication.websocket.enabled",
 	  "type": "java.lang.String",
 	  "description": "Enables websocket based connection"

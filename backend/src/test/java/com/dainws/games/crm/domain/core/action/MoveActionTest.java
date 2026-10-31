@@ -77,25 +77,58 @@ class MoveActionTest extends PlayerTurnActionTest {
 		boolean isPerformed = turnAction.perform(actionContext);
 
 		assertFalse(isPerformed);
-		assertTrue(actionContext.getSourceZone().hasCombatant(actionContext.getSourceCoordinate()));
+	}
+
+	@Test
+	void testGivenTargetPlayerWithAnotherZone_whenPerform_thenCombatantStaysInSourceCoordinate() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		Player otherPlayer = this.getPlayerWithoutTurn(actionContext.getGame());
+		actionContext.setTargetPlayer(otherPlayer);
+
+		turnAction.perform(actionContext);
+
+		Zone sourceZone = actionContext.getSourceZone();
+		Coordinate sourceCoordinate = actionContext.getSourceCoordinate();
+		assertTrue(sourceZone.hasCombatant(sourceCoordinate));
 	}
 
 	@Test
 	void testGivenLeaderAsSource_whenPerform_thenDoNotPerformAction() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
-		CustomActionContext actionContext = this.createActionContext();
 		Leader leader = new CardBuilder().buildFullValidLeader();
 		ZoneWithLeader zone = new ZoneWithLeader();
-		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
-		actionContext.getBoard().setZone(actionContext.getSourcePlayer(), zone);
-		actionContext.setSourceCard(leader);
-		actionContext.setSourceCoordinate(ZoneWithLeader.LEADER_COORDINATE);
-		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+		CustomActionContext actionContext =
+				this.createLeaderMoveContext(zone, leader);
 
 		boolean isPerformed = turnAction.perform(actionContext);
 
 		assertFalse(isPerformed);
+	}
+
+	@Test
+	void testGivenLeaderAsSource_whenPerform_thenLeaderStaysInItsSlot() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		Leader leader = new CardBuilder().buildFullValidLeader();
+		ZoneWithLeader zone = new ZoneWithLeader();
+		CustomActionContext actionContext =
+				this.createLeaderMoveContext(zone, leader);
+
+		turnAction.perform(actionContext);
+
 		assertThat(zone.getLeader()).isEqualTo(leader);
+	}
+
+	@Test
+	void testGivenLeaderAsSource_whenPerform_thenLeaderIsNotDuplicated() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		Leader leader = new CardBuilder().buildFullValidLeader();
+		ZoneWithLeader zone = new ZoneWithLeader();
+		CustomActionContext actionContext =
+				this.createLeaderMoveContext(zone, leader);
+
+		turnAction.perform(actionContext);
+
 		assertThat(zone.countCombatants()).isEqualTo(1);
 	}
 
@@ -120,7 +153,19 @@ class MoveActionTest extends PlayerTurnActionTest {
 		turnAction.perform(actionContext);
 
 		Zone zone = actionContext.getSourceZone();
-		assertThat(zone.getCombatant(actionContext.getSourceCoordinate())).isEqualTo(actionContext.getSourceCard());
+		assertThat(zone.getCombatant(actionContext.getSourceCoordinate()))
+				.isEqualTo(actionContext.getSourceCard());
+	}
+
+	private CustomActionContext createLeaderMoveContext(ZoneWithLeader zone,
+			Leader leader) throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
+		actionContext.getBoard().setZone(actionContext.getSourcePlayer(), zone);
+		actionContext.setSourceCard(leader);
+		actionContext.setSourceCoordinate(ZoneWithLeader.LEADER_COORDINATE);
+		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+		return actionContext;
 	}
 
 	@Override

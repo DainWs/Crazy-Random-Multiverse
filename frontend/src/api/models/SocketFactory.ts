@@ -35,6 +35,7 @@ function createIOSocket(options?: Partial<SocketConnectionOptions>): Socket {
     path: mergedOptions.path,
     transports: ['websocket', 'polling'],
     autoConnect: true,
+    withCredentials: true,
     reconnection: mergedOptions.reconnection,
     reconnectionAttempts: mergedOptions.reconnectionAttempts,
     reconnectionDelay: mergedOptions.reconnectionDelay,

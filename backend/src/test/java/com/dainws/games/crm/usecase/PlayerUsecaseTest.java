@@ -2,18 +2,15 @@ package com.dainws.games.crm.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionType;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
@@ -29,37 +26,63 @@ class PlayerUsecaseTest {
 	void testGivenEquipAction_whenPerformAction_thenEquipIsPerformed() throws IllegalAccessException {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
-		ActionDto actionDto = this.createActionDto(gameCode, ActionType.EQUIP_ACTION);
+		ActionType type = ActionType.EQUIP_ACTION;
+		ActionDto actionDto = this.createActionDto(gameCode, type);
 		actionDto.setSourceCardCode(this.createCardCodeDto());
 		actionDto.setTargetPosition(new PositionDto());
 
-		new PlayerUsecase(facade).performAction(gameCode, this.createUser(USER_CODE), actionDto);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		User user = this.createUser(USER_CODE);
 
-		assertThat(facade.performedActions).containsExactly(ActionType.EQUIP_ACTION);
+		playerUsecase.performAction(gameCode, user, actionDto);
+
+		assertThat(facade.getPerformedActions())
+				.containsExactly(ActionType.EQUIP_ACTION);
 	}
 
 	@Test
 	void testGivenSurrenderAction_whenPerformAction_thenSurrenderIsPerformed() throws IllegalAccessException {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
-		ActionDto actionDto = this.createActionDto(gameCode, ActionType.SURRENDER_ACTION);
+		ActionType type = ActionType.SURRENDER_ACTION;
+		ActionDto actionDto = this.createActionDto(gameCode, type);
 
-		new PlayerUsecase(facade).performAction(gameCode, this.createUser(USER_CODE), actionDto);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		User user = this.createUser(USER_CODE);
 
-		assertThat(facade.performedActions).containsExactly(ActionType.SURRENDER_ACTION);
+		playerUsecase.performAction(gameCode, user, actionDto);
+
+		assertThat(facade.getPerformedActions())
+				.containsExactly(ActionType.SURRENDER_ACTION);
 	}
 
 	@Test
 	void testGivenSourcePlayerOfAnotherUser_whenPerformAction_thenAccessIsDenied() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfAnotherUser(facade);
+
+		assertThatThrownBy(performAction)
+				.isInstanceOf(IllegalAccessException.class);
+	}
+
+	@Test
+	void testGivenSourcePlayerOfAnotherUser_whenPerformAction_thenNothingIsPerformed() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfAnotherUser(facade);
+
+		catchThrowable(performAction);
+
+		assertThat(facade.getPerformedActions()).isEmpty();
+	}
+
+	private ThrowingCallable performActionOfAnotherUser(
+			RecordingPlayerActionFacade facade) {
 		GameCode gameCode = new GameCode();
-		ActionDto actionDto = this.createActionDto(gameCode, ActionType.PASS_TURN);
+		ActionType type = ActionType.PASS_TURN;
+		ActionDto actionDto = this.createActionDto(gameCode, type);
 		User otherUser = this.createUser(OTHER_USER_CODE);
 		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
-
-		assertThatThrownBy(() -> playerUsecase.performAction(gameCode, otherUser, actionDto))
-				.isInstanceOf(IllegalAccessException.class);
-		assertThat(facade.performedActions).isEmpty();
+		return () -> playerUsecase.performAction(gameCode, otherUser, actionDto);
 	}
 
 	private CardCodeDto createCardCodeDto() {
@@ -79,28 +102,5 @@ class PlayerUsecaseTest {
 
 	private User createUser(String code) {
 		return new User(code, "name", UserPlatform.WEB);
-	}
-
-	private static class RecordingPlayerActionFacade extends PlayerActionFacade {
-		private final List<ActionType> performedActions = new ArrayList<>();
-
-		RecordingPlayerActionFacade() {
-			super(null);
-		}
-
-		@Override
-		public boolean playerEquipCard(ActionContextTemplate contextTemplate) {
-			return this.performedActions.add(ActionType.EQUIP_ACTION);
-		}
-
-		@Override
-		public boolean playerSurrender(ActionContextTemplate contextTemplate) {
-			return this.performedActions.add(ActionType.SURRENDER_ACTION);
-		}
-
-		@Override
-		public boolean playerPassTurn(ActionContextTemplate contextTemplate) {
-			return this.performedActions.add(ActionType.PASS_TURN);
-		}
 	}
 }

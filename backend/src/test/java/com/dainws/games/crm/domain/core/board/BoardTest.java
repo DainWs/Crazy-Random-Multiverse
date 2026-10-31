@@ -22,13 +22,22 @@ public class BoardTest {
 	}
 
 	@Test
-	void testGivenBoardWithTwoPlayers_whenCreated_thenEachZoneIsEnemyOfTheOtherPlayer() {
+	void testGivenBoardWithTwoPlayers_whenCreated_thenZoneIsNotEnemyOfItsOwner() {
 		Player player = new PlayerBuilder().withCode("player").build();
 		Player other = new PlayerBuilder().withCode("other").build();
 
 		Board board = new Board(DummyZone::new, List.of(player, other));
 
 		assertThat(board.getZoneOf(player).isEnemy(player)).isFalse();
+	}
+
+	@Test
+	void testGivenBoardWithTwoPlayers_whenCreated_thenZoneIsEnemyOfTheOtherPlayer() {
+		Player player = new PlayerBuilder().withCode("player").build();
+		Player other = new PlayerBuilder().withCode("other").build();
+
+		Board board = new Board(DummyZone::new, List.of(player, other));
+
 		assertThat(board.getZoneOf(player).isEnemy(other)).isTrue();
 	}
 }

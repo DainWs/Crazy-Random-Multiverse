@@ -1,23 +1,28 @@
 package com.dainws.games.crm.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLifeCycle;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameFactory;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
+import com.dainws.games.crm.domain.repositories.PartyRepository;
 
 @Service
 public class GameService {
@@ -27,6 +32,7 @@ public class GameService {
 	private GameFactory gameFactory;
 	private GameLifeCycle gameLifeCycle;
 	private GameRepository gameRepository;
+	private PartyRepository partyRepository;
 
 	public GameService(GameLifeCycle gameLifeCycle, GameRepository gameRepository,
 			List<GameModeFactory> gameModeFactories) {
@@ -71,6 +77,30 @@ public class GameService {
 
 	public Game getActiveGame(GameCode gameCode) {
 		return this.gameRepository.find(gameCode);
+	}
+
+	public Optional<Game> findGameInProgressOf(User user) {
+		if (!this.partyRepository.hasPartyWhereUserIsMember(user)) {
+			return Optional.empty();
+		}
+
+		Party party = this.partyRepository.findPartyWhereUserIsMember(user.getCode());
+		GameCode gameCode = party.getCurrentGame();
+		if (!this.gameRepository.exists(gameCode)) {
+			return Optional.empty();
+		}
+
+		Game game = this.gameRepository.find(gameCode);
+		if (!game.inStatus(Status.IN_PROGRESS)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(game);
+	}
+
+	@Autowired
+	public void setPartyRepository(PartyRepository partyRepository) {
+		this.partyRepository = partyRepository;
 	}
 
 	public void setGameFactory(GameFactory gameFactory) {

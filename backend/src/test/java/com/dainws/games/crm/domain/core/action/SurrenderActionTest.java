@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Leader;
+import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -73,8 +74,11 @@ class SurrenderActionTest extends PlayerTurnActionTest {
 
 		Player player = this.getPlayerWithTurn(game);
 		Leader leader = new CardBuilder().buildFullValidLeader();
-		this.getZoneOfPlayer(game, player).putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
-		this.getZoneOfPlayer(game, player).putCombatant(new Coordinate(1, 0), new CardBuilder().buildFullValidWarrior());
+		Warrior warrior = new CardBuilder().buildFullValidWarrior();
+		Coordinate warriorCoordinate = new Coordinate(1, 0);
+		Zone zone = this.getZoneOfPlayer(game, player);
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
+		zone.putCombatant(warriorCoordinate, warrior);
 
 		CustomActionContext actionContext = new CustomActionContext();
 		actionContext.setGame(game);

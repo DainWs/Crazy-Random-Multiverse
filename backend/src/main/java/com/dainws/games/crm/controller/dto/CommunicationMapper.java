@@ -1,20 +1,29 @@
 package com.dainws.games.crm.controller.dto;
 
+import java.util.List;
+
+import com.dainws.games.crm.controller.dto.domain.CardDto;
 import com.dainws.games.crm.controller.dto.domain.EventDetailsDto;
 import com.dainws.games.crm.controller.dto.domain.EventDto;
 import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class CommunicationMapper {
 
 	public EventDto mapToDto(Event event, Player receiver) {
+		List<CardDto> hand = this.mapHandToDto(event, receiver);
+
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());
 		eventDto.setSequence(event.getSequence());
 		EventDetails details = event.getDetails();
 		if (details != null) {
-			eventDto.setDetails(this.mapEventDetailsToDto(details, receiver));
+			EventDetailsDto detailsDto = this.mapEventDetailsToDto(details, receiver);
+			detailsDto.setHand(hand);
+
+			eventDto.setDetails(detailsDto);
 		}
 
 		return eventDto;
@@ -49,5 +58,15 @@ public class CommunicationMapper {
 		}
 
 		return detailsDto;
+	}
+
+	private List<CardDto> mapHandToDto(Event event, Player player) {
+		if (event.getCode() != EventCode.GAME_SYNC) {
+			return null;
+		}
+
+		return player.getHand().getCards().stream() //
+				.map(ModelMapper::mapCardToDto) //
+				.toList();
 	}
 }

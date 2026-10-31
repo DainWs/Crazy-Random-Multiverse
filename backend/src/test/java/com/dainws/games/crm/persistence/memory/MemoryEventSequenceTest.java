@@ -26,6 +26,23 @@ class MemoryEventSequenceTest {
 	}
 
 	@Test
+	void testGivenGameWithoutEvents_whenCurrent_thenIsZero() {
+		MemoryEventSequence eventSequence = new MemoryEventSequence();
+
+		assertThat(eventSequence.current(new GameCode())).isZero();
+	}
+
+	@Test
+	void testGivenGameWithEvents_whenCurrent_thenIsTheLastSequence() {
+		MemoryEventSequence eventSequence = new MemoryEventSequence();
+		GameCode gameCode = new GameCode();
+		eventSequence.next(gameCode);
+		eventSequence.next(gameCode);
+
+		assertThat(eventSequence.current(gameCode)).isEqualTo(2);
+	}
+
+	@Test
 	void testGivenAnotherGame_whenNext_thenSequenceIsIndependent() {
 		MemoryEventSequence eventSequence = new MemoryEventSequence();
 		eventSequence.next(new GameCode());

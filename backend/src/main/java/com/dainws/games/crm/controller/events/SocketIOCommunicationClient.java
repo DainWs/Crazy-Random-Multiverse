@@ -1,5 +1,6 @@
 package com.dainws.games.crm.controller.events;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
@@ -43,12 +45,10 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 		if (this.canSendTo(player)) {
 			this.logger.info("Enviando error {}, al cliente {}", code, player.getName());
 
-			User user = this.getUserFrom(player);
-			String sessionId = user.getSessionId();
 			ExceptionCodeDto dto = new ExceptionCodeDto(code.value());
 
-			this.server.getClient(UUID.fromString(sessionId))
-				.sendEvent("error", dto);
+			this.findClientOf(player)
+				.ifPresent(client -> client.sendEvent("error", dto));
 		}
 	}
 
@@ -57,12 +57,10 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 		if (this.canSendTo(player)) {
 			this.logger.info("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
 
-			User user = this.getUserFrom(player);
-			String sessionId = user.getSessionId();
 			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
-			
-			this.server.getClient(UUID.fromString(sessionId))
-				.sendEvent("game:event", eventDto);
+
+			this.findClientOf(player)
+				.ifPresent(client -> client.sendEvent("game:event", eventDto));
 		}
 	}
 
@@ -72,6 +70,16 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 		}
 
 		return false;
+	}
+
+	private Optional<SocketIOClient> findClientOf(Player player) {
+		String sessionId = this.getUserFrom(player).getSessionId();
+		if (sessionId == null) {
+			this.logger.debug("El jugador {} no tiene una conexion abierta", player.getName());
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(this.server.getClient(UUID.fromString(sessionId)));
 	}
 
 	private User getUserFrom(Player player) {

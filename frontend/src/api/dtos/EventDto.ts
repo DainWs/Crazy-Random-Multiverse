@@ -14,6 +14,9 @@ interface EventDetailsDto {
   targetPlayer?: PlayerDto;
   targetCard?: CardDto;
   targetPosition?: ZonePositionDto;
+
+  // Only in GAME_SYNC: the hand of the player who receives the event
+  hand?: CardDto[];
 }
 
 interface EventDto {
