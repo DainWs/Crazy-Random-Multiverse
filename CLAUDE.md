@@ -16,14 +16,13 @@ Monorepo with two applications:
 Always read these files before writing code:
 
 - `agents/SPECS.md` — functional specification. Source of truth for behavior. **Still to be created**; in the meantime, `docs/Requirements.md` and `docs/AISystem.md`.
-- `agents/ROADMAP.md` — phased work plan and table of already-closed decisions. **Still to be created**; in the meantime, `roadmap_mvp.md` and `frontend/TODO.md`.
-- `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
+- `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.- `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. They are not suggestions.
 - `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. They are not suggestions.
 
 If anything you are about to do contradicts those documents, stop and ask. Existing code that does not comply is not refactored on your own initiative: respect the patterns of the module you are touching.
 
-The backend ↔ frontend contract is partly unresolved (`frontend/TODO.md`, "Backend contract blockers"). Do not invent it: ask.
+The backend ↔ frontend contract is partly unresolved (`agents/ROADMAP.md`, Phase 1). Do not invent it: ask.
 
 ---
 
