@@ -50,8 +50,10 @@ public class PartyService {
 	}
 
 	public void leaveParty(User user) throws PartyException {
-		Party party = this.repository.findPartyWhereUserIsMember(user.getCode());
-		this.leaveParty(party.getCode(), user);
+		if (this.repository.hasPartyWhereUserIsMember(user)) {
+			Party party = this.repository.findPartyWhereUserIsMember(user.getCode());
+			this.leaveParty(party.getCode(), user);
+		}
 	}
 
 	public void leaveParty(PartyCode partyCode, User user) throws PartyException {

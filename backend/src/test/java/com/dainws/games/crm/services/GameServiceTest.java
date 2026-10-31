@@ -24,10 +24,10 @@ import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 
 class GameServiceTest {
 
-	private MemoryPartyRepository partyRepository;
-	private MemoryGameRepository gameRepository;
-	private GameService gameService;
-	private User user;
+	MemoryPartyRepository partyRepository;
+	MemoryGameRepository gameRepository;
+	GameService gameService;
+	User user;
 
 	@BeforeEach
 	void beforeEach() {

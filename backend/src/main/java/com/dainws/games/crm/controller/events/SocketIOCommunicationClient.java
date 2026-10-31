@@ -75,7 +75,7 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 	private Optional<SocketIOClient> findClientOf(Player player) {
 		String sessionId = this.getUserFrom(player).getSessionId();
 		if (sessionId == null) {
-			this.logger.debug("El jugador {} no tiene una conexion abierta", player.getName());
+			this.logger.debug("Player {} has no open connection", player.getName());
 			return Optional.empty();
 		}
 

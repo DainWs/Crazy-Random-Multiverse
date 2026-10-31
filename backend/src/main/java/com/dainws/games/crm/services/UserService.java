@@ -33,6 +33,10 @@ public class UserService {
 		return this.partyService.joinParty(partyCode, user);
 	}
 	
+	public boolean exists(UserCode code) {
+		return this.userRepository.has(code);
+	}
+
 	public User get(UserCode code) {
 		return this.userRepository.find(code);
 	}
@@ -45,6 +49,14 @@ public class UserService {
 		this.userRepository.save(user);
 	}
 	
+	public void deleteDisconnectedUsers() {
+		for (User user : this.userRepository.findAll()) {
+			if (!user.isConnected()) {
+				this.delete(user.getCode());
+			}
+		}
+	}
+
 	public void delete(UserCode userCode) {
 		User user = this.userRepository.find(userCode);
 		this.partyService.leaveParty(user);

@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.domain.User;
-import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.persistence.memory.MemoryEventSequence;
 import com.dainws.games.crm.services.GameService;
@@ -60,7 +58,7 @@ public class SocketIOConnectionManager {
 			this.userService.update(user);
 			this.sendGameSyncIfGameInProgress(user);
 		} else {
-			this.logger.warn("Se rechaza la conexion {} porque no pertenece a un usuario registrado", client.getSessionId());
+			this.logger.warn("Connection {} rejected: it has no registered user", client.getSessionId());
 			client.disconnect();
 		}
 	}
@@ -81,17 +79,9 @@ public class SocketIOConnectionManager {
 	private Optional<User> findUserOf(SocketIOClient client) {
 		String cookieHeader = client.getHandshakeData().getHttpHeaders().get(HttpHeaderNames.COOKIE);
 
-		Optional<UserCode> userCode = this.sessionUserResolver.resolve(cookieHeader);
-		if (userCode.isEmpty()) {
-			return Optional.empty();
-		}
-
-		try {
-			return Optional.of(this.userService.get(userCode.get()));
-		} catch (NotFoundException exception) {
-			this.logger.debug("La sesion {} no tiene un usuario registrado", userCode.get(), exception);
-			return Optional.empty();
-		}
+		return this.sessionUserResolver.resolve(cookieHeader) //
+				.filter(this.userService::exists) //
+				.map(this.userService::get);
 	}
 
 	private void sendGameSyncIfGameInProgress(User user) {

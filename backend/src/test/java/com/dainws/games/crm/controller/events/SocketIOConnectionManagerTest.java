@@ -1,10 +1,6 @@
 package com.dainws.games.crm.controller.events;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +16,8 @@ import org.springframework.session.MapSession;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.Session;
 
+import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
@@ -32,7 +28,6 @@ import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
-import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
@@ -53,16 +48,16 @@ class SocketIOConnectionManagerTest {
 	private static final String HANDSHAKE_URL = "/";
 	private static final String UNKNOWN_SESSION = "unknown";
 
-	private MapSessionRepository sessionRepository;
-	private MemoryUserRepository userRepository;
-	private MemoryPartyRepository partyRepository;
-	private MemoryGameRepository gameRepository;
-	private MemoryEventSequence eventSequence;
-	private RecordingCommunicationClient communicationClient;
-	private SocketIOConnectionManager connectionManager;
+	MapSessionRepository sessionRepository;
+	MemoryUserRepository userRepository;
+	MemoryPartyRepository partyRepository;
+	MemoryGameRepository gameRepository;
+	MemoryEventSequence eventSequence;
+	RecordingCommunicationClient communicationClient;
+	SocketIOConnectionManager connectionManager;
 
-	private MapSession session;
-	private User user;
+	MapSession session;
+	User user;
 
 	@BeforeEach
 	void beforeEach() {
@@ -82,7 +77,7 @@ class SocketIOConnectionManagerTest {
 				new GameService(null, this.gameRepository, gameModeFactories);
 		gameService.setPartyRepository(this.partyRepository);
 
-		SocketIOServer server = mock(SocketIOServer.class);
+		SocketIOServer server = new SocketIOServer(new Configuration());
 		SessionUserResolver resolver =
 				new SessionUserResolver(this.sessionRepository);
 		this.connectionManager =
@@ -100,9 +95,9 @@ class SocketIOConnectionManagerTest {
 	void testGivenRegisteredUser_whenConnect_thenSocketIsBoundToTheUser() {
 		this.userRepository.save(this.user);
 		UUID socketId = UUID.randomUUID();
-		SocketIOClient client = this.createClient(socketId);
+		RecordingSocketIOClient client = this.createClient(socketId);
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
 		assertThat(this.user.getSessionId()).isEqualTo(socketId.toString());
 	}
@@ -110,38 +105,39 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenUnknownSession_whenConnect_thenClientIsDisconnected() {
 		String cookie = "SESSION=" + this.encode(UNKNOWN_SESSION);
-		SocketIOClient client = this.createClient(UUID.randomUUID(), cookie);
+		RecordingSocketIOClient client =
+				this.createClient(UUID.randomUUID(), cookie);
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
-		verify(client).disconnect();
+		assertThat(client.isDisconnected()).isTrue();
 	}
 
 	@Test
 	void testGivenUnregisteredUser_whenConnect_thenClientIsDisconnected() {
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
-		verify(client).disconnect();
+		assertThat(client.isDisconnected()).isTrue();
 	}
 
 	@Test
 	void testGivenRegisteredUser_whenConnect_thenClientIsNotDisconnected() {
 		this.userRepository.save(this.user);
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
-		verify(client, never()).disconnect();
+		assertThat(client.isDisconnected()).isFalse();
 	}
 
 	@Test
 	void testGivenUserWithGameInProgress_whenConnect_thenOneEventIsSent() {
 		this.createGameInProgressWithTheUser();
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
 		assertThat(this.communicationClient.getSentEvents()).hasSize(1);
 	}
@@ -149,9 +145,9 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenUserWithGameInProgress_whenConnect_thenTheEventIsGameSync() {
 		this.createGameInProgressWithTheUser();
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
 		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
 		assertThat(sentEvent.event().getCode()).isEqualTo(EventCode.GAME_SYNC);
@@ -160,9 +156,9 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenUserWithGameInProgress_whenConnect_thenTheEventIsSentToThePlayerOfTheUser() {
 		this.createGameInProgressWithTheUser();
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
 		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
 		String playerCode = sentEvent.player().getCode();
@@ -174,21 +170,20 @@ class SocketIOConnectionManagerTest {
 		Game game = this.createGameInProgressWithTheUser();
 		this.eventSequence.next(game.getCode());
 		this.eventSequence.next(game.getCode());
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
-		List<SentEvent> sentEvents = this.communicationClient.getSentEvents();
-		Event event = sentEvents.get(0).event();
-		assertThat(event.getSequence()).isEqualTo(2);
+		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
+		assertThat(sentEvent.event().getSequence()).isEqualTo(2);
 	}
 
 	@Test
 	void testGivenUserWithoutGame_whenConnect_thenNothingIsSent() {
 		this.userRepository.save(this.user);
-		SocketIOClient client = this.createClientOfUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
 
-		this.connectionManager.onConnected(client);
+		this.connectionManager.onConnected(client.asClient());
 
 		assertThat(this.communicationClient.getSentEvents()).isEmpty();
 	}
@@ -196,10 +191,10 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenConnectedUser_whenDisconnect_thenSocketIsUnbound() {
 		this.userRepository.save(this.user);
-		SocketIOClient client = this.createClientOfUser();
-		this.connectionManager.onConnected(client);
+		RecordingSocketIOClient client = this.createClientOfUser();
+		this.connectionManager.onConnected(client.asClient());
 
-		this.connectionManager.onDisconnected(client);
+		this.connectionManager.onDisconnected(client.asClient());
 
 		assertThat(this.user.getSessionId()).isNull();
 	}
@@ -207,10 +202,10 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenConnectedUser_whenDisconnect_thenUserIsKept() {
 		this.userRepository.save(this.user);
-		SocketIOClient client = this.createClientOfUser();
-		this.connectionManager.onConnected(client);
+		RecordingSocketIOClient client = this.createClientOfUser();
+		this.connectionManager.onConnected(client.asClient());
 
-		this.connectionManager.onDisconnected(client);
+		this.connectionManager.onDisconnected(client.asClient());
 
 		assertThat(this.userRepository.has(this.user.getCode())).isTrue();
 	}
@@ -220,10 +215,10 @@ class SocketIOConnectionManagerTest {
 		this.userRepository.save(this.user);
 		Party party = new Party(this.user, GameModes.CLASSIC);
 		this.partyRepository.save(party);
-		SocketIOClient client = this.createClientOfUser();
-		this.connectionManager.onConnected(client);
+		RecordingSocketIOClient client = this.createClientOfUser();
+		this.connectionManager.onConnected(client.asClient());
 
-		this.connectionManager.onDisconnected(client);
+		this.connectionManager.onDisconnected(client.asClient());
 
 		assertThat(party.has(this.user)).isTrue();
 	}
@@ -231,13 +226,13 @@ class SocketIOConnectionManagerTest {
 	@Test
 	void testGivenUserReconnected_whenOldSocketDisconnects_thenNewSocketStaysBound() {
 		this.userRepository.save(this.user);
-		SocketIOClient oldClient = this.createClientOfUser();
-		this.connectionManager.onConnected(oldClient);
+		RecordingSocketIOClient oldClient = this.createClientOfUser();
+		this.connectionManager.onConnected(oldClient.asClient());
 		UUID newSocketId = UUID.randomUUID();
-		SocketIOClient newClient = this.createClient(newSocketId);
-		this.connectionManager.onConnected(newClient);
+		RecordingSocketIOClient newClient = this.createClient(newSocketId);
+		this.connectionManager.onConnected(newClient.asClient());
 
-		this.connectionManager.onDisconnected(oldClient);
+		this.connectionManager.onDisconnected(oldClient.asClient());
 
 		assertThat(this.user.getSessionId()).isEqualTo(newSocketId.toString());
 	}
@@ -258,15 +253,16 @@ class SocketIOConnectionManagerTest {
 		return game;
 	}
 
-	private SocketIOClient createClientOfUser() {
+	private RecordingSocketIOClient createClientOfUser() {
 		return this.createClient(UUID.randomUUID());
 	}
 
-	private SocketIOClient createClient(UUID socketId) {
+	private RecordingSocketIOClient createClient(UUID socketId) {
 		return this.createClient(socketId, this.sessionCookie());
 	}
 
-	private SocketIOClient createClient(UUID socketId, String cookieHeader) {
+	private RecordingSocketIOClient createClient(UUID socketId,
+			String cookieHeader) {
 		DefaultHttpHeaders headers = new DefaultHttpHeaders();
 		headers.add(HttpHeaderNames.COOKIE, cookieHeader);
 		Map<String, List<String>> params = Map.of();
@@ -275,10 +271,7 @@ class SocketIOConnectionManagerTest {
 		HandshakeData handshake = new HandshakeData(headers, params, address,
 				HANDSHAKE_URL, isCrossDomain);
 
-		SocketIOClient client = mock(SocketIOClient.class);
-		when(client.getSessionId()).thenReturn(socketId);
-		when(client.getHandshakeData()).thenReturn(handshake);
-		return client;
+		return new RecordingSocketIOClient(socketId, handshake);
 	}
 
 	private String sessionCookie() {
