@@ -1,5 +1,7 @@
 package com.dainws.games.crm.controller.dto.domain;
 
+import java.util.List;
+
 import com.dainws.games.crm.usecase.dto.PositionDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +26,9 @@ public class EventDetailsDto {
 
 	@JsonProperty("targetPosition")
 	private PositionDto targetPosition;
+
+	@JsonProperty("hand")
+	private List<CardDto> hand;
 
 	public GameDto getGameDto() {
 		return gameDto;
@@ -79,5 +84,13 @@ public class EventDetailsDto {
 
 	public void setTargetPosition(PositionDto targetPosition) {
 		this.targetPosition = targetPosition;
+	}
+
+	public List<CardDto> getHand() {
+		return hand;
+	}
+
+	public void setHand(List<CardDto> hand) {
+		this.hand = hand;
 	}
 }

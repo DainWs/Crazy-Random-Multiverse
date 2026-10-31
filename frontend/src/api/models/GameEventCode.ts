@@ -6,6 +6,7 @@ type GameEventCode = 'GAME_RESTART'
   | 'GAME_END'
   | 'GAME_END_WITH_WINNER'
   | 'GAME_END_WITH_TIE'
+  | 'GAME_SYNC'
   | 'TURN_CHANGE'
   | 'ROUND_CHANGE'
   | 'PLAYER_DIE'
@@ -26,6 +27,7 @@ const GAME_EVENT_CODES: readonly GameEventCode[] = [
   'GAME_END',
   'GAME_END_WITH_WINNER',
   'GAME_END_WITH_TIE',
+  'GAME_SYNC',
   'TURN_CHANGE',
   'ROUND_CHANGE',
   'PLAYER_DIE',

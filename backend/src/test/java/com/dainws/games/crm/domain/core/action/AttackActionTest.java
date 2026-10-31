@@ -35,14 +35,17 @@ class AttackActionTest extends PlayerTurnActionTest {
 	}
 
 	@Override
-	protected CustomActionContext createActionContext() throws NotAllowedException {
+	protected CustomActionContext createActionContext()
+			throws NotAllowedException {
 		Game game = new GameBuilder().withNRandomPlayers(5).build();
 		Player attacker = this.getPlayerWithTurn(game);
 		Player defender = this.getPlayerWithoutTurn(game);
 		Warrior attackerCard = new CardBuilder().buildFullValidWarrior();
 		Warrior defenderCard = new CardBuilder().buildFullValidWarrior();
-		this.getZoneOfPlayer(game, attacker).putCombatant(ATTACKER_COORDINATE, attackerCard);
-		this.getZoneOfPlayer(game, defender).putCombatant(TARGET_COORDINATE, defenderCard);
+		this.getZoneOfPlayer(game, attacker)
+				.putCombatant(ATTACKER_COORDINATE, attackerCard);
+		this.getZoneOfPlayer(game, defender)
+				.putCombatant(TARGET_COORDINATE, defenderCard);
 
 		CustomActionContext actionContext = new CustomActionContext();
 		actionContext.setGame(game);
@@ -57,9 +60,12 @@ class AttackActionTest extends PlayerTurnActionTest {
 
 	private void fillRowAndPutInFrontRow(Zone zone) throws NotAllowedException {
 		for (int column = 1; column < zone.getHorizontalDimension(0); column++) {
-			zone.putCombatant(new Coordinate(0, column), new CardBuilder().buildFullValidWarrior());
+			Coordinate coordinate = new Coordinate(0, column);
+			Warrior warrior = new CardBuilder().buildFullValidWarrior();
+			zone.putCombatant(coordinate, warrior);
 		}
 
-		zone.putCombatant(FRONT_ROW_COORDINATE, new CardBuilder().buildFullValidWarrior());
+		Warrior frontWarrior = new CardBuilder().buildFullValidWarrior();
+		zone.putCombatant(FRONT_ROW_COORDINATE, frontWarrior);
 	}
 }

@@ -30,6 +30,7 @@ class CardCodeTest {
 
 	@Test
 	void testGivenNonNumericText_whenFrom_thenThrowsNumberFormatException() {
-		assertThatThrownBy(() -> CardCode.from("abc", CardType.WARRIOR)).isInstanceOf(NumberFormatException.class);
+		assertThatThrownBy(() -> CardCode.from("abc", CardType.WARRIOR))
+				.isInstanceOf(NumberFormatException.class);
 	}
 }

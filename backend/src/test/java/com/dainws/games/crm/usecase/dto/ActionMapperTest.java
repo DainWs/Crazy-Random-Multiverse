@@ -22,7 +22,8 @@ class ActionMapperTest {
 
 		ActionContextTemplate template = ActionMapper.mapPassTurnActionDto(actionDto);
 
-		assertThat(template.getSourcePlayerCode()).isEqualTo(PlayerCode.from(PLAYER_CODE));
+		assertThat(template.getSourcePlayerCode())
+				.isEqualTo(PlayerCode.from(PLAYER_CODE));
 	}
 
 	@Test
@@ -34,7 +35,8 @@ class ActionMapperTest {
 
 		ActionContextTemplate template = ActionMapper.mapAttackActionDto(actionDto);
 
-		assertThat(template.getTargetPlayerCode()).isEqualTo(PlayerCode.from(TARGET_PLAYER_CODE));
+		assertThat(template.getTargetPlayerCode())
+				.isEqualTo(PlayerCode.from(TARGET_PLAYER_CODE));
 	}
 
 	@Test
@@ -45,7 +47,8 @@ class ActionMapperTest {
 
 		ActionContextTemplate template = ActionMapper.mapEquipActionDto(actionDto);
 
-		assertThat(template.getTargetPlayerCode()).isEqualTo(PlayerCode.from(PLAYER_CODE));
+		assertThat(template.getTargetPlayerCode())
+				.isEqualTo(PlayerCode.from(PLAYER_CODE));
 	}
 
 	@Test
@@ -56,16 +59,19 @@ class ActionMapperTest {
 
 		ActionContextTemplate template = ActionMapper.mapEquipActionDto(actionDto);
 
-		assertThat(template.getSourceCardCode()).isEqualTo(new CardCode(CARD_CODE, CardType.EQUIPMENT));
+		assertThat(template.getSourceCardCode())
+				.isEqualTo(new CardCode(CARD_CODE, CardType.EQUIPMENT));
 	}
 
 	@Test
 	void testGivenSurrenderDto_whenMap_thenSourcePlayerIsTheDtoPlayer() {
 		ActionDto actionDto = this.createActionDto();
 
-		ActionContextTemplate template = ActionMapper.mapSurrenderActionDto(actionDto);
+		ActionContextTemplate template =
+				ActionMapper.mapSurrenderActionDto(actionDto);
 
-		assertThat(template.getSourcePlayerCode()).isEqualTo(PlayerCode.from(PLAYER_CODE));
+		assertThat(template.getSourcePlayerCode())
+				.isEqualTo(PlayerCode.from(PLAYER_CODE));
 	}
 
 	private CardCodeDto createCardCodeDto() {

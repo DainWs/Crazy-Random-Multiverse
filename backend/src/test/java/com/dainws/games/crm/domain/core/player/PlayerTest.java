@@ -37,10 +37,16 @@ class PlayerTest {
 	}
 
 	@Test
-	void testGivenNewPlayer_whenCreated_thenPlayerIsAliveAndNotSpectator() {
+	void testGivenNewPlayer_whenCreated_thenPlayerIsAlive() {
 		Player player = new PlayerBuilder().build();
 
 		assertThat(player.isAlive()).isTrue();
+	}
+
+	@Test
+	void testGivenNewPlayer_whenCreated_thenPlayerIsNotSpectator() {
+		Player player = new PlayerBuilder().build();
+
 		assertThat(player.isSpectator()).isFalse();
 	}
 }

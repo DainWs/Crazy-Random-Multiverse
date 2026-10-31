@@ -14,6 +14,14 @@ public class MemoryEventSequence {
 	}
 
 	public int next(GameCode gameCode) {
-		return this.sequences.computeIfAbsent(gameCode, code -> new AtomicInteger()).incrementAndGet();
+		return this.counterOf(gameCode).incrementAndGet();
+	}
+
+	public int current(GameCode gameCode) {
+		return this.counterOf(gameCode).get();
+	}
+
+	private AtomicInteger counterOf(GameCode gameCode) {
+		return this.sequences.computeIfAbsent(gameCode, code -> new AtomicInteger());
 	}
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toBase64UrlSafe } from '@/api/models/Codification';
+import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
 import { notifyListeners } from '@/api/models/Listeners';
 import { CardDto, toCard, toCardCode, toCardCodeDto } from '@/api/dtos/CardDto';
 import { toPlayer, toPlayerCode } from '@/api/dtos/PlayerDto';
@@ -16,6 +17,12 @@ describe('API Models and DTO Mappers', () => {
       expect(result).not.toContain('+');
       expect(result).not.toContain('/');
       expect(result).not.toContain('=');
+    });
+  });
+
+  describe('GameEventCode', () => {
+    it('GAME_EVENT_CODES includes the GAME_SYNC snapshot event', () => {
+      expect(GAME_EVENT_CODES).toContain('GAME_SYNC');
     });
   });
 

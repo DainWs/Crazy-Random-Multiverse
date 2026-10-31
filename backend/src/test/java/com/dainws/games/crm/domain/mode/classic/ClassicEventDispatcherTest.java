@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
-import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
@@ -22,9 +21,12 @@ class ClassicEventDispatcherTest {
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
 		game.getPlayerWithTurn().die();
 
-		new ClassicEventDispatcher(gameFlow).dispatch(this.createSurrenderEvent(game));
+		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
+		Event event = this.createSurrenderEvent(game);
 
-		assertThat(gameFlow.nextTurnCount).isEqualTo(1);
+		dispatcher.dispatch(event);
+
+		assertThat(gameFlow.getNextTurnCount()).isEqualTo(1);
 	}
 
 	@Test
@@ -33,9 +35,12 @@ class ClassicEventDispatcherTest {
 		Game game = new GameBuilder().withNRandomPlayers(2).build();
 		game.getPlayerWithTurn().die();
 
-		new ClassicEventDispatcher(gameFlow).dispatch(this.createSurrenderEvent(game));
+		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
+		Event event = this.createSurrenderEvent(game);
 
-		assertThat(gameFlow.nextTurnCount).isZero();
+		dispatcher.dispatch(event);
+
+		assertThat(gameFlow.getNextTurnCount()).isZero();
 	}
 
 	@Test
@@ -43,43 +48,22 @@ class ClassicEventDispatcherTest {
 		RecordingGameFlow gameFlow = new RecordingGameFlow();
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
 		Player playerWithTurn = game.getPlayerWithTurn();
-		game.getPlayers().stream().filter(player -> !player.equals(playerWithTurn)).findFirst().orElseThrow().die();
+		game.getPlayers() //
+				.stream() //
+				.filter(player -> !player.equals(playerWithTurn)) //
+				.findFirst() //
+				.orElseThrow() //
+				.die();
 
-		new ClassicEventDispatcher(gameFlow).dispatch(this.createSurrenderEvent(game));
+		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
+		Event event = this.createSurrenderEvent(game);
 
-		assertThat(gameFlow.nextTurnCount).isZero();
+		dispatcher.dispatch(event);
+
+		assertThat(gameFlow.getNextTurnCount()).isZero();
 	}
 
 	private Event createSurrenderEvent(Game game) {
 		return new Event(EventCode.PLAYER_SURRENDER, new EventDetails(game));
-	}
-
-	private static class RecordingGameFlow implements GameFlow {
-		private int nextTurnCount;
-
-		@Override
-		public void onRestartGame(Game game) {
-		}
-
-		@Override
-		public void onStartGame(Game game) {
-		}
-
-		@Override
-		public void onEndGame(Game game) {
-		}
-
-		@Override
-		public void onNextTurn(Game game) {
-			this.nextTurnCount++;
-		}
-
-		@Override
-		public void onPrevTurn(Game game) {
-		}
-
-		@Override
-		public void updateGame(Game game) {
-		}
 	}
 }
