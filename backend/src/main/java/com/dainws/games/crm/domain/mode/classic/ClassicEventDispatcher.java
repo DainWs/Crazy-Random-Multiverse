@@ -87,6 +87,10 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	private void handlePlayerSurrender(Event event) {
 		Game game = this.getGameFromEvent(event);
 		this.gameFlow.updateGame(game);
+
+		if (game.getPlayerWithTurn().isDeath() && game.countAlivePlayers() > 1) {
+			this.gameFlow.onNextTurn(game);
+		}
 	}
 
 	private void handlePlayerAttackCard(Event event) {

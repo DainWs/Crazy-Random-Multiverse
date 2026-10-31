@@ -78,7 +78,7 @@ public final class ActionMapper {
 	}
 
 	private static PlayerCode toPlayerCode(String playerCodeDto) {
-		return toPlayerCode(playerCodeDto);
+		return PlayerCode.from(playerCodeDto);
 	}
 
 	private static CardCode toCardCode(CardCodeDto dto) {

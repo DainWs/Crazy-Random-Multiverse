@@ -4,48 +4,47 @@ import com.dainws.games.crm.controller.dto.domain.EventDetailsDto;
 import com.dainws.games.crm.controller.dto.domain.EventDto;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventDetails;
+import com.dainws.games.crm.domain.core.player.Player;
 
 public class CommunicationMapper {
 
-	public EventDto mapToDto(Event event) {
+	public EventDto mapToDto(Event event, Player receiver) {
 		EventDto eventDto = new EventDto();
 		eventDto.setCode(event.getCode());
 		EventDetails details = event.getDetails();
 		if (details != null) {
-			eventDto.setDetails(this.mapEventDetailsToDto(details));
+			eventDto.setDetails(this.mapEventDetailsToDto(details, receiver));
 		}
 
 		return eventDto;
 	}
 
-	private EventDetailsDto mapEventDetailsToDto(EventDetails details) {
-		ModelMapper modelMapper = new ModelMapper();
-
+	private EventDetailsDto mapEventDetailsToDto(EventDetails details, Player receiver) {
 		EventDetailsDto detailsDto = new EventDetailsDto();
-		detailsDto.setGameDto(modelMapper.mapGameToDto(details.getGame()));
+		detailsDto.setGameDto(ModelMapper.mapGameToDto(details.getGame(), receiver));
 
 		if (details.hasSourcePlayer()) {
-			detailsDto.setSourcePlayer(modelMapper.mapPlayerToDto(details.getSourcePlayer()));
+			detailsDto.setSourcePlayer(ModelMapper.mapPlayerToDto(details.getSourcePlayer()));
 		}
 
 		if (details.hasSourceCard()) {
-			detailsDto.setSourceCard(modelMapper.mapCardToDto(details.getSourceCard()));
+			detailsDto.setSourceCard(ModelMapper.mapCardToDto(details.getSourceCard()));
 		}
 
 		if (details.hasSourceCoordinate()) {
-			detailsDto.setSourcePosition(modelMapper.mapCoordinateToDto(details.getSourceCoordinate()));
+			detailsDto.setSourcePosition(ModelMapper.mapCoordinateToDto(details.getSourceCoordinate()));
 		}
 
 		if (details.hasTargetPlayer()) {
-			detailsDto.setTargetPlayer(modelMapper.mapPlayerToDto(details.getTargetPlayer()));
+			detailsDto.setTargetPlayer(ModelMapper.mapPlayerToDto(details.getTargetPlayer()));
 		}
 
 		if (details.hasTargetCard()) {
-			detailsDto.setTargetCard(modelMapper.mapCardToDto(details.getTargetCard()));
+			detailsDto.setTargetCard(ModelMapper.mapCardToDto(details.getTargetCard()));
 		}
 
 		if (details.hasTargetCoordinate()) {
-			detailsDto.setTargetPosition(modelMapper.mapCoordinateToDto(details.getTargetCoordinate()));
+			detailsDto.setTargetPosition(ModelMapper.mapCoordinateToDto(details.getTargetCoordinate()));
 		}
 
 		return detailsDto;

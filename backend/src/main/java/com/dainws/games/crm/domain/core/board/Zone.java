@@ -5,12 +5,15 @@ import java.util.function.Predicate;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public abstract class Zone {
 	protected static final Combatant NONE = null;
 
 	private Combatant[][] combatants;
 	private int capacity;
+	private PlayerCode ownerCode;
 
 	protected Zone(int horizontalDimension, int verticalDimension) {
 		this.combatants = this.createCombatantsMatrix(horizontalDimension, verticalDimension);
@@ -102,6 +105,29 @@ public abstract class Zone {
 		return this.combatants[rowIndex][columnIndex] != NONE;
 	}
 
+	public boolean isProtectedAt(Coordinate coordinate) {
+		boolean isProtected = false;
+
+		int firstRowIndex = coordinate.getRow() + 1;
+		for (int rowIndex = firstRowIndex; rowIndex < this.combatants.length; rowIndex++) {
+			if (this.hasCombatantAt(rowIndex)) {
+				isProtected = true;
+			}
+		}
+
+		return isProtected;
+	}
+
+	public abstract boolean isLeaderSlot(Coordinate coordinate);
+
+	public abstract ZoneType getType();
+
+	public boolean canPutCombatant(Coordinate coordinate, Combatant combatant) {
+		if (!this.validate(coordinate)) return false;
+		if (this.hasCombatant(coordinate)) return false;
+		return this.isPreviousRowFilled(coordinate.getRow());
+	}
+
 	public Combatant[] getVisibleCombatants() {
 		int currentRowIndex = this.combatants.length - 1;
 		while (!this.hasCombatantAt(currentRowIndex) && currentRowIndex > 0) {
@@ -148,7 +174,7 @@ public abstract class Zone {
 			throw new NotAllowedException("zone.already_filled");
 		}
 
-		this.addCombatantAt(rowIndex, combatant);
+		this.addCombatantAt(selectedRowIndex, combatant);
 	}
 
 	public void addCombatantAt(int rowIndex, Combatant combatant) throws NotAllowedException {
@@ -156,7 +182,7 @@ public abstract class Zone {
 			throw new NotAllowedException("zone.coordinate.out_of_bounds");
 		}
 
-		if (!this.validatePrevRow(rowIndex)) {
+		if (!this.isPreviousRowFilled(rowIndex)) {
 			throw new NotAllowedException("zone.row.previous_need_to_be_filled");
 		}
 
@@ -174,7 +200,7 @@ public abstract class Zone {
 			throw new NotAllowedException("zone.row.already_filled");
 		}
 
-		this.combatants[rowIndex][columnIndex] = combatant;
+		this.combatants[rowIndex][selectedColumnIndex] = combatant;
 	}
 
 	public void putCombatant(Coordinate coordinate, Combatant combatant)
@@ -187,8 +213,8 @@ public abstract class Zone {
 			throw new NotAllowedException("zone.coordinate.already_filled");
 		}
 
-		if (!this.validatePrevRow(coordinate.getRow())) {
-			throw new NotAllowedException("zone.row.already_filled");
+		if (!this.isPreviousRowFilled(coordinate.getRow())) {
+			throw new NotAllowedException("zone.row.previous_need_to_be_filled");
 		}
 
 		this.combatants[coordinate.getRow()][coordinate.getColumn()] = combatant;
@@ -248,13 +274,13 @@ public abstract class Zone {
 		return count;
 	}
 
-	private boolean validatePrevRow(int currentRow) {
+	private boolean isPreviousRowFilled(int currentRow) {
 		if (currentRow == 0) {
 			return true;
 		}
 
 		int prevRowIndex = currentRow - 1;
-		return (!this.isFilledAt(prevRowIndex));
+		return this.isFilledAt(prevRowIndex);
 	}
 
 	protected boolean validate(Coordinate coordinate) {
@@ -299,5 +325,13 @@ public abstract class Zone {
 
 	public int getVerticalDimension() {
 		return this.combatants.length;
+	}
+
+	public boolean isEnemy(Player player) {
+		return !player.isCode(this.ownerCode);
+	}
+
+	public void setOwner(Player owner) {
+		this.ownerCode = owner.getPlayerCode();
 	}
 }

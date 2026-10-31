@@ -11,7 +11,8 @@ public class AttackAction extends PlayerTurnAction {
 	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
 		Combatant sourceCombatant = this.getSourceCombatantFrom(context);
 		this.checkSourceCombatant(context, sourceCombatant);
-		
+		this.checkTargetIsNotProtected(context);
+
 		Combatant targetCombatant = this.getTargetCombatantFrom(context);
 		this.logTrace("El combatiente {0} ataca al combatiente {1}", sourceCombatant, targetCombatant);
 
@@ -30,6 +31,13 @@ public class AttackAction extends PlayerTurnAction {
 	private void checkSourceCombatant(ActionContext context, Combatant sourceCombatant) throws PlayerActionException {
 		if (!sourceCombatant.canAttack()) {
 			throw new PlayerActionException("selected_source_attack_in_cooldown", context.getSourcePlayer());
+		}
+	}
+
+	private void checkTargetIsNotProtected(ActionContext context) throws PlayerActionException {
+		Zone targetZone = context.getTargetZone();
+		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
+			throw new PlayerActionException("selected_target_is_protected", context.getSourcePlayer());
 		}
 	}
 

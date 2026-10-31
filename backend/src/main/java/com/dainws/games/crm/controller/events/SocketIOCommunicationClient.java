@@ -59,7 +59,7 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 
 			User user = this.getUserFrom(player);
 			String sessionId = user.getSessionId();
-			EventDto eventDto = new CommunicationMapper().mapToDto(event);
+			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
 			
 			this.server.getClient(UUID.fromString(sessionId))
 				.sendEvent("game:event", eventDto);

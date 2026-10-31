@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 
 public class ZoneWithLeader extends Zone {
+	private static final ZoneType TYPE = new ZoneType("BASE");
 	private static final int DEFAULT_HORIZONTAL_DIMENSION = 3;
 	private static final int DEFAULT_VERTICAL_DIMENSION = 2;
 	public static final Coordinate LEADER_COORDINATE = new Coordinate(0, 0);
@@ -53,6 +54,15 @@ public class ZoneWithLeader extends Zone {
 	}
 
 	@Override
+	public boolean canPutCombatant(Coordinate coordinate, Combatant combatant) {
+		boolean isLeaderCoordinate = LEADER_COORDINATE.equals(coordinate);
+		boolean isLeaderType = combatant.isType(CardType.LEADER);
+		if (isLeaderCoordinate && !isLeaderType)return false;
+
+		return super.canPutCombatant(coordinate, combatant);
+	}
+
+	@Override
 	public void putCombatant(Coordinate coordinate, Combatant combatant) throws NotAllowedException {
 		if (LEADER_COORDINATE.equals(coordinate) && !combatant.isType(CardType.LEADER)) {
 			throw new NotAllowedException("EXCEPTION_COORDINATE_REQUIRES_LEADER");
@@ -66,6 +76,16 @@ public class ZoneWithLeader extends Zone {
 		if (!LEADER_COORDINATE.equals(coordinate)) {
 			super.removeCombatant(coordinate);
 		}
+	}
+
+	@Override
+	public ZoneType getType() {
+		return TYPE;
+	}
+
+	@Override
+	public boolean isLeaderSlot(Coordinate coordinate) {
+		return LEADER_COORDINATE.equals(coordinate);
 	}
 
 	public Leader getLeader() {
