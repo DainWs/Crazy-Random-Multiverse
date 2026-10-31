@@ -195,7 +195,7 @@ class GameLoadScene extends Scene {
         const gameConfiguration = new GameConfiguration('Code:1', 'CLASSIC', PLAYER_COUNT);
         const user = StoreSystem.getUser();
         const player = new Player(user.code, user.name);
-        const playerZone = new Zone(player, 'friendly', 'BASE');
+        const playerZone = new Zone(player, 'FRIENDLY', 'BASE');
         const battlefield = new Battlefield(DEFAULT_SKIN, gameConfiguration, playerZone);
         const zones = this.getMockedZones(battlefield, playerZone);
         battlefield.addZones(zones);
@@ -237,13 +237,13 @@ class GameLoadScene extends Scene {
 
         for (let i = 0; i < maxAlies; i++) {
             const allyPlayer = new Player(`Ally:${i.toString()}`, `Ally ${i}`);
-            const allyPlayerZone = new Zone(allyPlayer, 'friendly', 'BASE');
+            const allyPlayerZone = new Zone(allyPlayer, 'FRIENDLY', 'BASE');
             zones.push(allyPlayerZone);
         }
 
         for (let i = 0; i < maxEnemies; i++) {
             const enemyPlayer = new Player(`Enemy:${i.toString()}`, `Enemy ${i}`);
-            const enemyPlayerZone = new Zone(enemyPlayer, 'enemy', 'BASE');
+            const enemyPlayerZone = new Zone(enemyPlayer, 'ENEMY', 'BASE');
             zones.push(enemyPlayerZone);
         }
 

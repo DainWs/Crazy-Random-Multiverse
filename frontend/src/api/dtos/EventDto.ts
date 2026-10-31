@@ -19,7 +19,6 @@ interface EventDetailsDto {
 interface EventDto {
   code: GameEventCode;
   details: EventDetailsDto;
-  timestamp: number;
 }
 
 export type { EventDetailsDto, EventDto };

@@ -43,7 +43,7 @@ const bindEventHandlers = (socket: Socket, onError: ErrorCallback): void => {
 
 function onEventCode(eventCode: GameEventCode, data: any): void {
   if (data && typeof data === 'object' && !data.code) {
-    handleIncomingEvent({ code: eventCode, details: data, timestamp: Date.now() });
+    handleIncomingEvent({ code: eventCode, details: data });
   } else {
     handleIncomingEvent(data);
   }
