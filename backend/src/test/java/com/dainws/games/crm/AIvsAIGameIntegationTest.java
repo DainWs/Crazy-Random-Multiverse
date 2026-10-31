@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.configuration.AIvsAIModeTestConfiguration;
 import com.dainws.games.crm.configuration.JPATestConfiguration;
 import com.dainws.games.crm.domain.Party;
@@ -33,6 +35,9 @@ import com.dainws.games.crm.services.GameService;
 @SpringBootTest
 @Import({ AIvsAIModeTestConfiguration.class, JPATestConfiguration.class })
 public class AIvsAIGameIntegationTest {
+
+	@MockBean
+	SocketIOServer socketIOServer;
 
 	@Autowired
 	GameEventWatcher eventWatcher;
