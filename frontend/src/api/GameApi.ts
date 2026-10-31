@@ -19,7 +19,7 @@ const loadGameResourceManifest = async (gameCode: GameCode): Promise<GameResourc
 }
 
 const sendReady = async (gameCode: GameCode) => {
-  await fetch(`/game/${gameCode}/ready`, { method: 'POST' });
+  await fetch(`/game/${toBase64UrlSafe(gameCode)}/ready`, { method: 'POST' });
 }
 
 export {
