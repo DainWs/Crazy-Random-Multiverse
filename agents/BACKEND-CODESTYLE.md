@@ -60,6 +60,8 @@ In this order:
 8. `compareTo`, `equals`, `hashCode` and `toString`.
 9. `static` factory methods (`from`, `create`…), at the end of the class.
 
+Nested classes are not used: a class, record, enum or interface that another class needs goes in its own file. This also applies to tests. Existing nested types (such as the builders) are not refactored.
+
 ---
 
 ## 3. Dependencies and fields
@@ -220,6 +222,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - The **game rules** reject an invalid action by throwing the corresponding exception with its `ExceptionCode`. It is the contract with the client, which receives the code as an event through `ExceptionPublisher`. This is game flow, not a failure.
 - Application exceptions extend `UsecaseException` and carry an `ExceptionCode`.
 - Denied accesses (a game or player that does not belong to the session) throw `IllegalAccessException`, as in `PlayerUsecase`.
+- When performing an action, everything that can reject it is validated before any state changes; an action never mutates the game and then undoes the change.
 
 ### `catch` rules
 
@@ -271,6 +274,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ## 12. Formatting
 
 - Indentation with **tabs**.
+- Never use `var` to declare a variable: always write the type.
 - Imports in groups separated by a blank line: static (in tests), `java`, `javax`, `org`, `com`, and the rest (`jakarta`, `io`…). No wildcards. Static imports come first.
 - In call chains (streams, builders, `WebClient`), each call goes on its own line ending in `//`. The `//` prevents the Eclipse formatter from joining them again: it reads better vertically than horizontally.
 
@@ -291,7 +295,9 @@ return Card.builder(code) //
 - Serialization annotations (`@JsonProperty`, `@JsonFormat`, etc.) go on the properties (fields), not on the getters.
 - Validations (`@NotNull`, `@NotBlank`) go on the field, above `@JsonProperty`.
 - DTOs contain no logic. The conversion lives in the `*Mapper`.
+- A `long` is never sent in a DTO as a number: it travels as a `String` and the mapper converts it. The JavaScript `number` is a 64-bit float that only holds integers exactly up to 2^53 - 1, so a `long` can arrive corrupted at the client.
 - Enums that travel in a DTO (`CardType`, `ActionType`…) are part of the contract: they are not renamed without updating the frontend.
+- Enums travel as text in uppercase (the constant name). `@JsonProperty` is not put on enum constants to rename them; the frontend declares the same text in its literal union.
 
 ### Annotations
 

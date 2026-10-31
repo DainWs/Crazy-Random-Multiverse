@@ -206,6 +206,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 - Standard Java naming conventions.
 - Indentation with tabs.
+- A line has at most 78 characters, without counting the indentation tabs. The line that declares a test method is exempt, because its name is long on purpose. A longer statement is split by declaring a variable for each step instead of nesting calls in the arguments of another call (for example, the event and the receiver before calling `mapToDto`). Wrapping a list of plain variables across lines is accepted; wrapping nested calls is not.
 - `this.field` and `this.method()` to access instance members.
 - Short methods and descriptive variable names.
 - No unnecessary abstractions, inheritance (except section 3) or test infrastructure.

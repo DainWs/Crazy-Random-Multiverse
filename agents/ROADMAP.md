@@ -16,20 +16,22 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 Must be resolved by a person before the dependent frontend work. Do not invent it: ask.
 
-- [ ] Define the Socket.IO connection contract
-- [ ] Define Socket.IO event names
-- [ ] Define Socket.IO event payloads
-- [ ] Define how the player's hand is sent
-- [ ] Define card runtime state/effects
-- [ ] Define `targetable` state
-- [ ] Define `PROTECTED` state
-- [ ] Define `autotrigger` state
-- [ ] Define attack-used/attack-available state
-- [ ] Define movement restrictions
-- [ ] Define equipment-to-card relationships
+- [x] Define the Socket.IO connection contract
+- [x] Define Socket.IO event names
+- [x] Define Socket.IO event payloads
+- [x] Define how the player's hand is sent
+- [x] Define card runtime state/effects
+- [x] Define `targetable` state
+- [x] Define `PROTECTED` state
+- [x] Define attack-used/attack-available state
+- [x] Define movement restrictions
+- [x] Define equipment-to-card relationships
 - [x] Confirm whether equipment actions and surrender are supported (domain: yes)
-- [ ] Expose equip and surrender actions in the public API (`ActionType`)
-- [ ] Confirm the exact `PlayerCode` representation
+- [x] Expose equip and surrender actions in the public API (`ActionType`)
+- [x] Confirm the exact `PlayerCode` representation
+- [x] Define the game snapshot event (`GAME_SYNC`): the `GameDto` plus the receiving player's hand and its own sequence number
+- [x] Push the snapshot from the server when a user with a game in progress reconnects
+- [x] Add a per-game sequence number to every `EventDto`. The counter is a concrete class in `persistence/memory`, incremented only by `SpringEventPublisher`
 
 ## Phase 2 — Connectivity
 
@@ -50,6 +52,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 - [ ] Create the authoritative frontend game-state layer
 - [ ] Synchronize `GameDto` from backend events (turn, players, zones, board cards)
+- [ ] Apply events in sequence order, discard those not newer than the last snapshot and ignore a received card that is already in the hand
 - [ ] Reconcile state after Socket.IO events and after reconnection
 - [ ] Remove mocked game state, zones and hand
 - [ ] Replace mocked `GameLoad` flow with real backend state
@@ -146,12 +149,15 @@ Unit and per-feature tests are written with their code (see Workflow). This phas
 
 Not tied to a phase.
 
-- [ ] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
+- [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one
+- [ ] A newly placed card must not act on the turn it is placed (SPECS section 4): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 
 ## Post-MVP
 
-- Spells (including exposing `UseCardAction` and `UseSpellAction` in the API) and complex equipment effects
+- Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
+- Teams: a team model in the backend (from the game configuration and from spells) and its exposure to the frontend (for example a `team` in each `ZoneDto`)
+- Discussion: defensive programming between actions and the domain. Some rules are validated twice (for example `MoveAction.checkContext` and `Zone.putCombatant`); decide where each rule lives
 - Infinite stats and true damage
 - Advanced AI system
 - Combat log and dynamic localization
