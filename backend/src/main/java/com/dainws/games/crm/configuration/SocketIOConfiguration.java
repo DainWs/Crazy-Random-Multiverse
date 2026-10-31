@@ -13,7 +13,7 @@ public class SocketIOConfiguration {
     @Value("${crm.communication.socket-io.origin:*}")
     private String origin;
 
-    @Bean
+    @Bean(initMethod = "start", destroyMethod = "stop")
     SocketIOServer socketIOServer() {
     	Configuration config = new Configuration();
         config.setHostname("0.0.0.0");
