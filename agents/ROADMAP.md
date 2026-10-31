@@ -27,11 +27,9 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Define attack-used/attack-available state
 - [ ] Define movement restrictions
 - [ ] Define equipment-to-card relationships
-- [ ] Confirm whether equipment actions are supported
-- [ ] Confirm whether surrender is supported
-- [ ] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
+- [x] Confirm whether equipment actions and surrender are supported (domain: yes)
+- [ ] Expose equip and surrender actions in the public API (`ActionType`)
 - [ ] Confirm the exact `PlayerCode` representation
-- [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one
 
 ## Phase 2 — Connectivity
 
@@ -139,15 +137,21 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 ## Phase 12 — Testing
 
-- [ ] REST integration tests
-- [ ] Socket.IO/event tests
-- [ ] State-reconciliation and action-flow tests
+Unit and per-feature tests are written with their code (see Workflow). This phase covers only cross-cutting tests.
+
 - [ ] E2E game-flow tests
 - [ ] Reconnection, spectator mode and game completion tests
 
+## Pending tasks
+
+Not tied to a phase.
+
+- [ ] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
+- [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one
+
 ## Post-MVP
 
-- Spells and complex equipment
+- Spells (including exposing `UseCardAction` and `UseSpellAction` in the API) and complex equipment effects
 - Infinite stats and true damage
 - Advanced AI system
 - Combat log and dynamic localization

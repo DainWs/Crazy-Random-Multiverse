@@ -15,8 +15,9 @@ Monorepo with two applications:
 
 Always read these files before writing code:
 
-- `agents/SPECS.md` — functional specification. Source of truth for behavior. **Still to be created**; in the meantime, `docs/Requirements.md` and `docs/AISystem.md`.
-- `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.- `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
+- `agents/SPECS.md` — functional specification. Source of truth for behavior.
+- `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.
+- `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. They are not suggestions.
 - `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. They are not suggestions.
 
@@ -57,6 +58,8 @@ Work on **one roadmap phase per session**. Do not start the next one.
 4. Write the tests in the same commit as the code they test.
 5. Record progress in `agents/ROADMAP.md` by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
 6. When the phase is finished, summarize what was done.
+
+When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
 
 ## Commits
 
