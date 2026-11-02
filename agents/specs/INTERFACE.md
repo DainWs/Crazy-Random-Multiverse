@@ -19,7 +19,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 ## Connection and failures
 
 - **UI-9** If the connection is lost during a game, a notice covers the table and disables interaction while the client retries on its own. When the connection returns, the state is restored from `GAME_SYNC`.
-- **UI-10** If the session has expired or the game no longer exists, the client goes back to the main menu and explains what happened. An expired session starts as a new user (`USER-5`).
+- **UI-10** If the session has expired, or the game no longer exists and the user is not in a party (`CON-23`), the client goes back to the main menu and explains what happened. An expired session starts as a new user (`USER-5`).
 - **UI-11** If the server does not respond, the client goes back to the main menu, explains what happened and offers to retry.
 - **UI-12** If loading the resources of a game fails, the client shows the failure and offers to retry, without confirming `/ready`. If the player closes the game, `LOAD-3` applies.
 
