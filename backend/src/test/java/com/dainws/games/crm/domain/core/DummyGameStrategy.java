@@ -1,14 +1,19 @@
 package com.dainws.games.crm.domain.core;
 
+import java.util.Random;
+
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
 public class DummyGameStrategy implements GameModeStrategy {
+	private static final Random RANDOM = new Random(1L);
 	public static final GameMode DUMMY_MODE = new GameMode("DUMMY_MODE");
+	public static final int STARTING_ROUND = 0;
 
 	private Dealer dealer;
 	private ZoneFactory zoneFactory;
@@ -33,7 +38,9 @@ public class DummyGameStrategy implements GameModeStrategy {
 
 	@Override
 	public Turn createTurn(PlayerStorage players) {
-		return new Turn(players);
+		int index = RANDOM.nextInt(players.size());
+		Player playerWithTurn = players.get(index);
+		return new Turn(players, playerWithTurn, STARTING_ROUND);
 	}
 
 	@Override

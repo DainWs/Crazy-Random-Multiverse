@@ -28,6 +28,7 @@ public class Game {
 	private PlayerStorage players;
 	private EventPublisher eventPublisher;
 	private ExceptionPublisher exceptionPublisher;
+	private final GameModeStrategy strategy;
 
 	public Game(GameModeStrategy strategy) {
 		this(new GameCode(), strategy);
@@ -35,6 +36,7 @@ public class Game {
 
 	public Game(GameCode code, GameModeStrategy strategy) {
 		this.code = code;
+		this.strategy = strategy;
 		this.status = Status.NONE;
 		this.gameMode = strategy.getGameMode();
 		this.isRunning = true;
@@ -49,7 +51,7 @@ public class Game {
 	}
 
 	void reset() { // TODO review
-		this.turn = new Turn(this.getAlivePlayers());
+		this.turn = this.strategy.createTurn(this.getAlivePlayers());
 	}
 	
 	public boolean inStatus(Status status) {

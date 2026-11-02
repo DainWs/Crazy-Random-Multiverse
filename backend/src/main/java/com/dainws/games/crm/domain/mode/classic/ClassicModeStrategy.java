@@ -2,6 +2,7 @@ package com.dainws.games.crm.domain.mode.classic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.random.RandomGenerator;
 
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
@@ -23,15 +24,18 @@ import com.dainws.games.crm.domain.mode.GameModes;
 public class ClassicModeStrategy implements GameModeStrategy {
 
 	public static final GameMode CLASSIC_MODE = new GameMode("CLASSIC_MODE");
+	public static final int STARTING_ROUND = 0;
 
 	private Party party;
 	private Deck selectedDeck;
+	private RandomGenerator random;
 	private EventPublisher eventPublisher;
 	private ExceptionPublisher exceptionPublisher;
 
 	public ClassicModeStrategy(Party party, Deck deck) {
 		this.party = party;
 		this.selectedDeck = deck;
+		this.random = RandomGenerator.getDefault();
 	}
 
 	@Override
@@ -48,7 +52,9 @@ public class ClassicModeStrategy implements GameModeStrategy {
 
 	@Override
 	public Turn createTurn(PlayerStorage players) {
-		return new Turn(players);
+		int index = this.random.nextInt(players.size());
+		Player playerWithTurn = players.get(index);
+		return new Turn(players, playerWithTurn, STARTING_ROUND);
 	}
 
 	@Override
@@ -85,4 +91,7 @@ public class ClassicModeStrategy implements GameModeStrategy {
 		this.exceptionPublisher = exceptionPublisher;
 	}
 
+	public void setRandom(RandomGenerator random) {
+		this.random = random;
+	}
 }

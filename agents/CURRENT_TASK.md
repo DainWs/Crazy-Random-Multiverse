@@ -36,7 +36,9 @@ Bugs
 Guides
 
 5. [x] `AccessDeniedException extends UsecaseException` (with `serialVersionUID` and `ExceptionCode`) replaces `IllegalAccessException` in `PlayerUsecase`, `PlayerController` and `WebPlayerController`. Tick the matching bullet in `ROADMAP.md` Pending tasks. Done, waiting for the user's review before the commit.
-6. [ ] Inject a `RandomGenerator` in `Turn` and `RandomDealStrategyFactory` instead of `Math.random()`, seeded in tests.
+6. [x] Inject a `RandomGenerator` in `Turn` and `RandomDealStrategyFactory` instead of `Math.random()`, seeded in tests. Done, waiting for the user's review before the commit.
+   - `Turn(Collection)` removed; `ClassicModeStrategy.createTurn` draws the starting player with an injectable `RandomGenerator`, and `Game.reset()` delegates to `strategy.createTurn`.
+   - Next: item 7.
 7. [ ] Move `new Party` and `setMaxUsers` out of `WebUserController` and `WebPartyOwnerController` into the services; deduplicate the `UserDto` construction.
 8. [ ] `LoadController` interface carrying the HTTP mapping of `WebLoadController`.
 

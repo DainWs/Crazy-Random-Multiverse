@@ -1,7 +1,6 @@
 package com.dainws.games.crm.domain.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,11 +9,6 @@ import com.dainws.games.crm.domain.core.player.Player;
 public final class Turn {
 	private final int turnNumber;
 	private final int roundNumber;
-
-	public Turn(Collection<Player> players) {
-		this.turnNumber = (int) (Math.random() * players.size());
-		this.roundNumber = 0;
-	}
 
 	public Turn(List<Player> players, Player playerWithTurn, int round) {
 		this.turnNumber = players.indexOf(playerWithTurn);
