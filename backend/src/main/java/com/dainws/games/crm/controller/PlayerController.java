@@ -17,6 +17,6 @@ public interface PlayerController {
 	public void dispatchAction(
 			@PathVariable("gameCode") String gameCodeBase64UrlSafe, 
 			@Valid @RequestBody ActionDto actionDto
-	) throws IllegalAccessException;
+	);
 
 }

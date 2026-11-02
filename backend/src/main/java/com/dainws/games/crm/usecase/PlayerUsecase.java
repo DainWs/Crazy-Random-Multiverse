@@ -10,6 +10,7 @@ import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
+import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionMapper;
 import com.dainws.games.crm.usecase.dto.ActionType;
@@ -32,13 +33,13 @@ public class PlayerUsecase {
 	}
 	
 	
-	public void performAction(GameCode gameCode, User user, ActionDto actionDto) throws IllegalAccessException {
+	public void performAction(GameCode gameCode, User user, ActionDto actionDto) {
 		if (!gameCode.text().contentEquals(actionDto.getGameCode())) {
-			throw new IllegalAccessException("Acceso denegado - intento de acceso al juego incorrecto");
+			throw AccessDeniedException.wrongGame();
 		}
 
 		if (!user.getCode().text().contentEquals(actionDto.getSourcePlayerCode())) {
-			throw new IllegalAccessException("Acceso denegado - intento de suplantación de indentidad detectado");
+			throw AccessDeniedException.identityMismatch();
 		}
 
 		if (!this.actionResolver.containsKey(actionDto.getType())) {

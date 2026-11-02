@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionType;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
@@ -23,7 +24,7 @@ class PlayerUsecaseTest {
 	private static final String CARD_CODE = "42";
 
 	@Test
-	void testGivenEquipAction_whenPerformAction_thenEquipIsPerformed() throws IllegalAccessException {
+	void testGivenEquipAction_whenPerformAction_thenEquipIsPerformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
 		ActionType type = ActionType.EQUIP_ACTION;
@@ -41,7 +42,7 @@ class PlayerUsecaseTest {
 	}
 
 	@Test
-	void testGivenSurrenderAction_whenPerformAction_thenSurrenderIsPerformed() throws IllegalAccessException {
+	void testGivenSurrenderAction_whenPerformAction_thenSurrenderIsPerformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
 		ActionType type = ActionType.SURRENDER_ACTION;
@@ -62,7 +63,26 @@ class PlayerUsecaseTest {
 		ThrowingCallable performAction = this.performActionOfAnotherUser(facade);
 
 		assertThatThrownBy(performAction)
-				.isInstanceOf(IllegalAccessException.class);
+				.isInstanceOf(AccessDeniedException.class);
+	}
+
+	@Test
+	void testGivenActionOfAnotherGame_whenPerformAction_thenAccessIsDenied() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfAnotherGame(facade);
+
+		assertThatThrownBy(performAction)
+				.isInstanceOf(AccessDeniedException.class);
+	}
+
+	@Test
+	void testGivenActionOfAnotherGame_whenPerformAction_thenNothingIsPerformed() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfAnotherGame(facade);
+
+		catchThrowable(performAction);
+
+		assertThat(facade.getPerformedActions()).isEmpty();
 	}
 
 	@Test
@@ -110,6 +130,15 @@ class PlayerUsecaseTest {
 		User otherUser = this.createUser(OTHER_USER_CODE);
 		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
 		return () -> playerUsecase.performAction(gameCode, otherUser, actionDto);
+	}
+
+	private ThrowingCallable performActionOfAnotherGame(
+			RecordingPlayerActionFacade facade) {
+		GameCode gameCode = new GameCode();
+		ActionDto actionDto = this.createActionDto(new GameCode(), ActionType.PASS_TURN);
+		User user = this.createUser(USER_CODE);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		return () -> playerUsecase.performAction(gameCode, user, actionDto);
 	}
 
 	private CardCodeDto createCardCodeDto() {

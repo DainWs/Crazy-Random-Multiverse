@@ -20,7 +20,7 @@ public class WebPlayerController implements PlayerController {
 	}
 
 	@Override
-	public void dispatchAction(String gameCodeBase64UrlSafe, ActionDto actionDto) throws IllegalAccessException {
+	public void dispatchAction(String gameCodeBase64UrlSafe, ActionDto actionDto) {
 		GameCode gameCode = GameCode.fromBase64UrlSafe(gameCodeBase64UrlSafe);
 
 		this.playerUsecase.performAction(gameCode, this.userSession.clone(), actionDto);
