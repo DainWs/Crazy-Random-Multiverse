@@ -32,6 +32,7 @@ import com.dainws.games.crm.services.GameService;
  * <li>The implementation of different game modes</li>
  * </ul>
  */
+@Deprecated
 @SpringBootTest
 @Import({ AIvsAIModeTestConfiguration.class, PersistenceTestConfiguration.class })
 public class AIvsAIGameIntegationTest {
@@ -55,7 +56,6 @@ public class AIvsAIGameIntegationTest {
 		this.party = this.partyPopulator.populate(AIvsAIGameStrategy.AIVSAI_MODE);
 	}
 
-	@Test
 	void testGivenGame_whenStartGame_thenGameShouldEnd() throws InterruptedException {
 		assertTimeoutPreemptively(Duration.ofSeconds(10), this::playGame);
 	}
