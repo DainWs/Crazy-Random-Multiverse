@@ -60,7 +60,7 @@ A combatant also carries its attached `equipment` (a `CardDto`). These three fla
 
 ### 3.1 Setup
 
-- Each player is dealt one random leader card.
+- Each player is dealt one random leader card. Which deck it is dealt from is still to be defined (see 13).
 - The leader is placed face up in the player's zone and is visible to everyone.
 - Supports 2 to 10 players.
 - Teams are supported (see 8). Two players belong to the same team either from the game configuration or through a spell.
@@ -191,4 +191,4 @@ Basic equipment is in the MVP: equipping a card, and losing the equipment when i
 
 ## 13. Open questions summary
 
-None.
+- **Deck selection (to be defined):** the cards come from a single deck loaded by the server. The idea under consideration is that the party owner selects or uploads the deck that is kept in memory and used during their game. Still undefined: how the deck is chosen (per party or per game mode), its format and validation, who may upload it, and its lifetime. See the "several decks" item in `ROADMAP.md` Pending tasks.
