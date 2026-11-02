@@ -1,0 +1,34 @@
+# Combat
+
+- **COMBAT-1** Damage goes only from the attacker to the target. The target does not hit back.
+- **COMBAT-2** Physical damage hits physical armor first, then health. It ignores magic armor.
+- **COMBAT-3** Magic damage hits magic armor first, then health. It ignores physical armor.
+- **COMBAT-4** When armor breaks, the excess damage is discarded.
+- **COMBAT-5** Exception: damage from Legendary cards that exceeds armor, of any type, carries over to health.
+- **COMBAT-6** Lost health and armor persist between turns and do not recover.
+- **COMBAT-7** Health reaching 0 kills the card. A dead card is removed from the board by the server, and the frontend shows its death after the event. If it is a leader, see `ELIM-1`.
+- **COMBAT-8** **[Post-MVP]** True damage ignores armor, abilities and spells.
+- **COMBAT-9** **[Post-MVP]** Infinite damage ignores infinite health and armor.
+- **COMBAT-10** **[Post-MVP]** When a card reaches 100 physical damage, excess damage dealt to armor carries over to health.
+
+## Scenarios
+
+**Excess is discarded**
+- Given a target with 2 physical armor and 5 health
+- When it receives 4 physical damage from a non-Legendary card
+- Then it has 0 armor and 5 health
+
+**Excess from a Legendary card**
+- Given a target with 2 physical armor and 5 health
+- When it receives 4 physical damage from a Legendary card
+- Then it has 0 armor and 3 health
+
+**Armor of another type**
+- Given a target with 2 magic armor and 5 health
+- When it receives 4 physical damage
+- Then it has 2 magic armor and 1 health
+
+**Damage persists**
+- Given a target that lost 3 health and all its armor in a previous turn
+- When a new turn or round starts
+- Then its health and armor are unchanged

@@ -15,7 +15,8 @@ Monorepo with two applications:
 
 Always read these files before writing code:
 
-- `agents/SPECS.md` — functional specification. Source of truth for behavior.
+- `agents/SPECS.md` — functional specification and index of `agents/specs/`, with one file per area. Source of truth for behavior. Read the files of the area you touch.
+- `agents/VIEW-SPECS.md` — appearance of the interface.
 - `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.
 - `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. They are not suggestions.

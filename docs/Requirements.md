@@ -15,6 +15,7 @@ The game is based on a set of mechanics including card management, leader protec
  - **Leader Protection:** To protect your leader, you can place Warrior cards on the rows of the board that protect him. The cards in the second row protect the leader, and the cards in the first row protect the cards in the second row. This arrangement creates an important strategy in the placement of your cards to protect your leader.
 
  - **Card Types:** The game includes several types of cards, such as Leader, Team, Spell, and Warriors (Pop, Common, Rare, Epic, Legendary, Mythic). Each type of letter has its own characteristics and functions.
+	- **Rarity names:** for ethical reasons, the code and the specifications name these rarities differently: Pop == Common, Common == Uncommon.
  - **Damage and Health:** All Warrior and Leader cards have stats like:
 	- **Damage:** Which can be Physical, Magic, True (True damage can be finite or infinite)
 	- **Armor:** Which can be Physical or Magic, Physical armor can defend against Physical damage, and  Magic armor can defend against Magic damage.
@@ -71,7 +72,7 @@ The objective of the game, is to kill the leaders of the rest of the enemy playe
 	- Rare
 	- Epic
 	- Legendar
-	- Mithic
+	- Mythic
 
 **Card statistics**:
  - Physical/Magic armor
