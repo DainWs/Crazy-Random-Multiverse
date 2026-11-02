@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,12 @@ import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
+import com.dainws.games.crm.domain.core.card.AttackResult;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -143,6 +146,20 @@ class EventDtoJsonTest {
 	@Test
 	void testGivenGameSync_whenSerialize_thenCardCodeTravelsAsText() {
 		assertThat(this.card.get("catalogCode").get("code").isTextual()).isTrue();
+	}
+
+	@Test
+	void testGivenAttackThatDidNoDamage_whenSerialize_thenTheThreeFiguresAreStillSent() throws IOException {
+		Game game = new GameBuilder().withNRandomPlayers(2).build();
+		EventDetails details = new EventDetails(game);
+		details.setAttackResult(new AttackResult(0, 0, false));
+		Event event = new Event(EventCode.PLAYER_ATTACK_CARD, details);
+
+		JsonNode attack = this.serializeLikeSocketIO(new CommunicationMapper().mapToDto(event, game.getPlayers().get(0)))
+				.get("details");
+
+		assertThat(List.of(attack.has("armorDamage"), attack.has("healthDamage"), attack.has("targetDead")))
+				.containsOnly(true);
 	}
 
 	private JsonNode serializeLikeSocketIO(EventDto eventDto) throws IOException {

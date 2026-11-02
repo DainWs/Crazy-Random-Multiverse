@@ -1,8 +1,10 @@
 package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.card.AttackResult;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 
 public class AttackAction extends PlayerTurnAction {
@@ -18,7 +20,7 @@ public class AttackAction extends PlayerTurnAction {
 		Combatant targetCombatant = this.getTargetCombatantFrom(context);
 		this.logTrace("El combatiente {0} ataca al combatiente {1}", sourceCombatant, targetCombatant);
 
-		targetCombatant.receiveDamageFrom(sourceCombatant);
+		AttackResult attackResult = targetCombatant.receiveDamageFrom(sourceCombatant);
 		this.logTrace("El resultado ha sido: {0}", targetCombatant);
 
 		if (!targetCombatant.isAlive()) {
@@ -26,7 +28,9 @@ public class AttackAction extends PlayerTurnAction {
 			this.removeDeadTargetFromZone(context);
 		}
 
-		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, context);
+		EventDetails eventDetails = this.createEventDetailsFrom(context);
+		eventDetails.setAttackResult(attackResult);
+		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, eventDetails);
 		return ActionResult.successful();
 	}
 

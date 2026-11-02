@@ -1,7 +1,7 @@
 
-type GameEventCode = 'GAME_RESTART'
-  | 'GAME_CREATED'
+type GameEventCode = 'GAME_CREATED'
   | 'GAME_LOADING'
+  | 'GAME_CANCELLED'
   | 'GAME_START'
   | 'GAME_END'
   | 'GAME_END_WITH_WINNER'
@@ -20,9 +20,9 @@ type GameEventCode = 'GAME_RESTART'
   | 'PLAYER_PASS_TURN'
 
 const GAME_EVENT_CODES: readonly GameEventCode[] = [
-  'GAME_RESTART',
   'GAME_CREATED',
   'GAME_LOADING',
+  'GAME_CANCELLED',
   'GAME_START',
   'GAME_END',
   'GAME_END_WITH_WINNER',

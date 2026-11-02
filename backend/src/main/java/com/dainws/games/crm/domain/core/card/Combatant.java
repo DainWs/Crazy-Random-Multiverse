@@ -52,7 +52,10 @@ public abstract class Combatant extends Card {
 		return this.attackCount < this.maxAttackCount;
 	}
 	
-	public void receiveDamageFrom(Combatant combatant) {
+	public AttackResult receiveDamageFrom(Combatant combatant) {
+		double armorBefore = this.armor.getValue();
+		double healthBefore = this.health.getValue();
+
 		Damage damage = combatant.getDamage();
 		if (this.armor.canProtectAgainst(damage)) {
 			this.armor = this.armor.getRemainingArmorAgainst(damage);
@@ -61,6 +64,10 @@ public abstract class Combatant extends Card {
 		}
 		
 		combatant.increaseAttackCount();
+
+		double armorDamage = armorBefore - this.armor.getValue();
+		double healthDamage = healthBefore - this.health.getValue();
+		return new AttackResult(armorDamage, healthDamage, !this.isAlive());
 	}
 	
 	private void increaseAttackCount() {

@@ -15,6 +15,11 @@ interface EventDetailsDto {
   targetCard?: CardDto;
   targetPosition?: ZonePositionDto;
 
+  // Only in PLAYER_ATTACK_CARD: always sent, even when 0 or false (CON-21)
+  armorDamage?: number;
+  healthDamage?: number;
+  targetDead?: boolean;
+
   // Only in GAME_SYNC: the hand of the player who receives the event
   hand?: CardDto[];
 }

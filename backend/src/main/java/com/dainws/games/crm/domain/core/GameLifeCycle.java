@@ -41,23 +41,6 @@ public class GameLifeCycle {
 		return true;
 	}
 
-	public boolean restart(Game game) {
-		if (game.inStatus(Status.CREATED)) {
-			this.startLoading(game);
-			return true;
-		}
-
-		if (game.inStatus(Status.LOADING)) {
-			this.logger.warn("You cannot restart a game that is being loaded");
-			return false;
-		}
-
-		game.reset();
-		game.setStatus(Status.IN_PROGRESS);
-		game.publishEvent(EventCode.GAME_RESTART);
-		return true;
-	}
-
 	public boolean startLoading(Game game) {
 		if (!game.inStatus(Status.CREATED)) {
 			this.logger.warn("The game mush be in CREATED state to start Loading process");

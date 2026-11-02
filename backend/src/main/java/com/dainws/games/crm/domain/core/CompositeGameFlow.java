@@ -9,11 +9,6 @@ public abstract class CompositeGameFlow implements GameFlow {
 	}
 	
 	@Override
-	public void onRestartGame(Game game) {
-		this.wrapper.onRestartGame(game);
-	}
-
-	@Override
 	public void onStartGame(Game game) {
 		this.wrapper.onStartGame(game);
 	}

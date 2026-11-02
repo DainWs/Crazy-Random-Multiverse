@@ -46,10 +46,6 @@ public class Game {
 		this.eventPublisher = strategy.createEventPublisher(this);
 	}
 
-	void reset() { // TODO review
-		this.turn = this.strategy.createTurn(this.getAlivePlayers());
-	}
-	
 	public boolean inStatus(Status status) {
 		return this.status.equals(status);
 	}

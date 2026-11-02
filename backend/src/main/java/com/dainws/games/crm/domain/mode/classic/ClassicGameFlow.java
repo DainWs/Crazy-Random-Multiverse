@@ -27,10 +27,6 @@ public class ClassicGameFlow implements GameFlow {
 	}
 
 	@Override
-	public void onRestartGame(Game game) { // TODO need GameLifeCycle or remove it
-	}
-
-	@Override
 	public void onStartGame(Game game) {
 		this.logger.debug("Dealing cards to player with turn");
 		Dealer dealer = game.getDealer();

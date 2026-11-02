@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.core.event;
 
 public enum EventCode {
-	GAME_RESTART,
 	GAME_CREATED,
 	GAME_LOADING,
+	GAME_CANCELLED,
 	GAME_START,
 	GAME_END,
 	GAME_END_WITH_WINNER, GAME_END_WITH_TIE,

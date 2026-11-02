@@ -25,6 +25,14 @@ describe('API Models and DTO Mappers', () => {
     it('GAME_EVENT_CODES includes the GAME_SYNC snapshot event', () => {
       expect(GAME_EVENT_CODES).toContain('GAME_SYNC');
     });
+
+    it('GAME_EVENT_CODES includes GAME_CANCELLED', () => {
+      expect(GAME_EVENT_CODES).toContain('GAME_CANCELLED');
+    });
+
+    it('GAME_EVENT_CODES no longer includes GAME_RESTART', () => {
+      expect(GAME_EVENT_CODES).not.toContain('GAME_RESTART');
+    });
   });
 
   describe('Listeners', () => {

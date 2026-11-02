@@ -34,7 +34,8 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 		this.gameFlow = gameFlow;
 		this.eventConsumers = new EnumMap<>(EventCode.class);
 		this.eventConsumers.put(EventCode.GAME_CREATED, NONE);
-		this.eventConsumers.put(EventCode.GAME_RESTART, this::handleGameRestart);
+		this.eventConsumers.put(EventCode.GAME_LOADING, NONE);
+		this.eventConsumers.put(EventCode.GAME_CANCELLED, NONE);
 		this.eventConsumers.put(EventCode.GAME_START, this::handleGameStart);
 		this.eventConsumers.put(EventCode.GAME_END, this::handleGameEnd);
 		this.eventConsumers.put(EventCode.TURN_CHANGE, NONE);
@@ -59,12 +60,6 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	public void dispatch(Event event) {
 		Consumer<Event> consumer = this.eventConsumers.getOrDefault(event.getCode(), NONE);
 		consumer.accept(event);
-	}
-
-	private void handleGameRestart(Event event) {
-		Game game = this.getGameFromEvent(event);
-		this.logger.debug("Game {0} is being restarted", game.getCode());
-		this.gameFlow.onRestartGame(game);
 	}
 
 	private void handleGameStart(Event event) {

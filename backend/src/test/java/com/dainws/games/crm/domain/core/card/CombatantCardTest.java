@@ -127,6 +127,50 @@ abstract class CombatantCardTest extends CardTest {
 		assertFalse(combatantCard.isAlive());
 	}
 
+	@Test
+	final void testGivenCombatantCardWithArmor_whenReceiveDamage_thenResultHasTheArmorLost() {
+		Armor combatantCardArmor = Armor.newInstance(100, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor);
+		Combatant combatant = this.createCombatantCard();
+
+		AttackResult result = combatantCard.receiveDamageFrom(combatant);
+
+		assertEquals(combatantCardArmor.getValue() - combatantCard.getArmor().getValue(), result.armorDamage());
+	}
+
+	@Test
+	final void testGivenCombatantCardWithArmor_whenReceiveDamage_thenResultHasNoHealthLost() {
+		Armor combatantCardArmor = Armor.newInstance(100, ArmorType.PHYSICAL);
+		Combatant combatantCard = this.createCombatantWithArmor(combatantCardArmor);
+		Combatant combatant = this.createCombatantCard();
+
+		AttackResult result = combatantCard.receiveDamageFrom(combatant);
+
+		assertEquals(0, result.healthDamage());
+	}
+
+	@Test
+	final void testGivenCombatantCardWithoutArmor_whenReceiveDamage_thenResultHasTheHealthLost() {
+		Health combatantCardHealth = Health.newInstance(100);
+		Combatant combatantCard = this.createCombatantWithHealth(combatantCardHealth);
+		Combatant combatant = this.createCombatantCard();
+
+		AttackResult result = combatantCard.receiveDamageFrom(combatant);
+
+		assertEquals(combatantCardHealth.getValue() - combatantCard.getHealth().getValue(), result.healthDamage());
+	}
+
+	@Test
+	final void testGivenCombatantCardWithLowHealth_whenReceiveDamage_thenResultSaysTheTargetIsDead() {
+		Health combatantCardHealth = Health.newInstance(10);
+		Combatant combatantCard = this.createCombatantWithHealth(combatantCardHealth);
+		Combatant combatant = this.createCombatantCard();
+
+		AttackResult result = combatantCard.receiveDamageFrom(combatant);
+
+		assertTrue(result.targetDead());
+	}
+
 	abstract Combatant createCombatantCard();
 	abstract Combatant createCombatantWithDamage(Damage damage);
 	abstract Combatant createCombatantWithArmor(Armor armor);

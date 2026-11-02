@@ -27,8 +27,41 @@ public class EventDetailsDto {
 	@JsonProperty("targetPosition")
 	private PositionDto targetPosition;
 
+	@JsonProperty("armorDamage")
+	private Double armorDamage;
+
+	@JsonProperty("healthDamage")
+	private Double healthDamage;
+
+	@JsonProperty("targetDead")
+	private Boolean targetDead;
+
 	@JsonProperty("hand")
 	private List<CardDto> hand;
+
+	public Double getArmorDamage() {
+		return armorDamage;
+	}
+
+	public void setArmorDamage(Double armorDamage) {
+		this.armorDamage = armorDamage;
+	}
+
+	public Double getHealthDamage() {
+		return healthDamage;
+	}
+
+	public void setHealthDamage(Double healthDamage) {
+		this.healthDamage = healthDamage;
+	}
+
+	public Boolean getTargetDead() {
+		return targetDead;
+	}
+
+	public void setTargetDead(Boolean targetDead) {
+		this.targetDead = targetDead;
+	}
 
 	public GameDto getGameDto() {
 		return gameDto;

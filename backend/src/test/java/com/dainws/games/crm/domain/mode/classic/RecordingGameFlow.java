@@ -7,10 +7,6 @@ public class RecordingGameFlow implements GameFlow {
 	private int nextTurnCount;
 
 	@Override
-	public void onRestartGame(Game game) {
-	}
-
-	@Override
 	public void onStartGame(Game game) {
 	}
 

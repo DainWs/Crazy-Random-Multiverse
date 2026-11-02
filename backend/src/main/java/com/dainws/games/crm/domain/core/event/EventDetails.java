@@ -3,6 +3,7 @@ package com.dainws.games.crm.domain.core.event;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.card.AttackResult;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -16,6 +17,8 @@ public class EventDetails {
 	private Player targetPlayer;
 	private Card targetCard;
 	private Coordinate targetCoordinate;
+
+	private AttackResult attackResult;
 
 	public EventDetails(Game game) {
 		this.game = game;
@@ -103,5 +106,17 @@ public class EventDetails {
 
 	public void setTargetCoordinate(Coordinate targetCoordinate) {
 		this.targetCoordinate = targetCoordinate;
+	}
+
+	public boolean hasAttackResult() {
+		return this.attackResult != null;
+	}
+
+	public AttackResult getAttackResult() {
+		return attackResult;
+	}
+
+	public void setAttackResult(AttackResult attackResult) {
+		this.attackResult = attackResult;
 	}
 }

@@ -54,13 +54,15 @@ public abstract class PlayerTurnAction implements Action {
 	}
 
 	protected final void notifyActionEvent(EventCode eventCode, ActionContext context) {
-		EventDetails eventDetails = this.createEventDetailsFrom(context);
+		this.notifyActionEvent(eventCode, this.createEventDetailsFrom(context));
+	}
 
-		Game game = context.getGame();
+	protected final void notifyActionEvent(EventCode eventCode, EventDetails eventDetails) {
+		Game game = eventDetails.getGame();
 		game.publishEvent(eventCode, eventDetails);
 	}
 
-	private EventDetails createEventDetailsFrom(ActionContext context) {
+	protected final EventDetails createEventDetailsFrom(ActionContext context) {
 		EventDetails eventDetails = new EventDetails(context.getGame());
 		eventDetails.setSourcePlayer(context.getSourcePlayer());
 		eventDetails.setSourceCard(context.getSourceCard());

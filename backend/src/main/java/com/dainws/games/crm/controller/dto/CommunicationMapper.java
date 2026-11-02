@@ -5,6 +5,7 @@ import java.util.List;
 import com.dainws.games.crm.controller.dto.response.CardDto;
 import com.dainws.games.crm.controller.dto.response.EventDetailsDto;
 import com.dainws.games.crm.controller.dto.response.EventDto;
+import com.dainws.games.crm.domain.core.card.AttackResult;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
@@ -55,6 +56,13 @@ public class CommunicationMapper {
 
 		if (details.hasTargetCoordinate()) {
 			detailsDto.setTargetPosition(ModelMapper.mapCoordinateToDto(details.getTargetCoordinate()));
+		}
+
+		if (details.hasAttackResult()) {
+			AttackResult attackResult = details.getAttackResult();
+			detailsDto.setArmorDamage(attackResult.armorDamage());
+			detailsDto.setHealthDamage(attackResult.healthDamage());
+			detailsDto.setTargetDead(attackResult.targetDead());
 		}
 
 		return detailsDto;
