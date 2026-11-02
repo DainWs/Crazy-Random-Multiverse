@@ -4,6 +4,7 @@ import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
 import { notifyListeners } from '@/api/models/Listeners';
 import { CardDto, toCard, toCardCode, toCardCodeDto } from '@/api/dtos/CardDto';
 import { toPlayer, toPlayerCode } from '@/api/dtos/PlayerDto';
+import { toZone } from '@/api/dtos/ZoneDto';
 import { toParty, toMinimalParty } from '@/api/dtos/PartyDto';
 import Card, { CardCode } from '@/domain/Card';
 import Player from '@/domain/Player';
@@ -119,6 +120,7 @@ describe('API Models and DTO Mappers', () => {
         name: 'Player One',
         isSpectator: false,
         isAlive: true,
+        handSize: 3
       });
 
       expect(player).toBeInstanceOf(Player);
@@ -126,6 +128,7 @@ describe('API Models and DTO Mappers', () => {
       expect(player.name).toBe('Player One');
       expect(player.isSpectator).toBe(false);
       expect(player.isAlive).toBe(true);
+      expect(player.handSize).toBe(3);
     });
 
     it('toPlayerCode extracts code from Player, string, or undefined', () => {
@@ -133,6 +136,36 @@ describe('API Models and DTO Mappers', () => {
       expect(toPlayerCode(player)).toBe('p-1');
       expect(toPlayerCode('p-2')).toBe('p-2');
       expect(toPlayerCode(null)).toBeUndefined();
+    });
+  });
+
+  describe('ZoneDto', () => {
+    const owner = { code: 'p1', name: 'Player One', isSpectator: false, isAlive: true, handSize: 0 };
+    const leaderDto: CardDto = {
+      catalogCode: { code: '1', type: 'LEADER' },
+      name: 'Leader',
+      description: 'Leader',
+      type: 'LEADER',
+      health: 12,
+      maxHealth: 20
+    };
+
+    it('toZone takes the zone health from the leader card', () => {
+      const zone = toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER', combatant: leaderDto }]] }, 'FRIENDLY');
+
+      expect([zone.health, zone.maxHealth]).toEqual([12, 20]);
+    });
+
+    it('toZone keeps the zone without health when the leader slot is empty', () => {
+      const zone = toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }, 'FRIENDLY');
+
+      expect([zone.health, zone.maxHealth]).toEqual([Infinity, Infinity]);
+    });
+
+    it('toZone leaves a slot empty when the server sends no combatant', () => {
+      const zone = toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }, 'FRIENDLY');
+
+      expect(zone.slots[0][0].combatant).toBeNull();
     });
   });
 

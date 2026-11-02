@@ -13,6 +13,8 @@ import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
+import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Leader;
@@ -42,7 +44,6 @@ class EventDtoJsonTest {
 	JsonNode zone;
 	JsonNode card;
 	JsonNode player;
-	JsonNode zoneWithoutLeader;
 
 	@BeforeEach
 	void beforeEach() throws NotAllowedException, IOException {
@@ -60,6 +61,7 @@ class EventDtoJsonTest {
 		receiverZone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
 		receiverZone.putCombatant(warriorCoordinate, warrior);
 		receiver.getHand().addCard(CardBuilder.buildCommonWarrior());
+		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
 		Event event = new Event(EventCode.GAME_SYNC, game);
 		event.setSequence(SEQUENCE);
 
@@ -71,7 +73,6 @@ class EventDtoJsonTest {
 		this.card = this.zone.get("combatants").get(WARRIOR_ROW)
 				.get(WARRIOR_COLUMN).get("combatant");
 		this.player = this.details.get("game").get("playerWithTurn");
-		this.zoneWithoutLeader = this.details.get("game").get("zones").get(1);
 	}
 
 	@Test
@@ -130,13 +131,13 @@ class EventDtoJsonTest {
 	}
 
 	@Test
-	void testGivenZoneWithLeader_whenSerialize_thenZoneHasHealth() {
-		assertThat(this.zone.has("health")).isTrue();
+	void testGivenZoneWithLeader_whenSerialize_thenZoneHasNoHealth() {
+		assertThat(this.zone.has("health")).isFalse();
 	}
 
 	@Test
-	void testGivenZoneWithoutLeader_whenSerialize_thenZoneHasNoHealth() {
-		assertThat(this.zoneWithoutLeader.has("health")).isFalse();
+	void testGivenGameSync_whenSerialize_thenPlayerHasTheHandSize() {
+		assertThat(this.player.get("handSize").isInt()).isTrue();
 	}
 
 	@Test

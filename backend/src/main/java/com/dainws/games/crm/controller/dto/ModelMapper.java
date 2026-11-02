@@ -14,6 +14,7 @@ import com.dainws.games.crm.controller.dto.response.ZoneSlotDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
@@ -23,7 +24,6 @@ import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
-import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
 import com.dainws.games.crm.usecase.dto.PositionDto;
@@ -71,7 +71,13 @@ public class ModelMapper {
 	public static GameDto mapGameToDto(Game game, Player viewer) {
 		GameDto gameDto = new GameDto();
 		gameDto.setCode(game.getCode().toString());
-		gameDto.setPlayerWithTurn(mapPlayerToDto(game.getPlayerWithTurn()));
+		if (game.getRoundNumber() > 0) {
+			gameDto.setRound(game.getRoundNumber());
+		}
+
+		if (game.inStatus(Status.IN_PROGRESS)) {
+			gameDto.setPlayerWithTurn(mapPlayerToDto(game.getPlayerWithTurn()));
+		}
 
 		Board board = game.getBoard();
 		List<ZoneDto> playerZones = new ArrayList<>();
@@ -79,7 +85,7 @@ public class ModelMapper {
 			Zone playerZone = board.getZoneOf(player);
 
 			if (player.isAlive() && playerZone.isAlive()) {
-				playerZones.add(mapPlayerZoneToDto(playerZone, player, viewer));
+				playerZones.add(mapPlayerZoneToDto(game, player, viewer));
 			}
 		}
 
@@ -87,18 +93,15 @@ public class ModelMapper {
 		return gameDto;
 	}
 
-	public static ZoneDto mapPlayerZoneToDto(Zone playerZone, Player owner, Player viewer) {
+	public static ZoneDto mapPlayerZoneToDto(Game game, Player owner, Player viewer) {
+		Zone playerZone = game.getBoard().getZoneOf(owner);
 		boolean isEnemyZone = playerZone.isEnemy(viewer);
+		boolean canViewerTarget = isEnemyZone && !viewer.isSpectator();
+		boolean canViewerAct = !isEnemyZone && viewer.equals(game.getPlayerWithTurn());
 
 		ZoneDto zoneDto = new ZoneDto();
 		zoneDto.setOwner(mapPlayerToDto(owner));
 		zoneDto.setType(playerZone.getType().text());
-
-		Health zoneHealth = playerZone.getZoneHealth();
-		if (!zoneHealth.isInfinite()) {
-			zoneDto.setHealth(zoneHealth.getValue());
-			zoneDto.setMaxHealth(zoneHealth.getMaxValue());
-		}
 
 		Combatant[][] combatants = playerZone.getCombatants();
 		ZoneSlotDto[][] slotDtos = new ZoneSlotDto[combatants.length][];
@@ -106,7 +109,7 @@ public class ModelMapper {
 			slotDtos[rowIndex] = new ZoneSlotDto[combatants[rowIndex].length];
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
-				slotDtos[rowIndex][columnIndex] = mapSlotToDto(playerZone, coordinate, isEnemyZone);
+				slotDtos[rowIndex][columnIndex] = mapSlotToDto(playerZone, coordinate, new ZoneViewpoint(canViewerTarget, canViewerAct));
 			}
 		}
 
@@ -114,29 +117,32 @@ public class ModelMapper {
 		return zoneDto;
 	}
 
-	private static ZoneSlotDto mapSlotToDto(Zone zone, Coordinate coordinate, boolean isEnemyZone) {
+	private static ZoneSlotDto mapSlotToDto(Zone zone, Coordinate coordinate, ZoneViewpoint viewpoint) {
 		ZoneSlotDto slotDto = new ZoneSlotDto();
 		slotDto.setAllowedCombatant(zone.isLeaderSlot(coordinate) ? CardType.LEADER : CardType.WARRIOR);
 
 		if (zone.hasCombatant(coordinate)) {
-			slotDto.setCombatant(mapCombatantInZoneToDto(zone, coordinate, isEnemyZone));
+			slotDto.setCombatant(mapCombatantInZoneToDto(zone, coordinate, viewpoint));
 		}
 
 		return slotDto;
 	}
 
-	private static CardDto mapCombatantInZoneToDto(Zone zone, Coordinate coordinate, boolean isEnemyZone) {
+	private static CardDto mapCombatantInZoneToDto(Zone zone, Coordinate coordinate, ZoneViewpoint viewpoint) {
 		Combatant combatant = zone.getCombatant(coordinate);
+		boolean isProtected = zone.isProtectedAt(coordinate);
+		boolean isProtectedLeader = isProtected && zone.isLeaderSlot(coordinate);
 
 		CardDto cardDto = mapCardToDto(combatant);
-		cardDto.setProtectedCard(zone.isProtectedAt(coordinate));
-		cardDto.setAttackAvailable(combatant.canAttack());
-		cardDto.setTargetable(isEnemyZone && !cardDto.isProtectedCard());
+		cardDto.setProtectedCard(isProtected);
+		cardDto.setAttackAvailable(viewpoint.canAct() && combatant.canAttack() && !isProtectedLeader);
+		cardDto.setTargetable(viewpoint.canTarget() && !isProtected);
 		return cardDto;
 	}
 
 	public static PlayerDto mapPlayerToDto(Player player) {
 		PlayerDto playerDto = new PlayerDto();
+		playerDto.setHandSize(player.getHand().getCards().size());
 		playerDto.setCode(player.getCode());
 		playerDto.setName(player.getName());
 		playerDto.setSpectator(player.isSpectator());

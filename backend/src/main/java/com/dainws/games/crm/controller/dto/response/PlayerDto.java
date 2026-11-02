@@ -9,6 +9,9 @@ public class PlayerDto {
 	@JsonProperty("name")
 	private String name;
 
+	@JsonProperty("handSize")
+	private int handSize;
+
 	@JsonProperty("isSpectator")
 	private boolean spectator;
 	
@@ -31,6 +34,14 @@ public class PlayerDto {
 		return name;
 	}
 	
+	public void setHandSize(int handSize) {
+		this.handSize = handSize;
+	}
+
+	public int getHandSize() {
+		return handSize;
+	}
+
 	public void setSpectator(boolean spectator) {
 		this.spectator = spectator;
 	}

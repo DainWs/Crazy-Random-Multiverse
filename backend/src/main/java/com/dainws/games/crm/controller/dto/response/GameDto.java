@@ -10,6 +10,9 @@ public class GameDto {
 	private String code;
 	
 	@Nullable
+	private Integer round;
+
+	@Nullable
 	private PlayerDto playerWithTurn;
 	
 	@NotNull
@@ -23,6 +26,14 @@ public class GameDto {
 		return code;
 	}
 	
+	public void setRound(Integer round) {
+		this.round = round;
+	}
+
+	public Integer getRound() {
+		return round;
+	}
+
 	public void setPlayerWithTurn(PlayerDto playerWithTurn) {
 		this.playerWithTurn = playerWithTurn;
 	}

@@ -10,12 +10,6 @@ public class ZoneDto {
 	@NotNull
 	private String type;
 
-	@Nullable
-	private Double health;
-
-	@Nullable
-	private Double maxHealth;
-
 	@NotNull
 	private ZoneSlotDto[][] combatants;
 
@@ -33,28 +27,6 @@ public class ZoneDto {
 
 	public String getType() {
 		return type;
-	}
-
-	public Double getHealth() {
-		return health;
-	}
-
-	public void setHealth(Double health) {
-		this.health = health;
-		if (health == 0) {
-			this.health = null;
-		}
-	}
-
-	public Double getMaxHealth() {
-		return maxHealth;
-	}
-
-	public void setMaxHealth(Double maxHealth) {
-		this.maxHealth = maxHealth;
-		if (maxHealth == 0) {
-			this.maxHealth = null;
-		}
 	}
 
 	public void setCombatants(ZoneSlotDto[][] combatants) {

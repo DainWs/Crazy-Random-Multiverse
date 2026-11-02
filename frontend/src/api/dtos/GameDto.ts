@@ -4,6 +4,7 @@ import { GameCode } from "@/domain/GameConfiguration";
 
 interface GameDto {
   code: GameCode;
+  round?: number;
   playerWithTurn?: PlayerDto;
   zones: ZoneDto[];
 }
