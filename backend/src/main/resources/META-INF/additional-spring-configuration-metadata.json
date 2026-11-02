@@ -15,8 +15,8 @@
 	  "description": "Enables Socket-io based connections"
 	},
 	{
-	  "name": "crm.communication.socket-io.origin",
+	  "name": "crm.communication.origin",
 	  "type": "java.lang.String",
-	  "description": "Origin allowed to open Socket.IO connections, default = \"*\". Browsers refuse cookies with \"*\", so set the explicit origin when the client connects from another origin"
+	  "description": "Client origin that REST and the socket allow, with credentials. It is an explicit origin, never \"*\", because browsers refuse cookies with it"
 	}
 ]}

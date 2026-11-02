@@ -10,7 +10,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 @org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(value = "crm.communication.socket-io.enabled", havingValue = "true", matchIfMissing = true)
 public class SocketIOConfiguration {
-    @Value("${crm.communication.socket-io.origin:*}")
+    @Value("${crm.communication.origin}")
     private String origin;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
