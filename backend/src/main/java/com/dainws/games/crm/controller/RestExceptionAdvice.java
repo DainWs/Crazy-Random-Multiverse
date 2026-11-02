@@ -38,7 +38,7 @@ public class RestExceptionAdvice {
 	@ExceptionHandler(InvalidCodeException.class)
 	public ResponseEntity<ExceptionCodeDto> onInvalidCode(InvalidCodeException exception) {
 		this.logger.debug("Request carries an invalid code: {}", exception.getMessage());
-		return this.badRequest(new RequestExceptionCode(RequestExceptionCode.Code.MALFORMED));
+		return ResponseEntity.badRequest().body(new ExceptionCodeDto("request.malformed"));
 	}
 
 	@ExceptionHandler(NotAllowedException.class)
@@ -50,7 +50,7 @@ public class RestExceptionAdvice {
 			MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<ExceptionCodeDto> onUnreadableRequest(Exception exception) {
 		this.logger.debug("Request cannot be read: {}", exception.getMessage());
-		return this.badRequest(new RequestExceptionCode(RequestExceptionCode.Code.MALFORMED));
+		return ResponseEntity.badRequest().body(new ExceptionCodeDto("request.malformed"));
 	}
 
 	private ResponseEntity<ExceptionCodeDto> badRequest(ExceptionCode exceptionCode) {
