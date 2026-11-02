@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.core;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.apache.tomcat.util.codec.binary.Base64;
 
 public class GameCode {
 	public static final GameCode NONE = new GameCode(null);
@@ -49,7 +49,7 @@ public class GameCode {
 	public static GameCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
 		Objects.requireNonNull(uuidAsBase64UrlSafe);
 		
-		String asString = new String(Base64.decodeBase64URLSafe(uuidAsBase64UrlSafe));
+		String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
 		return from(asString);
 	}
 

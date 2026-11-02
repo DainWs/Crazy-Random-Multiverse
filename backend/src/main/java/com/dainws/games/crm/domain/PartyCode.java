@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.apache.tomcat.util.codec.binary.Base64;
 
 public class PartyCode {
 	private UUID uuid;
@@ -39,7 +39,7 @@ public class PartyCode {
 	public static PartyCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
 		Objects.requireNonNull(uuidAsBase64UrlSafe);
 		
-		String asString = new String(Base64.decodeBase64URLSafe(uuidAsBase64UrlSafe));
+		String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
 		return from(asString);
 	}
 
