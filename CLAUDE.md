@@ -23,6 +23,8 @@ Always read these files before writing code:
 
 If anything you are about to do contradicts those documents, stop and ask. Existing code that does not comply is not refactored on your own initiative: respect the patterns of the module you are touching.
 
+The PlantUML diagrams in `docs/development/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when explicitly asked to.
+
 The backend ↔ frontend contract is partly unresolved (`agents/ROADMAP.md`, Phase 1). Do not invent it: ask.
 
 ---
