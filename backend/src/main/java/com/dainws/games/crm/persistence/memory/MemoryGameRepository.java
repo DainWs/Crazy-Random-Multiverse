@@ -18,7 +18,7 @@ public class MemoryGameRepository implements GameRepository {
 
 	public MemoryGameRepository() {
 		this.games = new ConcurrentHashMap<>();
-		this.logger = LoggerFactory.getLogger(MemoryGameRepository.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override

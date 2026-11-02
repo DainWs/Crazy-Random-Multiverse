@@ -37,7 +37,7 @@ public class WebSocketCommunicationClient implements CommunicationClient {
 	public WebSocketCommunicationClient(UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
 		this.userRepository = userRepository;
 		this.messagingTemplate = messagingTemplate;
-		this.logger = LoggerFactory.getLogger(WebSocketCommunicationClient.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override

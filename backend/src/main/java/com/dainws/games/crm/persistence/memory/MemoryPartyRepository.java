@@ -23,7 +23,7 @@ public class MemoryPartyRepository implements PartyRepository {
 
 	public MemoryPartyRepository() {
 		this.parties = new ConcurrentHashMap<>();
-		this.logger = LoggerFactory.getLogger(MemoryPartyRepository.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override

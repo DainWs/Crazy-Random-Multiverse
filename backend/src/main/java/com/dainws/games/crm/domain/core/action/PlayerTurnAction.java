@@ -17,12 +17,12 @@ import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public abstract class PlayerTurnAction implements Action {
 
-	protected final Logger logger;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Action.class);
+
 	private String track;
 
 	protected PlayerTurnAction() {
 		this.track = "[NONE TRACK]";
-		this.logger = LoggerFactory.getLogger(LOGGER_NAME);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public abstract class PlayerTurnAction implements Action {
 
 	protected final void logTrace(String format, Object... arguments) {
 		String formatWithTrack = this.track + " " + format;
-		this.logger.trace(formatWithTrack, arguments);
+		LOGGER.trace(formatWithTrack, arguments);
 	}
 
 	protected final void publishException(ExceptionCode exceptionCode, ActionContext context) {

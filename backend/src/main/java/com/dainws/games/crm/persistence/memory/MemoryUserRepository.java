@@ -20,7 +20,7 @@ public class MemoryUserRepository implements UserRepository {
 
 	public MemoryUserRepository() {
 		this.users = new ConcurrentHashMap<>();
-		this.logger = LoggerFactory.getLogger(MemoryUserRepository.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override

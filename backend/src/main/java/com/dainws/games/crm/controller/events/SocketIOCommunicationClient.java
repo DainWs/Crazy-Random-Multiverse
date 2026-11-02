@@ -37,7 +37,7 @@ public class SocketIOCommunicationClient implements CommunicationClient {
 	public SocketIOCommunicationClient(UserRepository userRepository, SocketIOServer server) {
 		this.server = server;
 		this.userRepository = userRepository;
-		this.logger = LoggerFactory.getLogger(SocketIOCommunicationClient.class.getCanonicalName());
+		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
 	@Override

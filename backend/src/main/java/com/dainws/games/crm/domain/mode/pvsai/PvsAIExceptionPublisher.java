@@ -18,7 +18,7 @@ public class PvsAIExceptionPublisher extends CompositeExceptionPublisher {
 	
 	public PvsAIExceptionPublisher(ExceptionPublisher exceptionPublisher) {
 		super(exceptionPublisher);
-		this.logger = LoggerFactory.getLogger("PvsAI Exception publisher");
+		this.logger = LoggerFactory.getLogger(PvsAIExceptionPublisher.class);
 	}
 
 	@Override
