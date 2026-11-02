@@ -44,7 +44,7 @@ Guides
    - Request DTOs moved to `usecase.dto`; `kick` now takes both codes in the path (`/party/{partyCode}/kick/{userCode}`) and the frontend follows.
    - `GameCode`, `PartyCode` and `UserCode` decode with `java.util.Base64`, which is stricter than Tomcat's (rejects `+`, `/` and invalid characters).
    - Next: item 8.
-8. [ ] `LoadController` interface carrying the HTTP mapping of `WebLoadController`.
+8. [x] `LoadController` interface carrying the HTTP mapping of `WebLoadController`. Done, waiting for the user's review before the commit. Next: item 9.
 
 Style (refactor commits)
 
