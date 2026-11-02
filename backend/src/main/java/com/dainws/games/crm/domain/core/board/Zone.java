@@ -4,7 +4,6 @@ import java.util.function.Predicate;
 
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
@@ -127,10 +126,9 @@ public abstract class Zone {
 				&& this.hasCombatant(second);
 	}
 
-	public void swapCombatants(Coordinate first, Coordinate second)
-			throws NotAllowedException {
+	public void swapCombatants(Coordinate first, Coordinate second) {
 		if (!this.canSwapCombatants(first, second)) {
-			throw new NotAllowedException("zone.coordinate.cannot_swap");
+			throw new IllegalStateException("Cannot swap the combatants at %s and %s".formatted(first, second));
 		}
 
 		Combatant firstCombatant = this.getCombatant(first);
@@ -176,18 +174,17 @@ public abstract class Zone {
 	}
 
 
-	public void putCombatant(Coordinate coordinate, Combatant combatant)
-			throws NotAllowedException {
+	public void putCombatant(Coordinate coordinate, Combatant combatant) {
 		if (!this.validate(coordinate)) {
-			throw new NotAllowedException("zone.coordinate.out_of_bounds");
+			throw new IllegalArgumentException("Coordinate %s is outside the zone".formatted(coordinate));
 		}
 
 		if (this.hasCombatant(coordinate)) {
-			throw new NotAllowedException("zone.coordinate.already_filled");
+			throw new IllegalStateException("Coordinate %s already has a combatant".formatted(coordinate));
 		}
 
 		if (!this.isPreviousRowFilled(coordinate.getRow())) {
-			throw new NotAllowedException("zone.row.previous_need_to_be_filled");
+			throw new IllegalStateException("The row before %s is not filled".formatted(coordinate));
 		}
 
 		this.combatants[coordinate.getRow()][coordinate.getColumn()] = combatant;
@@ -247,13 +244,17 @@ public abstract class Zone {
 		return count;
 	}
 
-	private boolean isPreviousRowFilled(int currentRow) {
+	public boolean isPreviousRowFilled(int currentRow) {
 		if (currentRow == 0) {
 			return true;
 		}
 
 		int prevRowIndex = currentRow - 1;
 		return this.isFilledAt(prevRowIndex);
+	}
+
+	public boolean isInside(Coordinate coordinate) {
+		return this.validate(coordinate);
 	}
 
 	protected boolean validate(Coordinate coordinate) {

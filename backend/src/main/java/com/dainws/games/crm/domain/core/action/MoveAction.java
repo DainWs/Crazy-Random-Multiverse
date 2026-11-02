@@ -5,16 +5,16 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.NotAllowedException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
-import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 
 public class MoveAction extends PlayerTurnAction {
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context)
-			throws PlayerActionException, NotAllowedException {
-		this.checkContext(context);
+	protected ActionResult performPlayerAction(ActionContext context) {
+		ActionResult checkResult = this.checkContext(context);
+		if (!checkResult.isSuccessful()) {
+			return checkResult;
+		}
 
 		Coordinate fromCoordinate = context.getSourceCoordinate();
 		Coordinate toCoordinate = context.getTargetCoordinate();
@@ -31,7 +31,7 @@ public class MoveAction extends PlayerTurnAction {
 
 		this.logTrace("{0} ha sido movido desde {1} a {2}", combatant, fromCoordinate, toCoordinate);
 		this.notifyActionEvent(EventCode.PLAYER_MOVE_CARD, context);
-		return true;
+		return ActionResult.successful();
 	}
 
 	private Combatant getSourceCombatantFrom(ActionContext context) {
@@ -39,27 +39,28 @@ public class MoveAction extends PlayerTurnAction {
 		return sourceZone.getCombatant(context.getSourceCoordinate());
 	}
 
-	private void checkContext(ActionContext context) throws PlayerActionException {
-		Player sourcePlayer = context.getSourcePlayer();
+	private ActionResult checkContext(ActionContext context) {
 		Zone sourceZone = context.getSourceZone();
 		Zone targetZone = context.getTargetZone();
 		Combatant combatant = this.getSourceCombatantFrom(context);
-	
+
 		if (!sourceZone.hasCombatant(context.getSourceCoordinate())) {
-			throw new PlayerActionException("selected_source_position_has_none_combatant", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT);
 		}
 
 		if (!sourceZone.equals(targetZone)) {
-			throw new PlayerActionException("selected_target_zone_is_not_source_zone", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE);
 		}
 
-		if (this.getSourceCombatantFrom(context).isType(CardType.LEADER)) {
-			throw new PlayerActionException("selected_source_is_leader", sourcePlayer);
+		if (combatant.isType(CardType.LEADER)) {
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_IS_LEADER);
 		}
 
 		if (!this.isTargetAllowed(context, combatant)) {
-			throw new PlayerActionException("selected_target_position_not_allowed", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_NOT_ALLOWED);
 		}
+
+		return ActionResult.successful();
 	}
 
 	private boolean isTargetAllowed(ActionContext context, Combatant combatant) {

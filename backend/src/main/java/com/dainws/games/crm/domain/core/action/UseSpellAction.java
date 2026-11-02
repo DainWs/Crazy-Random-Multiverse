@@ -2,7 +2,6 @@ package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -14,7 +13,7 @@ public class UseSpellAction extends UseCardAction {
 	}
 
 	@Override
-	protected void performCardAction(Card card, ActionContext context) throws PlayerActionException {
+	protected void performCardAction(Card card, ActionContext context) {
 		
 		// TODO perform spell card effect
 		

@@ -11,9 +11,9 @@ public class MonitoredAction implements Action {
 	}
 	
 	@Override
-	public boolean perform(ActionContext context) {
+	public ActionResult perform(ActionContext context) {
 		this.actionNotifier.performingAction(this.action, context);
-		boolean result = this.action.perform(context);
+		ActionResult result = this.action.perform(context);
 		this.actionNotifier.actionPerformed(this.action, context, result);
 		return result;
 	}

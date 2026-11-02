@@ -3,15 +3,17 @@ package com.dainws.games.crm.domain.core.action;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 
 public class AttackAction extends PlayerTurnAction {
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
+	protected ActionResult performPlayerAction(ActionContext context) {
 		Combatant sourceCombatant = this.getSourceCombatantFrom(context);
-		this.checkSourceCombatant(context, sourceCombatant);
-		this.checkTargetIsNotProtected(context);
+		ActionResult checkResult = this.checkContext(context, sourceCombatant);
+		if (!checkResult.isSuccessful()) {
+			return checkResult;
+		}
 
 		Combatant targetCombatant = this.getTargetCombatantFrom(context);
 		this.logTrace("El combatiente {0} ataca al combatiente {1}", sourceCombatant, targetCombatant);
@@ -25,20 +27,20 @@ public class AttackAction extends PlayerTurnAction {
 		}
 
 		this.notifyActionEvent(EventCode.PLAYER_ATTACK_CARD, context);
-		return true;
-	}
-	
-	private void checkSourceCombatant(ActionContext context, Combatant sourceCombatant) throws PlayerActionException {
-		if (!sourceCombatant.canAttack()) {
-			throw new PlayerActionException("selected_source_attack_in_cooldown", context.getSourcePlayer());
-		}
+		return ActionResult.successful();
 	}
 
-	private void checkTargetIsNotProtected(ActionContext context) throws PlayerActionException {
+	private ActionResult checkContext(ActionContext context, Combatant sourceCombatant) {
+		if (!sourceCombatant.canAttack()) {
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_ATTACK_IN_COOLDOWN);
+		}
+
 		Zone targetZone = context.getTargetZone();
 		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
-			throw new PlayerActionException("selected_target_is_protected", context.getSourcePlayer());
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_IS_PROTECTED);
 		}
+
+		return ActionResult.successful();
 	}
 
 	private Combatant getSourceCombatantFrom(ActionContext context) {

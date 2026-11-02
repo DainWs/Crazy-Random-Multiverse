@@ -4,7 +4,6 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
-import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 
 public class ZoneWithLeader extends Zone {
 	private static final ZoneType TYPE = new ZoneType("BASE");
@@ -72,9 +71,9 @@ public class ZoneWithLeader extends Zone {
 	}
 
 	@Override
-	public void putCombatant(Coordinate coordinate, Combatant combatant) throws NotAllowedException {
+	public void putCombatant(Coordinate coordinate, Combatant combatant) {
 		if (LEADER_COORDINATE.equals(coordinate) && !combatant.isType(CardType.LEADER)) {
-			throw new NotAllowedException("EXCEPTION_COORDINATE_REQUIRES_LEADER");
+			throw new IllegalArgumentException("The leader slot only admits a leader");
 		}
 
 		super.putCombatant(coordinate, combatant);

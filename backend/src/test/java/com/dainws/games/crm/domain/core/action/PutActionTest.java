@@ -12,13 +12,19 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.DummyZone;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.GameException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.ZoneExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 
 class PutActionTest extends PlayerTurnActionTest {
+
+	private static final int OUTSIDE_INDEX = 100;
 
 	@Test
 	void testGivenContext_whenPerform_thenCoordinateNowHasCombatant() throws GameException {
@@ -52,7 +58,87 @@ class PutActionTest extends PlayerTurnActionTest {
 		Coordinate coordinate = actionContext.getTargetCoordinate();
 		targetZone.putCombatant(coordinate, filledWithCard);
 
-		assertFalse(turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext).isSuccessful());
+	}
+
+	@Test
+	void testGivenContextWithFilledCoordinate_whenPerform_thenCodeIsPositionAlreadyHasCombatant() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		Warrior filledWithCard = new CardBuilder().buildFullValidWarrior();
+		Coordinate coordinate = actionContext.getTargetCoordinate();
+		actionContext.getTargetZone().putCombatant(coordinate, filledWithCard);
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
+	}
+
+	@Test
+	void testGivenCardOutsideTheHand_whenPerform_thenCodeIsCardNotFound() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setSourceCard(new CardBuilder().buildFullValidLeader());
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
+	}
+
+	@Test
+	void testGivenEquipmentCard_whenPerform_thenCodeIsCardIsNotCombatant() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		Card equipment = new CardBuilder().buildFullValidEquipment();
+		actionContext.getSourcePlayer().getHand().addCard(equipment);
+		actionContext.setSourceCard(equipment);
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_COMBATANT);
+	}
+
+	@Test
+	void testGivenNoTargetCoordinate_whenPerform_thenCodeIsTargetCoordinateIsNull() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetCoordinate(null);
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_COORDINATE_IS_NULL);
+	}
+
+	@Test
+	void testGivenCoordinateOutsideTheZone_whenPerform_thenCodeIsOutOfBounds() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetCoordinate(new Coordinate(OUTSIDE_INDEX, OUTSIDE_INDEX));
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(ZoneExceptionCode.COORDINATE_OUT_OF_BOUNDS);
+	}
+
+	@Test
+	void testGivenWarriorOnTheLeaderSlot_whenPerform_thenCodeIsRequiresLeader() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		Player player = actionContext.getSourcePlayer();
+		actionContext.getBoard().setZone(player, new ZoneWithLeader());
+		actionContext.setTargetCoordinate(ZoneWithLeader.LEADER_COORDINATE);
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(ZoneExceptionCode.COORDINATE_REQUIRES_LEADER);
+	}
+
+	@Test
+	void testGivenPreviousRowNotFilled_whenPerform_thenCodeIsPreviousRowNeedsToBeFilled() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetCoordinate(new Coordinate(1, 0));
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(ZoneExceptionCode.PREVIOUS_ROW_NEEDS_TO_BE_FILLED);
+	}
+
+	private ExceptionCode performAndGetCode(CustomActionContext actionContext) {
+		return this.createPlayerTurnAction().perform(actionContext).getExceptionCode();
 	}
 
 	@Override

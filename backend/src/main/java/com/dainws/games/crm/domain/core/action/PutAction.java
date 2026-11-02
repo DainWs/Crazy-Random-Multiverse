@@ -7,8 +7,8 @@ import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.NotAllowedException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.ZoneExceptionCode;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -16,9 +16,11 @@ public class PutAction extends PlayerTurnAction {
 	public static final Coordinate NEXT_EMPTY_COORDINATE = null;
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context)
-			throws PlayerActionException, NotAllowedException {
-		this.checkContext(context);
+	protected ActionResult performPlayerAction(ActionContext context) {
+		ActionResult checkResult = this.checkContext(context);
+		if (!checkResult.isSuccessful()) {
+			return checkResult;
+		}
 
 		Coordinate targetCoordinate = context.getTargetCoordinate();
 		Combatant combatant = this.grabCombatantFromHand(context);
@@ -28,7 +30,7 @@ public class PutAction extends PlayerTurnAction {
 		this.logTrace("La carta {0} ha sido colocada en {1}", combatant, targetCoordinate);
 
 		this.notifyActionEvent(EventCode.PLAYER_PUT_CARD, context);
-		return true;
+		return ActionResult.successful();
 	}
 
 	private Combatant grabCombatantFromHand(ActionContext context) {
@@ -37,26 +39,45 @@ public class PutAction extends PlayerTurnAction {
 		return (Combatant) hand.grab(cardCode);
 	}
 
-	private void checkContext(ActionContext context) throws PlayerActionException {
+	private ActionResult checkContext(ActionContext context) {
 		Player sourcePlayer = context.getSourcePlayer();
 		Hand playerHand = sourcePlayer.getHand();
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			throw new PlayerActionException("selected_card_not_found", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
 		}
 
 		if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
-			throw new PlayerActionException("selected_card_is_not_combatant", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_COMBATANT);
 		}
 
+		return this.checkTarget(context, card);
+	}
+
+	private ActionResult checkTarget(ActionContext context, Card card) {
 		Coordinate targetCoordinate = context.getTargetCoordinate();
 		if (targetCoordinate == null) {
-			throw new PlayerActionException("selected_target_coordinate_is_null", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_COORDINATE_IS_NULL);
 		}
 
-		if (context.getTargetZone().hasCombatant(targetCoordinate)) {
-			throw new PlayerActionException("selected_target_position_already_has_combatant", sourcePlayer);
+		Zone targetZone = context.getTargetZone();
+		if (!targetZone.isInside(targetCoordinate)) {
+			return ActionResult.failed(ZoneExceptionCode.COORDINATE_OUT_OF_BOUNDS);
 		}
+
+		if (targetZone.hasCombatant(targetCoordinate)) {
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
+		}
+
+		if (targetZone.isLeaderSlot(targetCoordinate) && !card.isType(CardType.LEADER)) {
+			return ActionResult.failed(ZoneExceptionCode.COORDINATE_REQUIRES_LEADER);
+		}
+
+		if (!targetZone.isPreviousRowFilled(targetCoordinate.getRow())) {
+			return ActionResult.failed(ZoneExceptionCode.PREVIOUS_ROW_NEEDS_TO_BE_FILLED);
+		}
+
+		return ActionResult.successful();
 	}
 }

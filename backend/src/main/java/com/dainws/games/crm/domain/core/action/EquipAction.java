@@ -6,15 +6,18 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class EquipAction extends PlayerTurnAction {
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
-		this.checkContext(context);
+	protected ActionResult performPlayerAction(ActionContext context) {
+		ActionResult checkResult = this.checkContext(context);
+		if (!checkResult.isSuccessful()) {
+			return checkResult;
+		}
 
 		Combatant combatant = this.getTargetCombatantFrom(context);
 		Equipment equipment = (Equipment) context.getSourceCard();
@@ -22,25 +25,27 @@ public class EquipAction extends PlayerTurnAction {
 
 		this.logTrace("{0} ha sido equipado en el combatiente {1}", equipment, combatant);
 		this.notifyActionEvent(EventCode.PLAYER_EQUIP_CARD, context);
-		return true;
+		return ActionResult.successful();
 	}
-	
+
 	private Combatant getTargetCombatantFrom(ActionContext context) {
 		Zone targetZone = context.getTargetZone();
 		return targetZone.getCombatant(context.getTargetCoordinate());
 	}
 
-	private void checkContext(ActionContext context) throws PlayerActionException {
+	private ActionResult checkContext(ActionContext context) {
 		Player sourcePlayer = context.getSourcePlayer();
 		Hand playerHand = sourcePlayer.getHand();
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			throw new PlayerActionException("selected_card_not_found", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
 		}
 
 		if (!card.isType(CardType.EQUIPMENT)) {
-			throw new PlayerActionException("selected_card_is_not_equipment", sourcePlayer);
+			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_EQUIPMENT);
 		}
+
+		return ActionResult.successful();
 	}
 }

@@ -2,22 +2,22 @@ package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
 
 public class PassTurnAction extends PlayerTurnAction {
 	@Override
-	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
+	protected ActionResult performPlayerAction(ActionContext context) {
 		this.logTrace("The player can pass turn?: {1}", this.canPassTurn(context));
 		if (this.canPassTurn(context)) {
 			this.notifyActionEvent(EventCode.PLAYER_PASS_TURN, context);
-			return true;
+			return ActionResult.successful();
 		}
 
-		return false;
+		return ActionResult.failed(GameExceptionCode.NOT_IN_PROGRESS);
 	}
-	
+
 	private boolean canPassTurn(ActionContext actionContext) {
 		Game game = actionContext.getGame();
-		return game.countAlivePlayers() > 1; 
+		return game.countAlivePlayers() > 1;
 	}
 }

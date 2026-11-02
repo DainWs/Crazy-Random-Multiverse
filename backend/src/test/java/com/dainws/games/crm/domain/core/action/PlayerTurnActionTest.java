@@ -1,5 +1,6 @@
 package com.dainws.games.crm.domain.core.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,6 +13,7 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.exception.GameException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public abstract class PlayerTurnActionTest implements ActionTest {
@@ -22,7 +24,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();
 				
-		assertTrue(turnAction.perform(actionContext));
+		assertTrue(turnAction.perform(actionContext).isSuccessful());
 	}
 	
 	@Test
@@ -32,9 +34,21 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		Player playerWithoutTurn = this.getPlayerWithoutTurn(actionContext);
 		actionContext.setSourcePlayer(playerWithoutTurn);
 		
-		assertFalse(turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext).isSuccessful());
 	}
 	
+	@Test
+	void testGivenPlayerWithoutTurn_whenPerform_thenCodeIsAllowedOnlyOnTurn() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		Player playerWithoutTurn = this.getPlayerWithoutTurn(actionContext);
+		actionContext.setSourcePlayer(playerWithoutTurn);
+
+		ActionResult result = turnAction.perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN);
+	}
+
 	@Test
 	void testGivenPlayerWithTurn_whenPerform_thenActionIsPerformed() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
@@ -42,7 +56,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		Player playerWithTurn = this.getPlayerWithTurn(actionContext);
 		actionContext.setSourcePlayer(playerWithTurn);
 
-		assertTrue(turnAction.perform(actionContext));
+		assertTrue(turnAction.perform(actionContext).isSuccessful());
 	}
 	
 	protected abstract CustomActionContext createActionContext() throws GameException;

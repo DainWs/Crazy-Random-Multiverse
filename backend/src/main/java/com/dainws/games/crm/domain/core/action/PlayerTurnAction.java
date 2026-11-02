@@ -8,10 +8,7 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.exception.GameException;
-import com.dainws.games.crm.domain.core.exception.ExceptionCode;
-import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
@@ -26,23 +23,14 @@ public abstract class PlayerTurnAction implements Action {
 	}
 
 	@Override
-	public final boolean perform(ActionContext context) {
+	public final ActionResult perform(ActionContext context) {
 		this.prepareTrack(context);
 
 		if (!this.sourcePlayerHasTurn(context)) {
-			this.notifyThatSourcePlayerRequiresTurn(context);
-			return false;
+			return ActionResult.failed(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN);
 		}
 
-		try {
-			return this.performPlayerAction(context);
-		} catch (GameRuntimeException exception) {
-			this.publishException(exception.getCode(), context);
-		} catch (GameException exception) {
-			this.publishException(exception.getCode(), context);
-		}
-
-		return false;
+		return this.performPlayerAction(context);
 	}
 
 	private void prepareTrack(ActionContext context) {
@@ -58,22 +46,11 @@ public abstract class PlayerTurnAction implements Action {
 		return playerWithTurn.equals(sourcePlayer);
 	}
 
-	private void notifyThatSourcePlayerRequiresTurn(ActionContext context) {
-		String codeAsText = "exception.player-action.allowed_only_on_turn";
-		ExceptionCode exceptionCode = new ExceptionCode(codeAsText);
-		this.publishException(exceptionCode, context);
-	}
-
-	protected abstract boolean performPlayerAction(ActionContext context) throws PlayerActionException, GameException;
+	protected abstract ActionResult performPlayerAction(ActionContext context);
 
 	protected final void logTrace(String format, Object... arguments) {
 		String formatWithTrack = this.track + " " + format;
 		LOGGER.trace(formatWithTrack, arguments);
-	}
-
-	protected final void publishException(ExceptionCode exceptionCode, ActionContext context) {
-		Game game = context.getGame();
-		game.publishException(context.getSourcePlayer(), exceptionCode);
 	}
 
 	protected final void notifyActionEvent(EventCode eventCode, ActionContext context) {

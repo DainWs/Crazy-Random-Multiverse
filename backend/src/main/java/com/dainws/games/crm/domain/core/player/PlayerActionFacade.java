@@ -4,6 +4,7 @@ import com.dainws.games.crm.domain.core.action.Action;
 import com.dainws.games.crm.domain.core.action.ActionContext;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.action.AttackAction;
 import com.dainws.games.crm.domain.core.action.EquipAction;
 import com.dainws.games.crm.domain.core.action.MoveAction;
@@ -18,31 +19,31 @@ public class PlayerActionFacade {
 		this.contextFactory = actionContextFactory;
 	}
 
-	public boolean playerPutCard(ActionContextTemplate contextTemplate) {
+	public ActionResult playerPutCard(ActionContextTemplate contextTemplate) {
 		return this.execute(new PutAction(), contextTemplate);
 	}
 
-	public boolean playerMoveCard(ActionContextTemplate contextTemplate) {
+	public ActionResult playerMoveCard(ActionContextTemplate contextTemplate) {
 		return this.execute(new MoveAction(), contextTemplate);
 	}
 
-	public boolean playerAttackCard(ActionContextTemplate contextTemplate) {
+	public ActionResult playerAttackCard(ActionContextTemplate contextTemplate) {
 		return this.execute(new AttackAction(), contextTemplate);
 	}
 
-	public boolean playerEquipCard(ActionContextTemplate contextTemplate) {
+	public ActionResult playerEquipCard(ActionContextTemplate contextTemplate) {
 		return this.execute(new EquipAction(), contextTemplate);
 	}
 
-	public boolean playerUseSpell(ActionContextTemplate contextTemplate) {
+	public ActionResult playerUseSpell(ActionContextTemplate contextTemplate) {
 		return this.execute(null, contextTemplate); // TODO pending
 	}
 
-	public boolean playerSurrender(ActionContextTemplate contextTemplate) {
+	public ActionResult playerSurrender(ActionContextTemplate contextTemplate) {
 		return this.execute(new SurrenderAction(), contextTemplate);
 	}
 
-	public boolean playerPassTurn(ActionContextTemplate contextTemplate) {
+	public ActionResult playerPassTurn(ActionContextTemplate contextTemplate) {
 		return this.execute(new PassTurnAction(), contextTemplate);
 	}
 
@@ -50,7 +51,7 @@ public class PlayerActionFacade {
 		return this.contextFactory.createContextFromTemplate(contextTemplate);
 	}
 
-	private boolean execute(Action action, ActionContextTemplate contextTemplate) {
+	private ActionResult execute(Action action, ActionContextTemplate contextTemplate) {
 		return action.perform(this.createContext(contextTemplate));
 	}
 }

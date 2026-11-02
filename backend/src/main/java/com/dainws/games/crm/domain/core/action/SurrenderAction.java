@@ -7,7 +7,7 @@ import com.dainws.games.crm.domain.core.player.Player;
 public class SurrenderAction extends PlayerTurnAction {
 
 	@Override
-	protected boolean performPlayerAction(ActionContext context) {
+	protected ActionResult performPlayerAction(ActionContext context) {
 		Zone zone = context.getSourceZone();
 		zone.removeAllCombatants();
 
@@ -15,6 +15,6 @@ public class SurrenderAction extends PlayerTurnAction {
 		sourcePlayer.die();
 
 		this.notifyActionEvent(EventCode.PLAYER_SURRENDER, context);
-		return true;
+		return ActionResult.successful();
 	}
 }

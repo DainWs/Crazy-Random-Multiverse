@@ -2,13 +2,14 @@ package com.dainws.games.crm.usecase;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
@@ -19,7 +20,7 @@ import com.dainws.games.crm.usecase.dto.ActionType;
 public class PlayerUsecase {
 
 	private PlayerActionFacade actionFacade;
-	private Map<ActionType, Consumer<ActionDto>> actionResolver;
+	private Map<ActionType, Function<ActionDto, ActionResult>> actionResolver;
 	
 	public PlayerUsecase(PlayerActionFacade playerActionFacade) {
 		this.actionFacade = playerActionFacade;
@@ -33,7 +34,7 @@ public class PlayerUsecase {
 	}
 	
 	
-	public void performAction(GameCode gameCode, User user, ActionDto actionDto) {
+	public ActionResult performAction(GameCode gameCode, User user, ActionDto actionDto) {
 		if (!gameCode.text().contentEquals(actionDto.getGameCode())) {
 			throw AccessDeniedException.wrongGame();
 		}
@@ -46,37 +47,37 @@ public class PlayerUsecase {
 			throw new IllegalArgumentException("There is no handler for the action type " + actionDto.getType());
 		}
 
-		this.actionResolver.get(actionDto.getType())
-				.accept(actionDto);
+		return this.actionResolver.get(actionDto.getType())
+				.apply(actionDto);
 	}
 
-	private void putAction(ActionDto actionDto) {
+	private ActionResult putAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapPutActionDto(actionDto);
-		this.actionFacade.playerPutCard(contextTemplate);
+		return this.actionFacade.playerPutCard(contextTemplate);
 	}
 	
-	private void moveAction(ActionDto actionDto) {
+	private ActionResult moveAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapMoveActionDto(actionDto);
-		this.actionFacade.playerMoveCard(contextTemplate);
+		return this.actionFacade.playerMoveCard(contextTemplate);
 	}
 	
-	private void attackAction(ActionDto actionDto) {
+	private ActionResult attackAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapAttackActionDto(actionDto);
-		this.actionFacade.playerAttackCard(contextTemplate);
+		return this.actionFacade.playerAttackCard(contextTemplate);
 	}
 	
-	private void equipAction(ActionDto actionDto) {
+	private ActionResult equipAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapEquipActionDto(actionDto);
-		this.actionFacade.playerEquipCard(contextTemplate);
+		return this.actionFacade.playerEquipCard(contextTemplate);
 	}
 
-	private void surrenderAction(ActionDto actionDto) {
+	private ActionResult surrenderAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapSurrenderActionDto(actionDto);
-		this.actionFacade.playerSurrender(contextTemplate);
+		return this.actionFacade.playerSurrender(contextTemplate);
 	}
 
-	private void passTurnAction(ActionDto actionDto) {
+	private ActionResult passTurnAction(ActionDto actionDto) {
 		ActionContextTemplate contextTemplate = ActionMapper.mapPassTurnActionDto(actionDto);
-		this.actionFacade.playerPassTurn(contextTemplate);
+		return this.actionFacade.playerPassTurn(contextTemplate);
 	}
 }

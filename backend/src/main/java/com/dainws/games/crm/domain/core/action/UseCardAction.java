@@ -1,21 +1,21 @@
 package com.dainws.games.crm.domain.core.action;
 
 import com.dainws.games.crm.domain.core.card.Card;
-import com.dainws.games.crm.domain.core.exception.PlayerActionException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 
 public abstract class UseCardAction extends PlayerTurnAction {
 	@Override
-	protected boolean performPlayerAction(ActionContext context) throws PlayerActionException {
+	protected ActionResult performPlayerAction(ActionContext context) {
 		Card card = context.getSourceCard();
 		if (!this.canUse(card)) {
-			throw new PlayerActionException("card_cant_be_used", context.getSourcePlayer());
+			return ActionResult.failed(PlayerActionExceptionCode.CARD_CANT_BE_USED);
 		}
-		
+
 		this.performCardAction(card, context);
-		return true;
+		return ActionResult.successful();
 	}
 
 	protected abstract boolean canUse(Card card);
 
-	protected abstract void performCardAction(Card card, ActionContext context) throws PlayerActionException;
+	protected abstract void performCardAction(Card card, ActionContext context);
 }

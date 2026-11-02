@@ -1,5 +1,6 @@
 package com.dainws.games.crm.domain.core.action;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -26,7 +28,18 @@ class AttackActionTest extends PlayerTurnActionTest {
 		CustomActionContext actionContext = this.createActionContext();
 		this.fillRowAndPutInFrontRow(actionContext.getTargetZone());
 
-		assertFalse(turnAction.perform(actionContext));
+		assertFalse(turnAction.perform(actionContext).isSuccessful());
+	}
+
+	@Test
+	void testGivenTargetWithCombatantInFrontRow_whenPerform_thenCodeIsTargetIsProtected() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		this.fillRowAndPutInFrontRow(actionContext.getTargetZone());
+
+		ActionResult result = turnAction.perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_IS_PROTECTED);
 	}
 
 	@Override

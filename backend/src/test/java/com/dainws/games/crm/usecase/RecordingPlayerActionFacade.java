@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
+import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.usecase.dto.ActionType;
 
@@ -16,18 +17,21 @@ public class RecordingPlayerActionFacade extends PlayerActionFacade {
 	}
 
 	@Override
-	public boolean playerEquipCard(ActionContextTemplate contextTemplate) {
-		return this.performedActions.add(ActionType.EQUIP_ACTION);
+	public ActionResult playerEquipCard(ActionContextTemplate contextTemplate) {
+		this.performedActions.add(ActionType.EQUIP_ACTION);
+		return ActionResult.successful();
 	}
 
 	@Override
-	public boolean playerSurrender(ActionContextTemplate contextTemplate) {
-		return this.performedActions.add(ActionType.SURRENDER_ACTION);
+	public ActionResult playerSurrender(ActionContextTemplate contextTemplate) {
+		this.performedActions.add(ActionType.SURRENDER_ACTION);
+		return ActionResult.successful();
 	}
 
 	@Override
-	public boolean playerPassTurn(ActionContextTemplate contextTemplate) {
-		return this.performedActions.add(ActionType.PASS_TURN);
+	public ActionResult playerPassTurn(ActionContextTemplate contextTemplate) {
+		this.performedActions.add(ActionType.PASS_TURN);
+		return ActionResult.successful();
 	}
 
 	public List<ActionType> getPerformedActions() {

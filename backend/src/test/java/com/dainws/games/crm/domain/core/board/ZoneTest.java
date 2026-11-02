@@ -17,27 +17,16 @@ class ZoneTest {
 
 	private static final int HORIZONTAL_DIMENSION = 2;
 	private static final int VERTICAL_DIMENSION = 2;
-	private static final String PREVIOUS_ROW_REQUIRED_CODE =
-			"exception.zone.row.previous_need_to_be_filled";
 	private static final int FIRST_ROW = 0;
 	private static final int SECOND_ROW = 1;
 	private static final int FIRST_COLUMN = 0;
 	private static final int SECOND_COLUMN = 1;
-	private static final String CODE_PROPERTY = "codeValue";
 
 	@Test
-	void testGivenFirstRowNotFilled_whenPutCombatantInSecondRow_thenThrowsNotAllowed() throws NotAllowedException {
+	void testGivenFirstRowNotFilled_whenPutCombatantInSecondRow_thenThrowsIllegalState() {
 		ThrowingCallable putCombatant = this.putInSecondRowWithFirstRowNotFilled();
 
-		assertThatThrownBy(putCombatant).isInstanceOf(NotAllowedException.class);
-	}
-
-	@Test
-	void testGivenFirstRowNotFilled_whenPutCombatantInSecondRow_thenCodeIsPreviousRowRequired() throws NotAllowedException {
-		ThrowingCallable putCombatant = this.putInSecondRowWithFirstRowNotFilled();
-
-		assertThatThrownBy(putCombatant)
-				.hasFieldOrPropertyWithValue(CODE_PROPERTY, PREVIOUS_ROW_REQUIRED_CODE);
+		assertThatThrownBy(putCombatant).isInstanceOf(IllegalStateException.class);
 	}
 
 	@Test
@@ -189,13 +178,13 @@ class ZoneTest {
 	}
 
 	@Test
-	void testGivenEmptyCoordinate_whenSwapCombatants_thenThrowsNotAllowed() {
+	void testGivenEmptyCoordinate_whenSwapCombatants_thenThrowsIllegalState() {
 		Zone zone = this.createZone();
 		Coordinate first = new Coordinate(FIRST_ROW, FIRST_COLUMN);
 		Coordinate second = new Coordinate(FIRST_ROW, SECOND_COLUMN);
 		ThrowingCallable swap = () -> zone.swapCombatants(first, second);
 
-		assertThatThrownBy(swap).isInstanceOf(NotAllowedException.class);
+		assertThatThrownBy(swap).isInstanceOf(IllegalStateException.class);
 	}
 
 	@Test
@@ -297,8 +286,7 @@ class ZoneTest {
 		assertThat(zone.isEnemy(player)).isTrue();
 	}
 
-	private ThrowingCallable putInSecondRowWithFirstRowNotFilled()
-			throws NotAllowedException {
+	private ThrowingCallable putInSecondRowWithFirstRowNotFilled() {
 		Zone zone = this.createZone();
 		Coordinate firstCoordinate = new Coordinate(FIRST_ROW, FIRST_COLUMN);
 		Warrior firstWarrior = CardBuilder.buildCommonWarrior();
