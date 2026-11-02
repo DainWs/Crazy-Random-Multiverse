@@ -1,15 +1,11 @@
 package com.dainws.games.crm.controller;
 
-import static org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTR_NAME;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
 
 import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.response.PartyDto;
@@ -80,17 +76,6 @@ public class WebUserController implements UserController {
 	public PartyListDto getPartyList() {
 		List<Party> parties = this.userService.getParties();
 		return ModelMapper.toPartyListDto(parties);
-	}
-	
-	@EventListener
-	public void onSessionCreated(SessionConnectEvent event) {
-		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		Object httpSessionId = headerAccessor.getSessionAttributes().get(HTTP_SESSION_ID_ATTR_NAME);
-		UserCode userCode = UserCode.from(String.valueOf(httpSessionId));
-
-		User user = this.userService.get(userCode);
-		user.setSessionId(headerAccessor.getSessionId());
-		this.userService.update(user);
 	}
 	
 	@EventListener
