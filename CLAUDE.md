@@ -89,6 +89,8 @@ When asked to add a pending task to the roadmap, put it in the "Pending tasks" s
 - You are going to change something in the roadmap's table of closed decisions.
 - A roadmap bullet is ambiguous or depends on a measurement that does not exist yet.
 
+When a decision is the user's to make, ask it with a questionnaire (the `AskUserQuestion` tool, with options and a recommended one first), not with open questions in the chat text. The questionnaire does not replace the report: first give all the relevant information (findings, context, trade-offs, the plan), then show the questionnaire.
+
 ## Style reminder
 
 The rules most often broken:
