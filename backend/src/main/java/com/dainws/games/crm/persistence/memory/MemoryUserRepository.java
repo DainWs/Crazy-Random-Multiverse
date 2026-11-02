@@ -2,6 +2,7 @@ package com.dainws.games.crm.persistence.memory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -38,11 +39,12 @@ public class MemoryUserRepository implements UserRepository {
 
 	@Override
 	public User find(UserCode userCode) throws NotFoundException {
-		if (this.has(userCode)) {
-			return this.users.get(userCode);
+		User user = this.users.get(userCode);
+		if (user == null) {
+			throw new NotFoundException("user");
 		}
 
-		throw new NotFoundException("user");
+		return user;
 	}
 
 	@Override

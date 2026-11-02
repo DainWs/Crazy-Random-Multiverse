@@ -1,6 +1,7 @@
 package com.dainws.games.crm.persistence.memory;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -39,10 +40,11 @@ public class MemoryGameRepository implements GameRepository {
 
 	@Override
 	public Game find(GameCode gameCode) throws NotFoundException {
-		if (this.exists(gameCode)) {
-			return this.games.get(gameCode);
+		Game game = this.games.get(gameCode);
+		if (game == null) {
+			throw NotFoundException.gameNotFound();
 		}
 
-		throw NotFoundException.gameNotFound();
+		return game;
 	}
 }

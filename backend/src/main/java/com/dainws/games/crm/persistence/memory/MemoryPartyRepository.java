@@ -2,6 +2,7 @@ package com.dainws.games.crm.persistence.memory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -50,11 +51,12 @@ public class MemoryPartyRepository implements PartyRepository {
 
 	@Override
 	public Party find(PartyCode partyCode) throws NotFoundException {
-		if (this.has(partyCode)) {
-			return this.parties.get(partyCode);
+		Party party = this.parties.get(partyCode);
+		if (party == null) {
+			throw new NotFoundException("party");
 		}
 
-		throw new NotFoundException("party");
+		return party;
 	}
 	
 	@Override
