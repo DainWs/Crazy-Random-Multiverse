@@ -9,7 +9,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
-import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 class ActionMapperTest {
@@ -117,7 +117,7 @@ class ActionMapperTest {
 	}
 
 	@Test
-	void testGivenEquipDtoWithCardCodeThatIsNotANumber_whenMap_thenThrowsMalformedRequest() {
+	void testGivenEquipDtoWithCardCodeThatIsNotANumber_whenMap_thenThrowsInvalidCode() {
 		ActionDto actionDto = this.createActionDto();
 		CardCodeDto cardCodeDto = this.createCardCodeDto();
 		cardCodeDto.setCode("not-a-number");
@@ -125,7 +125,7 @@ class ActionMapperTest {
 		actionDto.setTargetPosition(new PositionDto());
 
 		assertThatThrownBy(() -> ActionMapper.mapEquipActionDto(actionDto))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 
 	private CardCodeDto createCardCodeDto() {

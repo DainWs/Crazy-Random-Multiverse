@@ -2,6 +2,8 @@ package com.dainws.games.crm.domain.core.card;
 
 import java.util.Objects;
 
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
+
 public final class CardCode {
 	private long code;
 	private CardType type;
@@ -51,6 +53,10 @@ public final class CardCode {
 	}
 
 	public static CardCode from(String code, CardType type) {
-		return new CardCode(Long.parseLong(code), type);
+		try {
+			return new CardCode(Long.parseLong(code), type);
+		} catch (NumberFormatException exception) {
+			throw new InvalidCodeException(exception);
+		}
 	}
 }

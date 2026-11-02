@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.core.GameCode;
-import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
 
 class CodeParsingTest {
 
@@ -13,32 +13,32 @@ class CodeParsingTest {
 	private static final String BASE64_OF_NOT_A_UUID = "bm90LWEtdXVpZA";
 
 	@Test
-	void testGivenTextThatIsNotBase64_whenGameCodeFromBase64UrlSafe_thenThrowsMalformedRequest() {
+	void testGivenTextThatIsNotBase64_whenGameCodeFromBase64UrlSafe_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> GameCode.fromBase64UrlSafe(NOT_BASE64))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 
 	@Test
-	void testGivenBase64OfAnythingButAUuid_whenGameCodeFromBase64UrlSafe_thenThrowsMalformedRequest() {
+	void testGivenBase64OfAnythingButAUuid_whenGameCodeFromBase64UrlSafe_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> GameCode.fromBase64UrlSafe(BASE64_OF_NOT_A_UUID))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 
 	@Test
-	void testGivenTextThatIsNotBase64_whenPartyCodeFromBase64UrlSafe_thenThrowsMalformedRequest() {
+	void testGivenTextThatIsNotBase64_whenPartyCodeFromBase64UrlSafe_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> PartyCode.fromBase64UrlSafe(NOT_BASE64))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 
 	@Test
-	void testGivenBase64OfAnythingButAUuid_whenPartyCodeFromBase64UrlSafe_thenThrowsMalformedRequest() {
+	void testGivenBase64OfAnythingButAUuid_whenPartyCodeFromBase64UrlSafe_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> PartyCode.fromBase64UrlSafe(BASE64_OF_NOT_A_UUID))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 
 	@Test
-	void testGivenTextThatIsNotBase64_whenUserCodeFromBase64UrlSafe_thenThrowsMalformedRequest() {
+	void testGivenTextThatIsNotBase64_whenUserCodeFromBase64UrlSafe_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> UserCode.fromBase64UrlSafe(NOT_BASE64))
-				.isInstanceOf(MalformedRequestException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 }

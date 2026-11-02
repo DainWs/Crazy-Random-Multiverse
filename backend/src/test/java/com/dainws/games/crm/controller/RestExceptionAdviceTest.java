@@ -9,7 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.HttpInputMessage;
 
 import com.dainws.games.crm.controller.dto.response.ExceptionCodeDto;
-import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
@@ -41,10 +41,10 @@ class RestExceptionAdviceTest {
 	}
 
 	@Test
-	void testGivenMalformedRequest_whenHandled_thenBodyCarriesTheMalformedKey() {
-		MalformedRequestException exception = new MalformedRequestException(new IllegalArgumentException());
+	void testGivenInvalidCode_whenHandled_thenBodyCarriesTheMalformedKey() {
+		InvalidCodeException exception = new InvalidCodeException(new IllegalArgumentException());
 
-		ResponseEntity<ExceptionCodeDto> response = this.advice.onGameRuntimeException(exception);
+		ResponseEntity<ExceptionCodeDto> response = this.advice.onInvalidCode(exception);
 
 		assertThat(response.getBody().getKey()).isEqualTo("exception.request.malformed");
 	}

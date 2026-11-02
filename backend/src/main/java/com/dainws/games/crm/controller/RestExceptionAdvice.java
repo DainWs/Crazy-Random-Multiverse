@@ -13,7 +13,7 @@ import com.dainws.games.crm.controller.dto.response.ExceptionCodeDto;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
-import com.dainws.games.crm.domain.core.exception.RequestExceptionCode;
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
 import com.dainws.games.crm.services.exception.UsecaseException;
 
 @RestControllerAdvice
@@ -35,6 +35,12 @@ public class RestExceptionAdvice {
 		return this.badRequest(exception.getCode());
 	}
 
+	@ExceptionHandler(InvalidCodeException.class)
+	public ResponseEntity<ExceptionCodeDto> onInvalidCode(InvalidCodeException exception) {
+		this.logger.debug("Request carries an invalid code: {}", exception.getMessage());
+		return this.badRequest(new RequestExceptionCode(RequestExceptionCode.Code.MALFORMED));
+	}
+
 	@ExceptionHandler(NotAllowedException.class)
 	public ResponseEntity<ExceptionCodeDto> onNotAllowedException(NotAllowedException exception) {
 		return this.badRequest(exception.getCode());
@@ -44,7 +50,7 @@ public class RestExceptionAdvice {
 			MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<ExceptionCodeDto> onUnreadableRequest(Exception exception) {
 		this.logger.debug("Request cannot be read: {}", exception.getMessage());
-		return this.badRequest(RequestExceptionCode.MALFORMED);
+		return this.badRequest(new RequestExceptionCode(RequestExceptionCode.Code.MALFORMED));
 	}
 
 	private ResponseEntity<ExceptionCodeDto> badRequest(ExceptionCode exceptionCode) {

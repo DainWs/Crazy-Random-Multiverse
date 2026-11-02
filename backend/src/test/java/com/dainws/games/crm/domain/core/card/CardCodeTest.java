@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.domain.core.exception.InvalidCodeException;
+
 class CardCodeTest {
 
 	@Test
@@ -29,8 +31,8 @@ class CardCodeTest {
 	}
 
 	@Test
-	void testGivenNonNumericText_whenFrom_thenThrowsNumberFormatException() {
+	void testGivenNonNumericText_whenFrom_thenThrowsInvalidCode() {
 		assertThatThrownBy(() -> CardCode.from("abc", CardType.WARRIOR))
-				.isInstanceOf(NumberFormatException.class);
+				.isInstanceOf(InvalidCodeException.class);
 	}
 }
