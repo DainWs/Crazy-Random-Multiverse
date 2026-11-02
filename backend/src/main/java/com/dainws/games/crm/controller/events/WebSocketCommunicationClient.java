@@ -43,7 +43,7 @@ public class WebSocketCommunicationClient implements CommunicationClient {
 	@Override
 	public void sendExceptionCode(Player player, ExceptionCode code) {
 		if (this.canSendTo(player)) {
-			this.logger.info("Enviando error {}, al cliente {}", code, player.getName());
+			this.logger.debug("Sending error {} to client {}", code, player.getName());
 
 			User user = this.getUserFrom(player);
 			String sessionId = user.getSessionId();
@@ -55,7 +55,7 @@ public class WebSocketCommunicationClient implements CommunicationClient {
 	@Override
 	public void sendEvent(Player player, Event event) {
 		if (this.canSendTo(player)) {
-			this.logger.info("Enviando evento {}, al cliente {}", event.getCode(), player.getName());
+			this.logger.debug("Sending event {} to client {}", event.getCode(), player.getName());
 
 			User user = this.getUserFrom(player);
 			String sessionId = user.getSessionId();
@@ -79,7 +79,7 @@ public class WebSocketCommunicationClient implements CommunicationClient {
 
 	@Override
 	public void sendPartyInfo(User to, Party party) {
-		this.logger.trace("Enviando información de la fiesta, al cliente {}", to.getName());
+		this.logger.trace("Sending party information to client {}", to.getName());
 
 		String sessionId = to.getCode().text();
 		PartyDto partyDto = ModelMapper.toPartyDto(party);

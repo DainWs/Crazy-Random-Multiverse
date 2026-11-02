@@ -48,7 +48,7 @@ Guides
 
 Style (refactor commits)
 
-9. [ ] Logs of the `Memory*Repository` and the `*CommunicationClient` in English, moved from `info` to `trace` or `debug`.
+9. [x] Logs of the `Memory*Repository` and the `*CommunicationClient` in English, moved from `info` to `trace` or `debug`. Done, waiting for the user's review before the commit. Next: item 10.
 10. [ ] Rename `newIntance` -> `newInstance` and `mithicWarriorBuilder` -> `mythicWarriorBuilder`, tests included.
 11. [ ] `NotFoundException` factories for party, user and game_mode; remove the commented `withName`/`withDescription` in `MemoryCardRepositoryPopulator`; `Long`/`0l` -> `long` in `Spell`.
 12. [ ] Rename the DTO packages (see decisions).

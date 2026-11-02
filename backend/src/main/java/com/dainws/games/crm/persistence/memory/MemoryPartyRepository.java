@@ -28,13 +28,13 @@ public class MemoryPartyRepository implements PartyRepository {
 
 	@Override
 	public void save(Party party) {
-		this.logger.info("Guardando Party con codigo {}", party.getCode());
+		this.logger.debug("Saving party with code {}", party.getCode());
 		this.parties.put(party.getCode(), party);
 	}
 
 	@Override
 	public void delete(PartyCode partyCode) {
-		this.logger.info("Borrando Party con codigo {}", partyCode);
+		this.logger.debug("Deleting party with code {}", partyCode);
 		this.parties.remove(partyCode);
 	}
 	

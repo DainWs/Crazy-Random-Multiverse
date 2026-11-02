@@ -23,13 +23,13 @@ public class MemoryGameRepository implements GameRepository {
 
 	@Override
 	public void save(Game game) {
-		this.logger.info("Guardando el juego con codigo {}", game.getCode());
+		this.logger.debug("Saving game with code {}", game.getCode());
 		this.games.put(game.getCode(), game);
 	}
 
 	@Override
 	public void delete(GameCode gameCode) {
-		this.logger.info("Borrando el juego con codigo {}", gameCode);
+		this.logger.debug("Deleting game with code {}", gameCode);
 		this.games.remove(gameCode);
 	}
 

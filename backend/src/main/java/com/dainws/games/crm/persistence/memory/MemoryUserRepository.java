@@ -25,7 +25,7 @@ public class MemoryUserRepository implements UserRepository {
 
 	@Override
 	public void save(User user) {
-		this.logger.info("Guardando User con nombre {}", user.getName());
+		this.logger.debug("Saving user named {}", user.getName());
 		this.users.put(user.getCode(), user);
 	}
 
@@ -33,7 +33,7 @@ public class MemoryUserRepository implements UserRepository {
 	public void delete(UserCode userCode) {
 		User user = this.users.remove(userCode);
 		if (user != null) {
-			this.logger.info("Borrando usuario con nombre {}", user.getName());
+			this.logger.debug("Deleting user named {}", user.getName());
 		}
 	}
 
