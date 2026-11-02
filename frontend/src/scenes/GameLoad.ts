@@ -104,7 +104,7 @@ class GameLoadScene extends Scene {
         this.enqueueImage('rare-card', 'card-rare.png');
         this.enqueueImage('epic-card', 'card-epic.png');
         this.enqueueImage('legendary-card', 'card-legendary.png');
-        this.enqueueImage('mithic-card', 'card-mithic.png');
+        this.enqueueImage('mythic-card', 'card-mythic.png');
 
         this.enqueueImage('leader-card', 'card-leader.png');
         this.enqueueImage('equipment-card', 'card-equipment.png');
@@ -121,12 +121,12 @@ class GameLoadScene extends Scene {
         this.enqueueAudio('common-attack-1-3', 'common-attack-01-3.mp3');
         this.enqueueAudio('common-die-1-1', 'common-die-01.mp3');
 
-        this.enqueueImage('mithic-1', 'mithic-01.png');
-        this.enqueueAudio('mithic-put-1-1', 'mithic-put-01.mp3');
-        this.enqueueAudio('mithic-attack-1-1', 'mithic-attack-01-1.mp3');
-        this.enqueueAudio('mithic-attack-1-2', 'mithic-attack-01-1.mp3');
-        this.enqueueAudio('mithic-attack-1-3', 'mithic-attack-01-1.mp3');
-        this.enqueueAudio('mithic-die-1-1', 'mithic-die-01.mp3');
+        this.enqueueImage('mythic-1', 'mythic-01.png');
+        this.enqueueAudio('mythic-put-1-1', 'mythic-put-01.mp3');
+        this.enqueueAudio('mythic-attack-1-1', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('mythic-attack-1-2', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('mythic-attack-1-3', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('mythic-die-1-1', 'mythic-die-01.mp3');
     }
 
     private registerManifestResources(manifest: GameResources) {
@@ -217,7 +217,7 @@ class GameLoadScene extends Scene {
         return [
             cardFactory.createLeaderCard(),
             cardFactory.createWarriorCard({ rarity: 'COMMON', code: '1' }),
-            cardFactory.createWarriorCard({ rarity: 'MITHIC', code: '1' }),
+            cardFactory.createWarriorCard({ rarity: 'MYTHIC', code: '1' }),
             cardFactory.createWarriorCard({}),
             cardFactory.createWarriorCard({}),
             cardFactory.createEquipmentCard(),

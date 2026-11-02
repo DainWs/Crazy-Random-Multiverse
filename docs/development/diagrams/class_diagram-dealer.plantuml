@@ -18,7 +18,7 @@ interface DeckRepository {
  +getRareWarriorDeck(): Deck
  +getEpicWarriorDeck(): Deck
  +getLegendaryWarriorDeck(): Deck
- +getMithicWarriorDeck(): Deck
+ +getMythicWarriorDeck(): Deck
 }
 
 interface DealStrategy {

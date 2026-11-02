@@ -152,7 +152,7 @@ const getRandomCardType = (): CardType => {
 }
 
 const getRandomCardRarity = (): CardRarity => {
-  const cardRarities: CardRarity[] = ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MITHIC"];
+  const cardRarities: CardRarity[] = ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC"];
   return cardRarities[Math.floor(Math.random()*cardRarities.length)];
 }
 

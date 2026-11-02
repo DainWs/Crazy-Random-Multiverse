@@ -25,7 +25,7 @@ public class WarriorBuilder {
 		this.statsRarityMultiplier.put(WarriorRarity.RARE, Range.of(1.2D, 2D));
 		this.statsRarityMultiplier.put(WarriorRarity.EPIC, Range.of(4D, 8D));
 		this.statsRarityMultiplier.put(WarriorRarity.LEGENDARY, Range.of(10D, 20D));
-		this.statsRarityMultiplier.put(WarriorRarity.MITHIC, Range.of(35D, 70D));
+		this.statsRarityMultiplier.put(WarriorRarity.MYTHIC, Range.of(35D, 70D));
 	}
 
 	public WarriorBuilder shouldBeFullValid(boolean should) {
@@ -97,9 +97,9 @@ public class WarriorBuilder {
 		return builder;
 	}
 
-	public Warrior.Builder useMithicWarrior() {
+	public Warrior.Builder useMythicWarrior() {
 		Warrior.Builder builder = Warrior.mythicWarriorBuilder();
-		this.currentMultiplier = this.statsRarityMultiplier.get(WarriorRarity.MITHIC);
+		this.currentMultiplier = this.statsRarityMultiplier.get(WarriorRarity.MYTHIC);
 
 		if (this.shouldBeValid) {
 			this.makeItValid(builder);
@@ -148,7 +148,7 @@ public class WarriorBuilder {
 		return new WarriorBuilder().useLegendaryWarrior().build();
 	}
 
-	public static Warrior buildMithicWarrior() {
-		return new WarriorBuilder().useMithicWarrior().build();
+	public static Warrior buildMythicWarrior() {
+		return new WarriorBuilder().useMythicWarrior().build();
 	}
 }

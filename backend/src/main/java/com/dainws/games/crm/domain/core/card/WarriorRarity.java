@@ -6,5 +6,5 @@ public enum WarriorRarity {
 	RARE,
 	EPIC,
 	LEGENDARY,
-	MITHIC;
+	MYTHIC;
 }

@@ -130,7 +130,7 @@ enum CardRarity {
  RARE
  EPIC
  LEGENDARY
- MITHIC
+ MYTHIC
 }
 
 Card *--> CardCode

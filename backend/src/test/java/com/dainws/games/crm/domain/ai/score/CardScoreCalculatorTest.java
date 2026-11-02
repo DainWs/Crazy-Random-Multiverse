@@ -99,8 +99,8 @@ class CardScoreCalculatorTest {
 	}
 
 	@Test
-	void testGivenMithicWarriorCard_whenCalculateScore_thenScoreIsInRange() {
-		Card card = CardBuilder.buildMithicWarrior();
+	void testGivenMythicWarriorCard_whenCalculateScore_thenScoreIsInRange() {
+		Card card = CardBuilder.buildMythicWarrior();
 		Range<Score> range = this.scoreRange(100, 1000);
 
 		Score result = this.calculator.calculate(card);

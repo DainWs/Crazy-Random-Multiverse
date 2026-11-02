@@ -2,7 +2,7 @@ import { Armor, Damage, Health, Statistic, StatisticType } from "@/domain/Statis
 import Skill from "@/domain/Skills";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
-type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MITHIC';
+type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MYTHIC';
 type WarriorTexture =
   | 'card'
   | 'common-card'
@@ -10,7 +10,7 @@ type WarriorTexture =
   | 'rare-card'
   | 'epic-card'
   | 'legendary-card'
-  | 'mithic-card';
+  | 'mythic-card';
 
 type CardTexture =
   | WarriorTexture

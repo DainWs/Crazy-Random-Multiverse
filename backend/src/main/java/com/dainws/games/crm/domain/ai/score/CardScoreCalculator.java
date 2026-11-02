@@ -22,7 +22,7 @@ public class CardScoreCalculator {
 		this.rarityScoreMap.put(WarriorRarity.RARE, 3);
 		this.rarityScoreMap.put(WarriorRarity.EPIC, 4);
 		this.rarityScoreMap.put(WarriorRarity.LEGENDARY, 4);
-		this.rarityScoreMap.put(WarriorRarity.MITHIC, 4);
+		this.rarityScoreMap.put(WarriorRarity.MYTHIC, 4);
 	}
 
 	public Score calculate(Card card) {

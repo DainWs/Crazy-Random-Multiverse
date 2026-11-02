@@ -92,7 +92,7 @@ public class CardBuilder {
 		return new WarriorBuilder().useLegendaryWarrior().build();
 	}
 
-	public static Warrior buildMithicWarrior() {
-		return new WarriorBuilder().useMithicWarrior().build();
+	public static Warrior buildMythicWarrior() {
+		return new WarriorBuilder().useMythicWarrior().build();
 	}
 }
