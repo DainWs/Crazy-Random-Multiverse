@@ -184,7 +184,6 @@ Not tied to a phase.
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
 - [ ] A person tests a real browser connection with the session cookie; the frontend does not call `connect()` yet (see Phase 2)
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
-- [ ] Decide whether to add tooling that enforces the style rules (Checkstyle to ban `switch`, ArchUnit to ban records in the DTO package); each is a new dependency, ask first
 - [ ] In the planning stage, before implementing `CON-21`, weigh the pros and cons of giving each event its own `EventDetails` implementation
 
 ## Post-MVP
