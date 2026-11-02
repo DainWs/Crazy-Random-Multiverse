@@ -79,8 +79,8 @@ public class MemoryDeckPopulator extends AbstractDeckPopulator {
 	}
 
 	private void addSpells(MemoryCardRepository cardRepository) {
-		cardRepository.set(Spell.newIntance(0l, 1l));
-		cardRepository.set(Spell.newIntance(1l, 2l));
+		cardRepository.set(Spell.newInstance(0l, 1l));
+		cardRepository.set(Spell.newInstance(1l, 2l));
 	}
 
 }

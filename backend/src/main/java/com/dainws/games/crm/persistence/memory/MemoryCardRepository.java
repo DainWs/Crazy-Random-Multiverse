@@ -123,7 +123,7 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	private Spell cloneSpell(Card card) {
 		Spell prototype = (Spell) card;
 		CardCode cardCode = prototype.getCode();
-		return Spell.newIntance(cardCode.code(), prototype.getEffectId());
+		return Spell.newInstance(cardCode.code(), prototype.getEffectId());
 	}
 
 	private Equipment cloneEquipment(Card card) {

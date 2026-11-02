@@ -122,7 +122,7 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 				.withHealth(15)
 				.build());
 
-		cardRepository.set(Warrior.mithicWarriorBuilder()
+		cardRepository.set(Warrior.mythicWarriorBuilder()
 				.withCode(code++)
 				// .withName("Odin")
 				// .withDescription("Un dios de la mitología nórdica")
@@ -133,7 +133,7 @@ public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulat
 	}
 
 	private void addSpells(MemoryCardRepository cardRepository) {
-		cardRepository.set(Spell.newIntance(0l, 1l));
-		cardRepository.set(Spell.newIntance(1l, 2l));
+		cardRepository.set(Spell.newInstance(0l, 1l));
+		cardRepository.set(Spell.newInstance(1l, 2l));
 	}
 }

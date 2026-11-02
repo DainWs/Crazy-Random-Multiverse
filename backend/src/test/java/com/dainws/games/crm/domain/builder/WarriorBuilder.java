@@ -98,7 +98,7 @@ public class WarriorBuilder {
 	}
 
 	public Warrior.Builder useMithicWarrior() {
-		Warrior.Builder builder = Warrior.mithicWarriorBuilder();
+		Warrior.Builder builder = Warrior.mythicWarriorBuilder();
 		this.currentMultiplier = this.statsRarityMultiplier.get(WarriorRarity.MITHIC);
 
 		if (this.shouldBeValid) {

@@ -10,6 +10,6 @@ public class EquipmentTest extends CardTest {
 	
 	@Override
 	Card createDifferentCardTypeWithCode(long code) {
-		return Spell.newIntance(code, 0l);
+		return Spell.newInstance(code, 0l);
 	}
 }

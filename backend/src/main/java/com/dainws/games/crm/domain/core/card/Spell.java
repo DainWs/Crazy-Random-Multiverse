@@ -23,13 +23,13 @@ public class Spell extends Card {
 		return this.effectId;
 	}
 
-	public static Spell newIntance(Long id, Long effectId) {
+	public static Spell newInstance(Long id, Long effectId) {
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(effectId);
 		return new Spell(id, EffectId.from(effectId));
 	}
 	
-	public static Spell newIntance(Long id, EffectId effectId) {
+	public static Spell newInstance(Long id, EffectId effectId) {
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(effectId);
 		return new Spell(id, effectId);

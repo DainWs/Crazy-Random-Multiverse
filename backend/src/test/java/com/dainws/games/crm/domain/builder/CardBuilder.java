@@ -46,7 +46,7 @@ public class CardBuilder {
 	public Spell buildFullValidSpell() {
 		long code = (long) (Math.random() * 10000000);
 		long effectId = (long) (Math.random() * 10);
-		return Spell.newIntance(code, effectId);
+		return Spell.newInstance(code, effectId);
 	}
 
 	public Card buildRandomFullValidCard() {

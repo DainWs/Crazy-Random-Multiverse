@@ -49,7 +49,7 @@ Guides
 Style (refactor commits)
 
 9. [x] Logs of the `Memory*Repository` and the `*CommunicationClient` in English, moved from `info` to `trace` or `debug`. Done, waiting for the user's review before the commit. Next: item 10.
-10. [ ] Rename `newIntance` -> `newInstance` and `mithicWarriorBuilder` -> `mythicWarriorBuilder`, tests included.
+10. [x] Rename `newIntance` -> `newInstance` and `mithicWarriorBuilder` -> `mythicWarriorBuilder`, tests included. Done, waiting for the user's review before the commit. Next: item 11.
 11. [ ] `NotFoundException` factories for party, user and game_mode; remove the commented `withName`/`withDescription` in `MemoryCardRepositoryPopulator`; `Long`/`0l` -> `long` in `Spell`.
 12. [ ] Rename the DTO packages (see decisions).
 13. [x] Rename the JPA classes and package (see decisions), `JPATestConfiguration` -> `PersistenceTestConfiguration` and the unused import left by item 1 removed. Done, waiting for the user's review before the commit. Next: item 2.

@@ -6,7 +6,7 @@ public class SpellTest extends CardTest {
 
 	@Override
 	Card createCardWithCode(long code) {
-		return Spell.newIntance(code, 0l);
+		return Spell.newInstance(code, 0l);
 	}
 	
 	@Override

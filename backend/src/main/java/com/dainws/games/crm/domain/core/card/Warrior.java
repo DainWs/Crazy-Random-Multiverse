@@ -59,7 +59,7 @@ public class Warrior extends Combatant {
 		return new Builder(WarriorRarity.LEGENDARY);
 	}
 
-	public static Builder mithicWarriorBuilder() {
+	public static Builder mythicWarriorBuilder() {
 		return new Builder(WarriorRarity.MITHIC);
 	}
 
