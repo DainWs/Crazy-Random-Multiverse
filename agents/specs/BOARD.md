@@ -9,8 +9,6 @@ Order from the center of the table: center → row 1 → row 2 → leader. Row 1
 - **BOARD-3** Rows 1 and 2 hold at most 3 cards each, so a zone holds at most 6 warriors plus the leader.
 - **BOARD-4** All cards on the board are public.
 - **BOARD-5** Row 2 must be filled before row 1.
-- **BOARD-8** A placed card has a one-turn cooldown before it can attack. The leader has none: it can attack from its owner's first turn if it is unprotected.
-- **BOARD-9** Each card may attack once per turn unless the card says otherwise.
 
 ## Movement
 
@@ -23,6 +21,11 @@ Order from the center of the table: center → row 1 → row 2 → leader. Row 1
 - Given a warrior in row 1 that can attack
 - When its owner attacks with it and then moves it to a free slot in row 2
 - Then both actions are accepted
+
+## Attack limits
+
+- **BOARD-8** A placed card has a one-turn cooldown before it can attack. The leader has none: it can attack from its owner's first turn if it is unprotected.
+- **BOARD-9** Each card may attack once per turn unless the card says otherwise.
 
 ## Protection
 

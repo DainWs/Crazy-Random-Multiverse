@@ -137,8 +137,8 @@ A statistic with value 0 is not sent.
 
 - **CON-17** A valid action changes the state, and the result reaches every client through events, including the client that sent it.
 - **CON-18** The response to a request says whether it was accepted: 2xx if it was, 400 with `ExceptionCodeDto` (`{ key }`, an `exception.*` key) if it was rejected. This applies to every endpoint and every expected error (game rules, parties, users, denied accesses, elements not found). The client tells them apart by the key. A 500 means an unexpected failure.
-- **CON-20** Errors are only reported in the response to a request. There is no socket channel for errors, because every expected error comes from a request. A refused socket connection (`CON-2`) is reported by Socket.IO itself.
 - **CON-19** The client sends no new action until the previous one has been answered. The server gives no special treatment to duplicates: it validates each action against the current state.
+- **CON-20** Errors are only reported in the response to a request. There is no socket channel for errors, because every expected error comes from a request. A refused socket connection (`CON-2`) is reported by Socket.IO itself.
 
 ## REST API
 
