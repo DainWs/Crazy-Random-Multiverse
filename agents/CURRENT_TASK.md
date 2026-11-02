@@ -31,7 +31,7 @@ Bugs
 2. [x] `MemoryUserRepository.delete` idempotent (single `remove`); `ActionDto.type` is `@NotNull` and `PlayerController` validates it with `@Valid` (HTTP 400); `PlayerUsecase.performAction` throws `IllegalArgumentException` when a type has no handler.
 3. [x] Repositories: `find` with a single `get` and `NotFoundException` on `null` (Game, Party, User), instead of `exists`/`has` followed by `get`.
    - `exists`/`has` stay in the interfaces: `GameService.findGameInProgressOf` still uses `exists`.
-4. [ ] `MemoryCardRepositoryPopulator` stops catching `Exception`; a failure aborts startup.
+4. [x] `MemoryCardRepositoryPopulator` stops catching `Exception`; a failure aborts startup. Done, waiting for the user's review before the commit.
 
 Guides
 

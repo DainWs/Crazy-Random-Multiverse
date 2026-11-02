@@ -1,8 +1,5 @@
 package com.dainws.games.crm.configuration.persistence;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Equipment;
@@ -12,19 +9,18 @@ import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 
+/**
+ * @deprecated to be removed once the party owner selects or uploads the deck
+ *             that is kept in memory and used during their game.
+ */
+@Deprecated
 public class MemoryCardRepositoryPopulator extends AbstractCardRepositoryPopulator<MemoryCardRepository> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MemoryCardRepositoryPopulator.class);
-
 	@Override
 	public void populate(MemoryCardRepository cardRepository) {
-		try {
-			this.addLeaders(cardRepository);
-			this.addEquipments(cardRepository);
-			this.addWarriors(cardRepository);
-			this.addSpells(cardRepository);
-		} catch (Exception e) {
-			LOGGER.error("Failed to populate memory card repository", e);
-		}
+		this.addLeaders(cardRepository);
+		this.addEquipments(cardRepository);
+		this.addWarriors(cardRepository);
+		this.addSpells(cardRepository);
 	}
 
 	private void addLeaders(MemoryCardRepository cardRepository) {
