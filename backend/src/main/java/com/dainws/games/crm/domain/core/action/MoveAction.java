@@ -6,6 +6,7 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 
 public class MoveAction extends PlayerTurnAction {
 
@@ -45,19 +46,19 @@ public class MoveAction extends PlayerTurnAction {
 		Combatant combatant = this.getSourceCombatantFrom(context);
 
 		if (!sourceZone.hasCombatant(context.getSourceCoordinate())) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT));
 		}
 
 		if (!sourceZone.equals(targetZone)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE));
 		}
 
 		if (combatant.isType(CardType.LEADER)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_IS_LEADER);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_IS_LEADER));
 		}
 
 		if (!this.isTargetAllowed(context, combatant)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_NOT_ALLOWED);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_NOT_ALLOWED));
 		}
 
 		return ActionResult.successful();

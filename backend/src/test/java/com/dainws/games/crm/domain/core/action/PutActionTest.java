@@ -70,7 +70,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT));
 	}
 
 	@Test
@@ -80,7 +80,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_NOT_FOUND));
 	}
 
 	@Test
@@ -92,7 +92,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_COMBATANT);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_IS_NOT_COMBATANT));
 	}
 
 	@Test
@@ -102,7 +102,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_COORDINATE_IS_NULL);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_COORDINATE_IS_NULL));
 	}
 
 	@Test
@@ -112,7 +112,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(ZoneExceptionCode.COORDINATE_OUT_OF_BOUNDS);
+		assertThat(code).isEqualTo(new ZoneExceptionCode(ZoneExceptionCode.Code.COORDINATE_OUT_OF_BOUNDS));
 	}
 
 	@Test
@@ -124,7 +124,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(ZoneExceptionCode.COORDINATE_REQUIRES_LEADER);
+		assertThat(code).isEqualTo(new ZoneExceptionCode(ZoneExceptionCode.Code.COORDINATE_REQUIRES_LEADER));
 	}
 
 	@Test
@@ -134,7 +134,7 @@ class PutActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(ZoneExceptionCode.PREVIOUS_ROW_NEEDS_TO_BE_FILLED);
+		assertThat(code).isEqualTo(new ZoneExceptionCode(ZoneExceptionCode.Code.PREVIOUS_ROW_NEEDS_TO_BE_FILLED));
 	}
 
 	private ExceptionCode performAndGetCode(CustomActionContext actionContext) {

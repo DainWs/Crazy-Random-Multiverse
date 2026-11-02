@@ -7,6 +7,7 @@ import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -39,11 +40,11 @@ public class EquipAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_CARD_NOT_FOUND));
 		}
 
 		if (!card.isType(CardType.EQUIPMENT)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_EQUIPMENT);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_CARD_IS_NOT_EQUIPMENT));
 		}
 
 		return ActionResult.successful();

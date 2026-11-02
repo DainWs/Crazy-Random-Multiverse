@@ -17,10 +17,6 @@ public class ActionResult {
 	}
 
 	public ExceptionCode getExceptionCode() {
-		if (this.isSuccessful()) {
-			throw new IllegalStateException("A successful result has no exception code");
-		}
-
 		return this.exceptionCode;
 	}
 

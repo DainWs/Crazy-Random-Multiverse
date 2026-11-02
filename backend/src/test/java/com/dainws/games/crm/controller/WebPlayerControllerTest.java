@@ -20,6 +20,7 @@ import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.usecase.PlayerUsecase;
 import com.dainws.games.crm.usecase.RecordingPlayerActionFacade;
 
@@ -99,7 +100,7 @@ class WebPlayerControllerTest {
 
 	@Test
 	void testGivenRejectedAction_whenDispatchAction_thenResponseIsBadRequest() throws Exception {
-		this.facade.setResult(ActionResult.failed(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN));
+		this.facade.setResult(ActionResult.failed(new PlayerActionExceptionCode(Code.ALLOWED_ONLY_ON_TURN)));
 
 		this.mockMvc.perform(this.passTurnRequest()) //
 				.andExpect(status().isBadRequest());
@@ -107,10 +108,10 @@ class WebPlayerControllerTest {
 
 	@Test
 	void testGivenRejectedAction_whenDispatchAction_thenBodyCarriesTheExceptionKey() throws Exception {
-		this.facade.setResult(ActionResult.failed(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN));
+		this.facade.setResult(ActionResult.failed(new PlayerActionExceptionCode(Code.ALLOWED_ONLY_ON_TURN)));
 
 		this.mockMvc.perform(this.passTurnRequest()) //
-				.andExpect(jsonPath("$.key").value(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN.value()));
+				.andExpect(jsonPath("$.key").value(new PlayerActionExceptionCode(Code.ALLOWED_ONLY_ON_TURN).value()));
 	}
 
 	@Test

@@ -45,11 +45,11 @@ public class PutAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND);
+			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_NOT_FOUND));
 		}
 
 		if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_CARD_IS_NOT_COMBATANT);
+			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_IS_NOT_COMBATANT));
 		}
 
 		return this.checkTarget(context, card);
@@ -58,24 +58,24 @@ public class PutAction extends PlayerTurnAction {
 	private ActionResult checkTarget(ActionContext context, Card card) {
 		Coordinate targetCoordinate = context.getTargetCoordinate();
 		if (targetCoordinate == null) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_COORDINATE_IS_NULL);
+			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_COORDINATE_IS_NULL));
 		}
 
 		Zone targetZone = context.getTargetZone();
 		if (!targetZone.isInside(targetCoordinate)) {
-			return ActionResult.failed(ZoneExceptionCode.COORDINATE_OUT_OF_BOUNDS);
+			return ActionResult.failed(new ZoneExceptionCode(ZoneExceptionCode.Code.COORDINATE_OUT_OF_BOUNDS));
 		}
 
 		if (targetZone.hasCombatant(targetCoordinate)) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
+			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT));
 		}
 
 		if (targetZone.isLeaderSlot(targetCoordinate) && !card.isType(CardType.LEADER)) {
-			return ActionResult.failed(ZoneExceptionCode.COORDINATE_REQUIRES_LEADER);
+			return ActionResult.failed(new ZoneExceptionCode(ZoneExceptionCode.Code.COORDINATE_REQUIRES_LEADER));
 		}
 
 		if (!targetZone.isPreviousRowFilled(targetCoordinate.getRow())) {
-			return ActionResult.failed(ZoneExceptionCode.PREVIOUS_ROW_NEEDS_TO_BE_FILLED);
+			return ActionResult.failed(new ZoneExceptionCode(ZoneExceptionCode.Code.PREVIOUS_ROW_NEEDS_TO_BE_FILLED));
 		}
 
 		return ActionResult.successful();

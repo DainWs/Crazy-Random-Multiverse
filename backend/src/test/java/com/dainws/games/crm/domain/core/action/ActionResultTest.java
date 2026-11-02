@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 
 class ActionResultTest {
 
-	private static final ExceptionCode CODE = PlayerActionExceptionCode.SELECTED_CARD_NOT_FOUND;
+	private static final ExceptionCode CODE = new PlayerActionExceptionCode(Code.SELECTED_CARD_NOT_FOUND);
 
 	@Test
 	void testGivenSuccessfulResult_whenIsSuccessful_thenIsTrue() {
@@ -20,10 +21,10 @@ class ActionResultTest {
 	}
 
 	@Test
-	void testGivenSuccessfulResult_whenGetExceptionCode_thenThrowsIllegalState() {
+	void testGivenSuccessfulResult_whenGetExceptionCode_thenReturnsNull() {
 		ActionResult result = ActionResult.successful();
 
-		assertThatThrownBy(result::getExceptionCode).isInstanceOf(IllegalStateException.class);
+		assertThat(result.getExceptionCode()).isNull();
 	}
 
 	@Test

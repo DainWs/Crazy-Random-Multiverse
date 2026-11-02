@@ -18,6 +18,7 @@ import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -300,7 +301,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_SOURCE_IS_LEADER);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_IS_LEADER));
 	}
 
 	@Test
@@ -310,7 +311,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE));
 	}
 
 	@Test
@@ -320,7 +321,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT));
 	}
 
 	@Test
@@ -330,7 +331,7 @@ class MoveActionTest extends PlayerTurnActionTest {
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
 
-		assertThat(code).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_POSITION_NOT_ALLOWED);
+		assertThat(code).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_NOT_ALLOWED));
 	}
 
 	private ExceptionCode performAndGetCode(CustomActionContext actionContext) {

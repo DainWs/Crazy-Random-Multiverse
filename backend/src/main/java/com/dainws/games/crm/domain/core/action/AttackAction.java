@@ -6,6 +6,7 @@ import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 
 public class AttackAction extends PlayerTurnAction {
 
@@ -36,12 +37,12 @@ public class AttackAction extends PlayerTurnAction {
 
 	private ActionResult checkContext(ActionContext context, Combatant sourceCombatant) {
 		if (!sourceCombatant.canAttack()) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_SOURCE_ATTACK_IN_COOLDOWN);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_ATTACK_IN_COOLDOWN));
 		}
 
 		Zone targetZone = context.getTargetZone();
 		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
-			return ActionResult.failed(PlayerActionExceptionCode.SELECTED_TARGET_IS_PROTECTED);
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));
 		}
 
 		return ActionResult.successful();

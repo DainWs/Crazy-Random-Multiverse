@@ -13,6 +13,7 @@ import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 
@@ -39,7 +40,7 @@ class AttackActionTest extends PlayerTurnActionTest {
 
 		ActionResult result = turnAction.perform(actionContext);
 
-		assertThat(result.getExceptionCode()).isEqualTo(PlayerActionExceptionCode.SELECTED_TARGET_IS_PROTECTED);
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));
 	}
 
 	@Override

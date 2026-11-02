@@ -2,12 +2,24 @@ package com.dainws.games.crm.domain.core.exception;
 
 public class ZoneExceptionCode extends ExceptionCode {
 
-	public static final ExceptionCode COORDINATE_OUT_OF_BOUNDS = new ZoneExceptionCode("coordinate.out_of_bounds");
-	public static final ExceptionCode COORDINATE_REQUIRES_LEADER = new ZoneExceptionCode("coordinate.requires_leader");
-	public static final ExceptionCode PREVIOUS_ROW_NEEDS_TO_BE_FILLED = new ZoneExceptionCode("row.previous_need_to_be_filled");
+	public enum Code {
+		COORDINATE_OUT_OF_BOUNDS("coordinate.out_of_bounds"),
+		COORDINATE_REQUIRES_LEADER("coordinate.requires_leader"),
+		PREVIOUS_ROW_NEEDS_TO_BE_FILLED("row.previous_need_to_be_filled");
 
-	public ZoneExceptionCode(String value) {
-		super("zone." + value);
+		private final String text;
+
+		Code(String text) {
+			this.text = text;
+		}
+
+		public String text() {
+			return text;
+		}
+	}
+
+	public ZoneExceptionCode(Code code) {
+		super("zone." + code.text());
 	}
 
 }

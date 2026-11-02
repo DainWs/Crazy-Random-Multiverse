@@ -14,6 +14,7 @@ import com.dainws.games.crm.domain.core.card.Card;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public abstract class PlayerTurnActionTest implements ActionTest {
@@ -46,7 +47,7 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 
 		ActionResult result = turnAction.perform(actionContext);
 
-		assertThat(result.getExceptionCode()).isEqualTo(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN);
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.ALLOWED_ONLY_ON_TURN));
 	}
 
 	@Test
