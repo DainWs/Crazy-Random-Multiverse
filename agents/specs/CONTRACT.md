@@ -248,7 +248,5 @@ The keys of `CON-18`. Those marked as new do not exist in the code yet, and thos
 | `exception.player-action.selected_target_position_has_none_combatant` (new) | The target slot of an attack or an equipment is empty (`COMBAT-12`, `EQUIP-3`) |
 | `exception.player-action.equip_target_not_owned` (new) | `EQUIP-3` |
 | `exception.zone.coordinate.out_of_bounds` | The position is outside the zone |
-| `exception.zone.coordinate.already_filled` | The slot is occupied |
-| `exception.zone.coordinate.cannot_swap` | These cards cannot swap |
 | `exception.zone.coordinate.requires_leader` (renamed) | The slot only admits a leader |
 | `exception.zone.row.previous_need_to_be_filled` | `BOARD-5` |
