@@ -1,10 +1,12 @@
 package com.dainws.games.crm.controller;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.dainws.games.crm.controller.dto.response.ExceptionCodeDto;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 
 import jakarta.validation.Valid;
@@ -14,8 +16,8 @@ public interface PlayerController {
 	@PostMapping(value = "/game/{gameCode}/action",
 			consumes = MediaType.APPLICATION_JSON_VALUE
 	)
-	public void dispatchAction(
-			@PathVariable("gameCode") String gameCodeBase64UrlSafe, 
+	public ResponseEntity<ExceptionCodeDto> dispatchAction(
+			@PathVariable("gameCode") String gameCodeBase64UrlSafe,
 			@Valid @RequestBody ActionDto actionDto
 	);
 

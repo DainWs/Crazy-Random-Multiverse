@@ -2,6 +2,7 @@ package com.dainws.games.crm.controller;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
@@ -11,11 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.action.ActionResult;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.usecase.PlayerUsecase;
 import com.dainws.games.crm.usecase.RecordingPlayerActionFacade;
 
@@ -56,6 +60,37 @@ class WebPlayerControllerTest {
 				.content(body));
 
 		assertTrue(this.facade.getPerformedActions().isEmpty());
+	}
+
+	@Test
+	void testGivenRejectedAction_whenDispatchAction_thenResponseIsBadRequest() throws Exception {
+		this.facade.setResult(ActionResult.failed(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN));
+
+		this.mockMvc.perform(this.passTurnRequest()) //
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void testGivenRejectedAction_whenDispatchAction_thenBodyCarriesTheExceptionKey() throws Exception {
+		this.facade.setResult(ActionResult.failed(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN));
+
+		this.mockMvc.perform(this.passTurnRequest()) //
+				.andExpect(jsonPath("$.key").value(PlayerActionExceptionCode.ALLOWED_ONLY_ON_TURN.value()));
+	}
+
+	@Test
+	void testGivenAcceptedAction_whenDispatchAction_thenResponseIsOk() throws Exception {
+		this.mockMvc.perform(this.passTurnRequest()) //
+				.andExpect(status().isOk());
+	}
+
+	private MockHttpServletRequestBuilder passTurnRequest() {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(gameCode.text(), USER_CODE);
+
+		return post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body);
 	}
 
 	private String encode(GameCode gameCode) {
