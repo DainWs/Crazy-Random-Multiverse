@@ -1,8 +1,8 @@
 {"properties": [
 	{
-	  "name": "crm.jpa.type",
+	  "name": "crm.persistence.type",
 	  "type": "java.lang.String",
-	  "description": "Specifies jpa database type, default = \"MEMORY\""
+	  "description": "Selects the repository implementations, default = \"MEMORY\""
 	},
 	{
 	  "name": "crm.user.cleanup-interval",

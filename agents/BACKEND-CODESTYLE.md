@@ -2,7 +2,7 @@
 
 Mandatory conventions for `backend/`. Complements `agents/CODESTYLE.md`; the sections of that document still apply.
 
-The root package is `com.dainws.games.crm`. The state of games, users and parties lives **in memory** (`crm.jpa.type = MEMORY`); there is no database and there are no JPA entities as of today.
+The root package is `com.dainws.games.crm`. The state of games, users and parties lives **in memory** (`crm.persistence.type = MEMORY`); there is no database and there are no JPA entities as of today.
 
 ---
 
@@ -249,7 +249,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ## 10. Persistence
 
 - Every repository implementation lives in `persistence` and fulfills an interface from `domain/repositories`.
-- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.jpa.type` in `JPAConfiguration`. **In-memory repositories must be safe under concurrency** (several players and the AI act at the same time): concurrent collections, without exposing the internal ones.
+- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `JPAConfiguration`. **In-memory repositories must be safe under concurrency** (several players and the AI act at the same time): concurrent collections, without exposing the internal ones.
 - If real persistence (JPA) is ever added, it follows the rules of this section: `*Entity` entities in `persistence`, conversion through `toDomain()` / `createEntity()`, services returning domain objects, parameterized queries, and transactions opened in the use case. Adding that dependency requires asking first (see `CLAUDE.md`).
 - Services return domain objects, never DTOs.
 - Card data is loaded with the populators in `configuration/jpa`; test data, with the populators in `src/test`.
