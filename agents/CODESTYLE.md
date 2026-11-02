@@ -137,7 +137,7 @@ A value cannot live in two places. Event names and exception codes shared betwee
 
 ## 7. Errors
 
-- In the backend, game rules reject an invalid action with an exception from `domain.core.exception` (`GameException`, `PlayerActionException`, `NotAllowedException`…) carrying an `ExceptionCode`. These exceptions **are part of the game flow**: they are published to clients through `ExceptionPublisher` and the player receives them as an event. They represent rejected domain actions, not a generic flow-control mechanism.
+- In the backend, game rules reject an invalid action with an exception from `domain.core.exception` (`GameException`, `PlayerActionException`, `NotAllowedException`…) carrying an `ExceptionCode`. These exceptions **are part of the game flow**: the player receives the code in the HTTP response to their request (`specs/CONTRACT.md`, `CON-18`). They represent rejected domain actions, not a generic flow-control mechanism.
 - Infrastructure failures (network, socket, serialization) are not disguised as game errors.
 - Catch the specific. The generic error is only caught as a last net after the specific `catch` blocks, when it needs to be handled, logged or translated, and never to ignore it. If it is propagated, the original cause is preserved.
 - Errors carry context (game code, player code, action), not just a message.
