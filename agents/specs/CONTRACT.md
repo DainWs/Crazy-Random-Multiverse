@@ -15,7 +15,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | Channel | Payload |
 |---|---|
 | `game:event` | `EventDto` |
-| `party:info` | `PartyDto`, sent to the party members when the party changes, and to a member when their socket is bound (`CON-23`) |
+| `party:info` | `PartyDto`, sent to the party members when the party changes, to a kicked user (`PARTY-12`), and to a member when their socket is bound (`CON-23`) |
 
 ## Identifiers
 
@@ -176,11 +176,11 @@ A statistic with value 0 is not sent.
 | `POST /register` | Session | | `UserDto` |
 | `GET /user` | Session | | `UserDto` |
 | `PUT /user` | Session | `UserDto` | |
-| `POST /party` | Session | `{ gameMode, maxPlayers }` | `PartyDto` |
+| `POST /party` | Session | `{ gameMode, maxUsers }` | `PartyDto` |
 | `GET /party/list` | Session | | `PartyListDto` |
 | `POST /party/{partyCode}/join` | Session | | `PartyDto` |
 | `POST /party/{partyCode}/leave` | Member | | |
-| `PUT /party/{partyCode}` | Owner | `{ gameMode, maxPlayers }` | |
+| `PUT /party/{partyCode}` | Owner | `{ gameMode, maxUsers }` | |
 | `POST /party/{partyCode}/kick/{userCode}` | Owner | | |
 | `POST /party/{partyCode}/start` | Owner | | |
 | `POST /game/{gameCode}/ready` | Player | | |
@@ -202,7 +202,7 @@ The keys of `CON-18`. Those marked as new do not exist in the code yet, and thos
 | `exception.party.locked` (renamed) | The party has a game in progress |
 | `exception.party.is_full` (renamed) | The party has reached its capacity |
 | `exception.party.cannot_kick_owner` (new) | `PARTY-6` |
-| `exception.party.max_players_out_of_range` (new) | `PARTY-2` |
+| `exception.party.max_users_out_of_range` (new) | `PARTY-2` |
 | `exception.party.not_enough_players` (new) | `PARTY-9` |
 | `exception.user.invalid_username` (new) | `USER-4` |
 | `exception.user.in_game` (new) | `USER-3` |

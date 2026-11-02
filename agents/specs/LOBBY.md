@@ -24,7 +24,7 @@
 - **PARTY-9** The owner can start the game at any moment if the party has at least 2 members. No confirmation from the other members is needed.
 - **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name.
 - **PARTY-11** The name of a party is the current name of its owner. It changes when the owner changes (`PARTY-7`) or renames themselves.
-- **PARTY-12** **[OPEN]** How a kicked user learns that they are no longer in the party, since `party:info` only reaches the members.
+- **PARTY-12** A kicked user receives a last `party:info` in which they no longer appear in `users`, and the client goes back to the main menu. If they are disconnected, they do not receive it, and they find out through the error of their next request.
 
 ### Scenarios
 
