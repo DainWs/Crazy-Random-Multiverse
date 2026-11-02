@@ -117,6 +117,20 @@ public abstract class Zone {
 		return isProtected;
 	}
 
+	public boolean isProtectedLeaderAt(Coordinate coordinate) {
+		return this.isLeaderSlot(coordinate) && this.isProtectedAt(coordinate);
+	}
+
+	public boolean canAttackFrom(Coordinate coordinate) {
+		return this.hasCombatant(coordinate)
+				&& this.getCombatant(coordinate).canAttack()
+				&& !this.isProtectedLeaderAt(coordinate);
+	}
+
+	public boolean canBeTargeted(Coordinate coordinate) {
+		return this.hasCombatant(coordinate) && !this.isProtectedAt(coordinate);
+	}
+
 	public abstract boolean isLeaderSlot(Coordinate coordinate);
 
 	public abstract ZoneType getType();

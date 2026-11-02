@@ -88,6 +88,10 @@ public class Game {
 		return this.turn.getPlayerWithTurn(this.players);
 	}
 
+	public boolean canAct(Player player) {
+		return player.equals(this.getPlayerWithTurn());
+	}
+
 	public Player getPlayer(PlayerCode code) {
 		return this.players.firstMatch(player -> player.isCode(code));
 	}

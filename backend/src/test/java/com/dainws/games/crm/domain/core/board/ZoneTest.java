@@ -93,6 +93,83 @@ class ZoneTest {
 	}
 
 	@Test
+	void testGivenLeaderWithWarriorInFrontRow_whenIsProtectedLeaderAt_thenIsTrue() throws NotAllowedException {
+		ZoneWithLeader zone = this.createZoneWithProtectedLeader();
+
+		assertThat(zone.isProtectedLeaderAt(ZoneWithLeader.LEADER_COORDINATE)).isTrue();
+	}
+
+	@Test
+	void testGivenProtectedWarrior_whenIsProtectedLeaderAt_thenIsFalse() throws NotAllowedException {
+		Zone zone = this.createZoneWithProtectedFirstRow();
+
+		assertThat(zone.isProtectedLeaderAt(new Coordinate(FIRST_ROW, FIRST_COLUMN))).isFalse();
+	}
+
+	@Test
+	void testGivenExposedLeader_whenCanAttackFrom_thenIsTrue() throws NotAllowedException {
+		ZoneWithLeader zone = this.createZoneWithLeader();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, CardBuilder.buildLeader());
+
+		assertThat(zone.canAttackFrom(ZoneWithLeader.LEADER_COORDINATE)).isTrue();
+	}
+
+	@Test
+	void testGivenProtectedLeader_whenCanAttackFrom_thenIsFalse() throws NotAllowedException {
+		ZoneWithLeader zone = this.createZoneWithProtectedLeader();
+
+		assertThat(zone.canAttackFrom(ZoneWithLeader.LEADER_COORDINATE)).isFalse();
+	}
+
+	@Test
+	void testGivenProtectedWarrior_whenCanAttackFrom_thenIsTrue() throws NotAllowedException {
+		Zone zone = this.createZoneWithProtectedFirstRow();
+
+		assertThat(zone.canAttackFrom(new Coordinate(FIRST_ROW, FIRST_COLUMN))).isTrue();
+	}
+
+	@Test
+	void testGivenEmptyCoordinate_whenCanAttackFrom_thenIsFalse() {
+		Zone zone = this.createZone();
+
+		assertThat(zone.canAttackFrom(new Coordinate(FIRST_ROW, FIRST_COLUMN))).isFalse();
+	}
+
+	@Test
+	void testGivenCombatantThatAlreadyAttacked_whenCanAttackFrom_thenIsFalse() throws NotAllowedException {
+		Zone zone = this.createZone();
+		Coordinate coordinate = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		Warrior attacker = CardBuilder.buildCommonWarrior();
+		zone.putCombatant(coordinate, attacker);
+		CardBuilder.buildCommonWarrior().receiveDamageFrom(attacker);
+
+		assertThat(zone.canAttackFrom(coordinate)).isFalse();
+	}
+
+	@Test
+	void testGivenExposedCombatant_whenCanBeTargeted_thenIsTrue() throws NotAllowedException {
+		Zone zone = this.createZone();
+		Coordinate coordinate = new Coordinate(FIRST_ROW, FIRST_COLUMN);
+		zone.putCombatant(coordinate, CardBuilder.buildCommonWarrior());
+
+		assertThat(zone.canBeTargeted(coordinate)).isTrue();
+	}
+
+	@Test
+	void testGivenProtectedCombatant_whenCanBeTargeted_thenIsFalse() throws NotAllowedException {
+		Zone zone = this.createZoneWithProtectedFirstRow();
+
+		assertThat(zone.canBeTargeted(new Coordinate(FIRST_ROW, FIRST_COLUMN))).isFalse();
+	}
+
+	@Test
+	void testGivenEmptyCoordinate_whenCanBeTargeted_thenIsFalse() {
+		Zone zone = this.createZone();
+
+		assertThat(zone.canBeTargeted(new Coordinate(FIRST_ROW, FIRST_COLUMN))).isFalse();
+	}
+
+	@Test
 	void testGivenZoneWithLeader_whenIsLeaderSlot_thenLeaderCoordinateIsLeaderSlot() {
 		ZoneWithLeader zone = this.createZoneWithLeader();
 		Coordinate leaderCoordinate = ZoneWithLeader.LEADER_COORDINATE;
@@ -312,6 +389,19 @@ class ZoneTest {
 			zone.putCombatant(coordinate, warrior);
 		}
 
+		return zone;
+	}
+
+	private Zone createZoneWithProtectedFirstRow() throws NotAllowedException {
+		Zone zone = this.createZoneWithFirstRowFilled();
+		zone.putCombatant(new Coordinate(SECOND_ROW, FIRST_COLUMN), CardBuilder.buildCommonWarrior());
+		return zone;
+	}
+
+	private ZoneWithLeader createZoneWithProtectedLeader() throws NotAllowedException {
+		ZoneWithLeader zone = this.createZoneWithLeader();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, CardBuilder.buildLeader());
+		zone.putCombatant(new Coordinate(SECOND_ROW, FIRST_COLUMN), CardBuilder.buildCommonWarrior());
 		return zone;
 	}
 }
