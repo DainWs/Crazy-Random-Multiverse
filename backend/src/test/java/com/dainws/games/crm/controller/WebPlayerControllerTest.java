@@ -36,7 +36,9 @@ class WebPlayerControllerTest {
 		this.facade = new RecordingPlayerActionFacade();
 		WebPlayerController controller = new WebPlayerController(new PlayerUsecase(this.facade));
 		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
-		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+		this.mockMvc = MockMvcBuilders.standaloneSetup(controller) //
+				.setControllerAdvice(new RestExceptionAdvice()) //
+				.build();
 	}
 
 	@Test
@@ -60,6 +62,39 @@ class WebPlayerControllerTest {
 				.content(body));
 
 		assertTrue(this.facade.getPerformedActions().isEmpty());
+	}
+
+	@Test
+	void testGivenActionWithoutType_whenDispatchAction_thenBodyCarriesTheMalformedKey() throws Exception {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\"}".formatted(gameCode.text(), USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
+	}
+
+	@Test
+	void testGivenActionOfAnotherGame_whenDispatchAction_thenBodyCarriesTheAccessDeniedKey() throws Exception {
+		GameCode otherGameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(otherGameCode.text(), USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(new GameCode())) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest()) //
+				.andExpect(jsonPath("$.key").value("exception.access_denied.wrong_game"));
+	}
+
+	@Test
+	void testGivenGameCodeThatIsNotBase64_whenDispatchAction_thenBodyCarriesTheMalformedKey() throws Exception {
+		String body = "{\"game\":\"x\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, "***") //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
 	}
 
 	@Test

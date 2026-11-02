@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
+import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public class UserCode {
@@ -44,8 +45,12 @@ public class UserCode {
 	public static UserCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
 		Objects.requireNonNull(uuidAsBase64UrlSafe);
 
-		String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
-		return from(asString);
+		try {
+			String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
+			return from(asString);
+		} catch (IllegalArgumentException exception) {
+			throw new MalformedRequestException(exception);
+		}
 	}
 
 	public static UserCode from(String uuid) {

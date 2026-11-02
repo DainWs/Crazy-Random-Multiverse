@@ -1,6 +1,7 @@
 package com.dainws.games.crm.usecase.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 class ActionMapperTest {
@@ -112,6 +114,18 @@ class ActionMapperTest {
 				ActionMapper.mapPassTurnActionDto(actionDto);
 
 		assertThat(template.getGameCode()).isNull();
+	}
+
+	@Test
+	void testGivenEquipDtoWithCardCodeThatIsNotANumber_whenMap_thenThrowsMalformedRequest() {
+		ActionDto actionDto = this.createActionDto();
+		CardCodeDto cardCodeDto = this.createCardCodeDto();
+		cardCodeDto.setCode("not-a-number");
+		actionDto.setSourceCardCode(cardCodeDto);
+		actionDto.setTargetPosition(new PositionDto());
+
+		assertThatThrownBy(() -> ActionMapper.mapEquipActionDto(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
 	}
 
 	private CardCodeDto createCardCodeDto() {

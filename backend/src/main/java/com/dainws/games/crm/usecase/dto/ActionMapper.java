@@ -4,6 +4,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.card.CardCode;
+import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public final class ActionMapper {
@@ -94,7 +95,11 @@ public final class ActionMapper {
 			return null;
 		}
 
-		return CardCode.from(dto.getCode(), dto.getType());
+		try {
+			return CardCode.from(dto.getCode(), dto.getType());
+		} catch (NumberFormatException exception) {
+			throw new MalformedRequestException(exception);
+		}
 	}
 
 	private static Coordinate toPosition(PositionDto dto) {

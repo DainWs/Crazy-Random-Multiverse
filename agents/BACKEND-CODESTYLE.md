@@ -231,7 +231,8 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - Never an empty `catch`, nor one that swallows the error without logging it. If it is ignored on purpose, log it at `debug` with a comment explaining why.
 - Catch the specific first; `catch (Exception e)` only as a last net in the input adapters (events, sockets), logging with the stack trace.
 - Custom game exceptions carry `serialVersionUID` and a constructor that accepts the `ExceptionCode`.
-- A `@ControllerAdvice` is the end user's safety net, not the normal error-handling mechanism.
+- `RestExceptionAdvice` turns the application exceptions (`UsecaseException`, `GameRuntimeException`, `NotAllowedException`) and the unreadable requests into the 400 of `CON-18`. A rejected action is not an exception: the controller reads its `ActionResult`.
+- A code that cannot be parsed from a request (Base64, UUID, card code) throws `MalformedRequestException`, translated from the library's exception where the code is parsed.
 
 ---
 

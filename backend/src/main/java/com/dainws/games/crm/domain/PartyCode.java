@@ -5,6 +5,8 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.dainws.games.crm.domain.core.exception.MalformedRequestException;
+
 public class PartyCode {
 	private UUID uuid;
 
@@ -39,8 +41,12 @@ public class PartyCode {
 	public static PartyCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
 		Objects.requireNonNull(uuidAsBase64UrlSafe);
 		
-		String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
-		return from(asString);
+		try {
+			String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
+			return from(asString);
+		} catch (IllegalArgumentException exception) {
+			throw new MalformedRequestException(exception);
+		}
 	}
 
 	public static PartyCode from(String uuidAsString) {
