@@ -8,7 +8,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.event.Event;
-import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
@@ -18,10 +17,6 @@ public class RecordingCommunicationClient extends CommunicationClient {
 	public RecordingCommunicationClient() {
 		super(new MemoryUserRepository(), new SocketIOServer(new Configuration()));
 		this.sentEvents = new ArrayList<>();
-	}
-
-	@Override
-	public void sendExceptionCode(Player player, ExceptionCode code) {
 	}
 
 	@Override

@@ -16,7 +16,6 @@ import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 import com.dainws.games.crm.domain.mode.GameModes;
@@ -30,7 +29,6 @@ public class ClassicModeStrategy implements GameModeStrategy {
 	private Deck selectedDeck;
 	private RandomGenerator random;
 	private EventPublisher eventPublisher;
-	private ExceptionPublisher exceptionPublisher;
 
 	public ClassicModeStrategy(Party party, Deck deck) {
 		this.party = party;
@@ -78,17 +76,8 @@ public class ClassicModeStrategy implements GameModeStrategy {
 		return this.eventPublisher;
 	}
 
-	@Override
-	public ExceptionPublisher createExceptionPublisher(Game game) {
-		return this.exceptionPublisher;
-	}
-
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
-	}
-
-	public void setExceptionPublisher(ExceptionPublisher exceptionPublisher) {
-		this.exceptionPublisher = exceptionPublisher;
 	}
 
 	public void setRandom(RandomGenerator random) {

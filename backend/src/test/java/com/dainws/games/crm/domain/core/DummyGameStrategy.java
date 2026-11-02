@@ -6,7 +6,6 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
@@ -20,7 +19,6 @@ public class DummyGameStrategy implements GameModeStrategy {
 	private PlayerStorage players;
 
 	private EventPublisher eventPublisher;
-	private ExceptionPublisher exceptionPublisher;
 
 	@Override
 	public GameMode getGameMode() {
@@ -66,16 +64,7 @@ public class DummyGameStrategy implements GameModeStrategy {
 		return this.eventPublisher;
 	}
 
-	@Override
-	public ExceptionPublisher createExceptionPublisher(Game game) {
-		return this.exceptionPublisher;
-	}
-
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
-	}
-
-	public void setExceptionPublisher(ExceptionPublisher exceptionPublisher) {
-		this.exceptionPublisher = exceptionPublisher;
 	}
 }

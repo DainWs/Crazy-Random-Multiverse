@@ -4,18 +4,14 @@ import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
 import com.dainws.games.crm.domain.core.event.EventPublisherMonitor;
-import com.dainws.games.crm.domain.core.exception.ExceptionMonitor;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
 public class MonitoredGameStrategy implements GameModeStrategy {
 	private GameModeStrategy wrapper;
-	private ExceptionMonitor exceptionMonitor; 
 	private EventPublisherMonitor eventPublisherMonitor;
 
 	public MonitoredGameStrategy(GameModeStrategy wrapper) {
 		this.wrapper = wrapper;
-		this.exceptionMonitor = new ExceptionMonitor();
 		this.eventPublisherMonitor = new EventPublisherMonitor();
 	}
 	
@@ -50,24 +46,11 @@ public class MonitoredGameStrategy implements GameModeStrategy {
 		return this.eventPublisherMonitor;
 	}
 
-	@Override
-	public ExceptionPublisher createExceptionPublisher(Game game) {
-		return this.exceptionMonitor;
-	}
-
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisherMonitor.setWrapper(eventPublisher);
 	}
 	
 	public EventPublisherMonitor getEventPublisherMonitor() {
 		return eventPublisherMonitor;
-	}
-
-	public void setExceptionPublisher(ExceptionPublisher exceptionPublisher) {
-		this.exceptionMonitor.setWrapper(exceptionPublisher);
-	}
-	
-	public ExceptionMonitor getExceptionMonitor() {
-		return exceptionMonitor;
 	}
 }

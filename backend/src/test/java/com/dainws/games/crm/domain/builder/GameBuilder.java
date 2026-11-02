@@ -9,7 +9,6 @@ import com.dainws.games.crm.domain.core.board.DummyZone;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 
@@ -18,14 +17,12 @@ public class GameBuilder {
 	private List<Player> players;
 	private ZoneFactory zoneFactory;
 	private EventPublisher eventPublisher;
-	private ExceptionPublisher exceptionPublisher;
 	
 	public GameBuilder() {
 		this.zoneFactory = DummyZone::new;
 		this.players = new ArrayList<>();
 
 		this.eventPublisher = EventPublisher.NONE;
-		this.exceptionPublisher = ExceptionPublisher.NONE;
 	}
 	
 	public GameBuilder withZoneFactory(ZoneFactory zoneFactory) {
@@ -89,18 +86,12 @@ public class GameBuilder {
 		return this;
 	}
 	
-	public GameBuilder withExceptionPublisher(ExceptionPublisher exceptionPublisher) {
-		this.exceptionPublisher = exceptionPublisher;
-		return this;
-	}
-	
 	public Game build() {
 		DummyGameStrategy strategy = new DummyGameStrategy();
 		strategy.setDealer(this.dealer);
 		strategy.setZoneFactory(this.zoneFactory);
 		strategy.setPlayers(new PlayerStorage(this.players));
 		strategy.setEventPublisher(this.eventPublisher);
-		strategy.setExceptionPublisher(this.exceptionPublisher);
 		return new Game(strategy);
 	}
 }

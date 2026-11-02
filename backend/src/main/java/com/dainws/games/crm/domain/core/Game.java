@@ -9,8 +9,6 @@ import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.ExceptionCode;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
@@ -27,7 +25,6 @@ public class Game {
 	private Dealer dealer;
 	private PlayerStorage players;
 	private EventPublisher eventPublisher;
-	private ExceptionPublisher exceptionPublisher;
 	private final GameModeStrategy strategy;
 
 	public Game(GameModeStrategy strategy) {
@@ -47,7 +44,6 @@ public class Game {
 		this.turn = strategy.createTurn(this.players);
 
 		this.eventPublisher = strategy.createEventPublisher(this);
-		this.exceptionPublisher = strategy.createExceptionPublisher(this);
 	}
 
 	void reset() { // TODO review
@@ -78,18 +74,6 @@ public class Game {
 	public void publishEvent(EventCode code, EventDetails details) {
 		details.setGame(this);
 		this.eventPublisher.publish(code, details);
-	}
-
-	public void publishException(ExceptionCode exceptionCode) {
-		this.exceptionPublisher.publish(this.players, exceptionCode);
-	}
-
-	public void publishException(Player player, ExceptionCode exceptionCode) {
-		if (!this.players.contains(player)) {
-			throw NotFoundException.playerNotFound();
-		}
-
-		this.exceptionPublisher.publish(player, exceptionCode);
 	}
 
 	void stopRunning() {

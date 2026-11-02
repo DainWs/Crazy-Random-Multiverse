@@ -160,7 +160,7 @@ A value cannot live in two places. Event names and exception codes shared betwee
 
 - Specific style guides: `agents/BACKEND-TESTS.md` (backend) and `agents/FRONTEND-TESTS.md` (frontend).
 - **Unit tests do not touch the network, the real disk or a database.** If a test needs any of that, it is an integration test and is kept separate from the unit tests.
-- **Fakes before mocks.** The backend already has `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, builders (`CardBuilder`, `GameBuilder`, `PlayerBuilder`…) and monitors (`EventMonitor`, `ExceptionMonitor`): reuse them before creating new ones.
+- **Fakes before mocks.** The backend already has `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, builders (`CardBuilder`, `GameBuilder`, `PlayerBuilder`…) and monitors (`EventMonitor`): reuse them before creating new ones.
 - No logic in tests: no `if`, no loops over cases. For several cases, use parameterized tests.
 - Coverage percentages are not pursued. Cover what breaks in production.
 - Every failure found in production enters first as a failing test, and is then fixed.

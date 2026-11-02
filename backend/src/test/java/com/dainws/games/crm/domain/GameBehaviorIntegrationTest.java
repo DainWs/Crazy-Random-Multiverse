@@ -24,8 +24,6 @@ import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.dealer.MemoryDeckPopulator;
 import com.dainws.games.crm.domain.core.event.EventMonitor;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
-import com.dainws.games.crm.domain.core.exception.ExceptionMonitor;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
@@ -39,7 +37,6 @@ public abstract class GameBehaviorIntegrationTest {
 	protected final GameFlow gameFlow;
 
 	protected EventMonitor eventMonitor;
-	protected ExceptionMonitor exceptionMonitor;
 	
 	protected PlayerStorage players;
 	protected Dealer dealer;
@@ -97,9 +94,7 @@ public abstract class GameBehaviorIntegrationTest {
 
 		MonitoredGameStrategy monitoredStrategy = new MonitoredGameStrategy(strategy);
 		monitoredStrategy.setEventPublisher(this.createEventPublisher());
-		monitoredStrategy.setExceptionPublisher(this.createExceptionPublisher());
 		this.eventMonitor = monitoredStrategy.getEventPublisherMonitor();
-		this.exceptionMonitor = monitoredStrategy.getExceptionMonitor();
 		return monitoredStrategy;
 	}
 	
@@ -107,10 +102,6 @@ public abstract class GameBehaviorIntegrationTest {
 		return EventPublisher.NONE;
 	}
 	
-	protected ExceptionPublisher createExceptionPublisher() {
-		return ExceptionPublisher.NONE;
-	}
-
 	protected Game createGame(GameModeStrategy strategy) {
 		return new Game(strategy);
 	}

@@ -20,7 +20,7 @@ Output adapters            persistence.memory.* · controller.events.*Communicat
 Domain                     domain.*                         used by every ring; uses none
 ```
 
-`controller/events` is both input (connections, `GameEventController`) and output (`CommunicationClient` pushes events to the client). The domain emits events through `EventPublisher` / `ExceptionPublisher` (ports in `domain.core`); `SpringEventPublisher` adapts them to Spring events and `SpringGameEventDispatcher` distributes them to the clients.
+`controller/events` is both input (connections, `GameEventController`) and output (`CommunicationClient` pushes events to the client). The domain emits events through `EventPublisher` (a port in `domain.core`); `SpringEventPublisher` adapts them to Spring events and `SpringGameEventDispatcher` distributes them to the clients.
 
 ### Main packages
 
@@ -330,7 +330,7 @@ Full guide in `agents/BACKEND-TESTS.md`. Summary:
 - JUnit 5 + Spring Test. Tests live in `src/test/java`, in the same package as the class under test.
 - Test name: `testGiven<State>_when<Action>_then<Result>`. Arrange / Act / Assert structure separated by a blank line.
 - Test objects are created with the builders in `src/test/.../domain/builder` (`CardBuilder`, `GameBuilder`, `PlayerBuilder`, `WarriorBuilder`). They are extended before creating new ones.
-- Existing fakes and monitors: `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, `EventMonitor`, `ExceptionMonitor`, `MonitoredAction`. Use them before resorting to Mockito.
+- Existing fakes and monitors: `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, `EventMonitor`, `MonitoredAction`. Use them before resorting to Mockito.
 - Integration tests: `IntegrationTest` suffix. They are excluded from `mvn test` (surefire) and run with `mvn verify -P integration-tests`.
 - Tests do not open real ports nor depend on the clock or on uncontrolled randomness: randomness (dealing) is injected with a seed or a fixed strategy (`MemoryDeckPopulator`, `DummyGameStrategy`).
 - A contract change (DTO, `EventCode`, `ActionType`) comes with a test that pins it down.

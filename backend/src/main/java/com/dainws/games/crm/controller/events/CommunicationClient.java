@@ -1,6 +1,5 @@
 package com.dainws.games.crm.controller.events;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,7 +13,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.response.EventDto;
-import com.dainws.games.crm.controller.dto.response.ExceptionCodeDto;
 import com.dainws.games.crm.controller.dto.response.PartyDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
@@ -23,14 +21,12 @@ import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.core.event.Event;
-import com.dainws.games.crm.domain.core.exception.ExceptionCode;
-import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.repositories.UserRepository;
 
 @Component
 @ConditionalOnProperty(value = "crm.communication.socket-io.enabled", havingValue = "true", matchIfMissing = true)
-public class CommunicationClient implements UserClient, ExceptionPublisher {
+public class CommunicationClient implements UserClient {
 
 	private Logger logger;
 
@@ -41,29 +37,6 @@ public class CommunicationClient implements UserClient, ExceptionPublisher {
 		this.server = server;
 		this.userRepository = userRepository;
 		this.logger = LoggerFactory.getLogger(getClass());
-	}
-
-	@Override
-	public void publish(List<Player> to, ExceptionCode exceptionCode) {
-		for (Player player : to) {
-			this.sendExceptionCode(player, exceptionCode);
-		}
-	}
-
-	@Override
-	public void publish(Player to, ExceptionCode exceptionCode) {
-		this.sendExceptionCode(to, exceptionCode);
-	}
-
-	public void sendExceptionCode(Player player, ExceptionCode code) {
-		if (this.canSendTo(player)) {
-			this.logger.debug("Sending error {} to client {}", code, player.getName());
-
-			ExceptionCodeDto dto = new ExceptionCodeDto(code.value());
-
-			this.findClientOf(player)
-				.ifPresent(client -> client.sendEvent("error", dto));
-		}
 	}
 
 	public void sendEvent(Player player, Event event) {

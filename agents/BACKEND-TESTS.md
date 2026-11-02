@@ -174,7 +174,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 - A fake carries no fixed prefix: its name says what it does, like any other class.
 - The fake lives in the test tree, in the same package as the class it replaces, so other tests can reuse it.
 - It is injected through the constructor or with the collaborator's public setter (see `agents/BACKEND-CODESTYLE.md`, section 3).
-- Domain ports (`EventPublisher`, `ExceptionPublisher`, etc.) are replaced by their fake or by the in-memory implementation.
+- Domain ports (`EventPublisher`, etc.) are replaced by their fake or by the in-memory implementation.
 
 ### Mockito
 
