@@ -36,7 +36,7 @@ public class GameFactory {
 	public Game createGame(Party party) {
 		GameMode gameMode = party.getGameMode();
 		if (!this.gameModeFactories.containsKey(gameMode)) {
-			throw new NotFoundException("game_mode");
+			throw NotFoundException.gameModeNotFound();
 		}
 
 		GameModeFactory gameModeFactory = this.gameModeFactories.get(gameMode);

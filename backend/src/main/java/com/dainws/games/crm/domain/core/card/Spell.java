@@ -9,7 +9,7 @@ public class Spell extends Card {
 	// TODO spell cards should have an agressive or defensive approach property
 	// to describe purpose
 
-	private Spell(Long id, EffectId effectId) {
+	private Spell(long id, EffectId effectId) {
 		super(id);
 		this.effectId = effectId;
 	}
@@ -23,14 +23,11 @@ public class Spell extends Card {
 		return this.effectId;
 	}
 
-	public static Spell newInstance(Long id, Long effectId) {
-		Objects.requireNonNull(id);
-		Objects.requireNonNull(effectId);
+	public static Spell newInstance(long id, long effectId) {
 		return new Spell(id, EffectId.from(effectId));
 	}
 	
-	public static Spell newInstance(Long id, EffectId effectId) {
-		Objects.requireNonNull(id);
+	public static Spell newInstance(long id, EffectId effectId) {
 		Objects.requireNonNull(effectId);
 		return new Spell(id, effectId);
 	}

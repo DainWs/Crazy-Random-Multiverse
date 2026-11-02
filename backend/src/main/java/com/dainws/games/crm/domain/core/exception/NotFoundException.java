@@ -23,4 +23,16 @@ public class NotFoundException extends GameRuntimeException {
 	public static NotFoundException zoneNotFound() {
 		return new NotFoundException("zone");
 	}
+
+	public static NotFoundException partyNotFound() {
+		return new NotFoundException("party");
+	}
+
+	public static NotFoundException userNotFound() {
+		return new NotFoundException("user");
+	}
+
+	public static NotFoundException gameModeNotFound() {
+		return new NotFoundException("game_mode");
+	}
 }

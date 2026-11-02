@@ -53,7 +53,7 @@ public class MemoryPartyRepository implements PartyRepository {
 	public Party find(PartyCode partyCode) throws NotFoundException {
 		Party party = this.parties.get(partyCode);
 		if (party == null) {
-			throw new NotFoundException("party");
+			throw NotFoundException.partyNotFound();
 		}
 
 		return party;
@@ -64,7 +64,7 @@ public class MemoryPartyRepository implements PartyRepository {
 		return this.parties.values().stream()
 			.filter(party -> party.isOwner(userCode))
 			.findFirst()
-			.orElseThrow(() -> new NotFoundException("party"));
+			.orElseThrow(() -> NotFoundException.partyNotFound());
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ public class MemoryPartyRepository implements PartyRepository {
 		return this.parties.values().stream()
 			.filter(party -> party.has(userCode))
 			.findFirst()
-			.orElseThrow(() -> new NotFoundException("party"));
+			.orElseThrow(() -> NotFoundException.partyNotFound());
 	}
 
 	@Override

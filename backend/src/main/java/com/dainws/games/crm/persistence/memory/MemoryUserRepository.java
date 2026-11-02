@@ -41,7 +41,7 @@ public class MemoryUserRepository implements UserRepository {
 	public User find(UserCode userCode) throws NotFoundException {
 		User user = this.users.get(userCode);
 		if (user == null) {
-			throw new NotFoundException("user");
+			throw NotFoundException.userNotFound();
 		}
 
 		return user;
