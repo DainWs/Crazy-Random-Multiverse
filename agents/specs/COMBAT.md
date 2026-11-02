@@ -10,6 +10,8 @@
 - **COMBAT-8** **[Post-MVP]** True damage ignores armor, abilities and spells.
 - **COMBAT-9** **[Post-MVP]** Infinite damage ignores infinite health and armor.
 - **COMBAT-10** **[Post-MVP]** When a card reaches 100 physical damage, excess damage dealt to armor carries over to health.
+- **COMBAT-11** A player attacks only with their own cards on the board.
+- **COMBAT-12** The target is a card of another player. An attack on one's own card or on an empty slot is rejected.
 
 ## Scenarios
 

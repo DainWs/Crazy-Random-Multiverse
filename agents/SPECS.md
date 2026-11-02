@@ -47,4 +47,4 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 
 - **NFR-1** The MVP sets no numeric targets for capacity or latency until there are measurements.
 - **NFR-2** All state is lost when the server restarts.
-- **NFR-3** The user id is equivalent to a credential until the task to separate a public id is done (`ROADMAP.md`, Pending tasks).
+- **NFR-3** The session id is a credential and is never shared with other users. The id they see is a public one (`CON-24`). Until the task to separate them is done (`ROADMAP.md`, Phase 2), the user id is equivalent to a credential.

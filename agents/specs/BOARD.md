@@ -8,7 +8,14 @@ Order from the center of the table: center → row 1 → row 2 → leader. Row 1
 - **BOARD-2** The leader is alone in its row.
 - **BOARD-3** Rows 1 and 2 hold at most 3 cards each, so a zone holds at most 6 warriors plus the leader.
 - **BOARD-4** All cards on the board are public.
-- **BOARD-5** Row 2 must be filled before row 1.
+- **BOARD-5** Row 2 must be filled before row 1: a card can only go to row 1 while all 3 slots of row 2 are occupied. Cards already in row 1 stay there when a gap opens in row 2.
+
+### Scenario
+
+**Gap in row 2**
+- Given a zone with 3 warriors in row 2 and 1 in row 1
+- When a warrior in row 2 dies and its owner places a card in row 1
+- Then the action is rejected, and the card can only go to the free slot in row 2
 
 ## Movement
 

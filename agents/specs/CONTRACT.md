@@ -1,12 +1,12 @@
 # Backend ↔ frontend contract
 
-Differences between this document and the code are tracked in `ROADMAP.md`, Pending tasks.
+Differences between this document and the code are tracked in `ROADMAP.md`.
 
 ## Connection
 
 - **CON-1** The client opens a Socket.IO connection to the backend (port 9092, path `/socket.io`; the client may override both) and sends the HTTP session cookie (`SESSION`) in the handshake.
 - **CON-2** The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user.
-- **CON-3** When a socket drops, only the socket is unbound. The user, their party and their game are kept until a periodic task deletes the users without an open socket (every 15 minutes, `crm.user.cleanup-interval`). See `ABSENT` in `GAME-END.md`.
+- **CON-3** When a socket drops, only the socket is unbound. The user, their party and their game are kept until the user has been without an open socket for longer than a grace period (5 minutes, `crm.user.disconnect-grace-period`). A periodic task deletes those users (every minute, `crm.user.cleanup-interval`). See `ABSENT` in `GAME-END.md`.
 - **CON-4** Reconnection is performed by the Socket.IO client.
 - **CON-5** `crm.communication.socket-io.origin` (default `*`) is the origin allowed to connect. Browsers refuse cookies when it is `*`, so production sets the explicit origin if the client connects from another origin.
 
@@ -15,7 +15,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`, Pend
 | Channel | Payload |
 |---|---|
 | `game:event` | `EventDto` |
-| `party:info` | `PartyDto`, sent to the party members when the party changes |
+| `party:info` | `PartyDto`, sent to the party members when the party changes, and to a member when their socket is bound (`CON-23`) |
 
 ## Identifiers
 
@@ -28,12 +28,13 @@ Differences between this document and the code are tracked in `ROADMAP.md`, Pend
 `EventDto`: `{ code, sequence, details }`.
 
 - **CON-9** `sequence` is a number per game, increased by one for each published event and assigned in publication order. It restarts together with the games when the server restarts.
-- **CON-10** `details` is an `EventDetailsDto`. It always carries `game` (a `GameDto`) and optionally the fields in the table below.
+- **CON-10** `details` is an `EventDetailsDto`. It always carries `game` (a `GameDto` with the state right after the event) and optionally the fields in the table below.
 
 | `code` | Published when | Details besides `game` |
 |---|---|---|
 | `GAME_CREATED` | The game has been created | |
-| `GAME_LOADING` | Clients must load the game and confirm with `/ready` | |
+| `GAME_LOADING` | Clients must load the game and confirm with `/ready`. Also sent to a user who reconnects while loading (`CON-23`) | |
+| `GAME_CANCELLED` | The loading has been cancelled (`LOAD-4`) | |
 | `GAME_START` | Every player has confirmed (`LOAD-2`) | |
 | `GAME_SYNC` | A socket is bound to a user with a game in progress, sent only to that user | `hand` |
 | `ROUND_CHANGE` | A new round starts | |
@@ -41,7 +42,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`, Pend
 | `PLAYER_RECEIVE_CARD` | A player receives a card | `targetPlayer`, `targetCard` (`CON-13`) |
 | `PLAYER_PUT_CARD` | A card has been placed | `sourcePlayer`, `sourceCard`, `targetPlayer`, `targetPosition` |
 | `PLAYER_MOVE_CARD` | A card has been moved or swapped | `sourcePlayer`, `sourcePosition`, `targetPlayer`, `targetPosition` |
-| `PLAYER_ATTACK_CARD` | An attack has been resolved | `sourcePlayer`, `sourcePosition`, `targetPlayer`, `targetPosition` |
+| `PLAYER_ATTACK_CARD` | An attack has been resolved | `sourcePlayer`, `sourcePosition`, `targetPlayer`, `targetPosition`, `armorDamage`, `healthDamage`, `targetDead` (`CON-21`) |
 | `PLAYER_EQUIP_CARD` | A card has been equipped | `sourcePlayer`, `sourceCard`, `targetPlayer`, `targetPosition` |
 | `PLAYER_PASS_TURN` | The player has passed the turn | `sourcePlayer` |
 | `PLAYER_SURRENDER` | The player has surrendered | `sourcePlayer` |
@@ -87,19 +88,18 @@ Differences between this document and the code are tracked in `ROADMAP.md`, Pend
 |---|---|---|
 | `owner` | `PlayerDto` | |
 | `type` | text | The type each zone declares: `BASE` for a zone with a leader slot |
-| `health`, `maxHealth` | number | Absent when the zone has infinite health (a zone that has no leader yet); the frontend reads them as infinite |
 | `combatants` | `ZoneSlotDto[][]` | See `CON-14` |
 
-`ZoneDto` carries no team (see `TEAM` in `POST-MVP.md`).
+`ZoneDto` carries no team (see `TEAM` in `POST-MVP.md`) and no health: the health of a player's leader is in its card. The zone of an eliminated player stays in `zones` (`ELIM-5`).
 
-- **CON-14** `ZoneSlotDto` is `{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant: CardDto | null }`. Row indices are absolute: row 0 is the leader row and a higher index is closer to the center of the table. The frontend shows the leader nearest to the local player, so it inverts them for display.
+- **CON-14** `ZoneSlotDto` is `{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant?: CardDto }`. `combatant` is absent when the slot is empty (`CON-8`). Row indices are absolute: row 0 is the leader row and a higher index is closer to the center of the table. The frontend shows the leader nearest to the local player, so it inverts them for display.
 
 ### `CardDto`
 
 | Field | Type | Notes |
 |---|---|---|
 | `code` | `CardCodeDto` | |
-| `name`, `description` | text | Translation keys |
+| `name`, `description` | text | Translation keys (`CARD-7`) |
 | `type` | text | `LEADER`, `WARRIOR`, `EQUIPMENT`, `SPELL` |
 | `rarity` | text | Warriors only: `COMMON`, `UNCOMMON`, `RARE`, `EPIC`, `LEGENDARY`, `MYTHIC` |
 | `damage`, `damageType` | number, text | `PHYSICAL`, `MAGIC`, `TRUE` |
@@ -107,18 +107,18 @@ Differences between this document and the code are tracked in `ROADMAP.md`, Pend
 | `health`, `maxHealth` | number | |
 | `equipment` | `CardDto[]` | The equipment attached to a combatant (`EQUIP-4`) |
 | `protected` | boolean | A card stands in a row closer to the center |
-| `attackAvailable` | boolean | The card can attack now: it has not used its attacks this turn and is not in placement cooldown |
+| `attackAvailable` | boolean | The card can attack now: it has not used its attacks this turn, is not in placement cooldown and is not a protected leader (`PROT-4`) |
 | `targetable` | boolean | The card is not protected and belongs to another player |
 
 A statistic with value 0 is not sent.
 
-- **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`.
+- **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`. For a spectator, `attackAvailable` and `targetable` are always `false`.
 
 ### Other
 
 - `PositionDto`: `{ row, column }`.
-- `UserDto`: `{ id, username }`.
-- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users }`.
+- `UserDto`: `{ id, username }`. See `CON-24`.
+- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto` and `users` a `UserDto[]`.
 - `PartyListDto`: `{ parties }`.
 - `gameMode`: `CLASSIC` is the only value in the MVP.
 
@@ -140,19 +140,47 @@ A statistic with value 0 is not sent.
 - **CON-19** The client sends no new action until the previous one has been answered. The server gives no special treatment to duplicates: it validates each action against the current state.
 - **CON-20** Errors are only reported in the response to a request. There is no socket channel for errors, because every expected error comes from a request. A refused socket connection (`CON-2`) is reported by Socket.IO itself.
 
+## Event details and order
+
+- **CON-21** In `PLAYER_ATTACK_CARD`, `armorDamage` and `healthDamage` are the armor and health lost by the target, and `targetDead` says whether it died. The three are always sent, including a 0 or a `false`, as an exception to the omitted statistics of `CardDto`.
+- **CON-22** Events are published in the following order. The first round and the first turn publish their events like any other.
+
+| Situation | Order |
+|---|---|
+| Start of a game | Leaders are dealt (`SETUP-2`), `GAME_CREATED`, `GAME_LOADING`, the players confirm, `GAME_START`, and the start of a round |
+| Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, `TURN_CHANGE` |
+| Turn passed | `PLAYER_PASS_TURN`, then `TURN_CHANGE`, or the start of a round if a new one starts |
+| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the end of the game if only one leader is left, or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
+| End of a game | `GAME_END`, `GAME_END_WITH_WINNER` |
+| Cancelled loading | `GAME_CANCELLED`, `party:info` |
+
+## State on connection
+
+- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to them. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. Last, if they are in a party, `party:info`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party.
+
+### Scenario
+
+**Game ended while away**
+- Given a disconnected player whose game has ended
+- When they reconnect before their user is deleted
+- Then they receive `party:info` with no game state, go to the party and do not see the result
+
+## User identifiers
+
+- **CON-24** `UserDto.id` is a public id, different from the session id, because it is shared with the other users. `/party/{partyCode}/kick/{userCode}` uses it.
+
 ## REST API
 
 | Method and path | Who | Body | Response |
 |---|---|---|---|
 | `POST /register` | Session | | `UserDto` |
-| `POST /login` | Session | Username | `UserDto` |
 | `GET /user` | Session | | `UserDto` |
 | `PUT /user` | Session | `UserDto` | |
 | `POST /party` | Session | `{ gameMode, maxPlayers }` | `PartyDto` |
 | `GET /party/list` | Session | | `PartyListDto` |
 | `POST /party/{partyCode}/join` | Session | | `PartyDto` |
 | `POST /party/{partyCode}/leave` | Member | | |
-| `PUT /party/{partyCode}` | Owner | `{ code, gameMode, maxPlayers }` | |
+| `PUT /party/{partyCode}` | Owner | `{ gameMode, maxPlayers }` | |
 | `POST /party/{partyCode}/kick/{userCode}` | Owner | | |
 | `POST /party/{partyCode}/start` | Owner | | |
 | `POST /game/{gameCode}/ready` | Player | | |
@@ -160,7 +188,7 @@ A statistic with value 0 is not sent.
 
 ## Errors
 
-The keys of `CON-18`. Those marked as new do not exist in the code yet.
+The keys of `CON-18`. Those marked as new do not exist in the code yet, and those marked as renamed have a different text there.
 
 | Key | Meaning |
 |---|---|
@@ -169,11 +197,15 @@ The keys of `CON-18`. Those marked as new do not exist in the code yet.
 | `exception.{game,player,card,zone,party,user,game_mode}.not_found` | The element does not exist |
 | `exception.party.user_is_not_party_owner` | Only the owner can do this |
 | `exception.party.user_already_in_party` | The user already belongs to a party |
-| `exception.party_locked` | The party has a game in progress |
-| `exception.party_is_full` | The party has reached its capacity |
+| `exception.request.malformed` (new) | The body or the path of the request cannot be read |
+| `exception.game.not_in_progress` (new) | `TURN-7` |
+| `exception.party.locked` (renamed) | The party has a game in progress |
+| `exception.party.is_full` (renamed) | The party has reached its capacity |
+| `exception.party.cannot_kick_owner` (new) | `PARTY-6` |
 | `exception.party.max_players_out_of_range` (new) | `PARTY-2` |
 | `exception.party.not_enough_players` (new) | `PARTY-9` |
 | `exception.user.invalid_username` (new) | `USER-4` |
+| `exception.user.in_game` (new) | `USER-3` |
 | `exception.player-action.allowed_only_on_turn` | It is not the player's turn |
 | `exception.player-action.selected_card_not_found` | The card is not in the hand |
 | `exception.player-action.selected_card_is_not_combatant` | Only a combatant can be placed |
@@ -185,9 +217,13 @@ The keys of `CON-18`. Those marked as new do not exist in the code yet.
 | `exception.player-action.selected_source_is_leader` | The leader cannot be moved |
 | `exception.player-action.selected_target_position_not_allowed` | The target slot is not allowed |
 | `exception.player-action.selected_source_attack_in_cooldown` | The card cannot attack now |
+| `exception.player-action.selected_source_leader_is_protected` (new) | `PROT-4` |
 | `exception.player-action.selected_target_is_protected` | The target is protected |
+| `exception.player-action.selected_target_is_own` (new) | `COMBAT-12` |
+| `exception.player-action.selected_target_position_has_none_combatant` (new) | The target slot of an attack or an equipment is empty (`COMBAT-12`, `EQUIP-3`) |
 | `exception.player-action.equip_target_not_owned` (new) | `EQUIP-3` |
 | `exception.zone.coordinate.out_of_bounds` | The position is outside the zone |
 | `exception.zone.coordinate.already_filled` | The slot is occupied |
 | `exception.zone.coordinate.cannot_swap` | These cards cannot swap |
+| `exception.zone.coordinate.requires_leader` (renamed) | The slot only admits a leader |
 | `exception.zone.row.previous_need_to_be_filled` | `BOARD-5` |

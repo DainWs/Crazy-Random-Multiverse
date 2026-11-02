@@ -3,7 +3,7 @@
 ## Setup
 
 - **SETUP-1** A game has 2 to 10 players.
-- **SETUP-2** Each player is dealt one random leader, placed face up in their zone and visible to everyone.
+- **SETUP-2** When the game is created, before loading, each player is dealt one random leader, already placed face up in their zone and visible to everyone. The player does not place it, and it publishes no `PLAYER_RECEIVE_CARD`.
 - **SETUP-3** The server draws the starting player and the whole turn order at random.
 
 ## Turns
@@ -14,13 +14,14 @@
 - **TURN-4** There is no turn time limit. A player who is absent during their turn blocks the game until their user is deleted (`ABSENT-3`). This is an accepted risk of the MVP.
 - **TURN-5** Actions are only accepted from the player whose turn it is, including surrender.
 - **TURN-6** Actions are validated by the server. A rejected action leaves the state unchanged.
+- **TURN-7** Actions are only accepted while the game is in progress: not while it is loading or after it ends.
 
 ## Rounds
 
 - **ROUND-1** A round is a full pass of the turn order, starting at the starting player.
 - **ROUND-2** The first round starts when the game starts. A new round starts when the turn would return to the starting player's seat, even if that player has been eliminated.
 - **ROUND-3** At the start of each round, every living player receives that round's cards at the same time, before the first turn of the round.
-- **ROUND-4** The schedule below is the default; the backend owns it and may configure it. The frontend does not hardcode it and renders whatever cards it receives.
+- **ROUND-4** The schedule below belongs to the game mode, in the backend. The frontend does not hardcode it and renders whatever cards it receives.
 
 | Round | Cards dealt | While spells do not exist (MVP) |
 |---|---|---|

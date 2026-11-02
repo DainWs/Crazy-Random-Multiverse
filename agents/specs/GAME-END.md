@@ -6,10 +6,11 @@
 - **ELIM-2** A player can only surrender during their turn.
 - **ELIM-3** When a player is eliminated, their cards leave the board and their hand is discarded, whatever the cause.
 - **ELIM-4** If the eliminated player had the turn, it passes to the next living player.
+- **ELIM-5** The zone of an eliminated player stays on the board, with no cards, so the positions of the other zones do not change.
 
 ## Absence
 
-- **ABSENT-1** A disconnected player keeps their place, cards and turn, and can return to the game (`CON-11`).
+- **ABSENT-1** A disconnected player keeps their place, cards and turn, and can return to the game (`CON-11`) until the grace period ends and their user is deleted (`CON-3`).
 - **ABSENT-2** Closing the game is a disconnection, not a surrender. A player who has not been eliminated cannot abandon the game any other way.
 - **ABSENT-3** When the user of a disconnected player is deleted (`CON-3`), that player is eliminated, even outside their turn.
 - **ABSENT-4** **[Post-MVP]** Voting to kick a player in the middle of a game.
@@ -20,16 +21,21 @@
 - **WIN-2** There are no ties in the MVP, because there are no spells. **[Post-MVP]** See `SPELL-5`.
 - **WIN-3** The server decides the end of the game and the winner.
 - **WIN-4** When the game ends, the frontend shows the result and disables interaction.
-- **WIN-5** After the result, the players go back to the same party, which unlocks so its owner can start another game. The finished game is removed from memory.
+- **WIN-5** The party stays locked while the result is shown (15 seconds, `crm.game.result-duration`). When that time ends, the server removes the finished game from memory and unlocks the party (`party:info`), and every client goes back to the party automatically, so its owner can start another game.
 
 ## Spectators
 
 - **SPEC-1** An eliminated player becomes a spectator and sees the game without being able to act.
 - **SPEC-2** A spectator sees what a player sees, except that they see no hand.
-- **SPEC-3** A spectator can leave the game at any moment, which also takes them out of the party.
+- **SPEC-3** A spectator can leave the game at any moment with `POST /party/{partyCode}/leave`, which also takes them out of the party, as an exception to `PARTY-6`. If they are the owner, `PARTY-7` applies at that moment.
 - **SPEC-4** **[Post-MVP]** Users from outside the game can watch it.
 
 ### Scenarios
+
+**Brief disconnection**
+- Given a player whose connection drops for a few seconds
+- When the periodic task runs and they reconnect within the grace period
+- Then they are not eliminated and they receive `GAME_SYNC`
 
 **Deleted during their own turn**
 - Given a disconnected player who has the turn, in a game of three
@@ -43,5 +49,5 @@
 
 **Back to the party**
 - Given a finished game
-- When the players close the result
-- Then they are in the same party, and any user who was deleted during the game is no longer a member
+- When the time of the result ends
+- Then the players are in the same party, which is unlocked, and any user who was deleted during the game is no longer a member

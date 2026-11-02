@@ -4,7 +4,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 ## Navigation
 
-- **UI-1** The flow is: main menu → party list or join by code → party → loading → game → result → party.
+- **UI-1** The flow is: main menu → create a party, party list or join by code → party → loading → game → result → party.
 - **UI-2** All texts are in Spanish and prepared to be translated. **[Post-MVP]** English and dynamic localization.
 
 ## Game
@@ -21,3 +21,8 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-9** If the connection is lost during a game, a notice covers the table and disables interaction while the client retries on its own. When the connection returns, the state is restored from `GAME_SYNC`.
 - **UI-10** If the session has expired or the game no longer exists, the client goes back to the main menu and explains what happened. An expired session starts as a new user (`USER-5`).
 - **UI-11** If the server does not respond, the client goes back to the main menu, explains what happened and offers to retry.
+- **UI-12** If loading the resources of a game fails, the client shows the failure and offers to retry, without confirming `/ready`. If the player closes the game, `LOAD-3` applies.
+
+## Menu
+
+- **UI-13** The name is edited from the main menu. There is no settings screen in the MVP.
