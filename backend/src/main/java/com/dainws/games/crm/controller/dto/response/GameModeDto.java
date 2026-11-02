@@ -4,8 +4,7 @@ import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.mode.GameModes;
 
 public enum GameModeDto {
-	CLASSIC(GameModes.CLASSIC),
-	PLAYER_VS_AI(GameModes.PLAYER_VS_AI);
+	CLASSIC(GameModes.CLASSIC);
 
 	private GameMode domainGameMode;
 

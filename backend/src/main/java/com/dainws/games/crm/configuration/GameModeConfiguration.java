@@ -13,8 +13,6 @@ import com.dainws.games.crm.domain.core.exception.ExceptionPublisher;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 import com.dainws.games.crm.domain.mode.classic.ClassicEventDispatcher;
 import com.dainws.games.crm.domain.mode.classic.ClassicGameModeFactory;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIEventDispatcher;
-import com.dainws.games.crm.domain.mode.pvsai.PvsAIGameModeFactory;
 
 @Configuration
 public class GameModeConfiguration {
@@ -38,19 +36,6 @@ public class GameModeConfiguration {
 	@Bean
 	ClassicGameModeFactory classicGameModeFactory(Deck deck) {
 		ClassicGameModeFactory factory = new ClassicGameModeFactory(deck);
-		factory.setEventPublisher(this.eventPublisher);
-		factory.setExceptionPublisher(this.exceptionPublisher);
-		return factory;
-	}
-
-	@Bean
-	PvsAIEventDispatcher pvsaiEventDispatcher() {
-		return new PvsAIEventDispatcher();
-	}
-
-	@Bean
-	PvsAIGameModeFactory pvsaiGameModeFactory(Deck deck) {
-		PvsAIGameModeFactory factory = new PvsAIGameModeFactory(deck);
 		factory.setEventPublisher(this.eventPublisher);
 		factory.setExceptionPublisher(this.exceptionPublisher);
 		return factory;

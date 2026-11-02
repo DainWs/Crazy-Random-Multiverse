@@ -31,14 +31,13 @@ Domain                     domain.*                         used by every ring; 
 | `controller/events` | Socket.IO connections, publishing and dispatching of game events. |
 | `usecase` | Use cases (`PlayerUsecase`). `usecase/dto` contains the action input DTOs (`ActionDto`, `ActionMapper`). |
 | `services` | Application services that coordinate the domain and repositories. |
-| `domain` | Model and rules: `core` (game, board, cards, actions, turns, events, exceptions), `ai` (AI players), `mode` (game modes), `repositories` (ports). Imports nothing from outside `domain`. |
+| `domain` | Model and rules: `core` (game, board, cards, actions, turns, events, exceptions), `mode` (game modes), `repositories` (ports). Imports nothing from outside `domain`. |
 | `persistence` | Implementations of the `domain/repositories` ports: `persistence/memory`. |
 
 ### Where each new thing goes
 
 - **New player action**: class in `domain/core/action` following `Action` / `ActionContextTemplate`; registered in `ActionType` and `PlayerUsecase`; DTO and `ActionMapper` if the contract changes.
-- **New game mode**: subpackage in `domain/mode/<mode>` with its `GameModeFactory`, `GameFlow`, `GameModeStrategy` and `GameModeEventDispatcher`, registered in `GameModeConfiguration`. Follow `classic` / `pvsai`.
-- **New AI behavior**: in `domain/ai` using the existing schemes (`AIActionTemplate`, `Goal`, `ArchiveConditionDecorator`, `ScoreBased*`).
+- **New game mode**: subpackage in `domain/mode/<mode>` with its `GameModeFactory`, `GameFlow`, `GameModeStrategy` and `GameModeEventDispatcher`, registered in `GameModeConfiguration`. Follow `classic`.
 - **New card or effect type**: in `domain/core/card` / `domain/core/effect`.
 - **New endpoint**: interface + `Web` implementation in `controller`, with a use case or service behind it.
 
@@ -249,7 +248,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ## 10. Persistence
 
 - Every repository implementation lives in `persistence` and fulfills an interface from `domain/repositories`.
-- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `PersistenceConfiguration`. **In-memory repositories must be safe under concurrency** (several players and the AI act at the same time): concurrent collections, without exposing the internal ones.
+- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `PersistenceConfiguration`. **In-memory repositories must be safe under concurrency** (several players act at the same time): concurrent collections, without exposing the internal ones.
 - If real persistence (JPA) is ever added, it follows the rules of this section: `*Entity` entities in `persistence`, conversion through `toDomain()` / `createEntity()`, services returning domain objects, parameterized queries, and transactions opened in the use case. Adding that dependency requires asking first (see `CLAUDE.md`).
 - Services return domain objects, never DTOs.
 - Card data is loaded with the populators in `configuration/persistence`; test data, with the populators in `src/test`.
@@ -330,10 +329,10 @@ Full guide in `agents/BACKEND-TESTS.md`. Summary:
 
 - JUnit 5 + Spring Test. Tests live in `src/test/java`, in the same package as the class under test.
 - Test name: `testGiven<State>_when<Action>_then<Result>`. Arrange / Act / Assert structure separated by a blank line.
-- Test objects are created with the builders in `src/test/.../domain/builder` (`CardBuilder`, `GameBuilder`, `PlayerBuilder`, `WarriorBuilder`, `AIPlayerBuilder`). They are extended before creating new ones.
+- Test objects are created with the builders in `src/test/.../domain/builder` (`CardBuilder`, `GameBuilder`, `PlayerBuilder`, `WarriorBuilder`). They are extended before creating new ones.
 - Existing fakes and monitors: `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, `EventMonitor`, `ExceptionMonitor`, `MonitoredAction`. Use them before resorting to Mockito.
 - Integration tests: `IntegrationTest` suffix. They are excluded from `mvn test` (surefire) and run with `mvn verify -P integration-tests`.
-- Tests do not open real ports nor depend on the clock or on uncontrolled randomness: randomness (dealing, AI) is injected with a seed or a fixed strategy (`MemoryDeckPopulator`, `DummyGameStrategy`).
+- Tests do not open real ports nor depend on the clock or on uncontrolled randomness: randomness (dealing) is injected with a seed or a fixed strategy (`MemoryDeckPopulator`, `DummyGameStrategy`).
 - A contract change (DTO, `EventCode`, `ActionType`) comes with a test that pins it down.
 
 ---
@@ -348,9 +347,9 @@ Full guide in `agents/BACKEND-TESTS.md`. Summary:
 
 ## 16. Concurrency
 
-Several players and the AI act on the same game at the same time.
+Several players act on the same game at the same time.
 
-- All the actions on a game are serialized: one writer at a time per game (a lock per `GameCode`). Players and the AI go through the same path.
+- All the actions on a game are serialized: one writer at a time per game (a lock per `GameCode`). Every player goes through the same path.
 - In-memory repositories use concurrent collections and atomic operations (`compute`, `computeIfAbsent`, `merge`), never `get` followed by `put`.
 - Events and value objects are immutable once published.
 - No shared mutable `static` state.

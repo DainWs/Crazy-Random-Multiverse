@@ -5,7 +5,7 @@ General mandatory conventions for `backend/` and `frontend/`. Language-specific 
 - `agents/BACKEND-CODESTYLE.md` — Backend (Java 17, Spring Boot, Socket.IO).
 - `agents/FRONTEND-CODESTYLE.md` — Frontend (TypeScript, Vue 3, Phaser 3, Vite).
 
-**Golden rule: do not break existing patterns.** The repository already contains design decisions (Template, Decorator, Strategy, Factory, Facade in the domain; static systems in the frontend). New code follows the rules in this guide; existing code is not refactored just because it does not comply. If a rule clashes with a pattern already established in the module you are touching, the module's pattern wins and you flag it.
+**Golden rule: do not break existing patterns.** The repository already contains design decisions (Template, Strategy, Factory, Facade in the domain; static systems in the frontend). New code follows the rules in this guide; existing code is not refactored just because it does not comply. If a rule clashes with a pattern already established in the module you are touching, the module's pattern wins and you flag it.
 
 ---
 
@@ -91,7 +91,7 @@ Exceptions already established in the repository, which are respected:
 
 ## 3. Composition over inheritance
 
-- For **new** code, inheritance is limited to exceptions and to the schemes that already exist in the module (Template: `AbstractActionManager`, `ActionContextTemplate`; Decorator: `ArchiveConditionDecorator`). If you add an action, an AI goal or a mode strategy, you follow the existing scheme.
+- For **new** code, inheritance is limited to exceptions and to the schemes that already exist in the module (Template: `ActionContextTemplate`). If you add an action or a mode strategy, you follow the existing scheme.
 - **Inheritance to reuse code is forbidden** outside those schemes. If two classes share logic, it is extracted into a function or an injected collaborator.
 - Maximum depth: one level.
 
@@ -102,7 +102,7 @@ Exceptions already established in the repository, which are respected:
 - Follow the Java community naming conventions for Java code, and the TypeScript ones for TypeScript code.
 - Forbidden as a full name: `data`, `info`, `manager`, `helper`, `utils`, `handler`, `process`, `tmp`, `obj`.
 - Boolean variables are affirmative: `isEnabled`, never `isNotDisabled`.
-- No abbreviations except the universal ones: `id`, `dto`, `ui`, `ai`, `io`, `url`, `json`.
+- No abbreviations except the universal ones: `id`, `dto`, `ui`, `io`, `url`, `json`.
 - The name says **what**, the code says **how**. If a comment is needed to explain what a function does, the name is bad.
 - Names follow the game's domain vocabulary (see `agents/specs/`): `Party`, `Game`, `Player`, `Zone`, `Board`, `Leader`, `Warrior`, `Spell`, `Equipment`, `Hand`, `Deck`, `Turn`. The same concept has the same name in backend and frontend.
 - Entity codes are value objects with the `Code` suffix in the backend (`GameCode`, `PartyCode`, `PlayerCode`, `UserCode`, `CardCode`) and type aliases in the frontend.

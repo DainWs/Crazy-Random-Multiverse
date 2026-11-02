@@ -23,8 +23,8 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
-import com.dainws.games.crm.domain.builder.AIPlayerBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
+import com.dainws.games.crm.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
@@ -240,9 +240,9 @@ class SocketIOConnectionManagerTest {
 	private Game createGameInProgressWithTheUser() {
 		this.userRepository.save(this.user);
 		Player userPlayer = new UserPlayer(this.user);
-		Player aiPlayer = AIPlayerBuilder.basicAIPlayer();
+		Player rival = new PlayerBuilder().build();
 		Game game = new GameBuilder() //
-				.withPlayers(userPlayer, aiPlayer) //
+				.withPlayers(userPlayer, rival) //
 				.build();
 		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
 		this.gameRepository.save(game);

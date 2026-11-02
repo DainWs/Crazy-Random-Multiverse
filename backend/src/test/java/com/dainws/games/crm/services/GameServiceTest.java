@@ -13,8 +13,8 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
-import com.dainws.games.crm.domain.builder.AIPlayerBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
+import com.dainws.games.crm.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
@@ -69,7 +69,7 @@ class GameServiceTest {
 
 	private Game createGameOfPartyWithStatus(Status status) {
 		Game game = new GameBuilder() //
-				.withPlayers(new UserPlayer(this.user), AIPlayerBuilder.basicAIPlayer()) //
+				.withPlayers(new UserPlayer(this.user), new PlayerBuilder().build()) //
 				.build();
 		GameStatusSetter.setStatus(game, status);
 		this.gameRepository.save(game);

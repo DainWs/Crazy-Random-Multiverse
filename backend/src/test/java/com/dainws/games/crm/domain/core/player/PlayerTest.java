@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.domain.builder.AIPlayerBuilder;
 import com.dainws.games.crm.domain.builder.PlayerBuilder;
 
 class PlayerTest {
@@ -21,15 +20,6 @@ class PlayerTest {
 	@Test
 	void testGivenAlivePlayer_whenDie_thenPlayerIsSpectator() {
 		Player player = new PlayerBuilder().build();
-
-		player.die();
-
-		assertThat(player.isSpectator()).isTrue();
-	}
-
-	@Test
-	void testGivenAIPlayer_whenDie_thenPlayerIsSpectator() {
-		Player player = AIPlayerBuilder.basicAIPlayer();
 
 		player.die();
 

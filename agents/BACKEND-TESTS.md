@@ -59,7 +59,7 @@ Only helper methods and constants may be `private`. The class, instance fields, 
 - **Randomness**: tests do not use random values, except to generate identifiers. The existing builders use `Math.random()` for codes and values (`CardBuilder`, `PlayerBuilder`, `WarriorBuilder`); new builders set deterministic defaults and only generate identifiers randomly. **A value the test asserts is set explicitly**, never left to chance. A test cannot pass or fail depending on the draw.
 - **Time**: the `Clock` is injected (a fixed `Clock.fixed(...)`), see `agents/BACKEND-CODESTYLE.md`, section 17.
 - **Disk**: a test that needs files uses `@TempDir`.
-- For dealing and the AI, the fixed test strategies are used (`MemoryDeckPopulator`, `DummyGameStrategy`, `AIvsAIGameStrategy`), not real randomness.
+- For dealing, the fixed test strategies are used (`MemoryDeckPopulator`, `DummyGameStrategy`), not real randomness.
 - If a test needs a different initial state, it creates or replaces it inside the test itself.
 - No unnecessary or duplicated initializations.
 
@@ -230,11 +230,9 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 - They use local doubles, never real services (see `CLAUDE.md`).
 - Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`.
-- Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`, `AIvsAIModeTestConfiguration`) is imported with `@Import`.
+- Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`) is imported with `@Import`.
 - Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
-- The test game modes (`AIvsAI`) and the event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
-- AI simulations carry a time limit with `@Timeout` so a stuck game fails instead of hanging the run. `assertTimeoutPreemptively` is not used: it runs the code in another thread, which breaks `ThreadLocal` and the Spring security context.
-- A simulated game is non-deterministic by design (AI with randomness): the test checks invariants (the game ends, there is a winner, no unexpected exception), not a specific outcome.
+- The event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
 - Test methods may declare `throws Exception` when the scenario requires it.
 
 ### Endpoint tests
@@ -255,6 +253,5 @@ There are no controller tests today. When they are added, they use `@SpringBootT
 
 They are not fixed on your own initiative; they are listed so they are not copied.
 
-- `AIvsAIGameIntegationTest` has the typo `Integation`: it **does not match** `*IntegrationTest`, so surefire **does not exclude it** and it runs in `mvn test`. Rename it in a separate commit.
 - `GameBehaviorIntegrationTest` and the `*BehaviorIntegrationTest` classes inherit from abstract bases; they are kept.
-- `AIvsAIGameIntegationTest` and `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.
+- `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.

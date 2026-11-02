@@ -1,5 +1,5 @@
 type GameCode = string;
-type GameMode = 'CLASSIC' | 'PLAYER_VS_AI';
+type GameMode = 'CLASSIC';
 
 
 const MAX_PLAYER_COUNTS = 12;
