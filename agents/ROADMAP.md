@@ -162,7 +162,7 @@ Not tied to a phase.
 - [ ] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [ ] Decide whether to add tooling that enforces the style rules (Checkstyle to ban `switch`, ArchUnit to ban records in the DTO package); each is a new dependency, ask first
 - [ ] A newly placed card must not act on the turn it is placed (SPECS section 4): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
-- [ ] Discuss supporting several decks instead of a single one per server (new feature): today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `JPAConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode) before designing it
+- [ ] Discuss supporting several decks instead of a single one per server (new feature): today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `PersistenceConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode) before designing it
 
 ## Post-MVP
 

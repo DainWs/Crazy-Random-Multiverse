@@ -26,7 +26,7 @@ Domain                     domain.*                         used by every ring; 
 
 | Package | Purpose |
 |---|---|
-| `configuration` | Spring `@Configuration`: security, session, sockets, game modes, repositories. `configuration/jpa` contains the card populators. No business logic. |
+| `configuration` | Spring `@Configuration`: security, session, sockets, game modes, repositories. `configuration/persistence` contains the card populators. No business logic. |
 | `controller` | HTTP input. Each controller is an `XController` interface carrying the Spring annotations and one or more implementations. |
 | `controller/events` | Socket.IO/WebSocket connections, publishing and dispatching of game events. |
 | `usecase` | Use cases (`PlayerUsecase`). `usecase/dto` contains the action input DTOs (`ActionDto`, `ActionMapper`). |
@@ -249,10 +249,10 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ## 10. Persistence
 
 - Every repository implementation lives in `persistence` and fulfills an interface from `domain/repositories`.
-- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `JPAConfiguration`. **In-memory repositories must be safe under concurrency** (several players and the AI act at the same time): concurrent collections, without exposing the internal ones.
+- Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `PersistenceConfiguration`. **In-memory repositories must be safe under concurrency** (several players and the AI act at the same time): concurrent collections, without exposing the internal ones.
 - If real persistence (JPA) is ever added, it follows the rules of this section: `*Entity` entities in `persistence`, conversion through `toDomain()` / `createEntity()`, services returning domain objects, parameterized queries, and transactions opened in the use case. Adding that dependency requires asking first (see `CLAUDE.md`).
 - Services return domain objects, never DTOs.
-- Card data is loaded with the populators in `configuration/jpa`; test data, with the populators in `src/test`.
+- Card data is loaded with the populators in `configuration/persistence`; test data, with the populators in `src/test`.
 
 ---
 

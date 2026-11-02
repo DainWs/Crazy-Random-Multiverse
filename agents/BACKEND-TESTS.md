@@ -229,7 +229,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 - They use local doubles, never real services (see `CLAUDE.md`).
 - Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`.
-- Configuration in `src/test/resources/application-test.properties`. The test configuration (`JPATestConfiguration`, `AIvsAIModeTestConfiguration`) is imported with `@Import`.
+- Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`, `AIvsAIModeTestConfiguration`) is imported with `@Import`.
 - Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
 - The test game modes (`AIvsAI`) and the event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
 - AI simulations carry a time limit with `@Timeout` so a stuck game fails instead of hanging the run. `assertTimeoutPreemptively` is not used: it runs the code in another thread, which breaks `ThreadLocal` and the Spring security context.

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @TestConfiguration
 @ComponentScan(basePackages = "com.dainws.games")
-public class JPATestConfiguration {
+public class PersistenceTestConfiguration {
 
 	
 }

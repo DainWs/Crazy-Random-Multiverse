@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.configuration.AIvsAIModeTestConfiguration;
-import com.dainws.games.crm.configuration.JPATestConfiguration;
+import com.dainws.games.crm.configuration.PersistenceTestConfiguration;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -33,7 +33,7 @@ import com.dainws.games.crm.services.GameService;
  * </ul>
  */
 @SpringBootTest
-@Import({ AIvsAIModeTestConfiguration.class, JPATestConfiguration.class })
+@Import({ AIvsAIModeTestConfiguration.class, PersistenceTestConfiguration.class })
 public class AIvsAIGameIntegationTest {
 
 	@MockBean

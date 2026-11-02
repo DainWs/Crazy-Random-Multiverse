@@ -1,17 +1,16 @@
 package com.dainws.games.crm.configuration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.dainws.games.crm.configuration.jpa.MemoryCardRepositoryPopulator;
+import com.dainws.games.crm.configuration.persistence.MemoryCardRepositoryPopulator;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.repositories.CardRepository;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
 import com.dainws.games.crm.domain.repositories.UserRepository;
-import com.dainws.games.crm.persistence.JPAActionContextFactory;
+import com.dainws.games.crm.persistence.PersistenceActionContextFactory;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 import com.dainws.games.crm.persistence.memory.MemoryEventSequence;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
@@ -19,7 +18,7 @@ import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
 @Configuration(proxyBeanMethods = false)
-public class JPAConfiguration {
+public class PersistenceConfiguration {
 	@Bean(name = "GameRepository")
 	@ConditionalOnMissingBean(GameRepository.class)
 	MemoryGameRepository gameRepository() {
@@ -53,8 +52,8 @@ public class JPAConfiguration {
 	}
 	
 	@Bean
-	JPAActionContextFactory jpaActionContextFactory(
+	PersistenceActionContextFactory persistenceActionContextFactory(
 			GameRepository gameRepository, CardRepository cardRepository) {
-		return new JPAActionContextFactory(gameRepository, cardRepository);
+		return new PersistenceActionContextFactory(gameRepository, cardRepository);
 	}
 }

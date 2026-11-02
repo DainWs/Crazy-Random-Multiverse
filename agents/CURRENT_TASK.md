@@ -45,7 +45,7 @@ Style (refactor commits)
 10. [ ] Rename `newIntance` -> `newInstance` and `mithicWarriorBuilder` -> `mythicWarriorBuilder`, tests included.
 11. [ ] `NotFoundException` factories for party, user and game_mode; remove the commented `withName`/`withDescription` in `MemoryCardRepositoryPopulator`; `Long`/`0l` -> `long` in `Spell`.
 12. [ ] Rename the DTO packages (see decisions).
-13. [ ] Rename the JPA classes and package (see decisions). Next step, agreed to do before item 2. Also rename `JPATestConfiguration` in `src/test` if the user agrees, and remove the unused import left by item 1.
+13. [x] Rename the JPA classes and package (see decisions), `JPATestConfiguration` -> `PersistenceTestConfiguration` and the unused import left by item 1 removed. Done, waiting for the user's review before the commit. Next: item 2.
 14. [ ] Unify the loggers (see decisions). `PlayerTurnAction` becomes a static logger and stops using `LOGGER_NAME`; check nothing depends on that logger name (for example logging configuration).
 15. [ ] Member order in the touched classes.
 

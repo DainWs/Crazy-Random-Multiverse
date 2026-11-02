@@ -8,12 +8,12 @@ import com.dainws.games.crm.domain.core.action.MutableActionContext;
 import com.dainws.games.crm.domain.repositories.CardRepository;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 
-public class JPAActionContextFactory implements ActionContextFactory {
+public class PersistenceActionContextFactory implements ActionContextFactory {
 
 	private GameRepository gameRepository;
 	private CardRepository cardRepository;
 
-	public JPAActionContextFactory(GameRepository gameRepository, CardRepository cardRepository) {
+	public PersistenceActionContextFactory(GameRepository gameRepository, CardRepository cardRepository) {
 		this.gameRepository = gameRepository;
 		this.cardRepository = cardRepository;
 	}

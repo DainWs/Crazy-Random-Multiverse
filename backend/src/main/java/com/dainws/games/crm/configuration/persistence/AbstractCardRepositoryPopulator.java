@@ -1,4 +1,4 @@
-package com.dainws.games.crm.configuration.jpa;
+package com.dainws.games.crm.configuration.persistence;
 
 import com.dainws.games.crm.domain.repositories.CardRepository;
 
