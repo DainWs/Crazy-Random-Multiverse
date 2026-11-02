@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 
 import com.dainws.games.crm.domain.core.Game;
@@ -27,6 +28,7 @@ public class GameEventController {
 		this.eventCommunicationMethod.put(EventCode.PLAYER_RECEIVE_CARD, this::onPlayerReceiveCard);
 	}
 
+	@Order(EventListenerOrder.SEND)
 	@EventListener
 	public void handleEvent(Event event) {
 		this.eventCommunicationMethod

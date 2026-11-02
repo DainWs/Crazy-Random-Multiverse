@@ -65,7 +65,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Answer every other expected error with a 400 and its key (`CON-18`): parties, users, denied accesses, elements not found and malformed requests have no handler today
 - [x] Align the contract with `specs/CONTRACT.md` (the new error keys that need a rule not built yet arrive with that rule in Phases 3, 4 and 11): `equipment` as a list in `CardDto`; `round` in `GameDto`; `handSize` in `PlayerDto`; no `health` or `maxHealth` in `ZoneDto`; `combatant` absent in an empty slot (`CON-14`); the `attackAvailable` and `targetable` flags (`PROT-4`, `CON-15`); remove `GAME_RESTART`; add `GAME_CANCELLED` and the details of `PLAYER_ATTACK_CARD` (`CON-21`); add the new error keys and rename those marked as renamed; no `code` in the body of `PUT /party`; `maxUsers` in the bodies of `POST` and `PUT /party`; a last `party:info` to a kicked user (`PARTY-12`); `catalogCode` instead of `code` in `CardDto` (`CON-26`); effective statistics in `CardDto` (`CON-27`); `locked` in `PartyDto`
 - [x] Replace `crm.communication.socket-io.origin` with one explicit origin for REST and the socket, with credentials (`CON-5`)
-- [ ] Publish the events in the order of `CON-22`
+- [x] Publish each event to the clients before the game reacts to it, and `ROUND_CHANGE` before `TURN_CHANGE` (`CON-22`)
 - [ ] Separate a public user id from the session id (`NFR-3`, `CON-24`): the user id is the HTTP session id and the parties share it with their members. `owner` and `users` in `PartyDto` become `UserDto`, and `PlayerDto.code` takes the public id
 - [ ] Keep `POST /register` as the only way to create a user and remove `POST /login` (`USER-6`), with a session of 24 hours (`USER-7`)
 - [ ] Delete users only after the grace period (`CON-3`, `ABSENT-1`)
@@ -83,6 +83,7 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 
 ## Phase 3 — Authoritative game state and hand
 
+- [ ] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, then `TURN_CHANGE`, and the first round and turn like any other
 - [ ] Check the game flow against `specs/GAME-FLOW.md` and implement the differences: turn order, what a round is, dealing to everyone at the start of the round, equipment in the spell slots, unlimited deck and missing categories
 - [ ] Fix the `hasLeaderInBoard` bug so protection rules work from day one (`PROT-1`, `PROT-2`, `PROT-4`)
 - [ ] A newly placed card must not act on the turn it is placed (`BOARD-8`): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement

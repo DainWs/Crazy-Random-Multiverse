@@ -270,6 +270,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 
 - The domain publishes an `Event` with an `EventCode` and `EventDetails`. `SpringEventPublisher` → `SpringGameEventDispatcher` → the mode's `GameModeEventDispatcher` → `CommunicationClient`.
 - Socket.IO is the only transport. `CommunicationClient` is a concrete class; tests replace it with a subclass (`RecordingCommunicationClient`).
+- Every event is sent to the clients before the game reacts to it (`EventListenerOrder`), so the events the game publishes in response reach them after their cause.
 - A new event requires: `EventCode`, DTO/mapping in `CommunicationMapper`, and an entry in the frontend (`GameEventCode.ts`, `EventDto.ts`).
 
 ---

@@ -77,12 +77,12 @@ public class TurnManager {
 			game.setTurn(newTurn);
 		}
 
-		if (!oldTurn.isTurnEquals(newTurn)) {
-			game.publishEvent(EventCode.TURN_CHANGE);
-		}
-
 		if (!oldTurn.isRoundEquals(newTurn)) {
 			game.publishEvent(EventCode.ROUND_CHANGE);
+		}
+
+		if (!oldTurn.isTurnEquals(newTurn)) {
+			game.publishEvent(EventCode.TURN_CHANGE);
 		}
 	}
 }
