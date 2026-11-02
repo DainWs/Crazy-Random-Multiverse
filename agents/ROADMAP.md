@@ -73,9 +73,6 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Send the user's state when a socket is bound (`CON-23`): `GAME_SYNC` or `GAME_LOADING`, then `party:info`, and always `user:synced`; a repeated `/ready` has no effect (`LOAD-2`)
 - [ ] Implement REST `POST /game/{gameCode}/action` (`CON-16`)
 - [ ] Implement REST error handling (`CON-18`): read the 400 and its key, and stop listening to the `error`, `game:error` and `exception` socket channels
-- [ ] Refactor networking into clear API services
-- [ ] Separate REST commands from Socket.IO events
-- [ ] Separate backend DTO mapping from domain models
 
 ## Phase 2.5 — Minimal lobby
 
