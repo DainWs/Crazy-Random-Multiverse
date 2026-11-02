@@ -158,6 +158,9 @@ Not tied to a phase.
 - [ ] The user id is the HTTP session id and the parties share it with their members, which makes it equivalent to a credential: separate a public user id from the session id
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
 - [ ] A person tests a real browser connection with the session cookie; the frontend does not call `connect()` yet (see Phase 2)
+- [ ] Adopt the new exception rule (`BACKEND-CODESTYLE.md`, section 8): `Action` and the modes return a result with the `ExceptionCode` instead of throwing, and check the rules through queries on the models; this changes the contract with `ExceptionPublisher`, review the closed decisions first
+- [ ] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
+- [ ] Decide whether to add tooling that enforces the style rules (Checkstyle to ban `switch`, ArchUnit to ban records in the DTO package); each is a new dependency, ask first
 - [ ] A newly placed card must not act on the turn it is placed (SPECS section 4): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 
 ## Post-MVP

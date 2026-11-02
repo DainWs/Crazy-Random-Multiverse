@@ -93,7 +93,7 @@ public class WebPlayerController implements PlayerController {
 
 ### `final`
 
-`final` is reserved for what by nature does not change during the object's life: its identity (codes), `serialVersionUID`, constants and, in base classes, the logger. Collaborators injected through the constructor are **not** marked `final` in this project, following the existing code.
+`final` is decided by the purpose of the field, not by whether a setter exists today. It is used when the field conceptually never changes during the object's life: its identity (codes), `serialVersionUID`, constants, and collaborators injected through the constructor that nobody replaces. It is not used on fields that represent data that may change (`name`, `description`, `status`), even if no setter exists yet. Collaborators with a setter for tests are not `final`.
 
 ### `this`
 
@@ -192,13 +192,15 @@ this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 
 ### Value objects
 
-- Identifiers and value objects are `record`s, although they may also be classes in certain justified cases.
-- Since operations that may throw exceptions are not allowed in constructors, whenever there is validation they are created through a static `from(...)`.
+- Identifiers and value objects are `record`s or classes, depending on the validation they need:
+  - **Record with a compact constructor**: the validation is simple, deterministic and free of side effects (`Objects.requireNonNull`, numeric ranges, non-blank text). The public canonical constructor is not a risk because the validation lives inside it: an invalid instance cannot be created, not even with `new`.
+  - **Class with a private constructor and a static factory**: the creation parses or converts data that can fail (Base64, `Long.valueOf`), depends on something external, or the API returns an alternative such as an `Optional`. A record is not used here, since its canonical constructor of a public record cannot be private.
+- A record may also declare a static `from(...)` to convert a primitive or external value; it does not replace the validation in the compact constructor.
 - The primitive value is exposed with an accessor that says what it is: `number()` for numeric ones and `text()` for text ones.
 
 ### Static factories
 
-Used when the constructor requires fixed validations or performs actions that may throw exceptions, such as `Long.valueOf()`.
+Used when the creation requires parsing or conversions that can fail, such as `Long.valueOf()`.
 
 | Name | Use |
 |---|---|
@@ -218,10 +220,11 @@ If a class has a factory, its constructor is private and the validation lives in
 
 General rules in `agents/CODESTYLE.md`, section 7.
 
-- For new code: **do not use exceptions as a means of controlling execution flow**.
-- The **game rules** reject an invalid action by throwing the corresponding exception with its `ExceptionCode`. It is the contract with the client, which receives the code as an event through `ExceptionPublisher`. This is game flow, not a failure.
+- For new code: **exceptions are exceptional**. An action rejected by the game rules is expected behavior, not a failure, and is not modeled with an exception.
+- **Domain models** (`Zone`, `Player`, `Game`, `Card`…) expose queries (`zone.isFree(coordinate)`, `player.hasTurn()`) and protect their own invariants by throwing when they are misused (`IllegalStateException`, `IllegalArgumentException`, or a game exception from `domain.core.exception`). They do not return results.
+- **Domain services, actions and modes** (`Action`, game modes) check the rules through those queries *before* acting and return a result carrying the `ExceptionCode` when the action is rejected. They never catch a model's exception to turn it into a result. The client receives the code as an event through `ExceptionPublisher`.
 - Application exceptions extend `UsecaseException` and carry an `ExceptionCode`.
-- Denied accesses (a game or player that does not belong to the session) throw `IllegalAccessException`, as in `PlayerUsecase`.
+- Denied accesses (a game or player that does not belong to the session) throw `AccessDeniedException`, which extends `UsecaseException`. They are a tampered request or a client bug, not a game move, so an exception is appropriate. Existing uses of `IllegalAccessException` (a checked reflection exception) are not copied.
 - When performing an action, everything that can reject it is validated before any state changes; an action never mutates the game and then undoes the change.
 
 ### `catch` rules
@@ -235,7 +238,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 
 ## 9. Constructors and APIs
 
-- Constructors do no work that can fail: they only assign. No static calls that may throw exceptions inside a constructor. That work is done in the method that uses it or in the class's static factories.
+- Constructors do no work that can fail for external reasons or with side effects: they assign and, at most, validate their arguments (`NullPointerException`, `IllegalArgumentException`; section 7). No I/O, no parsing and no static calls that may throw inside a constructor. That work is done in the method that uses it or in the class's static factories.
 - A constructor takes at most 3 parameters. Beyond that, only with explicit justification; the usual approach is to use setters or a value object.
 - Empty public constructors are not declared if they are not needed.
 - If the native Java API does the same as a Spring utility, the native one is used. Example: `URI.resolve` instead of `UriComponentsBuilder`.
@@ -292,6 +295,7 @@ return Card.builder(code) //
 ### DTOs
 
 - Plain classes with private non-`final` fields, setters if they are used in responses and getters if they are used as requests.
+- **`record`s are not used as DTOs.** A DTO with optional fields would need positional constructors (`new Dto(null, null, "data", null)`) or a builder, since Java has no named parameters, and a record exposes its components as public API, which makes the structure harder to evolve.
 - Serialization annotations (`@JsonProperty`, `@JsonFormat`, etc.) go on the properties (fields), not on the getters.
 - The name of a field is the same as the property of its getter and setter. A boolean is named without the `is` prefix (`alive`, not `isAlive`) and carries the contract name in `@JsonProperty("isAlive")`: a field `isAlive` next to a getter `isAlive()` is serialized twice, as `isAlive` and as `alive`.
 - Validations (`@NotNull`, `@NotBlank`) go on the field, above `@JsonProperty`.
@@ -339,3 +343,38 @@ Full guide in `agents/BACKEND-TESTS.md`. Summary:
 - In English, same as `TODO`s: `// TODO migrate to a game exception`.
 - Javadoc only on the public API of a module or class, one line. It is not added to methods that are explained by their name and signature.
 - `System.out.print()` is forbidden in production code.
+
+---
+
+## 16. Concurrency
+
+Several players and the AI act on the same game at the same time.
+
+- All the actions on a game are serialized: one writer at a time per game (a lock per `GameCode`). Players and the AI go through the same path.
+- In-memory repositories use concurrent collections and atomic operations (`compute`, `computeIfAbsent`, `merge`), never `get` followed by `put`.
+- Events and value objects are immutable once published.
+- No shared mutable `static` state.
+- Threads are created through a managed `ExecutorService`, never with `new Thread`. An `InterruptedException` is never swallowed: the interrupt flag is restored with `Thread.currentThread().interrupt()`.
+- Concurrency has tests (see `agents/BACKEND-TESTS.md`, section 15).
+
+---
+
+## 17. Time and randomness
+
+- The domain does not call `Instant.now()`, `LocalDate.now()`, `System.currentTimeMillis()` nor `Math.random()`.
+- The clock is injected as a `Clock` and randomness as a `RandomGenerator` (seeded in tests).
+
+---
+
+## 18. Null, `Optional` and copies
+
+- `Optional` is only a return type: never a field, a parameter or a collection element. A method never returns `null` where an `Optional` or an empty collection fits.
+- `@Override` is always written.
+- New code does not use `Cloneable` / `clone()`; it uses a copy constructor or a `copy()` method. The existing `clone()` of `User` is not refactored on your own initiative.
+
+---
+
+## 19. Control flow
+
+- `switch` is not used, neither the statement nor the expression: it makes methods grow. A `Map` of handlers is used instead (`EnumMap` for enums). Besides, the project is on Java 17, where `switch` is still the traditional one: pattern matching for `switch` is only a preview feature until Java 21, so there is no exhaustiveness check over sealed types to compensate. Review this rule if the project moves to Java 21.
+- `sealed` types are not used for the same reason: without pattern matching in `switch` they bring little here.

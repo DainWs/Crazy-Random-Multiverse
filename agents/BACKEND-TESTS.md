@@ -56,7 +56,9 @@ Only helper methods and constants may be `private`. The class, instance fields, 
 
 - Common data are fields without an access modifier and are initialized in `@BeforeEach`.
 - Deterministic data. `LocalDate.now()`, `Instant.now()` and `Thread.sleep()` are forbidden. For dates, `LocalDate.of(year, month, day)`.
-- **Randomness**: the existing builders use `Math.random()` for codes and values (`CardBuilder`, `PlayerBuilder`, `WarriorBuilder`). This is tolerated for data the test does not check (identifiers, names). **A value the test asserts is set explicitly**, never left to chance. A test cannot pass or fail depending on the draw.
+- **Randomness**: tests do not use random values, except to generate identifiers. The existing builders use `Math.random()` for codes and values (`CardBuilder`, `PlayerBuilder`, `WarriorBuilder`); new builders set deterministic defaults and only generate identifiers randomly. **A value the test asserts is set explicitly**, never left to chance. A test cannot pass or fail depending on the draw.
+- **Time**: the `Clock` is injected (a fixed `Clock.fixed(...)`), see `agents/BACKEND-CODESTYLE.md`, section 17.
+- **Disk**: a test that needs files uses `@TempDir`.
 - For dealing and the AI, the fixed test strategies are used (`MemoryDeckPopulator`, `DummyGameStrategy`, `AIvsAIGameStrategy`), not real randomness.
 - If a test needs a different initial state, it creates or replaces it inside the test itself.
 - No unnecessary or duplicated initializations.
@@ -184,8 +186,8 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 ## 10. Assertions
 
-- **Exactly one assertion per test.** If a scenario has several independent results, it is split into several tests, each with its own *Given-When-Then* name.
-- Grouping assertions with `assertAll()` or any other mechanism is forbidden.
+- **One behavior per test.** If a scenario has several independent results, it is split into several tests, each with its own *Given-When-Then* name.
+- `assertAll()` is allowed only to check several facets of the same result (the fields of a mapped DTO, the components of a value object). It is not used to mix behaviors.
 - `assertEquals(expected, actual)`, with the expected value explicit.
 - For game exceptions, `assertThrows(PlayerActionException.class, () -> ...)`, with the concrete class and, if the code matters, checking the `ExceptionCode` in another test.
 - An `assertTrue(action.perform(context))` counts as one assertion.
@@ -230,7 +232,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 - Configuration in `src/test/resources/application-test.properties`. The test configuration (`JPATestConfiguration`, `AIvsAIModeTestConfiguration`) is imported with `@Import`.
 - Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
 - The test game modes (`AIvsAI`) and the event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
-- AI simulations carry a time limit (`assertTimeoutPreemptively`) so a stuck game fails instead of hanging the run.
+- AI simulations carry a time limit with `@Timeout` so a stuck game fails instead of hanging the run. `assertTimeoutPreemptively` is not used: it runs the code in another thread, which breaks `ThreadLocal` and the Spring security context.
 - A simulated game is non-deterministic by design (AI with randomness): the test checks invariants (the game ends, there is a winner, no unexpected exception), not a specific outcome.
 - Test methods may declare `throws Exception` when the scenario requires it.
 
@@ -240,7 +242,15 @@ There are no controller tests today. When they are added, they use `@SpringBootT
 
 ---
 
-## 15. Things in the existing code to fix when touched
+## 15. Concurrency tests
+
+- The in-memory repositories and the per-game serialization (`agents/BACKEND-CODESTYLE.md`, section 16) have tests that run several threads against the same object (an `ExecutorService` plus a `CountDownLatch` to start them together) and check the final state.
+- They carry `@Timeout` and never use `Thread.sleep()`.
+- They check invariants (no lost update, no duplicate), not the order of the threads.
+
+---
+
+## 16. Things in the existing code to fix when touched
 
 They are not fixed on your own initiative; they are listed so they are not copied.
 
