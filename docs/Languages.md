@@ -1,5 +1,7 @@
 # Languages!! 
 
+> Kept as background. Some of this has been superseded: the MVP is only in Spanish (`UI-2`), and the client translates the texts by key (`CARD-7`, `CON-18`). `agents/SPECS.md` and `agents/specs/` prevail.
+
 Currently, we supports these languages:
 
  - **Spanish (Mainly)**
