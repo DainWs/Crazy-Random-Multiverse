@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.dainws.games.crm.usecase.dto.ActionDto;
 
+import jakarta.validation.Valid;
+
 public interface PlayerController {
 
 	@PostMapping(value = "/game/{gameCode}/action",
@@ -14,7 +16,7 @@ public interface PlayerController {
 	)
 	public void dispatchAction(
 			@PathVariable("gameCode") String gameCodeBase64UrlSafe, 
-			@RequestBody ActionDto actionDto
+			@Valid @RequestBody ActionDto actionDto
 	) throws IllegalAccessException;
 
 }

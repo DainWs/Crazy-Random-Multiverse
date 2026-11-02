@@ -28,7 +28,9 @@ Bugs
 1. [x] Rename `crm.jpa.type` to `crm.persistence.type` (commit `e3ede44`, together with the multiple decks note in the roadmap).
    - Not done: the property is still not read anywhere. The `@ConditionalOnProperty`, its constants and `JPAConfigurationTest` were dropped on purpose by the user before the commit.
    - Left over: an unused `ConditionalOnProperty` import in `JPAConfiguration.java`.
-2. [ ] `MemoryUserRepository.delete` idempotent when the user does not exist; `PlayerUsecase.performAction` rejects a null or unmapped `type` with a usecase exception. A test per behavior.
+2. [x] `MemoryUserRepository.delete` idempotent (single `remove`); `ActionDto.type` is `@NotNull` and `PlayerController` validates it with `@Valid` (HTTP 400); `PlayerUsecase.performAction` throws `IllegalArgumentException` when a type has no handler. Done, waiting for the user's review before the commit.
+   - Changed from the original plan: a usecase exception was replaced by bean validation at the HTTP boundary (`BACKEND-CODESTYLE.md` section 7).
+   - Still open, for item 5: `gameCode` or `sourcePlayerCode` null in `ActionDto` makes `contentEquals` throw `NullPointerException`.
 3. [ ] Repositories: `find` with a single `get` and `NotFoundException` on `null` (Game, Party, User), instead of `exists`/`has` followed by `get`.
 4. [ ] `MemoryCardRepositoryPopulator` stops catching `Exception`; a failure aborts startup.
 

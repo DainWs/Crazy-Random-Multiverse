@@ -75,6 +75,33 @@ class PlayerUsecaseTest {
 		assertThat(facade.getPerformedActions()).isEmpty();
 	}
 
+	@Test
+	void testGivenActionWithoutType_whenPerformAction_thenIllegalArgumentIsThrown() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		GameCode gameCode = new GameCode();
+		ActionDto actionDto = this.createActionDto(gameCode, null);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		User user = this.createUser(USER_CODE);
+
+		ThrowingCallable performAction = () -> playerUsecase.performAction(gameCode, user, actionDto);
+
+		assertThatThrownBy(performAction)
+				.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	void testGivenActionWithoutType_whenPerformAction_thenNothingIsPerformed() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		GameCode gameCode = new GameCode();
+		ActionDto actionDto = this.createActionDto(gameCode, null);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		User user = this.createUser(USER_CODE);
+
+		catchThrowable(() -> playerUsecase.performAction(gameCode, user, actionDto));
+
+		assertThat(facade.getPerformedActions()).isEmpty();
+	}
+
 	private ThrowingCallable performActionOfAnotherUser(
 			RecordingPlayerActionFacade facade) {
 		GameCode gameCode = new GameCode();

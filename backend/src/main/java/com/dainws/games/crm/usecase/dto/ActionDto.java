@@ -2,10 +2,13 @@ package com.dainws.games.crm.usecase.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotNull;
+
 public class ActionDto {
 	@JsonProperty(value = "game", defaultValue = "")
 	private String gameCode;
 
+	@NotNull
 	@JsonProperty(value = "type", defaultValue = "")
 	private ActionType type; 
 	

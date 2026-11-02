@@ -22,6 +22,27 @@ class MemoryUserRepositoryTest {
 	}
 
 	@Test
+	void testGivenUnknownUser_whenDelete_thenNothingFails() {
+		MemoryUserRepository repository = new MemoryUserRepository();
+		User unknown = new User("user-1", "Name", UserPlatform.WEB);
+
+		repository.delete(unknown.getCode());
+
+		assertThat(repository.has(unknown.getCode())).isFalse();
+	}
+
+	@Test
+	void testGivenSavedUser_whenDelete_thenUserIsRemoved() {
+		MemoryUserRepository repository = new MemoryUserRepository();
+		User user = new User("user-1", "Name", UserPlatform.WEB);
+		repository.save(user);
+
+		repository.delete(user.getCode());
+
+		assertThat(repository.has(user.getCode())).isFalse();
+	}
+
+	@Test
 	void testGivenSavedUsers_whenFindAll_thenReturnsAllOfThem() {
 		MemoryUserRepository repository = new MemoryUserRepository();
 		User first = new User("user-1", "Name", UserPlatform.WEB);

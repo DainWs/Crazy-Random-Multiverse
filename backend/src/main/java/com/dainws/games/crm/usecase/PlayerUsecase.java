@@ -41,6 +41,10 @@ public class PlayerUsecase {
 			throw new IllegalAccessException("Acceso denegado - intento de suplantación de indentidad detectado");
 		}
 
+		if (!this.actionResolver.containsKey(actionDto.getType())) {
+			throw new IllegalArgumentException("There is no handler for the action type " + actionDto.getType());
+		}
+
 		this.actionResolver.get(actionDto.getType())
 				.accept(actionDto);
 	}

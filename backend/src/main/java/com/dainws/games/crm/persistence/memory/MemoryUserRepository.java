@@ -30,9 +30,10 @@ public class MemoryUserRepository implements UserRepository {
 
 	@Override
 	public void delete(UserCode userCode) {
-		User user = this.users.get(userCode);
-		this.logger.info("Borrando usuario con nombre {}", user.getName());
-		this.users.remove(userCode);
+		User user = this.users.remove(userCode);
+		if (user != null) {
+			this.logger.info("Borrando usuario con nombre {}", user.getName());
+		}
 	}
 
 	@Override

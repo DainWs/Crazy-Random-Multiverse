@@ -1,0 +1,65 @@
+package com.dainws.games.crm.controller;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.usecase.PlayerUsecase;
+import com.dainws.games.crm.usecase.RecordingPlayerActionFacade;
+
+class WebPlayerControllerTest {
+
+	private static final String ACTION_URL = "/game/{gameCode}/action";
+	private static final String USER_CODE = "user-1";
+
+	private RecordingPlayerActionFacade facade;
+	private MockMvc mockMvc;
+
+	@BeforeEach
+	void beforeEach() {
+		this.facade = new RecordingPlayerActionFacade();
+		WebPlayerController controller = new WebPlayerController(new PlayerUsecase(this.facade));
+		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
+		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+	}
+
+	@Test
+	void testGivenActionWithoutType_whenDispatchAction_thenRequestIsRejected() throws Exception {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\"}".formatted(gameCode.text(), USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void testGivenActionWithoutType_whenDispatchAction_thenNothingIsPerformed() throws Exception {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\"}".formatted(gameCode.text(), USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body));
+
+		assertTrue(this.facade.getPerformedActions().isEmpty());
+	}
+
+	private String encode(GameCode gameCode) {
+		byte[] bytes = gameCode.text().getBytes(StandardCharsets.UTF_8);
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+	}
+}
