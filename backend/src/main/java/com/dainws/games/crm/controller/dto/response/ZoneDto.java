@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.domain;
+package com.dainws.games.crm.controller.dto.response;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;

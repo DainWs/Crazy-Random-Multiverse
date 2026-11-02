@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.domain;
+package com.dainws.games.crm.controller.dto.response;
 
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.fasterxml.jackson.annotation.JsonProperty;

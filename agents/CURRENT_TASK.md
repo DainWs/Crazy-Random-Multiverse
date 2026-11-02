@@ -51,7 +51,7 @@ Style (refactor commits)
 9. [x] Logs of the `Memory*Repository` and the `*CommunicationClient` in English, moved from `info` to `trace` or `debug`. Done, waiting for the user's review before the commit. Next: item 10.
 10. [x] Rename `newIntance` -> `newInstance` and `mithicWarriorBuilder` -> `mythicWarriorBuilder`, tests included. Done, waiting for the user's review before the commit. Next: item 11.
 11. [x] `NotFoundException` factories for party, user and game_mode; remove the commented `withName`/`withDescription` in `MemoryCardRepositoryPopulator`; `Long`/`0l` -> `long` in `Spell`. Done, waiting for the user's review before the commit. Next: item 12.
-12. [ ] Rename the DTO packages (see decisions).
+12. [x] Rename the DTO packages (see decisions). Done: only `controller/dto/domain` -> `controller/dto/response` was left, the request DTOs already live in `usecase.dto` (item 7).
 13. [x] Rename the JPA classes and package (see decisions), `JPATestConfiguration` -> `PersistenceTestConfiguration` and the unused import left by item 1 removed. Done, waiting for the user's review before the commit. Next: item 2.
 14. [ ] Unify the loggers (see decisions). `PlayerTurnAction` becomes a static logger and stops using `LOGGER_NAME`; check nothing depends on that logger name (for example logging configuration).
 15. [ ] Member order in the touched classes.

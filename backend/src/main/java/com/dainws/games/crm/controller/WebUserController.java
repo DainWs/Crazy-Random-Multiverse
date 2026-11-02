@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 
 import com.dainws.games.crm.controller.dto.ModelMapper;
-import com.dainws.games.crm.controller.dto.domain.PartyDto;
-import com.dainws.games.crm.controller.dto.domain.PartyListDto;
-import com.dainws.games.crm.controller.dto.domain.UserDto;
+import com.dainws.games.crm.controller.dto.response.PartyDto;
+import com.dainws.games.crm.controller.dto.response.PartyListDto;
+import com.dainws.games.crm.controller.dto.response.UserDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;

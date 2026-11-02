@@ -1,6 +1,6 @@
 package com.dainws.games.crm.usecase.dto;
 
-import com.dainws.games.crm.controller.dto.domain.GameModeDto;
+import com.dainws.games.crm.controller.dto.response.GameModeDto;
 
 public class CreatePartyRequest {
 	private GameModeDto gameMode; 

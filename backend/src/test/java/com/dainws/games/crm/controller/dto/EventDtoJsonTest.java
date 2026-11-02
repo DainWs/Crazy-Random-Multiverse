@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.corundumstudio.socketio.protocol.JacksonJsonSupport;
-import com.dainws.games.crm.controller.dto.domain.EventDto;
+import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;

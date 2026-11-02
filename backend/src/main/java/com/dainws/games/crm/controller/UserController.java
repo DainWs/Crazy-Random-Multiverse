@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.dainws.games.crm.controller.dto.domain.PartyDto;
-import com.dainws.games.crm.controller.dto.domain.PartyListDto;
-import com.dainws.games.crm.controller.dto.domain.UserDto;
+import com.dainws.games.crm.controller.dto.response.PartyDto;
+import com.dainws.games.crm.controller.dto.response.PartyListDto;
+import com.dainws.games.crm.controller.dto.response.UserDto;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 

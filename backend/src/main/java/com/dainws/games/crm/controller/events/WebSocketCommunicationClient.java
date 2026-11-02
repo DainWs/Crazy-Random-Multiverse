@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
-import com.dainws.games.crm.controller.dto.domain.EventDto;
-import com.dainws.games.crm.controller.dto.domain.ExceptionCodeDto;
-import com.dainws.games.crm.controller.dto.domain.PartyDto;
+import com.dainws.games.crm.controller.dto.response.EventDto;
+import com.dainws.games.crm.controller.dto.response.ExceptionCodeDto;
+import com.dainws.games.crm.controller.dto.response.PartyDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;

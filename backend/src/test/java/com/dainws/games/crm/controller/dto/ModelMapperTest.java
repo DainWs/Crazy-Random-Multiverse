@@ -4,11 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.dainws.games.crm.controller.dto.domain.CardDto;
-import com.dainws.games.crm.controller.dto.domain.GameDto;
-import com.dainws.games.crm.controller.dto.domain.PlayerDto;
-import com.dainws.games.crm.controller.dto.domain.ZoneDto;
-import com.dainws.games.crm.controller.dto.domain.ZoneSlotDto;
+import com.dainws.games.crm.controller.dto.response.CardDto;
+import com.dainws.games.crm.controller.dto.response.GameDto;
+import com.dainws.games.crm.controller.dto.response.PlayerDto;
+import com.dainws.games.crm.controller.dto.response.ZoneDto;
+import com.dainws.games.crm.controller.dto.response.ZoneSlotDto;
 import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.builder.PlayerBuilder;

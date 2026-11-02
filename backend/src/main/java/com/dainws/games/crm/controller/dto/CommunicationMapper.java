@@ -2,9 +2,9 @@ package com.dainws.games.crm.controller.dto;
 
 import java.util.List;
 
-import com.dainws.games.crm.controller.dto.domain.CardDto;
-import com.dainws.games.crm.controller.dto.domain.EventDetailsDto;
-import com.dainws.games.crm.controller.dto.domain.EventDto;
+import com.dainws.games.crm.controller.dto.response.CardDto;
+import com.dainws.games.crm.controller.dto.response.EventDetailsDto;
+import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;

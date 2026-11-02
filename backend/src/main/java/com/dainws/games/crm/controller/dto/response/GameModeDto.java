@@ -1,4 +1,4 @@
-package com.dainws.games.crm.controller.dto.domain;
+package com.dainws.games.crm.controller.dto.response;
 
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.mode.GameModes;
