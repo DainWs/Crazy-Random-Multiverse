@@ -14,6 +14,7 @@ import com.dainws.games.crm.domain.core.GameModeStrategy;
 import com.dainws.games.crm.domain.core.MonitoredGameStrategy;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.board.ZoneCombatantAppender;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
@@ -144,7 +145,7 @@ public abstract class GameBehaviorIntegrationTest {
 			Zone zone = board.getZoneOf(playerWithTurn);
 			Hand hand = playerWithTurn.getHand();
 			Combatant card = this.getCombatantFromHand(hand);
-			zone.addCombatant(card);
+			ZoneCombatantAppender.addCombatantToNextFreeCoordinate(zone, card);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -167,7 +168,7 @@ public abstract class GameBehaviorIntegrationTest {
 			Zone zone = board.getZoneOf(playerWithTurn);
 			Hand hand = playerWithTurn.getHand();
 			Combatant card = this.getCombatantFromHand(hand);
-			zone.addCombatant(card);
+			ZoneCombatantAppender.addCombatantToNextFreeCoordinate(zone, card);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

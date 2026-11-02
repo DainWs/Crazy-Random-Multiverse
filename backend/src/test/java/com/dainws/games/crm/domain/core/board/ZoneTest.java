@@ -52,51 +52,6 @@ class ZoneTest {
 	}
 
 	@Test
-	void testGivenFirstRowNotFilled_whenAddCombatantAtSecondRow_thenThrowsNotAllowed() {
-		ThrowingCallable addCombatant = this.addAtSecondRowWithFirstRowNotFilled();
-
-		assertThatThrownBy(addCombatant).isInstanceOf(NotAllowedException.class);
-	}
-
-	@Test
-	void testGivenFirstRowNotFilled_whenAddCombatantAtSecondRow_thenCodeIsPreviousRowRequired() {
-		ThrowingCallable addCombatant = this.addAtSecondRowWithFirstRowNotFilled();
-
-		assertThatThrownBy(addCombatant)
-				.hasFieldOrPropertyWithValue(CODE_PROPERTY, PREVIOUS_ROW_REQUIRED_CODE);
-	}
-
-	@Test
-	void testGivenFirstRowFilled_whenAddCombatantAtSecondRow_thenCombatantIsPlacedInSecondRow() throws NotAllowedException {
-		Zone zone = this.createZoneWithFirstRowFilled();
-		Warrior warrior = CardBuilder.buildCommonWarrior();
-
-		zone.addCombatantAt(SECOND_ROW, warrior);
-
-		assertThat(zone.countCombatantsAt(SECOND_ROW)).isEqualTo(1);
-	}
-
-	@Test
-	void testGivenEmptyZone_whenAddCombatant_thenCombatantIsPlacedInFirstRow() throws NotAllowedException {
-		Zone zone = this.createZone();
-		Warrior warrior = CardBuilder.buildCommonWarrior();
-
-		zone.addCombatant(warrior);
-
-		assertThat(zone.countCombatantsAt(FIRST_ROW)).isEqualTo(1);
-	}
-
-	@Test
-	void testGivenFirstRowFilled_whenAddCombatant_thenCombatantIsPlacedInSecondRow() throws NotAllowedException {
-		Zone zone = this.createZoneWithFirstRowFilled();
-		Warrior warrior = CardBuilder.buildCommonWarrior();
-
-		zone.addCombatant(warrior);
-
-		assertThat(zone.countCombatantsAt(SECOND_ROW)).isEqualTo(1);
-	}
-
-	@Test
 	void testGivenCombatantWithCombatantInFrontRow_whenIsProtectedAt_thenIsProtected() throws NotAllowedException {
 		Zone zone = this.createZoneWithFirstRowFilled();
 		Coordinate frontCoordinate = new Coordinate(SECOND_ROW, FIRST_COLUMN);
@@ -351,12 +306,6 @@ class ZoneTest {
 		Coordinate coordinate = new Coordinate(SECOND_ROW, FIRST_COLUMN);
 		Warrior warrior = CardBuilder.buildCommonWarrior();
 		return () -> zone.putCombatant(coordinate, warrior);
-	}
-
-	private ThrowingCallable addAtSecondRowWithFirstRowNotFilled() {
-		Zone zone = this.createZone();
-		Warrior warrior = CardBuilder.buildCommonWarrior();
-		return () -> zone.addCombatantAt(SECOND_ROW, warrior);
 	}
 
 	private Zone createZone() {

@@ -175,49 +175,6 @@ public abstract class Zone {
 		return this.combatants[row][column];
 	}
 
-	public void addCombatant(Combatant combatant) throws NotAllowedException {
-		int rowIndex = 0;
-		int selectedRowIndex = -1;
-		while (rowIndex < this.combatants.length && selectedRowIndex == -1) {
-			if (!this.isFilledAt(rowIndex)) {
-				selectedRowIndex = rowIndex;
-			}
-
-			rowIndex++;
-		}
-
-		if (selectedRowIndex == -1) {
-			throw new NotAllowedException("zone.already_filled");
-		}
-
-		this.addCombatantAt(selectedRowIndex, combatant);
-	}
-
-	public void addCombatantAt(int rowIndex, Combatant combatant) throws NotAllowedException {
-		if (!this.validate(rowIndex)) {
-			throw new NotAllowedException("zone.coordinate.out_of_bounds");
-		}
-
-		if (!this.isPreviousRowFilled(rowIndex)) {
-			throw new NotAllowedException("zone.row.previous_need_to_be_filled");
-		}
-
-		int columnIndex = 0;
-		int selectedColumnIndex = -1;
-		while (columnIndex < this.combatants[rowIndex].length && selectedColumnIndex == -1) {
-			if (!this.hasCombatant(rowIndex, columnIndex)) {
-				selectedColumnIndex = columnIndex;
-			}
-
-			columnIndex++;
-		}
-
-		if (selectedColumnIndex == -1) {
-			throw new NotAllowedException("zone.row.already_filled");
-		}
-
-		this.combatants[rowIndex][selectedColumnIndex] = combatant;
-	}
 
 	public void putCombatant(Coordinate coordinate, Combatant combatant)
 			throws NotAllowedException {
