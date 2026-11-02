@@ -218,7 +218,8 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 ## 13. Business rules
 
-- Scenarios come from the real implementation and its public API, and from `docs/Requirements.md`.
+- Scenarios come from the real implementation and its public API, and from `agents/specs/`.
+- A test that covers a rule cites its identifier in a comment above the test: `// COMBAT-4`.
 - Game rules that make sense are tested, not merely that a method runs.
 - For aggregation methods, cases with several operations are included.
 - No game rule that the code or the requirements do not back is assumed. If information is missing to write the test, ask.

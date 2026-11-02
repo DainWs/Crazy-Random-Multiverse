@@ -8,7 +8,7 @@ The game is a strategic showdown in which each player receives a random leader c
 
 Monorepo with two applications:
 
-- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`) and WebSocket. Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`).
+- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`).
 - `frontend/` — TypeScript, Vue 3, Phaser 3, Vite. View of the server state. Tests: `npm run test:run`; lint: `npm run lint`.
 
 ## Reference documentation
@@ -26,7 +26,7 @@ If anything you are about to do contradicts those documents, stop and ask. Exist
 
 The PlantUML diagrams in `docs/development/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when explicitly asked to.
 
-The backend ↔ frontend contract is partly unresolved (`agents/ROADMAP.md`, Phase 1). Do not invent it: ask.
+The backend ↔ frontend contract is in `agents/specs/CONTRACT.md`. Do not invent what it does not define: ask.
 
 ---
 

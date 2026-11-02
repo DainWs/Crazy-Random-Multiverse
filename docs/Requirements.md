@@ -1,4 +1,7 @@
 # Crazy Random Multiverse
+
+> Original requirements, kept as background. Some rules here have been superseded: `agents/SPECS.md` and `agents/specs/` prevail.
+
 ## 1. Introduction
 The game is a strategic showdown in which each player receives a random leader card, which is displayed publicly. The objective is to eliminate the enemy leaders before they eliminate yours.
 

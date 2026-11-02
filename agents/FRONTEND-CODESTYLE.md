@@ -38,11 +38,11 @@ domain → (nothing)
 ## 2. State and communication
 
 - The game state lives in `StoreSystem` (with local persistence in `localStorageApi`). It is the single source of truth on the client; views read from it.
-- The authoritative state only changes when an event arrives from the backend or the response to an action does. **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
+- The authoritative state only changes when an event arrives from the backend (`CON-17`). **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
 - Flow of an action: interaction → `ActionSystem` / `ActionResolver` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` updates the `StoreSystem` → views update.
 - Internal UI events (`EventSystem`) are independent of network events. UI event names are declared in the `Event` union in `EventSystem.ts`; loose strings and `rawEmit` are not used in new code.
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
-- Game, player and user codes travel in Base64 URL-safe: always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
+- Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
 - Other players' hands are never stored.
 
 > Removing `ActionSystem` / `ActionResolver` and having the `Controllers` send the actions is under consideration.
@@ -104,7 +104,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 - Listeners (`EventSystem.on`, `scene.events.on`, `input.on`) are unsubscribed in `destroy`/`shutdown`. Every `on` without its `off` is a bug.
 - Tweens are created in `core/visual_effects` or in the view's animation module; they are not mixed with rules logic.
 - `update` does not allocate new objects nor create closures per frame.
-- The player's hand is pinned to the screen with `setScrollFactor(0)`; placed cards go back to `1` (see `CURRENT.md`).
+- The player's hand is pinned to the screen with `setScrollFactor(0)`; placed cards go back to `1`.
 - All interaction goes through `core/interactions` (`CardInputManager`, `DragAndDrop`, `CardClickHandler`); a view does not register mouse handlers on its own.
 
 ---
@@ -112,7 +112,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 ## 7. Errors and logging
 
 - Network errors are handled in `api/`: they are translated into a result or typed exception and shown through an `Overlay`/scene, never as an `alert`.
-- An action rejected by the backend (exception event with `exception.*`) reverts any visual preview and shows the translated key.
+- An action rejected by the backend (a 400 response with an `exception.*` key, `CON-18`) reverts any visual preview and shows the translated key.
 - `fetch` always checks `response.ok` in new code; existing functions that do not are fixed when their module is touched, not before.
 - `console.*` only in `api/` to trace communication, guarded by `isDevelopment` in new code. Never log the hand or tokens.
 - New code leaves no debugging `console.log`.
@@ -127,7 +127,7 @@ Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is n
 - No wildcard imports. Order: libraries (`phaser`, `vue`, `socket.io-client`), `@/api`, `@/domain`, `@/core`, the rest.
 - Class and type files in `PascalCase.ts` (`CardView.ts`); modules with functions and domain utilities in `camelCase.ts` only where they already exist (`cardFactory.ts`).
 - `npm run lint` must pass with no new errors.
-- `.editorconfig` states 4 spaces and CRLF; for new code Prettier rules (2 spaces). A whole file is not reformatted except in a separate commit.
+- `.editorconfig` also states 4 spaces, with CRLF. A whole file is not reformatted except in a separate commit.
 
 ---
 
@@ -146,4 +146,4 @@ Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is n
 ## 10. Comments
 
 - In English, only the *why*. One-sentence TSDoc for constants and public functions in `core/` when the unit or the reason is not obvious.
-- Existing `TODO`s in Spanish are tolerated; new ones are in English. `frontend/TODO.md` and `frontend/PENDING.md` are working notes, not specification.
+- Existing `TODO`s in Spanish are tolerated; new ones are in English.

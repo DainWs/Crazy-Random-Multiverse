@@ -87,8 +87,6 @@ Exceptions already established in the repository, which are respected:
 - The `*Controller` interfaces carrying the HTTP annotations (see backend).
 - The domain extension points that already exist: `Action`, `GameFlow`, `GameModeStrategy`, `DealStrategy`, `GameModeFactory`, `GameModeEventDispatcher`, `BattlefieldViewStrategy`, etc.
 
-Outside those cases, interfaces are not created "just in case". Testability is solved with dependency injection and a fake in the tests.
-
 ---
 
 ## 3. Composition over inheritance
@@ -106,7 +104,7 @@ Outside those cases, interfaces are not created "just in case". Testability is s
 - Boolean variables are affirmative: `isEnabled`, never `isNotDisabled`.
 - No abbreviations except the universal ones: `id`, `dto`, `ui`, `ai`, `io`, `url`, `json`.
 - The name says **what**, the code says **how**. If a comment is needed to explain what a function does, the name is bad.
-- Names follow the game's domain vocabulary (see `docs/Requirements.md`): `Party`, `Game`, `Player`, `Zone`, `Board`, `Leader`, `Warrior`, `Spell`, `Equipment`, `Hand`, `Deck`, `Turn`. The same concept has the same name in backend and frontend.
+- Names follow the game's domain vocabulary (see `agents/specs/`): `Party`, `Game`, `Player`, `Zone`, `Board`, `Leader`, `Warrior`, `Spell`, `Equipment`, `Hand`, `Deck`, `Turn`. The same concept has the same name in backend and frontend.
 - Entity codes are value objects with the `Code` suffix in the backend (`GameCode`, `PartyCode`, `PlayerCode`, `UserCode`, `CardCode`) and type aliases in the frontend.
 
 ---
@@ -137,7 +135,7 @@ A value cannot live in two places. Event names and exception codes shared betwee
 
 ## 7. Errors
 
-- In the backend, game rules reject an invalid action with an exception from `domain.core.exception` (`GameException`, `PlayerActionException`, `NotAllowedException`…) carrying an `ExceptionCode`. These exceptions **are part of the game flow**: the player receives the code in the HTTP response to their request (`specs/CONTRACT.md`, `CON-18`). They represent rejected domain actions, not a generic flow-control mechanism.
+- In the backend, an action rejected by the game rules is expected behavior: it is returned as a result carrying an `ExceptionCode`, not thrown (`agents/BACKEND-CODESTYLE.md`, section 8). The player receives the code in the HTTP response to their request (`specs/CONTRACT.md`, `CON-18`).
 - Infrastructure failures (network, socket, serialization) are not disguised as game errors.
 - Catch the specific. The generic error is only caught as a last net after the specific `catch` blocks, when it needs to be handled, logged or translated, and never to ignore it. If it is propagated, the original cause is preserved.
 - Errors carry context (game code, player code, action), not just a message.
@@ -151,7 +149,7 @@ A value cannot live in two places. Event names and exception codes shared betwee
 - Logging through SLF4J in the backend. **Never `System.out`.**
 - Structured logging. **Never write directly to the console** (`System.out`, `console.log`).
 - The start and end of each step are logged, with measured duration.
-- Levels: `debug` for adapter detail, `info` for state transitions, `warning` for recoverable situations, `error` for a step failure, `critical` for critical errors.
+- Levels (SLF4J): `trace` for the internal game flow, `debug` for adapter detail, `info` for state transitions, `warn` for recoverable situations, `error` for a step failure.
 - Log entries for a game include its `GameCode`; those for a player, their `PlayerCode`.
 - **Logging sessions, tokens or the contents of `.env.local.*` is forbidden.** A player's hand (private information) is not logged at any level above `trace`.
 - Messages describe facts, not moods.

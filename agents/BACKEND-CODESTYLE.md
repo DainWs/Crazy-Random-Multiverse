@@ -28,7 +28,7 @@ Domain                     domain.*                         used by every ring; 
 |---|---|
 | `configuration` | Spring `@Configuration`: security, session, sockets, game modes, repositories. `configuration/persistence` contains the card populators. No business logic. |
 | `controller` | HTTP input. Each controller is an `XController` interface carrying the Spring annotations and one or more implementations. |
-| `controller/events` | Socket.IO/WebSocket connections, publishing and dispatching of game events. |
+| `controller/events` | Socket.IO connections, publishing and dispatching of game events. |
 | `usecase` | Use cases (`PlayerUsecase`). `usecase/dto` contains the action input DTOs (`ActionDto`, `ActionMapper`). |
 | `services` | Application services that coordinate the domain and repositories. |
 | `domain` | Model and rules: `core` (game, board, cards, actions, turns, events, exceptions), `ai` (AI players), `mode` (game modes), `repositories` (ports). Imports nothing from outside `domain`. |
@@ -120,7 +120,7 @@ public class WebPlayerController implements PlayerController {
 - **Classes instantiated often** (cards, actions, players, domain objects created per turn): static logger, to avoid creating one logger per instance.
 
   ```java
-  private static final Logger LOGGER = LoggerFactory.getLogger(HashCalculator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Card.class);
   ```
 
 ### Messages
@@ -182,7 +182,7 @@ this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 ```
 
 - Closed sets are enums. Maps indexed by enum use `EnumMap`.
-- Exception codes are declared in the `*ExceptionCode` enums (`PlayerActionExceptionCode`, `EffectExceptionCode`) and wrapped in `ExceptionCode`.
+- Exception codes are declared in the `*ExceptionCode` classes (`PlayerActionExceptionCode`, `EffectExceptionCode`) and wrapped in `ExceptionCode`.
 - Game settings (default mode, maximum players, zone sizes) live in configuration or in the game mode, not inside the turn logic.
 - `application.properties` keys read from code are declared in a constant or in a `@ConfigurationProperties` class (see `additional-spring-configuration-metadata.json`).
 
@@ -211,7 +211,7 @@ If a class has a factory, its constructor is private and the validation lives in
 ### Validation
 
 - Programming errors (null or out-of-range argument): `Objects.requireNonNull` or `IllegalArgumentException`.
-- Game rules: exception from `domain.core.exception` with an `ExceptionCode`.
+- Game rules: a result carrying an `ExceptionCode`, not an exception (section 8).
 - HTTP input: the `jakarta.validation` annotations should be on the DTO (`@NotNull`, `@NotBlank`).
 
 ---
@@ -269,7 +269,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ### Events
 
 - The domain publishes an `Event` with an `EventCode` and `EventDetails`. `SpringEventPublisher` → `SpringGameEventDispatcher` → the mode's `GameModeEventDispatcher` → `CommunicationClient`.
-- There are two transports (`SocketIOCommunicationClient`, `WebSocketCommunicationClient`): that is why `CommunicationClient` is a legitimate interface.
+- Socket.IO is the only transport. `WebSocketCommunicationClient` and the `CommunicationClient` interface are pending removal (`agents/ROADMAP.md`, Phase 2).
 - A new event requires: `EventCode`, DTO/mapping in `CommunicationMapper`, and an entry in the frontend (`GameEventCode.ts`, `EventDto.ts`).
 
 ---
@@ -279,7 +279,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - Indentation with **tabs**.
 - Never use `var` to declare a variable: always write the type.
 - Imports in groups separated by a blank line: static (in tests), `java`, `javax`, `org`, `com`, and the rest (`jakarta`, `io`…). No wildcards. Static imports come first.
-- In call chains (streams, builders, `WebClient`), each call goes on its own line ending in `//`. The `//` prevents the Eclipse formatter from joining them again: it reads better vertically than horizontally.
+- In call chains (streams, builders), each call goes on its own line ending in `//`. The `//` prevents the Eclipse formatter from joining them again: it reads better vertically than horizontally.
 
 ```java
 return Card.builder(code) //

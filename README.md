@@ -21,14 +21,14 @@ Take a good look and enjoy it. 🌹
 So, lets starts running the server-side project (or java project) running this command:
 
 ```bash
-mvn spring-boot:run
+cd backend && mvn spring-boot:run
 ```
 
 When you have the server side project running, you can start running the client-side running this commands:
 
 ```bash
-npm install --prefix 'client/'
-npm run --prefix 'client/' serve
+npm install --prefix 'frontend/'
+npm run --prefix 'frontend/' dev
 ```
 
 Now you can access to application via client-side open ports.

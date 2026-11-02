@@ -21,7 +21,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 - Tests live in `frontend/test/`, mirroring the structure of `src/`, with the `.test.ts` suffix: `src/core/StoreSystem.ts` → `test/core/StoreSystem.test.ts`.
 - One test file per unit under test. Mapper-style tests that cover several small functions of a layer may share a file (`test/api/ApiMappers.test.ts`).
 - Imports use the `@/` alias, like production code. Relative paths are forbidden.
-- Type-only imports use `import type` and go after the value imports of the same group, as in `FRONTEND-CODESTYLE.md` section 4.
+- Type-only imports use `import type` and go first, as in `FRONTEND-CODESTYLE.md` section 4.
 
 ---
 
@@ -53,6 +53,8 @@ The existing tests already mostly follow this guide. Where the existing code dep
 ---
 
 ## 5. What to test
+
+A test that covers a rule cites its identifier in a comment above the test: `// UI-6`.
 
 Test what can be isolated from Phaser and the browser:
 
