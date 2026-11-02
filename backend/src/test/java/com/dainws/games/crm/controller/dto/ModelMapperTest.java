@@ -172,7 +172,7 @@ class ModelMapperTest {
 
 		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
 
-		assertThat(cardDto.getCode().getCode())
+		assertThat(cardDto.getCatalogCode().getCode())
 				.isEqualTo(String.valueOf(warrior.getCode().code()));
 	}
 
@@ -183,7 +183,7 @@ class ModelMapperTest {
 
 		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
 
-		assertThat(cardDto.getEquipment().getType()).isEqualTo(CardType.EQUIPMENT);
+		assertThat(cardDto.getEquipment().get(0).getType()).isEqualTo(CardType.EQUIPMENT);
 	}
 
 	@Test

@@ -9,7 +9,7 @@ interface CardCodeDto {
 }
 
 interface CardDto {
-  code: CardCodeDto;
+  catalogCode: CardCodeDto;
   name: string;
   description: string;
   type: CardType;
@@ -26,7 +26,7 @@ interface CardDto {
   maxHealth?: number;
 
   // Combatant 
-  equipment?: CardDto;
+  equipment?: CardDto[];
 
   // Runtime state, only meaningful for cards inside game.zones
   protected?: boolean;
@@ -70,7 +70,7 @@ function toHealth(dto: CardDto): Health | undefined {
 
 const toCard = (dto: CardDto): Card => {
   const cardOptions: CardOptions = {
-    code: toCardCode(dto.code),
+    code: toCardCode(dto.catalogCode),
     name: dto.name,
     description: dto.description,
     type: dto.type,
@@ -85,8 +85,10 @@ const toCard = (dto: CardDto): Card => {
   card.isAttackAvailable = dto.attackAvailable ?? false;
   card.isTargetable = dto.targetable ?? false;
 
-  if (dto.equipment) {
-    card.equipment = toCard(dto.equipment) as EquipmentCard;
+  // The domain holds a single piece until a card can carry several (EQUIP-4)
+  const [equipment] = dto.equipment ?? [];
+  if (equipment) {
+    card.equipment = toCard(equipment) as EquipmentCard;
   }
 
   return card;

@@ -141,7 +141,7 @@ class EventDtoJsonTest {
 
 	@Test
 	void testGivenGameSync_whenSerialize_thenCardCodeTravelsAsText() {
-		assertThat(this.card.get("code").get("code").isTextual()).isTrue();
+		assertThat(this.card.get("catalogCode").get("code").isTextual()).isTrue();
 	}
 
 	private JsonNode serializeLikeSocketIO(EventDto eventDto) throws IOException {

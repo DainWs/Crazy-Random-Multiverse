@@ -160,7 +160,7 @@ public class ModelMapper {
 		CardCodeDto cardCodeDto = new CardCodeDto();
 		cardCodeDto.setCode(card.getCode().codeText());
 		cardCodeDto.setType(card.getCode().type());
-		cardDto.setCode(cardCodeDto);
+		cardDto.setCatalogCode(cardCodeDto);
 		
 		// TODO pendiente de hacer traduccion
 		cardDto.setNameKey("card.%s.name".formatted(card.getCode()));
@@ -196,7 +196,7 @@ public class ModelMapper {
 		}
 
 		if (card instanceof Combatant combatant && combatant.getEquipment() != null) {
-			cardDto.setEquipment(mapCardToDto(combatant.getEquipment()));
+			cardDto.setEquipment(List.of(mapCardToDto(combatant.getEquipment())));
 		}
 
 		return cardDto;

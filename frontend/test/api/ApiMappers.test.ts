@@ -41,7 +41,7 @@ describe('API Models and DTO Mappers', () => {
   describe('CardDto', () => {
     it('toCard maps DTO to domain Card with stats and equipment', () => {
       const cardDto: CardDto = {
-        code: { code: '10', type: 'WARRIOR' },
+        catalogCode: { code: '10', type: 'WARRIOR' },
         name: 'Knight',
         description: 'Brave knight',
         type: 'WARRIOR',
@@ -50,12 +50,14 @@ describe('API Models and DTO Mappers', () => {
         armor: 2,
         armorType: 'PHYSICAL' as const,
         health: 10,
-        equipment: {
-          code: { code: '20', type: 'EQUIPMENT' as const },
-          name: 'Sword',
-          description: 'Iron sword',
-          type: 'EQUIPMENT' as const,
-        }
+        equipment: [
+          {
+            catalogCode: { code: '20', type: 'EQUIPMENT' as const },
+            name: 'Sword',
+            description: 'Iron sword',
+            type: 'EQUIPMENT' as const
+          }
+        ]
       };
 
       const card = toCard(cardDto);
@@ -70,7 +72,7 @@ describe('API Models and DTO Mappers', () => {
 
     it('toCard maps the runtime state sent by the server', () => {
       const cardDto: CardDto = {
-        code: { code: '11', type: 'WARRIOR' },
+        catalogCode: { code: '11', type: 'WARRIOR' },
         name: 'Archer',
         description: 'Quick archer',
         type: 'WARRIOR',
@@ -87,7 +89,7 @@ describe('API Models and DTO Mappers', () => {
     });
 
     it('toCard defaults the runtime state to false when the server omits it', () => {
-      const card = toCard({ code: { code: '12', type: 'SPELL' }, name: 'Bolt', description: 'Bolt', type: 'SPELL' });
+      const card = toCard({ catalogCode: { code: '12', type: 'SPELL' }, name: 'Bolt', description: 'Bolt', type: 'SPELL' });
 
       expect(card.isProtected).toBe(false);
       expect(card.isAttackAvailable).toBe(false);

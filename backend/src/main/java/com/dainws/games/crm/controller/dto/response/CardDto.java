@@ -1,5 +1,7 @@
 package com.dainws.games.crm.controller.dto.response;
 
+import java.util.List;
+
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
@@ -12,8 +14,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class CardDto {
 	@NotNull
-	@JsonProperty("code")
-	private CardCodeDto code;
+	@JsonProperty("catalogCode")
+	private CardCodeDto catalogCode;
 
 	// TODO deberia traducirse name y description no?
 	@NotBlank
@@ -50,7 +52,7 @@ public class CardDto {
 	private Double maxHealth;
 
 	@JsonProperty("equipment")
-	private CardDto equipment;
+	private List<CardDto> equipment;
 
 	@JsonProperty("protected")
 	private boolean protectedCard;
@@ -61,12 +63,12 @@ public class CardDto {
 	@JsonProperty("targetable")
 	private boolean targetable;
 
-	public CardCodeDto getCode() {
-		return code;
+	public CardCodeDto getCatalogCode() {
+		return catalogCode;
 	}
 
-	public void setCode(CardCodeDto code) {
-		this.code = code;
+	public void setCatalogCode(CardCodeDto catalogCode) {
+		this.catalogCode = catalogCode;
 	}
 
 	public String getNameKey() {
@@ -161,11 +163,11 @@ public class CardDto {
 		}
 	}
 
-	public CardDto getEquipment() {
+	public List<CardDto> getEquipment() {
 		return equipment;
 	}
 
-	public void setEquipment(CardDto equipment) {
+	public void setEquipment(List<CardDto> equipment) {
 		this.equipment = equipment;
 	}
 

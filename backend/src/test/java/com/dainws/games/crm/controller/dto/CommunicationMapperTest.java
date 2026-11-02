@@ -90,7 +90,7 @@ class CommunicationMapperTest {
 
 	private List<String> handCodesOf(EventDto eventDto) {
 		return eventDto.getDetails().getHand().stream() //
-				.map(card -> card.getCode().getCode()) //
+				.map(card -> card.getCatalogCode().getCode()) //
 				.toList();
 	}
 }
