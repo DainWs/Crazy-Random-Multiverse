@@ -97,8 +97,6 @@ public class ModelMapper {
 
 	public static ZoneDto mapPlayerZoneToDto(Game game, Player owner, Player viewer) {
 		Zone playerZone = game.getBoard().getZoneOf(owner);
-		ZoneViewpoint viewpoint = new ZoneViewpoint(game, playerZone, viewer);
-
 		ZoneDto zoneDto = new ZoneDto();
 		zoneDto.setOwner(mapPlayerToDto(owner));
 		zoneDto.setType(playerZone.getType().text());
@@ -109,7 +107,7 @@ public class ModelMapper {
 			slotDtos[rowIndex] = new ZoneSlotDto[combatants[rowIndex].length];
 			for (int columnIndex = 0; columnIndex < combatants[rowIndex].length; columnIndex++) {
 				Coordinate coordinate = new Coordinate(rowIndex, columnIndex);
-				slotDtos[rowIndex][columnIndex] = mapSlotToDto(playerZone, coordinate, viewpoint);
+				slotDtos[rowIndex][columnIndex] = mapSlotToDto(game, playerZone, coordinate, viewer);
 			}
 		}
 
@@ -117,26 +115,30 @@ public class ModelMapper {
 		return zoneDto;
 	}
 
-	private static ZoneSlotDto mapSlotToDto(Zone zone, Coordinate coordinate, ZoneViewpoint viewpoint) {
+	private static ZoneSlotDto mapSlotToDto(Game game, Zone zone, Coordinate coordinate, Player viewer) {
+		boolean isEnemyZone = zone.isEnemy(viewer);
+		boolean canViewerAct = !isEnemyZone && game.canAct(viewer);
+		boolean canViewerTarget = isEnemyZone && !viewer.isSpectator();
+
 		ZoneSlotDto slotDto = new ZoneSlotDto();
-		slotDto.setAllowedCombatant(zone.isLeaderSlot(coordinate) ? CardType.LEADER : CardType.WARRIOR);
+		if (zone.isLeaderSlot(coordinate)) {
+			slotDto.setAllowedCombatant(CardType.LEADER);		
+		} else {
+			slotDto.setAllowedCombatant(CardType.WARRIOR);
+		}
 
 		if (zone.hasCombatant(coordinate)) {
-			slotDto.setCombatant(mapCombatantInZoneToDto(zone, coordinate, viewpoint));
+			Combatant combatant = zone.getCombatant(coordinate);
+			boolean isProtected = zone.isProtectedAt(coordinate);
+
+			CardDto cardDto = mapCardToDto(combatant);
+			cardDto.setProtectedCard(isProtected);
+			cardDto.setAttackAvailable(canViewerAct && zone.canAttackFrom(coordinate));
+			cardDto.setTargetable(canViewerTarget && zone.canBeTargeted(coordinate));
+			slotDto.setCombatant(cardDto);
 		}
 
 		return slotDto;
-	}
-
-	private static CardDto mapCombatantInZoneToDto(Zone zone, Coordinate coordinate, ZoneViewpoint viewpoint) {
-		Combatant combatant = zone.getCombatant(coordinate);
-		boolean isProtected = zone.isProtectedAt(coordinate);
-
-		CardDto cardDto = mapCardToDto(combatant);
-		cardDto.setProtectedCard(isProtected);
-		cardDto.setAttackAvailable(viewpoint.canAttackFrom(coordinate));
-		cardDto.setTargetable(viewpoint.canTarget(coordinate));
-		return cardDto;
 	}
 
 	public static PlayerDto mapPlayerToDto(Player player) {
