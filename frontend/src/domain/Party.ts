@@ -10,7 +10,8 @@ class Party {
   public userCount: number;
   public maxUsers: number;
   public owner: UserCode;
-  public users: UserCode[]
+  public users: UserCode[];
+  public isLocked: boolean;
 
   public constructor(code: PartyCode) {
     this.code = code;
@@ -20,6 +21,7 @@ class Party {
     this.maxUsers = 4;
     this.owner = '';
     this.users = [];
+    this.isLocked = false;
   }
 }
 

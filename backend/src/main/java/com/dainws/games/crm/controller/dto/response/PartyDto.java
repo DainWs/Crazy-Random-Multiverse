@@ -8,6 +8,7 @@ public class PartyDto {
 	private GameModeDto gameMode;
 	private int userCount;
 	private int maxUsers;
+	private boolean locked;
 	private String owner;
 	private List<String> users;
 	
@@ -47,6 +48,14 @@ public class PartyDto {
 		return userCount;
 	}
 	
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
 	public void setMaxUsers(int maxUsers) {
 		this.maxUsers = maxUsers;
 	}

@@ -57,6 +57,8 @@ public class ModelMapper {
 		partyDto.setCode(party.getCode().text());
 		partyDto.setName("Party of " + ownerName);
 		partyDto.setUserCount(party.getUsers().size());
+		partyDto.setMaxUsers(party.getMaxUsers());
+		partyDto.setLocked(party.isLocked());
 		partyDto.setOwner(ownerName);
 		
 		List<String> users = new ArrayList<>();

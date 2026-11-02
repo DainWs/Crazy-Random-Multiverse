@@ -6,13 +6,18 @@ import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.controller.dto.response.CardDto;
 import com.dainws.games.crm.controller.dto.response.GameDto;
+import com.dainws.games.crm.controller.dto.response.PartyDto;
 import com.dainws.games.crm.controller.dto.response.PlayerDto;
 import com.dainws.games.crm.controller.dto.response.ZoneDto;
 import com.dainws.games.crm.controller.dto.response.ZoneSlotDto;
 import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.builder.PlayerBuilder;
+import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Coordinate;
@@ -20,9 +25,11 @@ import com.dainws.games.crm.domain.core.board.DummyZone;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.card.CardType;
+import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.domain.core.player.Player;
 
 class ModelMapperTest {
@@ -105,6 +112,33 @@ class ModelMapperTest {
 		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
 
 		assertThat(gameDto.getRound()).isNull();
+	}
+
+	@Test
+	void testGivenParty_whenMapToDto_thenMaxUsersIsThePartyCapacity() {
+		Party party = this.createParty();
+		party.setMaxUsers(6);
+
+		PartyDto partyDto = ModelMapper.toPartyDto(party);
+
+		assertThat(partyDto.getMaxUsers()).isEqualTo(6);
+	}
+
+	@Test
+	void testGivenPartyWithoutGame_whenMapToDto_thenPartyIsNotLocked() {
+		PartyDto partyDto = ModelMapper.toPartyDto(this.createParty());
+
+		assertThat(partyDto.isLocked()).isFalse();
+	}
+
+	@Test
+	void testGivenPartyWithGame_whenMapToDto_thenPartyIsLocked() {
+		Party party = this.createParty();
+		party.setCurrentGame(new GameCode());
+
+		PartyDto partyDto = ModelMapper.toPartyDto(party);
+
+		assertThat(partyDto.isLocked()).isTrue();
 	}
 
 	@Test
@@ -266,6 +300,18 @@ class ModelMapperTest {
 	}
 
 	@Test
+	void testGivenEquippedWarrior_whenMapCard_thenDamageIncludesTheEquipment() {
+		Warrior warrior = CardBuilder.buildCommonWarrior();
+		double baseDamage = warrior.getDamage().getValue();
+		Equipment equipment = CardBuilder.buildEquipment();
+		warrior.equip(equipment);
+
+		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
+
+		assertThat(cardDto.getDamage()).isEqualTo(baseDamage + equipment.getDamageValue());
+	}
+
+	@Test
 	void testGivenZoneWithLeader_whenMapZone_thenTypeIsBase() throws NotAllowedException {
 		ZoneDto zoneDto = this.mapZoneSeenByAnotherPlayer();
 
@@ -339,6 +385,11 @@ class ModelMapperTest {
 
 	private Game createGameWithTwoPlayers() {
 		return new GameBuilder().withNRandomPlayers(2).build();
+	}
+
+	private Party createParty() {
+		User owner = new User("user-1", "Owner", UserPlatform.WEB);
+		return new Party(owner, GameModes.CLASSIC);
 	}
 
 	private Player createOwner() {

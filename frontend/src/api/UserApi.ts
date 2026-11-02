@@ -43,7 +43,7 @@ const updateAccount = async (user: User) => {
 const createParty = async () => {
   const createPartyRequest: CreatePartyRequest = {
     gameMode: 'CLASSIC',
-    maxPlayers: 4,
+    maxUsers: 4,
   }
 
   const response = await fetch('/party', {

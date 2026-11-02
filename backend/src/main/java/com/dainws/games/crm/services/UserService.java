@@ -31,7 +31,7 @@ public class UserService {
 		GameMode gameMode = request.getGameMode().getDomainGameMode();
 
 		Party party = new Party(partyOwner, gameMode);
-		party.setMaxUsers(request.getMaxPlayers());
+		party.setMaxUsers(request.getMaxUsers());
 
 		return this.partyService.createParty(party);
 	}

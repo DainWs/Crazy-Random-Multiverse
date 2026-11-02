@@ -81,7 +81,7 @@ class UserServiceTest {
 	void testGivenCreatePartyRequest_whenCreateParty_thenPartyHasTheRequestedMaxPlayers() {
 		User owner = new User("user-1", "Name", UserPlatform.WEB);
 		CreatePartyRequest request = new CreatePartyRequest();
-		request.setMaxPlayers(MAX_PLAYERS);
+		request.setMaxUsers(MAX_PLAYERS);
 
 		Party party = this.userService.createParty(owner, request);
 

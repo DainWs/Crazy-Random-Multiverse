@@ -186,7 +186,16 @@ describe('API Models and DTO Mappers', () => {
       maxUsers: 4,
       owner: 'u1',
       users: ['u1', 'u2', 'u3'],
+      locked: true,
     };
+
+    it('toParty maps the locked flag', () => {
+      expect(toParty(partyDto).isLocked).toBe(true);
+    });
+
+    it('toMinimalParty maps the locked flag', () => {
+      expect(toMinimalParty(partyDto).isLocked).toBe(true);
+    });
 
     it('toParty maps complete Party entity', () => {
       const party = toParty(partyDto);

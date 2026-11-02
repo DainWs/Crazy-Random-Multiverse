@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.UserPlayer;
@@ -16,6 +17,7 @@ import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
 class CommunicationClientTest {
@@ -44,6 +46,14 @@ class CommunicationClientTest {
 	void testGivenUserWithoutOpenSocket_whenSendEvent_thenDoesNotFail() {
 		assertDoesNotThrow(
 				() -> this.communicationClient.sendEvent(this.player, this.event));
+	}
+
+	@Test
+	void testGivenUserWithoutOpenSocket_whenSendPartyInfo_thenDoesNotFail() {
+		Party party = new Party(this.user, GameModes.CLASSIC);
+
+		assertDoesNotThrow(
+				() -> this.communicationClient.sendPartyInfo(this.user, party));
 	}
 
 	@Test

@@ -59,9 +59,13 @@ public class CommunicationClient implements UserClient {
 	}
 
 	private Optional<SocketIOClient> findClientOf(Player player) {
-		String sessionId = this.getUserFrom(player).getSessionId();
+		return this.findClientOf(this.getUserFrom(player));
+	}
+
+	private Optional<SocketIOClient> findClientOf(User user) {
+		String sessionId = user.getSessionId();
 		if (sessionId == null) {
-			this.logger.debug("Player {} has no open connection", player.getName());
+			this.logger.debug("User {} has no open connection", user.getName());
 			return Optional.empty();
 		}
 
@@ -77,10 +81,9 @@ public class CommunicationClient implements UserClient {
 	public void sendPartyInfo(User to, Party party) {
 		this.logger.trace("Sending party information to client {}", to.getName());
 
-		String sessionId = to.getCode().text();
 		PartyDto partyDto = ModelMapper.toPartyDto(party);
 
-		this.server.getClient(UUID.fromString(sessionId))
-			.sendEvent("party:info", partyDto);
+		this.findClientOf(to)
+			.ifPresent(client -> client.sendEvent("party:info", partyDto));
 	}
 }

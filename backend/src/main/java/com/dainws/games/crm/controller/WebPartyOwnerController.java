@@ -22,8 +22,9 @@ public class WebPartyOwnerController implements PartyOwnerController {
 	}
 
 	@Override
-	public void updateParty(UpdatePartyRequest request) throws PartyException {
-		this.partyOwnerService.updateParty(this.userSession.clone(), request);
+	public void updateParty(String partyCodeBase64UrlSafe, UpdatePartyRequest request) throws PartyException {
+		PartyCode partyCode = PartyCode.fromBase64UrlSafe(partyCodeBase64UrlSafe);
+		this.partyOwnerService.updateParty(this.userSession.clone(), partyCode, request);
 	}
 
 	@Override

@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.crm.controller.dto.response.GameModeDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.RecordingUserClient;
 import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.services.exception.PartyException;
@@ -35,7 +37,7 @@ class PartyOwnerServiceTest {
 
 	@Test
 	void testGivenOwner_whenUpdateParty_thenMaxPlayersIsChanged() {
-		this.service.updateParty(this.owner, this.updateRequest());
+		this.service.updateParty(this.owner, this.party.getCode(), this.updateRequest());
 
 		assertThat(this.repository.find(this.party.getCode()).getMaxUsers()).isEqualTo(NEW_MAX_PLAYERS);
 	}
@@ -44,14 +46,56 @@ class PartyOwnerServiceTest {
 	void testGivenUserWhoIsNotOwner_whenUpdateParty_thenFails() {
 		User other = new User("user-2", "Other", UserPlatform.WEB);
 
-		assertThrows(PartyException.class, () -> this.service.updateParty(other, this.updateRequest()));
+		assertThrows(PartyException.class, () -> this.service.updateParty(other, this.party.getCode(), this.updateRequest()));
+	}
+
+	@Test
+	void testGivenMember_whenKickUser_thenKickedUserReceivesPartyInfo() throws NotAllowedException {
+		User member = this.addMember();
+		RecordingUserClient userClient = this.useRecordingUserClient();
+
+		this.service.kickUserFromParty(this.owner, this.party.getCode(), member.getCode());
+
+		assertThat(userClient.getRecipients()).contains(member);
+	}
+
+	@Test
+	void testGivenMember_whenKickUser_thenKickedUserNoLongerAppearsInTheSentParty() throws NotAllowedException {
+		User member = this.addMember();
+		RecordingUserClient userClient = this.useRecordingUserClient();
+
+		this.service.kickUserFromParty(this.owner, this.party.getCode(), member.getCode());
+
+		assertThat(userClient.getSentParties()).noneMatch(sent -> sent.has(member));
+	}
+
+	@Test
+	void testGivenMember_whenKickUser_thenRemainingMembersReceivePartyInfo() throws NotAllowedException {
+		User member = this.addMember();
+		RecordingUserClient userClient = this.useRecordingUserClient();
+
+		this.service.kickUserFromParty(this.owner, this.party.getCode(), member.getCode());
+
+		assertThat(userClient.getRecipients()).contains(this.owner);
+	}
+
+	private User addMember() throws NotAllowedException {
+		User member = new User("user-3", "Member", UserPlatform.WEB);
+		this.party.add(member);
+		this.repository.save(this.party);
+		return member;
+	}
+
+	private RecordingUserClient useRecordingUserClient() {
+		RecordingUserClient userClient = new RecordingUserClient();
+		this.service.setUserClient(userClient);
+		return userClient;
 	}
 
 	private UpdatePartyRequest updateRequest() {
 		UpdatePartyRequest request = new UpdatePartyRequest();
-		request.setCode(this.party.getCode().text());
 		request.setGameMode(GameModeDto.CLASSIC);
-		request.setMaxPlayers(NEW_MAX_PLAYERS);
+		request.setMaxUsers(NEW_MAX_PLAYERS);
 		return request;
 	}
 }

@@ -1,15 +1,14 @@
 import type { GameMode } from "@/domain/GameConfiguration";
 import type { UserCode } from "@/domain/User";
-import Party, { PartyCode } from "@/domain/Party";
+import Party from "@/domain/Party";
 
 interface CreatePartyRequest {
   gameMode: GameMode;
-  maxPlayers: number;
+  maxUsers: number;
 }
 
 interface UpdatePartyRequest {
-  code: PartyCode;
-  maxPlayers: number;
+  maxUsers: number;
   gameMode: GameMode;
 }
 
@@ -21,6 +20,7 @@ interface PartyDto {
   maxUsers: number;
   owner: UserCode;
   users: UserCode[];
+  locked: boolean;
 }
 
 
@@ -32,6 +32,7 @@ const toParty = (dto: PartyDto): Party => {
   party.maxUsers = dto.maxUsers;
   party.owner = dto.owner;
   party.users = dto.users;
+  party.isLocked = dto.locked;
   return party;
 }
 
@@ -42,6 +43,7 @@ const toMinimalParty = (dto: PartyDto): Party => {
   party.userCount = dto.userCount;
   party.maxUsers = dto.maxUsers;
   party.owner = dto.owner;
+  party.isLocked = dto.locked;
   return party;
 }
 

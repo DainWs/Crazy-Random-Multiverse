@@ -4,11 +4,11 @@ import com.dainws.games.crm.controller.dto.response.GameModeDto;
 
 public class CreatePartyRequest {
 	private GameModeDto gameMode; 
-	private int maxPlayers;
+	private int maxUsers;
 	
 	public CreatePartyRequest() {
 		this.gameMode = GameModeDto.CLASSIC;
-		this.maxPlayers = 4;
+		this.maxUsers = 4;
 	}
 
 	public GameModeDto getGameMode() {
@@ -19,11 +19,11 @@ public class CreatePartyRequest {
 		this.gameMode = gameMode;
 	}
 
-	public int getMaxPlayers() {
-		return maxPlayers;
+	public int getMaxUsers() {
+		return maxUsers;
 	}
 
-	public void setMaxPlayers(int maxPlayers) {
-		this.maxPlayers = maxPlayers;
+	public void setMaxUsers(int maxUsers) {
+		this.maxUsers = maxUsers;
 	}
 }

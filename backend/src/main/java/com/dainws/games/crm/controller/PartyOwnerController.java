@@ -10,7 +10,10 @@ import com.dainws.games.crm.usecase.dto.UpdatePartyRequest;
 public interface PartyOwnerController {
 
 	@PutMapping("/party/{partyCode}")
-	void updateParty(@RequestBody UpdatePartyRequest request);
+	void updateParty(
+		@PathVariable("partyCode") String partyCodeBase64UrlSafe,
+		@RequestBody UpdatePartyRequest request
+	);
 
 	@PostMapping("/party/{partyCode}/kick/{userCode}")
 	void kickoutUser(

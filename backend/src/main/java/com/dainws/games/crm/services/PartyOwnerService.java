@@ -25,13 +25,12 @@ public class PartyOwnerService {
 		this.gameService = gameService;
 	}
 
-	public void updateParty(User supposedOwner, UpdatePartyRequest request)
+	public void updateParty(User supposedOwner, PartyCode partyCode, UpdatePartyRequest request)
 			throws PartyException {
-		PartyCode partyCode = PartyCode.from(request.getCode());
 
 		Party party = this.getPartyOwnedBy(partyCode, supposedOwner);
 		party.changeMode(request.getGameMode().getDomainGameMode());
-		party.setMaxUsers(request.getMaxPlayers());
+		party.setMaxUsers(request.getMaxUsers());
 
 		this.repository.save(party);
 		this.userClient.sendPartyInfo(party);
@@ -40,10 +39,14 @@ public class PartyOwnerService {
 	public void kickUserFromParty(User supposedOwner, PartyCode partyCode, UserCode userToKick) throws PartyException {
 		try {
 			Party party = this.getPartyOwnedBy(partyCode, supposedOwner);
+			User kickedUser = party.getUser(userToKick);
 			party.remove(userToKick);
 			
 			this.repository.save(party);
 			this.userClient.sendPartyInfo(party);
+			if (kickedUser != null) {
+				this.userClient.sendPartyInfo(kickedUser, party);
+			}
 		} catch (NotAllowedException e) {
 			throw new PartyException(e.getCode(), e);
 		}

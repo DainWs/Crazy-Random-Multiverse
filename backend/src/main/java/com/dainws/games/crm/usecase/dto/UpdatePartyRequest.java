@@ -3,19 +3,10 @@ package com.dainws.games.crm.usecase.dto;
 import com.dainws.games.crm.controller.dto.response.GameModeDto;
 
 public class UpdatePartyRequest {
-	private String code;
-	private Integer maxPlayers;
+	private Integer maxUsers;
 	private GameModeDto gameMode;
 	
 	public UpdatePartyRequest() {
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public GameModeDto getGameMode() {
@@ -26,11 +17,11 @@ public class UpdatePartyRequest {
 		this.gameMode = gameMode;
 	}
 
-	public Integer getMaxPlayers() {
-		return maxPlayers;
+	public Integer getMaxUsers() {
+		return maxUsers;
 	}
 
-	public void setMaxPlayers(Integer maxPlayers) {
-		this.maxPlayers = maxPlayers;
+	public void setMaxUsers(Integer maxUsers) {
+		this.maxUsers = maxUsers;
 	}
 }

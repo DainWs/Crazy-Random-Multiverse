@@ -9,8 +9,7 @@ const leaveParty = async (partyCode: PartyCode) => {
 
 const updateParty = async (party: Party) => {
   const request: UpdatePartyRequest = {
-    code: party.code,
-    maxPlayers: party.maxUsers,
+    maxUsers: party.maxUsers,
     gameMode: party.gameMode,
   }
 

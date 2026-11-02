@@ -36,8 +36,7 @@ describe('PartyApi', () => {
         {
           method: 'PUT',
           body: JSON.stringify({
-            code: 'party-1',
-            maxPlayers: 6,
+            maxUsers: 6,
             gameMode: 'CLASSIC',
           }),
         }

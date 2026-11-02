@@ -7,6 +7,7 @@ import java.util.Map;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.core.exception.PartyExceptionCode;
 
 public class Party {
 	private PartyCode partyCode;
@@ -52,11 +53,11 @@ public class Party {
 
 	public void add(User user) throws NotAllowedException {
 		if (this.isLocked()) {
-			throw new NotAllowedException("party_locked");
+			throw new NotAllowedException(PartyExceptionCode.LOCKED);
 		}
 
 		if (this.users.size() >= this.maxUsers) {
-			throw new NotAllowedException("party_is_full");
+			throw new NotAllowedException(PartyExceptionCode.IS_FULL);
 		}
 
 		this.users.put(user.getCode(), user);
@@ -68,7 +69,7 @@ public class Party {
 
 	public void remove(UserCode userCode) throws NotAllowedException {
 		if (this.isLocked()) {
-			throw new NotAllowedException("party_locked");
+			throw new NotAllowedException(PartyExceptionCode.LOCKED);
 		}
 
 		this.users.remove(userCode);
@@ -112,6 +113,10 @@ public class Party {
 
 	public String getCodeValue() {
 		return partyCode.text();
+	}
+
+	public User getUser(UserCode userCode) {
+		return this.users.get(userCode);
 	}
 
 	public List<User> getUsers() {
