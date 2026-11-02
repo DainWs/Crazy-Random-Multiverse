@@ -15,8 +15,9 @@ import com.dainws.games.crm.domain.repositories.UserRepository;
 
 public class MemoryUserRepository implements UserRepository {
 
-	private Map<UserCode, User> users;
 	private Logger logger;
+
+	private Map<UserCode, User> users;
 
 	public MemoryUserRepository() {
 		this.users = new ConcurrentHashMap<>();

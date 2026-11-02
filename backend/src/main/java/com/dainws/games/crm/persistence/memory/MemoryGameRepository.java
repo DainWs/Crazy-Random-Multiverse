@@ -13,8 +13,9 @@ import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 
 public class MemoryGameRepository implements GameRepository {
-	private Map<GameCode, Game> games;
 	private Logger logger;
+
+	private Map<GameCode, Game> games;
 
 	public MemoryGameRepository() {
 		this.games = new ConcurrentHashMap<>();

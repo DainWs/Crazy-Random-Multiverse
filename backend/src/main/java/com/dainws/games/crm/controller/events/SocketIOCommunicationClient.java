@@ -29,10 +29,10 @@ import com.dainws.games.crm.domain.repositories.UserRepository;
 @ConditionalOnProperty(value = "crm.communication.socket-io.enabled", havingValue = "true", matchIfMissing = true)
 public class SocketIOCommunicationClient implements CommunicationClient {
 
+	private Logger logger;
+
 	private SocketIOServer server;
 	private UserRepository userRepository;
-
-	private Logger logger;
 
 	public SocketIOCommunicationClient(UserRepository userRepository, SocketIOServer server) {
 		this.server = server;

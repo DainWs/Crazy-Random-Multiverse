@@ -30,9 +30,10 @@ import com.dainws.games.crm.domain.repositories.UserRepository;
 @ConditionalOnProperty(value = "crm.communication.websocket.enabled", havingValue = "true")
 public class WebSocketCommunicationClient implements CommunicationClient {
 
+	private Logger logger;
+
 	private SimpMessagingTemplate messagingTemplate;
 	private UserRepository userRepository;
-	private Logger logger;
 
 	public WebSocketCommunicationClient(UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
 		this.userRepository = userRepository;

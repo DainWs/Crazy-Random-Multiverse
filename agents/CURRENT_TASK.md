@@ -54,7 +54,7 @@ Style (refactor commits)
 12. [x] Rename the DTO packages (see decisions). Done: only `controller/dto/domain` -> `controller/dto/response` was left, the request DTOs already live in `usecase.dto` (item 7).
 13. [x] Rename the JPA classes and package (see decisions), `JPATestConfiguration` -> `PersistenceTestConfiguration` and the unused import left by item 1 removed. Done, waiting for the user's review before the commit. Next: item 2.
 14. [x] Unify the loggers (see decisions). `PlayerTurnAction` becomes a static logger and stops using `LOGGER_NAME`; check nothing depends on that logger name (for example logging configuration). Done, waiting for the user's review before the commit. Nothing referenced `com.dainws.ActionLogger`. Next: item 15.
-15. [ ] Member order in the touched classes.
+15. [x] Member order in the touched classes. Audited the 56 touched classes: only the logger-before-collaborators order was wrong, in `SocketIOCommunicationClient`, `WebSocketCommunicationClient` and the three `Memory*Repository`; fixed.
 
 ## Notes for whoever continues
 

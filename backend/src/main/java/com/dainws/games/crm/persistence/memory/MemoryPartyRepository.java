@@ -18,8 +18,9 @@ import com.dainws.games.crm.domain.repositories.PartyRepository;
 
 public class MemoryPartyRepository implements PartyRepository {
 
-	private Map<PartyCode, Party> parties;
 	private Logger logger;
+
+	private Map<PartyCode, Party> parties;
 
 	public MemoryPartyRepository() {
 		this.parties = new ConcurrentHashMap<>();
