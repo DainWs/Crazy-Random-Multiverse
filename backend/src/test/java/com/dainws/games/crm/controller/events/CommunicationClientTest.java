@@ -18,9 +18,9 @@ import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
-class SocketIOCommunicationClientTest {
+class CommunicationClientTest {
 
-	SocketIOCommunicationClient communicationClient;
+	CommunicationClient communicationClient;
 	User user;
 	UserPlayer player;
 	Event event;
@@ -33,7 +33,7 @@ class SocketIOCommunicationClientTest {
 
 		SocketIOServer server = new SocketIOServer(new Configuration());
 		this.communicationClient =
-				new SocketIOCommunicationClient(userRepository, server);
+				new CommunicationClient(userRepository, server);
 
 		this.player = new UserPlayer(this.user);
 		Game game = new GameBuilder().withPlayers(this.player).build();

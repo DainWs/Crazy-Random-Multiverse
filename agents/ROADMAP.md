@@ -52,7 +52,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 - [x] Remove the current AI implementation entirely (`SCOPE-4`), before adopting the new exception rule, so the AI does not have to be adapted to it. This includes its tests (`AIvsAIGameIntegationTest`, which times out in about half of the runs, goes with it), `docs/AISystem.md`, the AI references in `CODESTYLE.md`, `BACKEND-CODESTYLE.md` and `BACKEND-TESTS.md`, and the diagrams `class_diagram-ai_system` and `domain_model-ai_system`
 - [x] Replace STOMP with Socket.IO
-- [ ] Remove `WebSocketCommunicationClient` and turn `CommunicationClient` into a concrete class, because Socket.IO is the only transport
+- [x] Remove `WebSocketCommunicationClient` and turn `CommunicationClient` into a concrete class, because Socket.IO is the only transport
 - [x] Implement Socket.IO connection
 - [ ] Open the Socket.IO connection from the application (`CON-1`; nothing calls `connect()` yet)
 - [x] Implement Socket.IO game event handling
