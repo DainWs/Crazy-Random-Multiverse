@@ -21,13 +21,13 @@
 - **WIN-2** There are no ties in the MVP, because there are no spells. **[Post-MVP]** See `SPELL-5`.
 - **WIN-3** The server decides the end of the game and the winner.
 - **WIN-4** When the game ends, the frontend shows the result and disables interaction.
-- **WIN-5** The party stays locked while the result is shown (15 seconds, `crm.game.result-duration`). When that time ends, the server removes the finished game from memory and unlocks the party (`party:info`), and every client goes back to the party automatically, so its owner can start another game.
+- **WIN-5** The party stays locked while the result is shown (15 seconds, `crm.game.result-duration`). When that time ends, the server removes the finished game from memory and unlocks the party (`party:info` with `locked` as `false`), and every client goes back to the party automatically when it receives it, so its owner can start another game. Any other `party:info` during the game or the result does not take a client out of them.
 
 ## Spectators
 
 - **SPEC-1** An eliminated player becomes a spectator and sees the game without being able to act.
 - **SPEC-2** A spectator sees what a player sees, except that they see no hand.
-- **SPEC-3** A spectator can leave the game at any moment with `POST /party/{partyCode}/leave`, which also takes them out of the party, as an exception to `PARTY-6`. If they are the owner, `PARTY-7` applies at that moment.
+- **SPEC-3** A spectator can leave the game at any moment with `POST /party/{partyCode}/leave`, which also takes them out of the party, as an exception to `PARTY-6`. If they are the owner, `PARTY-7` applies at that moment. The interface offers it with a button (`UI-8`). After leaving they no longer have a game and stop receiving its events.
 - **SPEC-4** **[Post-MVP]** Users from outside the game can watch it.
 
 ### Scenarios

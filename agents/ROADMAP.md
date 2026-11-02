@@ -4,6 +4,8 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 **MVP goal:** a complete game loop: deal -> placement -> combat -> victory/defeat.
 
+**MVP scope:** Phases 1 to 12. Phase 13 and the Post-MVP section are out of it.
+
 ## Closed decisions
 
 | Decision | Choice |
@@ -33,6 +35,18 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Define the game snapshot event (`GAME_SYNC`): the `GameDto` plus the receiving player's hand and its own sequence number
 - [x] Push the snapshot from the server when a user with a game in progress reconnects
 - [x] Add a per-game sequence number to every `EventDto`. The counter is a concrete class in `persistence/memory`, incremented only by `SpringEventPublisher`
+- [x] Add `locked` to `PartyDto`: the client goes back to the party only when it becomes `false` and disables starting a game while it is `true` (`WIN-5`)
+- [x] Define `PlayerDto.code` as the public `UserDto.id` (`CON-24`, `NFR-3`), so the client identifies its player without exposing the session
+- [x] Define `damage`, `armor`, `health` and `maxHealth` in `CardDto` as effective values with the equipment included; `equipment` only lists what the card holds
+- [x] End `CON-23` with a new event without data, always sent, even to a user with no party or game, so the client knows it can go to the main menu
+- [x] Rename `CardDto.code` to `catalogCode` (`CON-7`, `CARD-7`): it identifies the card in the catalog, together with `type`, and copies of a card share it
+- [x] State that cards have no unique id: the client numbers the copies of a card in its hand by how many it holds, renumbering them when one leaves, and that number never reaches the server. On the board a card is identified by its position
+- [x] Remove from `CON-12` and from the Phase 3 task that a received card already in the hand is ignored, because a player can legitimately hold repeated cards
+- [x] Document in `CON-12` as an accepted risk of the MVP that an event already reflected in `GAME_SYNC` can leave a wrong hand on the client until the next `GAME_SYNC`, because a card in the hand cannot be recognized. It can only happen when a socket is bound
+- [x] State in `CARD-4` that the client derives the frame and image of a card from `type`, `rarity` and `catalogCode`, so `CardDto` has no texture field
+- [x] Add the field types to the contract. `ActionDto`: `game`, `sourcePlayer` and `targetPlayer` are codes as text, `sourceCard` is a `CardCodeDto` (`{ code, type }`), positions are `PositionDto`. `EventDetailsDto`: `sourcePlayer` and `targetPlayer` are `PlayerDto`, `sourceCard` and `targetCard` are `CardDto`, positions are `PositionDto`, `hand` is `CardDto[]`
+- [x] Extend `CON-5`: one setting holds the client origin for REST and the socket, with credentials, and `*` stops being its default, because browsers refuse the cookie with it
+- [x] State in the contract that `round` and `playerWithTurn` are not sent before their first event, that `playerWithTurn` is not sent once the game has ended, and that `attackAvailable` is `false` on rival cards and outside the player's turn
 
 ## Phase 2 — Connectivity
 
@@ -49,17 +63,26 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Adopt the new exception rule (`BACKEND-CODESTYLE.md`, section 8): `Action` and the modes return a result with the `ExceptionCode` instead of throwing, and check the rules through queries on the models. Needed for `CON-18`
 - [ ] Answer rejected actions with a 400 and their key (`CON-18`), after adopting the exception rule. Then remove `ExceptionPublisher` and the `error` channel (`CON-20`), including `sendExceptionCode` in the clients, and update `BACKEND-CODESTYLE.md` (sections 1 and 14) and `BACKEND-TESTS.md`
 - [ ] Answer every other expected error with a 400 and its key (`CON-18`): parties, users, denied accesses, elements not found and malformed requests have no handler today
-- [ ] Align the contract with `specs/CONTRACT.md`: `equipment` as a list in `CardDto`; `round` in `GameDto`; `handSize` in `PlayerDto`; no `health` or `maxHealth` in `ZoneDto`; `combatant` absent in an empty slot (`CON-14`); the `attackAvailable` and `targetable` flags (`PROT-4`, `CON-15`); remove `GAME_RESTART`; add `GAME_CANCELLED` and the details of `PLAYER_ATTACK_CARD` (`CON-21`); add the new error keys and rename those marked as renamed; no `code` in the body of `PUT /party`; `maxUsers` in the bodies of `POST` and `PUT /party`; a last `party:info` to a kicked user (`PARTY-12`)
+- [ ] Align the contract with `specs/CONTRACT.md`: `equipment` as a list in `CardDto`; `round` in `GameDto`; `handSize` in `PlayerDto`; no `health` or `maxHealth` in `ZoneDto`; `combatant` absent in an empty slot (`CON-14`); the `attackAvailable` and `targetable` flags (`PROT-4`, `CON-15`); remove `GAME_RESTART`; add `GAME_CANCELLED` and the details of `PLAYER_ATTACK_CARD` (`CON-21`); add the new error keys and rename those marked as renamed; no `code` in the body of `PUT /party`; `maxUsers` in the bodies of `POST` and `PUT /party`; a last `party:info` to a kicked user (`PARTY-12`); `catalogCode` instead of `code` in `CardDto` (`CON-26`); effective statistics in `CardDto` (`CON-27`); `locked` in `PartyDto`
+- [ ] Replace `crm.communication.socket-io.origin` with one explicit origin for REST and the socket, with credentials (`CON-5`)
 - [ ] Publish the events in the order of `CON-22`
-- [ ] Separate a public user id from the session id (`NFR-3`, `CON-24`): the user id is the HTTP session id and the parties share it with their members. `owner` and `users` in `PartyDto` become `UserDto`
+- [ ] Separate a public user id from the session id (`NFR-3`, `CON-24`): the user id is the HTTP session id and the parties share it with their members. `owner` and `users` in `PartyDto` become `UserDto`, and `PlayerDto.code` takes the public id
 - [ ] Keep `POST /register` as the only way to create a user and remove `POST /login` (`USER-6`), with a session of 24 hours (`USER-7`)
 - [ ] Delete users only after the grace period (`CON-3`, `ABSENT-1`)
-- [ ] Send the user's state when a socket is bound (`CON-23`): `GAME_SYNC` or `GAME_LOADING`, then `party:info`; a repeated `/ready` has no effect (`LOAD-2`)
+- [ ] Check that a user can have several sockets at once and implement the differences (`CON-25`)
+- [ ] Send the user's state when a socket is bound (`CON-23`): `GAME_SYNC` or `GAME_LOADING`, then `party:info`, and always `user:synced`; a repeated `/ready` has no effect (`LOAD-2`)
 - [ ] Implement REST `POST /game/{gameCode}/action` (`CON-16`)
 - [ ] Implement REST error handling (`CON-18`): read the 400 and its key, and stop listening to the `error`, `game:error` and `exception` socket channels
 - [ ] Refactor networking into clear API services
 - [ ] Separate REST commands from Socket.IO events
 - [ ] Separate backend DTO mapping from domain models
+
+## Phase 2.5 — Minimal lobby
+
+Just enough to create a real game from the interface, which Phase 3 needs. The rest of the lobby is in Phase 11.
+
+- [ ] Main menu: create a party and join one with its code (`UI-1`, `PARTY-1`, `PARTY-5`)
+- [ ] Party screen: members from `party:info`, the party code to copy, and starting the game for the owner, disabled while the party is locked (`PARTY-9`, `PARTY-10`, `LOAD-1`, `UI-16`)
 
 ## Phase 3 — Authoritative game state and hand
 
@@ -68,7 +91,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] A newly placed card must not act on the turn it is placed (`BOARD-8`): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 - [ ] Create the authoritative frontend game-state layer (`ARCH-2`)
 - [ ] Synchronize `GameDto` from backend events (turn, players, zones, board cards)
-- [ ] Apply events in sequence order, discard those not newer than the last snapshot and ignore a received card that is already in the hand (`CON-12`)
+- [ ] Apply events in sequence order and discard those not newer than the last snapshot (`CON-12`)
 - [ ] Reconcile state after Socket.IO events and after reconnection (`CON-11`, `CON-23`)
 - [ ] Remove mocked game state, zones and hand
 - [ ] Replace mocked `GameLoad` flow with real backend state
@@ -76,6 +99,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Map the backend rows (row 0 is the leader row) to the frontend zone organization, so the leader is shown nearest to the local player (`CON-14`, `VIEW-1`)
 - [ ] Implement real initial hand synchronization and hand updates (`CON-13`)
 - [ ] Remove played cards from the hand after backend confirmation (`HAND-2`)
+- [ ] Number the copies of a card in the hand (`HAND-4`)
 - [ ] Animate newly received cards (`VIEW-8`)
 - [ ] Keep opponent hands private (`HAND-3`, `UI-7`)
 
@@ -88,7 +112,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Card movement (`MOVE_ACTION`, `BOARD-7`): prevent invalid movement
 - [ ] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
 - [ ] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
-- [ ] Surrender (`SURRENDER_ACTION`, `ELIM-2`)
+- [ ] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [ ] Highlight valid targets and disable invalid ones (`UI-5`)
 - [ ] End Turn button (`PASS_TURN`)
 - [ ] Update turn after backend confirmation
@@ -117,7 +141,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 ## Phase 6 — Base assets and stability
 
-- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures. `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. The client holds the Spanish texts of the keys
+- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP. `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. The client holds the Spanish texts of the keys
 - [ ] Camera stability: zoom/pan must not break card interaction
 
 ## Phase 7 — Rounds, players and connection
@@ -126,7 +150,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Receive newly dealt cards; do not hardcode the round schedule (`ROUND-4`)
 - [ ] Highlight the current player; distinguish the local player's cards
 - [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
-- [ ] Spectator mode with all interaction disabled (`SPEC-1`, `SPEC-2`, `UI-8`)
+- [ ] Spectator mode with all interaction disabled except a button to leave; a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
 - [ ] Connecting, disconnected, reconnecting and failure states (`UI-9`)
 - [ ] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-11`, `USER-8`)
 - [ ] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
@@ -148,19 +172,17 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [ ] Display opponent card backs (`VIEW-3`)
 - [ ] Complete stacked-card hover behavior if needed
 
-## Phase 10 — UX and audio
+## Phase 10 — UX
 
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
 - [ ] Round transition presentation and gameplay event notifications
 - [ ] Improve loading flow; loading failure UI (`UI-12`)
-- [ ] Cursor animations
-- [ ] Centralize audio; sounds for placement, attack, death, turn/round change, victory, defeat (`VIEW-9`)
 
 ## Phase 11 — Menu, lobby, user
 
 - [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, owner succession, name rules, name of the party
-- [ ] Main Menu: create party, join party, party list (`UI-1`)
-- [ ] Lobby: party creation, joining, listing, leaving, owner controls, kicking, configuration, start game (`PARTY-*`)
+- [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
+- [ ] Lobby: listing, leaving, owner controls, kicking, configuration (`PARTY-*`)
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
 
 ## Phase 12 — Testing
@@ -185,12 +207,19 @@ Not tied to a phase.
 - [ ] A person tests a real browser connection with the session cookie; the frontend does not call `connect()` yet (see Phase 2)
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [ ] In the planning stage, before implementing `CON-21`, weigh the pros and cons of giving each event its own `EventDetails` implementation
+- [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
+- [x] State in `PARTY-5` that the party screen shows its code to be copied, and that its format is up to the server
+- [x] State in `INTERFACE.md` that the party list is loaded when its screen opens and with a refresh button (`PARTY-4`)
+- [x] State in `UI-13` that the interface does not offer renaming inside a party, although the server accepts it (`USER-3`)
+- [x] State in `SPEC-3` and `UI-8` that a spectator has a leave button, as an exception to the disabled interaction, and stops receiving the events of the game after leaving
+- [x] State in `INTERFACE.md` that surrendering asks for confirmation (`ELIM-2`)
+- [x] State in `USER-4` that spaces are trimmed before validating the length, and in `USER-2` that the default name follows `USER-4`
 
 ## Post-MVP
 
 - Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
 - Teams: a team model in the backend (from the game configuration and from spells) and its exposure to the frontend (for example a `team` in each `ZoneDto`), and in the interface: display, team victory and dead teammates
-- Vote to kick a player in the middle of a game (the MVP has no turn time limit, so an absent player blocks the game until their user is deleted)
+- Vote to kick a player in the middle of a game (the MVP has no turn time limit, so a disconnected player blocks the game until their user is deleted, and one who stays connected without acting blocks it indefinitely)
 - Several decks instead of a single one per server: today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `PersistenceConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode, uploaded by the owner), its format, validation and lifetime before designing it
 - Leaders do not repeat when the deck has enough for every player
 - Names and descriptions for the leaders (`CARD-5`)
@@ -202,5 +231,7 @@ Not tied to a phase.
 - Infinite stats and true damage
 - Combat log and dynamic localization
 - Premium animations (particles, special effects)
+- Cursor animations
+- Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`)
 - Advanced trolling cards, green/red indicators, center-table behavior
 - Settings screen, audio settings, accessibility (reduced motion, color-blind indicators), responsive and touch layouts

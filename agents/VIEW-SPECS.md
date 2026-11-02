@@ -18,6 +18,6 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 ## Other
 
 - **VIEW-8** Newly received cards are animated.
-- **VIEW-9** Sounds exist for placement, attack, death, turn and round changes, victory and defeat.
+- **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, reduced motion, color-blind indicators, and responsive and touch layouts.
 - **VIEW-11** The zone of an eliminated player is shown empty and marked as eliminated.

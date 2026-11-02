@@ -14,7 +14,8 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
 - **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key.
 - **UI-7** Rival hands show only how many cards they hold.
-- **UI-8** A spectator or eliminated player sees the board with all interaction disabled.
+- **UI-8** A spectator or eliminated player sees the board with all interaction disabled, except a button to leave (`SPEC-3`).
+- **UI-15** Surrendering asks for confirmation (`ELIM-2`).
 
 ## Connection and failures
 
@@ -25,4 +26,9 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 ## Menu
 
-- **UI-13** The name is edited from the main menu. There is no settings screen in the MVP.
+- **UI-13** The name is edited from the main menu. The interface does not offer it inside a party, although the server accepts it (`USER-3`). There is no settings screen in the MVP.
+- **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`).
+
+## Party
+
+- **UI-16** The party screen disables starting the game while the party is locked (`PartyDto.locked`).

@@ -8,7 +8,8 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 - **CON-2** The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user.
 - **CON-3** When a socket drops, only the socket is unbound. The user, their party and their game are kept until the user has been without an open socket for longer than a grace period (5 minutes, `crm.user.disconnect-grace-period`). A periodic task deletes those users (every minute, `crm.user.cleanup-interval`). See `ABSENT` in `GAME-END.md`.
 - **CON-4** Reconnection is performed by the Socket.IO client.
-- **CON-5** `crm.communication.socket-io.origin` (default `*`) is the origin allowed to connect. Browsers refuse cookies when it is `*`, so production sets the explicit origin if the client connects from another origin.
+- **CON-5** One setting, `crm.communication.origin`, holds the client origin that REST and the socket allow, with credentials. It is an explicit origin, never `*`, because browsers refuse cookies with it.
+- **CON-25** A user can have several sockets bound at once, for example with several tabs. All of them receive the user's events, `CON-23` applies to each socket when it is bound, and the drop of one does not affect the others.
 
 ## Server → client channels
 
@@ -16,11 +17,13 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 |---|---|
 | `game:event` | `EventDto` |
 | `party:info` | `PartyDto`, sent to the party members when the party changes, to a kicked user (`PARTY-12`), and to a member when their socket is bound (`CON-23`) |
+| `user:synced` | None. It closes the state sent when a socket is bound (`CON-23`) |
 
 ## Identifiers
 
 - **CON-6** Codes travel as plain text inside JSON bodies. They are encoded as Base64 URL-safe only when they are part of a URL path.
 - **CON-7** Card codes (`CardCodeDto.code`) travel as decimal text so that no digit is lost in JavaScript: the backend keeps them as a `long` and the frontend as a `string`.
+- **CON-26** A `CardCodeDto` identifies a card in the catalog, so a code is only unique within its type and all the copies of a card share it. Cards have no unique id: on the board a card is identified by its position, and an action names a card in the hand by its `CardCodeDto`, because its copies are interchangeable (`HAND-4`).
 - **CON-8** A field with no value is not sent (the Socket.IO serializer omits `null`), so the frontend types of those fields are optional.
 
 ## Events
@@ -36,7 +39,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | `GAME_LOADING` | Clients must load the game and confirm with `/ready`. Also sent to a user who reconnects while loading (`CON-23`) | |
 | `GAME_CANCELLED` | The loading has been cancelled (`LOAD-4`) | |
 | `GAME_START` | Every player has confirmed (`LOAD-2`) | |
-| `GAME_SYNC` | A socket is bound to a user with a game in progress, sent only to that user | `hand` |
+| `GAME_SYNC` | A socket is bound to a user with a game in progress, sent only to that socket | `hand` |
 | `ROUND_CHANGE` | A new round starts | |
 | `TURN_CHANGE` | The turn changes | |
 | `PLAYER_RECEIVE_CARD` | A player receives a card | `targetPlayer`, `targetCard` (`CON-13`) |
@@ -52,10 +55,22 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | `GAME_END_WITH_TIE` | **[Post-MVP]** Follows `GAME_END` when no leader is left alive (`SPELL-5`) | |
 | `PLAYER_USE_CARD` | **[Post-MVP]** A card has been used | |
 
+Types of the details:
+
+| Field | Type |
+|---|---|
+| `game` | `GameDto` |
+| `sourcePlayer`, `targetPlayer` | `PlayerDto` |
+| `sourceCard`, `targetCard` | `CardDto` |
+| `sourcePosition`, `targetPosition` | `PositionDto` |
+| `hand` | `CardDto[]` |
+| `armorDamage`, `healthDamage` | number |
+| `targetDead` | boolean |
+
 ## Reconnection
 
 - **CON-11** When a socket is bound to a user who plays a game in progress, the server sends `GAME_SYNC`: `details.game` is the `GameDto`, `details.hand` is the hand of the receiving player (only in this event) and `sequence` is the number of the last event published before the snapshot.
-- **CON-12** The client discards the events whose `sequence` is not greater. An event published while the snapshot is being built may already be reflected in it, so the client ignores a received card that is already in its hand.
+- **CON-12** The client discards the events whose `sequence` is not greater. An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
 
 ## Hand
 
@@ -68,15 +83,15 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | Field | Type | Notes |
 |---|---|---|
 | `code` | text | |
-| `round` | number | The current round, starting at 1 |
-| `playerWithTurn` | `PlayerDto` | |
+| `round` | number | The current round, starting at 1. Not sent before the first `ROUND_CHANGE` |
+| `playerWithTurn` | `PlayerDto` | Not sent before the first `TURN_CHANGE` or once the game has ended |
 | `zones` | `ZoneDto[]` | |
 
 ### `PlayerDto`
 
 | Field | Type | Notes |
 |---|---|---|
-| `code` | text | |
+| `code` | text | The public id of the user (`CON-24`) |
 | `name` | text | |
 | `isAlive` | boolean | |
 | `isSpectator` | boolean | |
@@ -98,7 +113,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 
 | Field | Type | Notes |
 |---|---|---|
-| `code` | `CardCodeDto` | |
+| `catalogCode` | `CardCodeDto` | See `CON-26` |
 | `name`, `description` | text | Translation keys (`CARD-7`) |
 | `type` | text | `LEADER`, `WARRIOR`, `EQUIPMENT`, `SPELL` |
 | `rarity` | text | Warriors only: `COMMON`, `UNCOMMON`, `RARE`, `EPIC`, `LEGENDARY`, `MYTHIC` |
@@ -107,18 +122,20 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | `health`, `maxHealth` | number | |
 | `equipment` | `CardDto[]` | The equipment attached to a combatant (`EQUIP-4`) |
 | `protected` | boolean | A card stands in a row closer to the center |
-| `attackAvailable` | boolean | The card can attack now: it has not used its attacks this turn, is not in placement cooldown and is not a protected leader (`PROT-4`) |
+| `attackAvailable` | boolean | The card can attack now: it belongs to the player who receives the event, it is their turn, and the card has not used its attacks this turn, is not in placement cooldown and is not a protected leader (`PROT-4`) |
 | `targetable` | boolean | The card is not protected and belongs to another player |
 
 A statistic with value 0 is not sent.
 
+- **CON-27** `damage`, `armor`, `health` and `maxHealth` are effective values, with the equipment included. `equipment` only lists what the card holds.
 - **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`. For a spectator, `attackAvailable` and `targetable` are always `false`.
 
 ### Other
 
+- `CardCodeDto`: `{ code, type }`. See `CON-7` and `CON-26`.
 - `PositionDto`: `{ row, column }`.
 - `UserDto`: `{ id, username }`. See `CON-24`.
-- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto` and `users` a `UserDto[]`.
+- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users, locked }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto`, `users` a `UserDto[]`, and `locked` says whether the party is locked (`LOAD-1`, `LOAD-4`, `WIN-5`).
 - `PartyListDto`: `{ parties }`.
 - `gameMode`: `CLASSIC` is the only value in the MVP.
 
@@ -134,6 +151,14 @@ A statistic with value 0 is not sent.
 | `EQUIP_ACTION` | `sourceCard`, `targetPosition` |
 | `SURRENDER_ACTION` | none |
 | `PASS_TURN` | none |
+
+Types of the fields:
+
+| Field | Type |
+|---|---|
+| `game`, `sourcePlayer`, `targetPlayer` | Codes as text |
+| `sourceCard` | `CardCodeDto` |
+| `sourcePosition`, `targetPosition` | `PositionDto` |
 
 - **CON-17** A valid action changes the state, and the result reaches every client through events, including the client that sent it.
 - **CON-18** The response to a request says whether it was accepted: 2xx if it was, 400 with `ExceptionCodeDto` (`{ key }`, an `exception.*` key) if it was rejected. This applies to every endpoint and every expected error (game rules, parties, users, denied accesses, elements not found). The client tells them apart by the key. A 500 means an unexpected failure.
@@ -156,7 +181,7 @@ A statistic with value 0 is not sent.
 
 ## State on connection
 
-- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to them. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. Last, if they are in a party, `party:info`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party.
+- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to that socket. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. Then, if they are in a party, `party:info`. Last, always, `user:synced`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party. A `user:synced` with no state before it means that the user has neither a game nor a party, and the client goes to the main menu.
 
 ### Scenario
 
@@ -167,7 +192,7 @@ A statistic with value 0 is not sent.
 
 ## User identifiers
 
-- **CON-24** `UserDto.id` is a public id, different from the session id, because it is shared with the other users. `/party/{partyCode}/kick/{userCode}` uses it.
+- **CON-24** `UserDto.id` is a public id, different from the session id, because it is shared with the other users. `/party/{partyCode}/kick/{userCode}` uses it. `PlayerDto.code` has the same value, so the client identifies its own player without exposing the session.
 
 ## REST API
 

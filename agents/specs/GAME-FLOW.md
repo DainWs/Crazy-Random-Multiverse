@@ -11,7 +11,7 @@
 - **TURN-1** The order drawn in `SETUP-3` does not change during the game. Eliminated players are skipped.
 - **TURN-2** In their turn a player may place, move, attack, equip, surrender or pass the turn.
 - **TURN-3** There is no limit of actions per turn beyond the rules of each action. The turn lasts until the player passes it or surrenders.
-- **TURN-4** There is no turn time limit. A player who is absent during their turn blocks the game until their user is deleted (`ABSENT-3`). This is an accepted risk of the MVP.
+- **TURN-4** There is no turn time limit. A disconnected player blocks the game during their turn until their user is deleted (`ABSENT-3`). A player who stays connected without acting blocks it indefinitely, because their user is not deleted, and the other players can only leave by closing the game (`ABSENT-2`). Both are accepted risks of the MVP.
 - **TURN-5** Actions are only accepted from the player whose turn it is, including surrender.
 - **TURN-6** Actions are validated by the server. A rejected action leaves the state unchanged.
 - **TURN-7** Actions are only accepted while the game is in progress: not while it is loading or after it ends.
@@ -59,3 +59,4 @@
 - **HAND-1** A hand has no card limit.
 - **HAND-2** A played card leaves the hand only after the server confirms the action.
 - **HAND-3** The cards in a hand are private. How many cards each player holds is public.
+- **HAND-4** The client numbers the copies of a card in its hand by how many it holds, renumbering them when one leaves. That number never reaches the server (`CON-26`).
