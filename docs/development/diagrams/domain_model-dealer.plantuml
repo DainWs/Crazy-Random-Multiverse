@@ -13,7 +13,7 @@ Dealer --> Round
 Round --> DealtCard : decide
 DealtCard --> Deck : from
 Dealer *--> Deck
-Deck o--> "(1*4)..N  " Card
+Deck o--> "1..N  " Card
 Dealer --> Card : dealt
 
 note left of Round
@@ -27,7 +27,7 @@ note bottom of DealtCard
 end note 
 
 note bottom of Deck
-	A **Deck** requires a **minimum of** 
-	**1 card for each type of card** (4 types)
+	A **Deck** requires **at least 1 Leader**.
+	A category with **no cards** is **not dealt**
 end note
 @enduml

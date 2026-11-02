@@ -24,7 +24,7 @@ Card <|-- Combatant
 Spell *--> Effect : cause
 
 Equipment --> Combatant : equipped on
-Equipment --> Statistic : increment
+Equipment --> Statistic : increment or decrement
 
 Combatant <|-- Leader
 Combatant <|-- Warrior
@@ -51,8 +51,8 @@ note bottom of Leader
 end note
 
 note bottom of Cooldown
-	**Number of rounds** to wait before 
-	you can use this **Combatant**
+	**One turn** to wait after placing it before
+	this **Combatant** can attack
 end note
 
 note right of Rarity

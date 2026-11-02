@@ -24,7 +24,7 @@ Zone <|-- OthersZone
 BaseZone *--> "1 " LeaderRow
 BaseZone *--> "2  " Row
 
-Row o--> "3..N" Square
+Row o--> "1..3" Square
 Row <|-- LeaderRow
 
 LeaderRow *--> LeaderSquare

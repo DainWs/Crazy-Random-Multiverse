@@ -59,8 +59,8 @@ note as HealthNote
 	then combatant die
 
 	It can only be reduced 
-	by damage when **armor**
-	**reaches a value of 0**,
+	by damage when there is **no armor**
+	**of the same type**,
 	or with **True damage** 
 end note
 Health ... HealthNote

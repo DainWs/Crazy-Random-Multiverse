@@ -26,12 +26,13 @@ actor User
 :Spectator: --> (Exit game)
 :Spectator: --> (View game)
 
-:Player: --> (Surrender)
 :Player: --> (View game)
 
 :PlayerWithTurn: --> (Put card)
 :PlayerWithTurn: --> (Move card)
 :PlayerWithTurn: --> (Attack card)
+:PlayerWithTurn: --> (Equip card)
+:PlayerWithTurn: --> (Surrender)
 :PlayerWithTurn: --> (Use spell)
 :PlayerWithTurn: --> (Pass turn)
 @enduml 

@@ -11,7 +11,10 @@ rectangle Surrender
 rectangle TurnAction
 rectangle Board
 rectangle PutCard
+rectangle MoveCard
 rectangle AttackCard
+rectangle EquipCard
+rectangle PassTurn
 
 Game *--> "2..N" Player
 
@@ -22,15 +25,18 @@ Hand o--> "0..N" Card
 
 Player --> Action
 Action ..> Hand
-Action <|-- Surrender
 Action <|-- TurnAction
 TurnAction ..> Board
 TurnAction <|-- PutCard
+TurnAction <|-- MoveCard
 TurnAction <|-- AttackCard
+TurnAction <|-- EquipCard
+TurnAction <|-- PassTurn
+TurnAction <|-- Surrender
 
 
 note as TurnActionNote
-	When the player has the turn, they can perform 
+	When the player has the turn, they can perform
 	actions that cannot be done without the turn,
 	we call this actions, **TurnAction**
 end note
