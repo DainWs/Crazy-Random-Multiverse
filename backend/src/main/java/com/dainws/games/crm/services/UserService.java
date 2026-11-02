@@ -8,7 +8,9 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
+import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.repositories.UserRepository;
+import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 
 @Service
 public class UserService {
@@ -25,8 +27,13 @@ public class UserService {
 		return this.partyService.getParties();
 	}
 	
-	public void createParty(User partyOwner, Party party) {
-		this.partyService.createParty(partyOwner, party);
+	public Party createParty(User partyOwner, CreatePartyRequest request) {
+		GameMode gameMode = request.getGameMode().getDomainGameMode();
+
+		Party party = new Party(partyOwner, gameMode);
+		party.setMaxUsers(request.getMaxPlayers());
+
+		return this.partyService.createParty(party);
 	}
 	
 	public Party joinParty(PartyCode partyCode, User user) {

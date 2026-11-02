@@ -15,7 +15,6 @@ import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.controller.dto.domain.PartyListDto;
 import com.dainws.games.crm.controller.dto.domain.UserDto;
-import com.dainws.games.crm.controller.dto.models.CreatePartyRequest;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
@@ -23,6 +22,7 @@ import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.services.UserService;
+import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 
 @RestController
 public class WebUserController implements UserController {
@@ -37,10 +37,7 @@ public class WebUserController implements UserController {
 	public UserDto register() {
 		this.userService.create(this.userSession.clone());
 
-		UserDto userDto = new UserDto();
-		userDto.setId(this.userSession.getCode().text());
-		userDto.setUsername(this.userSession.getName());
-		return userDto;
+		return ModelMapper.toUserDto(this.userSession);
 	}
 
 	@Override
@@ -48,10 +45,7 @@ public class WebUserController implements UserController {
 		this.userSession.setName(username);
 		this.userService.create(this.userSession.clone());
 
-		UserDto userDto = new UserDto();
-		userDto.setId(this.userSession.getCode().text());
-		userDto.setUsername(this.userSession.getName());
-		return userDto;
+		return ModelMapper.toUserDto(this.userSession);
 	}
 
 	@Override
@@ -65,20 +59,13 @@ public class WebUserController implements UserController {
 
 	@Override
 	public UserDto getAccount() {
-		UserDto userDto = new UserDto();
-		userDto.setId(this.userSession.getCode().text());
-		userDto.setUsername(this.userSession.getName());
-		return userDto;
+		return ModelMapper.toUserDto(this.userSession);
 	}
 
 	@Override
 	public PartyDto createParty(CreatePartyRequest request) throws NotAllowedException {
-		GameMode gameMode = request.getGameMode().getDomainGameMode();
-		
-		Party party = new Party(this.userSession.clone(), gameMode);
-		party.setMaxUsers(request.getMaxPlayers());
-		
-		this.userService.createParty(this.userSession.clone(), party);
+		Party party = this.userService.createParty(this.userSession.clone(), request);
+
 		return ModelMapper.toPartyDto(party);
 	}
 	

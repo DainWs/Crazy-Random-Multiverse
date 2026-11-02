@@ -11,6 +11,7 @@ import com.dainws.games.crm.domain.UserCode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
 import com.dainws.games.crm.services.exception.PartyException;
+import com.dainws.games.crm.usecase.dto.UpdatePartyRequest;
 
 @Service
 public class PartyOwnerService {
@@ -24,10 +25,14 @@ public class PartyOwnerService {
 		this.gameService = gameService;
 	}
 
-	public void updateParty(User supposedOwner, Party updatedParty) throws PartyException {
-		Party party = this.getPartyOwnedBy(updatedParty.getCode(), supposedOwner);
-		party.changeMode(updatedParty.getGameMode());
-		party.setMaxUsers(updatedParty.getMaxUsers());
+	public void updateParty(User supposedOwner, UpdatePartyRequest request)
+			throws PartyException {
+		PartyCode partyCode = PartyCode.from(request.getCode());
+
+		Party party = this.getPartyOwnedBy(partyCode, supposedOwner);
+		party.changeMode(request.getGameMode().getDomainGameMode());
+		party.setMaxUsers(request.getMaxPlayers());
+
 		this.repository.save(party);
 		this.userClient.sendPartyInfo(party);
 	}

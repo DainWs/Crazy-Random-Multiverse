@@ -25,12 +25,15 @@ public class PartyService {
 		this.repository = repository;
 	}
 
-	public void createParty(User partyOwner, Party party) throws PartyException {
+	public Party createParty(Party party) throws PartyException {
+		User partyOwner = party.getOwner();
+
 		if (this.repository.hasPartyWhereUserIsMember(partyOwner)) {
 			throw PartyException.userAlreadyInParty();
 		}
 
 		this.repository.save(party);
+		return party;
 	}
 
 	public Party joinParty(PartyCode partyCode, User user) throws PartyException {

@@ -36,10 +36,14 @@ Bugs
 Guides
 
 5. [x] `AccessDeniedException extends UsecaseException` (with `serialVersionUID` and `ExceptionCode`) replaces `IllegalAccessException` in `PlayerUsecase`, `PlayerController` and `WebPlayerController`. Tick the matching bullet in `ROADMAP.md` Pending tasks. Done, waiting for the user's review before the commit.
-6. [x] Inject a `RandomGenerator` in `Turn` and `RandomDealStrategyFactory` instead of `Math.random()`, seeded in tests. Done, waiting for the user's review before the commit.
+6. [x] Inject a `RandomGenerator` in `Turn` and `RandomDealStrategyFactory` instead of `Math.random()`, seeded in tests. Done (commit `03db089`).
    - `Turn(Collection)` removed; `ClassicModeStrategy.createTurn` draws the starting player with an injectable `RandomGenerator`, and `Game.reset()` delegates to `strategy.createTurn`.
    - Next: item 7.
-7. [ ] Move `new Party` and `setMaxUsers` out of `WebUserController` and `WebPartyOwnerController` into the services; deduplicate the `UserDto` construction.
+7. [x] Move `new Party` and `setMaxUsers` out of `WebUserController` and `WebPartyOwnerController` into the services; deduplicate the `UserDto` construction. Done.
+   - `UserService.createParty(owner, CreatePartyRequest)` builds the `Party` and `PartyService.createParty(Party)` validates and saves it; `PartyOwnerService.updateParty(owner, UpdatePartyRequest)`; `ModelMapper.toUserDto`.
+   - Request DTOs moved to `usecase.dto`; `kick` now takes both codes in the path (`/party/{partyCode}/kick/{userCode}`) and the frontend follows.
+   - `GameCode`, `PartyCode` and `UserCode` decode with `java.util.Base64`, which is stricter than Tomcat's (rejects `+`, `/` and invalid characters).
+   - Next: item 8.
 8. [ ] `LoadController` interface carrying the HTTP mapping of `WebLoadController`.
 
 Style (refactor commits)

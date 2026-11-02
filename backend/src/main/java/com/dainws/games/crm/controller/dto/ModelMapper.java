@@ -7,6 +7,7 @@ import com.dainws.games.crm.controller.dto.domain.CardDto;
 import com.dainws.games.crm.controller.dto.domain.GameDto;
 import com.dainws.games.crm.controller.dto.domain.PartyDto;
 import com.dainws.games.crm.controller.dto.domain.PartyListDto;
+import com.dainws.games.crm.controller.dto.domain.UserDto;
 import com.dainws.games.crm.controller.dto.domain.PlayerDto;
 import com.dainws.games.crm.controller.dto.domain.ZoneDto;
 import com.dainws.games.crm.controller.dto.domain.ZoneSlotDto;
@@ -28,6 +29,13 @@ import com.dainws.games.crm.usecase.dto.CardCodeDto;
 import com.dainws.games.crm.usecase.dto.PositionDto;
 
 public class ModelMapper {
+
+	public static UserDto toUserDto(User user) {
+		UserDto userDto = new UserDto();
+		userDto.setId(user.getCode().text());
+		userDto.setUsername(user.getName());
+		return userDto;
+	}
 
 	public static PartyListDto toPartyListDto(List<Party> parties) {
 		List<PartyDto> partyDtos = new ArrayList<>();

@@ -3,15 +3,12 @@ package com.dainws.games.crm.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dainws.games.crm.controller.dto.models.KickoutFromPartyRequest;
-import com.dainws.games.crm.controller.dto.models.UpdatePartyRequest;
-import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserCode;
-import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.services.PartyOwnerService;
 import com.dainws.games.crm.services.exception.PartyException;
+import com.dainws.games.crm.usecase.dto.UpdatePartyRequest;
 
 
 @RestController
@@ -26,19 +23,13 @@ public class WebPartyOwnerController implements PartyOwnerController {
 
 	@Override
 	public void updateParty(UpdatePartyRequest request) throws PartyException {
-		PartyCode code = PartyCode.from(request.getCode());
-		GameMode gameMode = request.getGameMode().getDomainGameMode();
-		
-		Party party = new Party(code, this.userSession.clone(), gameMode);
-		party.setMaxUsers(request.getMaxPlayers());
-		
-		this.partyOwnerService.updateParty(this.userSession.clone(), party);
+		this.partyOwnerService.updateParty(this.userSession.clone(), request);
 	}
-	
+
 	@Override
-	public void kickoutUser(KickoutFromPartyRequest request) throws PartyException {
-		PartyCode partyCode = PartyCode.from(request.getPartyCode());
-		UserCode userToKick = UserCode.from(request.getUserCode());
+	public void kickoutUser(String partyCodeB64UrlSafe, String userCodeB64UrlSafe) throws PartyException {
+		PartyCode partyCode = PartyCode.fromBase64UrlSafe(partyCodeB64UrlSafe);
+		UserCode userToKick = UserCode.fromBase64UrlSafe(userCodeB64UrlSafe);
 		this.partyOwnerService.kickUserFromParty(this.userSession.clone(), partyCode, userToKick);
 	}
 

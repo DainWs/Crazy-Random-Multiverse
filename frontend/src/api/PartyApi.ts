@@ -1,4 +1,4 @@
-import type { UpdatePartyRequest, KickoutFromPartyRequest } from "@/api/dtos/PartyDto";
+import type { UpdatePartyRequest } from "@/api/dtos/PartyDto";
 import type { UserCode } from "@/domain/User";
 import Party, { PartyCode } from "@/domain/Party";
 import { toBase64UrlSafe } from "@/api/models/Codification";
@@ -21,12 +21,7 @@ const updateParty = async (party: Party) => {
 }
 
 const kickoutUser = async (partyCode: PartyCode, userCode: UserCode) => {
-  const request: KickoutFromPartyRequest = { partyCode, userCode }
-
-  await fetch(`/party/${toBase64UrlSafe(partyCode)}/kick`, {
-    method: 'POST',
-    body: JSON.stringify(request),
-  });
+  await fetch(`/party/${toBase64UrlSafe(partyCode)}/kick/${toBase64UrlSafe(userCode)}`, { method: 'POST' });
 }
 
 const startPartyGame = async (partyCode: PartyCode) => {

@@ -13,11 +13,6 @@ interface UpdatePartyRequest {
   gameMode: GameMode;
 }
 
-interface KickoutFromPartyRequest {
-  partyCode: PartyCode;
-  userCode: UserCode;
-}
-
 interface PartyDto {
   code: string;
   name: string;
@@ -50,5 +45,5 @@ const toMinimalParty = (dto: PartyDto): Party => {
   return party;
 }
 
-export type { CreatePartyRequest, UpdatePartyRequest, KickoutFromPartyRequest, PartyDto }
+export type { CreatePartyRequest, UpdatePartyRequest, PartyDto }
 export { toParty, toMinimalParty }

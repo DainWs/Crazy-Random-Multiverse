@@ -1,5 +1,7 @@
 package com.dainws.games.crm.domain;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 
 import com.dainws.games.crm.domain.core.player.PlayerCode;
@@ -37,6 +39,13 @@ public class UserCode {
 	@Override
 	public String toString() {
 		return this.uuid;
+	}
+
+	public static UserCode fromBase64UrlSafe(String uuidAsBase64UrlSafe) {
+		Objects.requireNonNull(uuidAsBase64UrlSafe);
+
+		String asString = new String(Base64.getUrlDecoder().decode(uuidAsBase64UrlSafe), StandardCharsets.UTF_8);
+		return from(asString);
 	}
 
 	public static UserCode from(String uuid) {

@@ -11,8 +11,11 @@ import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
+import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 
 class UserServiceTest {
+
+	private static final int MAX_PLAYERS = 3;
 
 	MemoryUserRepository userRepository;
 	MemoryPartyRepository partyRepository;
@@ -72,5 +75,16 @@ class UserServiceTest {
 		User user = new User("user-1", "Name", UserPlatform.WEB);
 
 		assertThat(this.userService.exists(user.getCode())).isFalse();
+	}
+
+	@Test
+	void testGivenCreatePartyRequest_whenCreateParty_thenPartyHasTheRequestedMaxPlayers() {
+		User owner = new User("user-1", "Name", UserPlatform.WEB);
+		CreatePartyRequest request = new CreatePartyRequest();
+		request.setMaxPlayers(MAX_PLAYERS);
+
+		Party party = this.userService.createParty(owner, request);
+
+		assertThat(party.getMaxUsers()).isEqualTo(MAX_PLAYERS);
 	}
 }

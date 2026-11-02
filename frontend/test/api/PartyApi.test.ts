@@ -44,20 +44,14 @@ describe('PartyApi', () => {
       );
     });
 
-    it('kickoutUser sends POST to kick endpoint with KickoutFromPartyRequest', async () => {
+    it('kickoutUser sends POST to kick endpoint with the user code in the path', async () => {
       const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
 
       await partyOwnerApi.kickoutUser('party-1', 'user-2');
 
       expect(fetchSpy).toHaveBeenCalledWith(
-        `/party/${toBase64UrlSafe('party-1')}/kick`,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            partyCode: 'party-1',
-            userCode: 'user-2',
-          }),
-        }
+        `/party/${toBase64UrlSafe('party-1')}/kick/${toBase64UrlSafe('user-2')}`,
+        { method: 'POST' }
       );
     });
 
