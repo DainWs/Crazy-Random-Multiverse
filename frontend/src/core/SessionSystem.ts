@@ -1,4 +1,4 @@
-import { ApiException, EXCEPTION_KEYS, userApi } from '@/api';
+import { ApiException, EXCEPTION_KEYS, socketService, userApi } from '@/api';
 import StoreSystem from '@/core/StoreSystem';
 
 const loadOrRegisterUser = async () => {
@@ -16,6 +16,8 @@ const loadOrRegisterUser = async () => {
 const start = async (): Promise<void> => {
   const user = await loadOrRegisterUser();
   StoreSystem.setUser(user);
+
+  socketService.connect();
 }
 
 const SessionSystem = {

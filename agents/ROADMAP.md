@@ -54,7 +54,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Replace STOMP with Socket.IO
 - [x] Remove `WebSocketCommunicationClient` and turn `CommunicationClient` into a concrete class, because Socket.IO is the only transport
 - [x] Implement Socket.IO connection
-- [ ] Open the Socket.IO connection from the application (`CON-1`; nothing calls `connect()` yet)
+- [x] Open the Socket.IO connection from the application (`CON-1`; nothing calls `connect()` yet)
 - [x] Implement Socket.IO game event handling
 - [x] Implement Socket.IO reconnection
 - [x] Map `ActionDto` correctly
@@ -206,7 +206,7 @@ Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
-- [ ] A person tests a real browser connection with the session cookie; the frontend does not call `connect()` yet (see Phase 2)
+- [ ] A person tests a real browser connection with the session cookie
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [ ] In the planning stage, before implementing `CON-21`, weigh the pros and cons of giving each event its own `EventDetails` implementation
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`

@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiException, EXCEPTION_KEYS, userApi } from '@/api';
+import { ApiException, EXCEPTION_KEYS, socketService, userApi } from '@/api';
 import User from '@/domain/User';
 import SessionSystem from '@/core/SessionSystem';
 import StoreSystem from '@/core/StoreSystem';
 
 vi.mock('@/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api')>()),
-  userApi: { getAccount: vi.fn(), register: vi.fn() }
+  userApi: { getAccount: vi.fn(), register: vi.fn() },
+  socketService: { connect: vi.fn() }
 }));
 
 describe('SessionSystem', () => {
@@ -41,6 +42,20 @@ describe('SessionSystem', () => {
 
       await expect(SessionSystem.start()).rejects.toThrow('exception.request.malformed');
       expect(userApi.register).not.toHaveBeenCalled();
+    });
+
+    // CON-1
+    it('connects the socket', async () => {
+      await SessionSystem.start();
+
+      expect(socketService.connect).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not connect the socket when the user cannot be loaded', async () => {
+      vi.mocked(userApi.getAccount).mockRejectedValueOnce(new Error('Unexpected response status 500'));
+
+      await expect(SessionSystem.start()).rejects.toThrow();
+      expect(socketService.connect).not.toHaveBeenCalled();
     });
   });
 });
