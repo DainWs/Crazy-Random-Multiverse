@@ -21,7 +21,11 @@ describe('SessionSystem', () => {
   let syncedListener: () => void;
 
   const registeredUser = new User('usr-1', 'One');
-  const createParty = () => new Party('party-1');
+  const createParty = (members: User[] = [registeredUser]) => {
+    const party = new Party('party-1');
+    party.users = members;
+    return party;
+  };
   const gameEvent = { code: 'GAME_SYNC', details: {} } as never;
 
   beforeEach(() => {
@@ -226,6 +230,33 @@ describe('SessionSystem', () => {
       partyListener(createParty());
 
       expect(SessionSystem.userState.value).toBe('GAME_LOADING');
+    });
+
+    it('goes to the party when the server confirms entering it', () => {
+      const party = createParty();
+
+      SessionSystem.enterParty(party);
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+      expect(SessionSystem.party.value).toBe(party);
+    });
+
+    it('goes back to the main menu when leaving the party', () => {
+      SessionSystem.enterParty(createParty());
+
+      SessionSystem.leaveParty();
+
+      expect(SessionSystem.userState.value).toBe('IDLE');
+      expect(SessionSystem.party.value).toBeUndefined();
+    });
+
+    // PARTY-12
+    it('goes back to the main menu when party:info no longer lists the user', () => {
+      SessionSystem.enterParty(createParty());
+
+      partyListener(createParty([new User('usr-9', 'Nine')]));
+
+      expect(SessionSystem.userState.value).toBe('IDLE');
     });
 
     it('ignores GAME_START outside loading', () => {

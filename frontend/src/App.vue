@@ -9,6 +9,8 @@ import { MainMenu } from '@/scenes/MainMenu';
 import { Preloader } from '@/scenes/Preloader';
 import useAppController from '@/AppController';
 import SessionSystem from '@/core/SessionSystem';
+import MainMenuView from '@/views/MainMenuView.vue';
+import PartyView from '@/views/PartyView.vue';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -45,6 +47,8 @@ defineExpose({ scene, game });
 </script>
 
 <template>
+    <MainMenuView v-if="screen === 'MAIN_MENU'" />
+    <PartyView v-else-if="screen === 'PARTY'" />
     <div id="game-container" :class="{ 'is-hidden': screen !== 'GAME' }"></div>
 </template>
 
@@ -53,6 +57,21 @@ html,
 body {
     background-image: url(assets/background_gold.png);
     background-position: center center;
+}
+
+.screen {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.error {
+    color: #b00020;
 }
 
 #game-container.is-hidden {

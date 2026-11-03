@@ -4,6 +4,7 @@ import { toBase64UrlSafe } from "@/api/models/Codification";
 import { ApiException, EXCEPTION_KEYS, checkResponse, readRejection } from "@/api/models/ApiException";
 import { PartyCode } from "@/domain/Party";
 import User from "@/domain/User";
+import { DEFAULT_PARTY_MAX_USERS } from "@/core/Constants";
 
 const register = async () => {
   const response = await fetch('/register', { method: 'POST' });
@@ -39,7 +40,7 @@ const updateAccount = async (user: User) => {
 const createParty = async () => {
   const createPartyRequest: CreatePartyRequest = {
     gameMode: 'CLASSIC',
-    maxUsers: 4,
+    maxUsers: DEFAULT_PARTY_MAX_USERS,
   }
 
   const response = await fetch('/party', {

@@ -11,3 +11,9 @@ export const DRAG_DISTANCE_THRESHOLD = 10;
 export const DRAG_TIME_THRESHOLD = 100;
 /** Event the Preloader emits on the Phaser game once the shared assets are loaded. */
 export const PRELOADED_EVENT = 'preloaded';
+
+/** Capacity of a party created from the main menu (PARTY-2). */
+export const DEFAULT_PARTY_MAX_USERS = 4;
+
+/** Members a party needs before its owner can start a game (PARTY-9). */
+export const MIN_PARTY_USERS_TO_START = 2;

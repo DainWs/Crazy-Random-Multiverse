@@ -46,6 +46,20 @@ const followLiveState = (state: UserState, from: readonly UserState[]) => {
   if (syncingState === null && from.includes(currentUserState.value)) currentUserState.value = state;
 }
 
+const isMember = (candidate: Party) => candidate.users.some((member) => member.code === StoreSystem.getUser().code);
+
+/** The server confirmed the user is in the party, through the response to creating or joining it. */
+const enterParty = (confirmed: Party) => {
+  currentParty.value = confirmed;
+  followLiveState('IN_PARTY', ['IDLE']);
+}
+
+/** The user is no longer in a party: they left it, or the server says they were kicked (PARTY-12). */
+const leaveParty = () => {
+  currentParty.value = undefined;
+  followLiveState('IDLE', ['IN_PARTY']);
+}
+
 const bindListeners = () => {
   socketService.onStatusChange((status) => {
     if (status === 'connected') beginSync();
@@ -64,6 +78,11 @@ const bindListeners = () => {
   gameEventApi.onGameApiEvent('GAME_CANCELLED', () => followLiveState('IN_PARTY', ['GAME_LOADING']));
 
   userEventApi.onPartyInfo((receivedParty) => {
+    if (syncingState === null && !isMember(receivedParty)) {
+      leaveParty();
+      return;
+    }
+
     currentParty.value = receivedParty;
     if (syncingState === 'IDLE') syncingState = 'IN_PARTY';
     else followLiveState('IN_PARTY', ['IDLE']);
@@ -88,6 +107,8 @@ const SessionSystem = {
   userState,
   isSynced: isUserSynced,
   screen,
+  enterParty,
+  leaveParty,
   start
 }
 

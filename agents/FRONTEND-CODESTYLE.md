@@ -16,6 +16,7 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 | `domain/` | Frontend model (`Card`, `Zone`, `Player`, `Party`, `Battlefield`, `Action`…). No Phaser, no Vue, no `api`. |
 | `game/` | Phaser views: `battlefield`, `cards`, `hand`, `zone`, `perspectives`. They only draw and animate. |
 | `scenes/` | Phaser scenes. They orchestrate, they contain no rules. |
+| `views/` | Vue screens of the menus (main menu, party). They show state and call `controllers/`; no logic of their own. Their texts come from `core/Texts.ts`, a temporary key to Spanish text module that will be replaced by real localization. |
 | `main.ts`, `App.vue`, `AppController.ts` | Vue and Phaser bootstrap. |
 | `env.ts`, `core/Constants.ts` | Configuration and constants. |
 
