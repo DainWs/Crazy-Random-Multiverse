@@ -14,7 +14,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.controller.dto.CommunicationMapper;
 import com.dainws.games.crm.controller.dto.ModelMapper;
 import com.dainws.games.crm.controller.dto.response.EventDto;
-import com.dainws.games.crm.controller.dto.response.PartyDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserClient;
@@ -28,6 +27,9 @@ import com.dainws.games.crm.domain.repositories.UserRepository;
 @Component
 @ConditionalOnProperty(value = "crm.communication.socket-io.enabled", havingValue = "true", matchIfMissing = true)
 public class CommunicationClient implements UserClient {
+	public static final String GAME_EVENT_CHANNEL = "game:event";
+	public static final String PARTY_INFO_CHANNEL = "party:info";
+	public static final String USER_SYNCED_CHANNEL = "user:synced";
 
 	private Logger logger;
 
@@ -41,14 +43,31 @@ public class CommunicationClient implements UserClient {
 	}
 
 	public void sendEvent(Player player, Event event) {
+		for (SocketIOClient client : this.findClientsOf(player)) {
+			this.sendEvent(client, player, event);
+		}
+	}
+
+	public void sendEvent(SocketIOClient client, Player player, Event event) {
 		if (this.canSendTo(player)) {
 			this.logger.debug("Sending event {} to client {}", event.getCode(), player.getName());
 
 			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
 
-			this.findClientsOf(player)
-				.forEach(client -> client.sendEvent("game:event", eventDto));
+			client.sendEvent(GAME_EVENT_CHANNEL, eventDto);
 		}
+	}
+
+	public void sendPartyInfo(SocketIOClient client, Party party) {
+		this.logger.trace("Sending party {} information to client {}", party.getCode(), client.getSessionId());
+
+		client.sendEvent(PARTY_INFO_CHANNEL, ModelMapper.toPartyDto(party));
+	}
+
+	public void sendUserSynced(SocketIOClient client) {
+		this.logger.trace("Sending the synced signal to client {}", client.getSessionId());
+
+		client.sendEvent(USER_SYNCED_CHANNEL);
 	}
 
 	private boolean canSendTo(Player player) {
@@ -88,9 +107,8 @@ public class CommunicationClient implements UserClient {
 	public void sendPartyInfo(User to, Party party) {
 		this.logger.trace("Sending party information to client {}", to.getName());
 
-		PartyDto partyDto = ModelMapper.toPartyDto(party);
-
-		this.findClientsOf(to.getCode())
-			.forEach(client -> client.sendEvent("party:info", partyDto));
+		for (SocketIOClient client : this.findClientsOf(to.getCode())) {
+			this.sendPartyInfo(client, party);
+		}
 	}
 }

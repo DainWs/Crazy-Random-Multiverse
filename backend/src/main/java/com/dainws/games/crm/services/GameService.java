@@ -79,7 +79,7 @@ public class GameService {
 		return this.gameRepository.find(gameCode);
 	}
 
-	public Optional<Game> findGameInProgressOf(User user) {
+	public Optional<Game> findActiveGameOf(User user) {
 		if (!this.partyRepository.hasPartyWhereUserIsMember(user)) {
 			return Optional.empty();
 		}
@@ -91,7 +91,7 @@ public class GameService {
 		}
 
 		Game game = this.gameRepository.find(gameCode);
-		if (!game.inStatus(Status.IN_PROGRESS)) {
+		if (!game.inStatus(Status.LOADING) && !game.inStatus(Status.IN_PROGRESS)) {
 			return Optional.empty();
 		}
 

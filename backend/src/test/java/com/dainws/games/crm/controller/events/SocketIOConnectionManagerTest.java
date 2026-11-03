@@ -201,7 +201,65 @@ class SocketIOConnectionManagerTest {
 	}
 
 	@Test
-	void testGivenUserWithoutGame_whenConnect_thenNothingIsSent() {
+	void testGivenUserWithGameLoading_whenConnect_thenTheEventIsGameLoading() {
+		this.createGameWithTheUser(Status.LOADING);
+		RecordingSocketIOClient client = this.createClientOfUser();
+
+		this.connectionManager.onConnected(client.asClient());
+
+		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
+		assertThat(sentEvent.event().getCode()).isEqualTo(EventCode.GAME_LOADING);
+	}
+
+	@Test
+	void testGivenUserWithoutGameNorParty_whenConnect_thenOnlyUserSyncedIsSent() {
+		this.userRepository.save(this.user);
+		RecordingSocketIOClient client = this.createClientOfUser();
+
+		this.connectionManager.onConnected(client.asClient());
+
+		assertThat(this.communicationClient.getSentChannels())
+				.containsExactly(CommunicationClient.USER_SYNCED_CHANNEL);
+	}
+
+	@Test
+	void testGivenUserInPartyWithoutGame_whenConnect_thenPartyInfoIsSentBeforeUserSynced() {
+		this.userRepository.save(this.user);
+		this.partyRepository.save(new Party(this.user, GameModes.CLASSIC));
+		RecordingSocketIOClient client = this.createClientOfUser();
+
+		this.connectionManager.onConnected(client.asClient());
+
+		assertThat(this.communicationClient.getSentChannels()).containsExactly( //
+				CommunicationClient.PARTY_INFO_CHANNEL, //
+				CommunicationClient.USER_SYNCED_CHANNEL);
+	}
+
+	@Test
+	void testGivenUserWithGameAndParty_whenConnect_thenGameThenPartyThenUserSyncedAreSent() {
+		this.createGameInProgressWithTheUser();
+		RecordingSocketIOClient client = this.createClientOfUser();
+
+		this.connectionManager.onConnected(client.asClient());
+
+		assertThat(this.communicationClient.getSentChannels()).containsExactly( //
+				CommunicationClient.GAME_EVENT_CHANNEL, //
+				CommunicationClient.PARTY_INFO_CHANNEL, //
+				CommunicationClient.USER_SYNCED_CHANNEL);
+	}
+
+	@Test
+	void testGivenUnknownSession_whenConnect_thenNothingIsSent() {
+		String cookie = "SESSION=" + this.encode(UNKNOWN_SESSION);
+		RecordingSocketIOClient client = this.createClient(UUID.randomUUID(), cookie);
+
+		this.connectionManager.onConnected(client.asClient());
+
+		assertThat(this.communicationClient.getSentChannels()).isEmpty();
+	}
+
+	@Test
+	void testGivenUserWithoutGame_whenConnect_thenNoGameEventIsSent() {
 		this.userRepository.save(this.user);
 		RecordingSocketIOClient client = this.createClientOfUser();
 
@@ -272,13 +330,17 @@ class SocketIOConnectionManagerTest {
 	}
 
 	private Game createGameInProgressWithTheUser() {
+		return this.createGameWithTheUser(Status.IN_PROGRESS);
+	}
+
+	private Game createGameWithTheUser(Status status) {
 		this.userRepository.save(this.user);
 		Player userPlayer = new UserPlayer(this.user);
 		Player rival = new PlayerBuilder().build();
 		Game game = new GameBuilder() //
 				.withPlayers(userPlayer, rival) //
 				.build();
-		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
+		GameStatusSetter.setStatus(game, status);
 		this.gameRepository.save(game);
 
 		Party party = new Party(this.user, GameModes.CLASSIC);

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -59,7 +61,7 @@ public class SocketIOConnectionManager {
 			user.bindSocket(String.valueOf(client.getSessionId()));
 
 			this.userService.update(user);
-			this.sendGameSyncIfGameInProgress(user);
+			this.sendStateOf(user, client);
 		} else {
 			this.logger.warn("Connection {} rejected: it has no registered user", client.getSessionId());
 			client.disconnect();
@@ -86,22 +88,30 @@ public class SocketIOConnectionManager {
 				.map(this.userService::get);
 	}
 
-	private void sendGameSyncIfGameInProgress(User user) {
-		Optional<Game> game = this.gameService.findGameInProgressOf(user);
+	private void sendStateOf(User user, SocketIOClient client) {
+		Optional<Game> game = this.gameService.findActiveGameOf(user);
 		if (game.isPresent()) {
-			this.sendGameSync(user, game.get());
+			this.sendGameState(user, game.get(), client);
 		}
+
+		Optional<Party> party = this.userService.findPartyOf(user);
+		if (party.isPresent()) {
+			this.communicationClient.sendPartyInfo(client, party.get());
+		}
+
+		this.communicationClient.sendUserSynced(client);
 	}
 
-	private void sendGameSync(User user, Game game) {
+	private void sendGameState(User user, Game game, SocketIOClient client) {
 		Player player = game.getPlayer(user.getCode().toPlayerCode());
 		if (player == null) {
 			return;
 		}
 
-		Event event = new Event(EventCode.GAME_SYNC, game);
+		EventCode eventCode = game.inStatus(Status.LOADING) ? EventCode.GAME_LOADING : EventCode.GAME_SYNC;
+		Event event = new Event(eventCode, game);
 		event.setSequence(this.eventSequence.current(game.getCode()));
-		this.communicationClient.sendEvent(player, event);
+		this.communicationClient.sendEvent(client, player, event);
 	}
 
 	@Autowired

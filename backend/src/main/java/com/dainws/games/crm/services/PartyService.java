@@ -1,6 +1,7 @@
 package com.dainws.games.crm.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,14 @@ public class PartyService {
 		} catch (GameRuntimeException e) {
 			throw new PartyException(e.getCode(), e);
 		}
+	}
+
+	public Optional<Party> findPartyOf(User user) {
+		if (!this.repository.hasPartyWhereUserIsMember(user)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(this.repository.findPartyWhereUserIsMember(user.getCode()));
 	}
 
 	public List<Party> getParties() {

@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,10 @@ public class UserService {
 		return this.partyService.joinParty(partyCode, user);
 	}
 	
+	public Optional<Party> findPartyOf(User user) {
+		return this.partyService.findPartyOf(user);
+	}
+
 	public boolean exists(UserCode code) {
 		return this.userRepository.has(code);
 	}

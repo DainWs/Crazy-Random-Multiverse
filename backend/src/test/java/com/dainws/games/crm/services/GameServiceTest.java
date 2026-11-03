@@ -39,32 +39,33 @@ class GameServiceTest {
 	}
 
 	@Test
-	void testGivenUserWithoutParty_whenFindGameInProgress_thenReturnsEmpty() {
-		assertThat(this.gameService.findGameInProgressOf(this.user)).isEmpty();
+	void testGivenUserWithoutParty_whenFindActiveGame_thenReturnsEmpty() {
+		assertThat(this.gameService.findActiveGameOf(this.user)).isEmpty();
 	}
 
 	@Test
-	void testGivenPartyWithoutGame_whenFindGameInProgress_thenReturnsEmpty() {
+	void testGivenPartyWithoutGame_whenFindActiveGame_thenReturnsEmpty() {
 		this.partyRepository.save(new Party(this.user, GameModes.CLASSIC));
 
-		assertThat(this.gameService.findGameInProgressOf(this.user)).isEmpty();
+		assertThat(this.gameService.findActiveGameOf(this.user)).isEmpty();
 	}
 
-	@Test
-	void testGivenPartyWithGameInProgress_whenFindGameInProgress_thenReturnsThatGame() {
-		Game game = this.createGameOfPartyWithStatus(Status.IN_PROGRESS);
+	@ParameterizedTest
+	@EnumSource(value = Status.class, names = { "LOADING", "IN_PROGRESS" })
+	void testGivenPartyWithActiveGame_whenFindActiveGame_thenReturnsThatGame(Status status) {
+		Game game = this.createGameOfPartyWithStatus(status);
 
-		assertThat(this.gameService.findGameInProgressOf(this.user))
+		assertThat(this.gameService.findActiveGameOf(this.user))
 				.containsSame(game);
 	}
 
 	@ParameterizedTest
 	@EnumSource(value = Status.class,
-			names = { "NONE", "CREATED", "LOADING", "ENDED" })
-	void testGivenPartyWithGameNotInProgress_whenFindGameInProgress_thenReturnsEmpty(Status status) {
+			names = { "NONE", "CREATED", "ENDED" })
+	void testGivenPartyWithInactiveGame_whenFindActiveGame_thenReturnsEmpty(Status status) {
 		this.createGameOfPartyWithStatus(status);
 
-		assertThat(this.gameService.findGameInProgressOf(this.user)).isEmpty();
+		assertThat(this.gameService.findActiveGameOf(this.user)).isEmpty();
 	}
 
 	private Game createGameOfPartyWithStatus(Status status) {
