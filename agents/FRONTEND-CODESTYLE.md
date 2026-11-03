@@ -44,6 +44,8 @@ domain → (nothing)
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
 - Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
 - Other players' hands are never stored.
+- The session state (the party and the user state, `CON-23`) lives in `SessionSystem`, not in `StoreSystem`: it is not game state and the game never reads it. It is exposed as read-only `shallowRef`s so that Vue components can react to it. Vue reactivity is used only there; `StoreSystem` and everything Phaser touches stay plain objects, never wrapped in a Vue proxy.
+- Which menu screen is shown is decided in `App.vue` from the user state (`UI-17`). Phaser scenes only switch when the state enters loading or game.
 
 > Removing `ActionSystem` / `ActionResolver` and having the `Controllers` send the actions is under consideration.
 

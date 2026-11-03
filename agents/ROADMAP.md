@@ -82,8 +82,10 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 Just enough to create a real game from the interface, which Phase 3 needs. The rest of the lobby is in Phase 11.
 
-- [ ] Main menu: create a party and join one with its code (`UI-1`, `PARTY-1`, `PARTY-5`)
-- [ ] Party screen: members from `party:info`, the party code to copy, and starting the game for the owner, disabled while the party is locked (`PARTY-9`, `PARTY-10`, `LOAD-1`, `UI-16`)
+- [ ] Move the party and the user state from `StoreSystem` to `SessionSystem` as read-only `shallowRef`s, and update its tests. Separate refactoring commit (`FRONTEND-CODESTYLE.md`, section 2)
+- [ ] Choose the screen from the user state in `App.vue`, waiting for `user:synced`, and start the loading and game scenes only when the state enters them; `Preloader` no longer jumps to `GameLoad` (`UI-17`, `CON-23`)
+- [ ] Main menu: create a party with the default capacity and mode, and join one with its code, showing rejections below the field (`UI-1`, `UI-18`, `PARTY-1`, `PARTY-5`)
+- [ ] Party screen: name, members out of capacity, owner marked, members from `party:info`, the code to copy, leaving, and starting the game for the owner, disabled while the party is locked or has fewer than 2 members (`UI-19`, `UI-20`, `UI-16`, `PARTY-9`, `PARTY-10`, `LOAD-1`)
 
 ## Phase 3 — Authoritative game state and hand
 
@@ -184,7 +186,7 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 
 - [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, owner succession, name rules, name of the party
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
-- [ ] Lobby: listing, leaving, owner controls, kicking, configuration (`PARTY-*`)
+- [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`); leaving is already in Phase 2.5
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
 
 ## Phase 12 — Testing
