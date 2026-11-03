@@ -10,17 +10,6 @@ const register = async () => {
   return toUser(body)
 };
 
-const login = async (username: string) => {
-  const response = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: username,
-  });
-
-  const body = await response.json();
-  return toUser(body)
-};
-
 const getAccount = async () => {
   const response = await fetch('/user');
   const body = await response.json();
@@ -68,5 +57,5 @@ const getPartyList = async () => {
     .map(toMinimalParty);
 };
 
-export { register, login, getAccount, updateAccount }
+export { register, getAccount, updateAccount }
 export { createParty, joinParty, getPartyList }

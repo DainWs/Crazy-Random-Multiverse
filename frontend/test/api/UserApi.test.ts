@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { register, login, getAccount, updateAccount, createParty, joinParty, getPartyList } from '@/api/UserApi';
+import { register, getAccount, updateAccount, createParty, joinParty, getPartyList } from '@/api/UserApi';
 import User from '@/domain/User';
 import Party from '@/domain/Party';
 
@@ -19,22 +19,6 @@ describe('UserApi', () => {
     expect(user).toBeInstanceOf(User);
     expect(user.code).toBe('usr-1');
     expect(user.name).toBe('PlayerOne');
-  });
-
-  it('login sends username and returns User', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
-      json: async () => ({ id: 'usr-2', username: 'Gamer' })
-    } as Response);
-
-    const user = await login('Gamer');
-
-    expect(fetch).toHaveBeenCalledWith('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: 'Gamer',
-    });
-    expect(user.code).toBe('usr-2');
-    expect(user.name).toBe('Gamer');
   });
 
   it('getAccount fetches user profile', async () => {
