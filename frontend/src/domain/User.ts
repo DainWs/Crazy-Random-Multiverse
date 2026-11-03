@@ -14,5 +14,8 @@ class User {
   }
 }
 
-export type { UserCode, UserState }
+/** The screen the interface shows for the user state (UI-17). */
+type Screen = 'MAIN_MENU' | 'PARTY' | 'GAME';
+
+export type { Screen, UserCode, UserState }
 export default User;

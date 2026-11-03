@@ -139,14 +139,106 @@ describe('SessionSystem', () => {
       expect(SessionSystem.party.value).toBeUndefined();
     });
 
-    it('ignores game events outside the connection sync', () => {
+    // UI-17
+    it('has no screen before user:synced', () => {
+      statusListener('connected');
+
+      expect(SessionSystem.screen.value).toBeUndefined();
+    });
+
+    // UI-17
+    it('shows the main menu when only user:synced arrives', () => {
       syncedListener();
 
+      expect(SessionSystem.screen.value).toBe('MAIN_MENU');
+    });
+
+    // UI-17
+    it('shows the party when party:info arrives before user:synced', () => {
+      partyListener(createParty());
+      syncedListener();
+
+      expect(SessionSystem.screen.value).toBe('PARTY');
+    });
+
+    // UI-17
+    it('shows the game when GAME_LOADING arrives before user:synced', () => {
       gameListeners.get('GAME_LOADING')!(gameEvent);
+      partyListener(createParty());
+      syncedListener();
+
+      expect(SessionSystem.screen.value).toBe('GAME');
+    });
+
+    it('hides the screen again when the socket connects again', () => {
+      syncedListener();
+
+      statusListener('connected');
+
+      expect(SessionSystem.screen.value).toBeUndefined();
+    });
+  });
+
+  // UI-17
+  describe('state after the sync', () => {
+    beforeEach(async () => {
+      await SessionSystem.start();
       statusListener('connected');
       syncedListener();
+    });
+
+    it('goes to the party when party:info arrives from the main menu', () => {
+      partyListener(createParty());
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+    });
+
+    it('goes to loading when GAME_LOADING arrives in the party', () => {
+      partyListener(createParty());
+
+      gameListeners.get('GAME_LOADING')!(gameEvent);
+
+      expect(SessionSystem.userState.value).toBe('GAME_LOADING');
+    });
+
+    it('goes to the game when GAME_START arrives while loading', () => {
+      partyListener(createParty());
+      gameListeners.get('GAME_LOADING')!(gameEvent);
+
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      expect(SessionSystem.userState.value).toBe('GAME_IN_PROGRESS');
+    });
+
+    it('goes back to the party when GAME_CANCELLED arrives while loading', () => {
+      partyListener(createParty());
+      gameListeners.get('GAME_LOADING')!(gameEvent);
+
+      gameListeners.get('GAME_CANCELLED')!(gameEvent);
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+    });
+
+    it('keeps the loading state when party:info arrives', () => {
+      partyListener(createParty());
+      gameListeners.get('GAME_LOADING')!(gameEvent);
+
+      partyListener(createParty());
+
+      expect(SessionSystem.userState.value).toBe('GAME_LOADING');
+    });
+
+    it('ignores GAME_START outside loading', () => {
+      gameListeners.get('GAME_START')!(gameEvent);
 
       expect(SessionSystem.userState.value).toBe('IDLE');
+    });
+  });
+
+  describe('state on connection', () => {
+    beforeEach(async () => {
+      await SessionSystem.start();
+      statusListener('connected');
     });
 
     it('keeps the state when user:synced repeats without a new connection', () => {

@@ -8,6 +8,7 @@ import { GameScene } from '@/scenes/Game';
 import { MainMenu } from '@/scenes/MainMenu';
 import { Preloader } from '@/scenes/Preloader';
 import useAppController from '@/AppController';
+import SessionSystem from '@/core/SessionSystem';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -38,12 +39,13 @@ onMounted(controller.createGame);
 onUnmounted(controller.destroyGame);
 
 const game = controller.getReactiveGame();
+const screen = SessionSystem.screen;
 const scene = controller.getReactiveScene();
 defineExpose({ scene, game });
 </script>
 
 <template>
-    <div id="game-container"></div>
+    <div id="game-container" :class="{ 'is-hidden': screen !== 'GAME' }"></div>
 </template>
 
 <style>
@@ -51,6 +53,10 @@ html,
 body {
     background-image: url(assets/background_gold.png);
     background-position: center center;
+}
+
+#game-container.is-hidden {
+    visibility: hidden;
 }
 
 #game-container {

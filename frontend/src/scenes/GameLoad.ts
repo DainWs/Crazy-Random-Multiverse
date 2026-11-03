@@ -261,7 +261,6 @@ class GameLoadScene extends Scene {
         const gameConfiguration = StoreSystem.getGameConfiguration();
         if (gameConfiguration) {
             await gameApi.sendReady(gameConfiguration.gameCode);
-            this.scene.start('Game');
         } else {
             console.error("No game configuration found in StoreSystem");
             this.scene.start('MainMenu');
