@@ -240,3 +240,4 @@ Not tied to a phase.
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`)
 - Advanced trolling cards, green/red indicators, center-table behavior
 - Settings screen, audio settings, accessibility (reduced motion, color-blind indicators), responsive and touch layouts
+- Order of the state sent when a socket is bound (`CON-23`): with Engine.IO v4, `netty-socketio` 2.0.12 runs the connect listeners on the handshake, so `SocketIOConnectionManager` sends the state before the namespace connect ack. The client works around it by starting the sync on `connecting`/`reconnecting` (`SessionSystem`), which blanks the screen for the whole reconnection. The library has no hook after the ack; the options are a client request for the state (a new event, changing `CON-23`) or a delayed send
