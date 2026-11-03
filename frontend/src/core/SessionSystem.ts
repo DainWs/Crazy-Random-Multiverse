@@ -1,21 +1,9 @@
 import type { UserState } from '@/domain/User';
-import { ApiException, EXCEPTION_KEYS, gameEventApi, socketService, userApi, userEventApi } from '@/api';
+import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
 import StoreSystem from '@/core/StoreSystem';
 
 /** The state being built from the events sent when a socket is bound, or null outside that window (CON-23). */
 let syncingState: UserState | null = null;
-
-const loadOrRegisterUser = async () => {
-  try {
-    return await userApi.getAccount();
-  } catch (error) {
-    if (error instanceof ApiException && error.key === EXCEPTION_KEYS.USER_NOT_FOUND) {
-      return await userApi.register();
-    }
-
-    throw error;
-  }
-}
 
 const beginSync = () => {
   syncingState = 'IDLE';
@@ -51,7 +39,7 @@ const bindListeners = () => {
 }
 
 const start = async (): Promise<void> => {
-  const user = await loadOrRegisterUser();
+  const user = (await userApi.findAccount()) ?? (await userApi.register());
   StoreSystem.setUser(user);
 
   bindListeners();

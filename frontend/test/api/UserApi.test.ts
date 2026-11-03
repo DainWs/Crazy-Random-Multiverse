@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { register, getAccount, updateAccount, createParty, joinParty, getPartyList } from '@/api/UserApi';
+import { register, findAccount, updateAccount, createParty, joinParty, getPartyList } from '@/api/UserApi';
 import User from '@/domain/User';
 import { ApiException } from '@/api/models/ApiException';
 import Party from '@/domain/Party';
@@ -24,26 +24,36 @@ describe('UserApi', () => {
   });
 
   // CON-18
-  it('getAccount throws the key of a rejected request', async () => {
+  it('findAccount returns undefined when the user is not found', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
       ok: false,
       status: 400,
       json: async () => ({ key: 'exception.user.not_found' })
     } as Response);
 
-    await expect(getAccount()).rejects.toThrow(new ApiException('exception.user.not_found'));
+    await expect(findAccount()).resolves.toBeUndefined();
   });
 
-  it('getAccount fetches user profile', async () => {
+  it('findAccount throws the key of any other rejection', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: async () => ({ key: 'exception.request.malformed' })
+    } as Response);
+
+    await expect(findAccount()).rejects.toThrow(new ApiException('exception.request.malformed'));
+  });
+
+  it('findAccount fetches user profile', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
       ok: true,
       json: async () => ({ id: 'usr-3', username: 'Existing' })
     } as Response);
 
-    const user = await getAccount();
+    const user = await findAccount();
 
     expect(fetch).toHaveBeenCalledWith('/user');
-    expect(user.code).toBe('usr-3');
+    expect(user?.code).toBe('usr-3');
   });
 
   it('updateAccount sends PUT request with UserDto', async () => {

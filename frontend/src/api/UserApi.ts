@@ -1,7 +1,7 @@
 import { CreatePartyRequest, PartyDto, toMinimalParty, toParty } from "@/api/dtos/PartyDto";
 import { UserDto, toUser } from "@/api/dtos/UserDto";
 import { toBase64UrlSafe } from "@/api/models/Codification";
-import { checkResponse } from "@/api/models/ApiException";
+import { ApiException, EXCEPTION_KEYS, checkResponse, readRejection } from "@/api/models/ApiException";
 import { PartyCode } from "@/domain/Party";
 import User from "@/domain/User";
 
@@ -12,9 +12,12 @@ const register = async () => {
   return toUser(body)
 };
 
-const getAccount = async () => {
+const findAccount = async (): Promise<User | undefined> => {
   const response = await fetch('/user');
-  await checkResponse(response);
+  const rejection = await readRejection(response);
+  if (rejection?.key === EXCEPTION_KEYS.USER_NOT_FOUND) return undefined;
+  if (rejection) throw new ApiException(rejection.key);
+
   const body = await response.json();
   return toUser(body)
 }
@@ -64,5 +67,5 @@ const getPartyList = async () => {
     .map(toMinimalParty);
 };
 
-export { register, getAccount, updateAccount }
+export { register, findAccount, updateAccount }
 export { createParty, joinParty, getPartyList }

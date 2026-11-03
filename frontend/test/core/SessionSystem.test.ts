@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GameEventListener, StatusChangeListener } from '@/api/models/Listeners';
-import { ApiException, EXCEPTION_KEYS, gameEventApi, socketService, userApi, userEventApi } from '@/api';
+import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
 import Party from '@/domain/Party';
 import User from '@/domain/User';
 import SessionSystem from '@/core/SessionSystem';
@@ -8,7 +8,7 @@ import StoreSystem from '@/core/StoreSystem';
 
 vi.mock('@/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api')>()),
-  userApi: { getAccount: vi.fn(), register: vi.fn() },
+  userApi: { findAccount: vi.fn(), register: vi.fn() },
   socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
   gameEventApi: { onGameApiEvent: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
@@ -27,7 +27,7 @@ describe('SessionSystem', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     gameListeners = new Map();
-    vi.mocked(userApi.getAccount).mockResolvedValue(registeredUser);
+    vi.mocked(userApi.findAccount).mockResolvedValue(registeredUser);
     vi.mocked(socketService.onStatusChange).mockImplementation((listener) => {
       statusListener = listener;
       return () => undefined;
@@ -59,7 +59,7 @@ describe('SessionSystem', () => {
     // USER-6
     it('registers a new user when the user is not found', async () => {
       const newUser = new User('usr-2', 'Two');
-      vi.mocked(userApi.getAccount).mockRejectedValueOnce(new ApiException(EXCEPTION_KEYS.USER_NOT_FOUND));
+      vi.mocked(userApi.findAccount).mockResolvedValueOnce(undefined);
       vi.mocked(userApi.register).mockResolvedValueOnce(newUser);
 
       await SessionSystem.start();
@@ -67,8 +67,8 @@ describe('SessionSystem', () => {
       expect(StoreSystem.getUser()).toBe(newUser);
     });
 
-    it('rethrows other rejections without registering', async () => {
-      vi.mocked(userApi.getAccount).mockRejectedValueOnce(new ApiException('exception.request.malformed'));
+    it('rethrows a failure without registering', async () => {
+      vi.mocked(userApi.findAccount).mockRejectedValueOnce(new Error('exception.request.malformed'));
 
       await expect(SessionSystem.start()).rejects.toThrow('exception.request.malformed');
       expect(userApi.register).not.toHaveBeenCalled();
@@ -82,7 +82,7 @@ describe('SessionSystem', () => {
     });
 
     it('does not connect the socket when the user cannot be loaded', async () => {
-      vi.mocked(userApi.getAccount).mockRejectedValueOnce(new Error('Unexpected response status 500'));
+      vi.mocked(userApi.findAccount).mockRejectedValueOnce(new Error('Unexpected response status 500'));
 
       await expect(SessionSystem.start()).rejects.toThrow();
       expect(socketService.connect).not.toHaveBeenCalled();
