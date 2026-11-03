@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.session.MapSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 
+import com.dainws.games.crm.configuration.SessionConfiguration;
 import com.dainws.games.crm.domain.UserCode;
 
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -38,8 +40,7 @@ public class SessionUserResolver {
 				.map(Cookie::value) //
 				.findFirst() //
 				.flatMap(this::decodeSessionId) //
-				.filter(this::existsSession) //
-				.map(UserCode::from);
+				.flatMap(this::findUserCode);
 	}
 
 	private Optional<String> decodeSessionId(String cookieValue) {
@@ -53,7 +54,17 @@ public class SessionUserResolver {
 		}
 	}
 
-	private boolean existsSession(String sessionId) {
-		return this.sessionRepository.findById(sessionId) != null;
+	private Optional<UserCode> findUserCode(String sessionId) {
+		Session session = this.sessionRepository.findById(sessionId);
+		if (session == null) {
+			return Optional.empty();
+		}
+
+		String userCode = session.getAttribute(SessionConfiguration.USER_CODE_ATTRIBUTE);
+		if (userCode == null) {
+			return Optional.empty();
+		}
+
+		return Optional.of(UserCode.from(userCode));
 	}
 }

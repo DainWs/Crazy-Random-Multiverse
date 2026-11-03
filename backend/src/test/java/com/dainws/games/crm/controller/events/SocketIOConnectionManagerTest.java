@@ -19,6 +19,7 @@ import org.springframework.session.Session;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.dainws.games.crm.configuration.SessionConfiguration;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
@@ -47,6 +48,7 @@ class SocketIOConnectionManagerTest {
 
 	private static final String HANDSHAKE_URL = "/";
 	private static final String UNKNOWN_SESSION = "unknown";
+	private static final String USER_CODE = "user-1";
 
 	MapSessionRepository sessionRepository;
 	MemoryUserRepository userRepository;
@@ -87,8 +89,9 @@ class SocketIOConnectionManagerTest {
 		this.connectionManager.setEventSequence(this.eventSequence);
 
 		this.session = this.sessionRepository.createSession();
+		this.session.setAttribute(SessionConfiguration.USER_CODE_ATTRIBUTE, USER_CODE);
 		this.sessionRepository.save(this.session);
-		this.user = new User(this.session.getId(), "Name", UserPlatform.WEB);
+		this.user = new User(USER_CODE, "Name", UserPlatform.WEB);
 	}
 
 	@Test

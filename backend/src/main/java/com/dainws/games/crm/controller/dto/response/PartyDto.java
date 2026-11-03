@@ -9,8 +9,8 @@ public class PartyDto {
 	private int userCount;
 	private int maxUsers;
 	private boolean locked;
-	private String owner;
-	private List<String> users;
+	private UserDto owner;
+	private List<UserDto> users;
 	
 	public PartyDto() {
 		this.maxUsers = 4;
@@ -64,19 +64,19 @@ public class PartyDto {
 		return maxUsers;
 	}
 	
-	public void setOwner(String owner) {
+	public void setOwner(UserDto owner) {
 		this.owner = owner;
 	}
-	
-	public String getOwner() {
+
+	public UserDto getOwner() {
 		return owner;
 	}
-	
-	public void setUsers(List<String> users) {
+
+	public void setUsers(List<UserDto> users) {
 		this.users = users;
 	}
-	
-	public List<String> getUsers() {
+
+	public List<UserDto> getUsers() {
 		return users;
 	}
 }

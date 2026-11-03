@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.crm.controller.dto.response.CardDto;
 import com.dainws.games.crm.controller.dto.response.GameDto;
 import com.dainws.games.crm.controller.dto.response.PartyDto;
+import com.dainws.games.crm.controller.dto.response.UserDto;
 import com.dainws.games.crm.controller.dto.response.PlayerDto;
 import com.dainws.games.crm.controller.dto.response.ZoneDto;
 import com.dainws.games.crm.controller.dto.response.ZoneSlotDto;
@@ -122,6 +123,24 @@ class ModelMapperTest {
 		PartyDto partyDto = ModelMapper.toPartyDto(party);
 
 		assertThat(partyDto.getMaxUsers()).isEqualTo(6);
+	}
+
+	@Test
+	void testGivenParty_whenMapToDto_thenOwnerCarriesThePublicUserId() {
+		Party party = this.createParty();
+
+		PartyDto partyDto = ModelMapper.toPartyDto(party);
+
+		assertThat(partyDto.getOwner().getId()).isEqualTo(party.getOwner().getCode().text());
+	}
+
+	@Test
+	void testGivenParty_whenMapToDto_thenUsersCarryThePublicUserId() {
+		Party party = this.createParty();
+
+		PartyDto partyDto = ModelMapper.toPartyDto(party);
+
+		assertThat(partyDto.getUsers()).extracting(UserDto::getId).containsExactly(party.getOwner().getCode().text());
 	}
 
 	@Test

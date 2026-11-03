@@ -1,5 +1,6 @@
 package com.dainws.games.crm.configuration;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.annotation.Bean;
@@ -16,16 +17,21 @@ import jakarta.servlet.http.HttpSession;
 @Configuration
 @EnableSpringHttpSession
 public class SessionConfiguration {
+	public static final String USER_CODE_ATTRIBUTE = "userCode";
+
+	private static final int DEFAULT_NAME_SUFFIX_LENGTH = 5;
+
 	@Bean
 	MapSessionRepository sessionRepository() {
 		return new MapSessionRepository(new ConcurrentHashMap<>());
 	}
-	
+
 	@Bean
 	@SessionScope
 	User webUser(HttpSession session) {
-		String sessionId = session.getId();
-		String username = "User-" + sessionId.substring(0, 5).toUpperCase();
-		return new User(sessionId, username, UserPlatform.WEB);
+		String userCode = UUID.randomUUID().toString();
+		String username = "User-" + userCode.substring(0, DEFAULT_NAME_SUFFIX_LENGTH).toUpperCase();
+		session.setAttribute(USER_CODE_ATTRIBUTE, userCode);
+		return new User(userCode, username, UserPlatform.WEB);
 	}
 }
