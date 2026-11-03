@@ -77,6 +77,41 @@ class WebPlayerControllerTest {
 	}
 
 	@Test
+	void testGivenActionWithoutGame_whenDispatchAction_thenBodyCarriesTheMalformedKey() throws Exception {
+		String body = "{\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(new GameCode())) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest()) //
+				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
+	}
+
+	@Test
+	void testGivenActionWithoutSourcePlayer_whenDispatchAction_thenBodyCarriesTheMalformedKey() throws Exception {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(gameCode.text());
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest()) //
+				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
+	}
+
+	@Test
+	void testGivenActionOfAnotherPlayer_whenDispatchAction_thenBodyCarriesTheIdentityMismatchKey() throws Exception {
+		GameCode gameCode = new GameCode();
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"other-user\",\"type\":\"PASS_TURN\"}".formatted(gameCode.text());
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(gameCode)) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest()) //
+				.andExpect(jsonPath("$.key").value("exception.access_denied.identity_mismatch"));
+	}
+
+	@Test
 	void testGivenActionOfAnotherGame_whenDispatchAction_thenBodyCarriesTheAccessDeniedKey() throws Exception {
 		GameCode otherGameCode = new GameCode();
 		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(otherGameCode.text(), USER_CODE);

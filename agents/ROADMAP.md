@@ -71,7 +71,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Delete users only after the grace period (`CON-3`, `ABSENT-1`)
 - [x] Check that a user can have several sockets at once and implement the differences (`CON-25`)
 - [x] Send the user's state when a socket is bound (`CON-23`): `GAME_SYNC` or `GAME_LOADING`, then `party:info`, and always `user:synced`; a repeated `/ready` has no effect (`LOAD-2`)
-- [ ] Implement REST `POST /game/{gameCode}/action` (`CON-16`)
+- [x] Implement REST `POST /game/{gameCode}/action` (`CON-16`)
 - [ ] Implement REST error handling (`CON-18`): read the 400 and its key, and stop listening to the `error`, `game:error` and `exception` socket channels
 
 ## Phase 2.5 — Minimal lobby

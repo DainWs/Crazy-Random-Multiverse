@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 
 public class ActionDto {
+	@NotNull
 	@JsonProperty(value = "game", defaultValue = "")
 	private String gameCode;
 
@@ -12,6 +13,7 @@ public class ActionDto {
 	@JsonProperty(value = "type", defaultValue = "")
 	private ActionType type; 
 	
+	@NotNull
 	@JsonProperty("sourcePlayer")
 	private String sourcePlayerCode;
 	
