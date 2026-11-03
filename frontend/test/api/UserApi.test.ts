@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { register, getAccount, updateAccount, createParty, joinParty, getPartyList } from '@/api/UserApi';
 import User from '@/domain/User';
+import { ApiException } from '@/api/models/ApiException';
 import Party from '@/domain/Party';
 
 describe('UserApi', () => {
@@ -10,6 +11,7 @@ describe('UserApi', () => {
 
   it('register creates user from POST response', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ id: 'usr-1', username: 'PlayerOne' })
     } as Response);
 
@@ -21,8 +23,20 @@ describe('UserApi', () => {
     expect(user.name).toBe('PlayerOne');
   });
 
+  // CON-18
+  it('getAccount throws the key of a rejected request', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: async () => ({ key: 'exception.user.not_found' })
+    } as Response);
+
+    await expect(getAccount()).rejects.toThrow(new ApiException('exception.user.not_found'));
+  });
+
   it('getAccount fetches user profile', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ id: 'usr-3', username: 'Existing' })
     } as Response);
 
@@ -33,7 +47,7 @@ describe('UserApi', () => {
   });
 
   it('updateAccount sends PUT request with UserDto', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true } as Response);
     const user = new User('usr-4', 'UpdatedName');
 
     await updateAccount(user);
@@ -47,6 +61,7 @@ describe('UserApi', () => {
 
   it('createParty creates and returns a Party', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: async () => ({
         code: 'party-1',
         name: 'My Party',
@@ -67,6 +82,7 @@ describe('UserApi', () => {
 
   it('joinParty encodes party code and returns Party', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: async () => ({
         code: 'party+123',
         name: 'Joined Party',
@@ -86,6 +102,7 @@ describe('UserApi', () => {
 
   it('getPartyList maps parties list to minimal party entities', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+      ok: true,
       json: async () => ({
         parties: [
           {

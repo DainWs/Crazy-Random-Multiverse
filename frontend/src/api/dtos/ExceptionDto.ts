@@ -1,7 +1,5 @@
 interface ExceptionCodeDto {
-  code?: string | number;
-  key?: string;
-  message?: string;
+  key: string;
 }
 
 export type { ExceptionCodeDto }

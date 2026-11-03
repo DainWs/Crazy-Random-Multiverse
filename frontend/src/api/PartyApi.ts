@@ -2,9 +2,11 @@ import type { UpdatePartyRequest } from "@/api/dtos/PartyDto";
 import type { UserCode } from "@/domain/User";
 import Party, { PartyCode } from "@/domain/Party";
 import { toBase64UrlSafe } from "@/api/models/Codification";
+import { checkResponse } from "@/api/models/ApiException";
 
 const leaveParty = async (partyCode: PartyCode) => {
-  await fetch(`/party/${toBase64UrlSafe(partyCode)}/leave`, { method: 'POST' });
+  const response = await fetch(`/party/${toBase64UrlSafe(partyCode)}/leave`, { method: 'POST' });
+  await checkResponse(response);
 };
 
 const updateParty = async (party: Party) => {
@@ -13,18 +15,21 @@ const updateParty = async (party: Party) => {
     gameMode: party.gameMode,
   }
 
-  await fetch(`/party/${toBase64UrlSafe(party.code)}`, {
+  const response = await fetch(`/party/${toBase64UrlSafe(party.code)}`, {
     method: 'PUT',
     body: JSON.stringify(request),
   });
+  await checkResponse(response);
 }
 
 const kickoutUser = async (partyCode: PartyCode, userCode: UserCode) => {
-  await fetch(`/party/${toBase64UrlSafe(partyCode)}/kick/${toBase64UrlSafe(userCode)}`, { method: 'POST' });
+  const response = await fetch(`/party/${toBase64UrlSafe(partyCode)}/kick/${toBase64UrlSafe(userCode)}`, { method: 'POST' });
+  await checkResponse(response);
 }
 
 const startPartyGame = async (partyCode: PartyCode) => {
-  await fetch(`/party/${toBase64UrlSafe(partyCode)}/start`, { method: 'POST' });
+  const response = await fetch(`/party/${toBase64UrlSafe(partyCode)}/start`, { method: 'POST' });
+  await checkResponse(response);
 }
 
 const partyMemberApi = {

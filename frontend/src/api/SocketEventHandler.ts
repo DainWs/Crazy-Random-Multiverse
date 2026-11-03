@@ -1,5 +1,4 @@
 import type { EventDto } from '@/api/dtos/EventDto';
-import type { ExceptionCodeDto } from '@/api/dtos/ExceptionDto';
 import type { GameEventCode } from '@/api/models/GameEventCode';
 import type { GameEventListener, CancelListenerCallback } from '@/api/models/Listeners';
 import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
@@ -7,11 +6,10 @@ import { notifyListeners } from '@/api/models/Listeners';
 import { Socket } from 'socket.io-client';
 import EventSystem from '@/core/EventSystem';
 
-type ErrorCallback = (error: ExceptionCodeDto) => void;
 type RawEvent = string | EventDto;
 
 interface SocketEventHandler {
-  bind: (socket: Socket, onError: ErrorCallback) => void;
+  bind: (socket: Socket) => void;
   onGameEvent: (eventCode: GameEventCode, listener: GameEventListener) => CancelListenerCallback;
   offGameEvent: (eventCode: GameEventCode, listener: GameEventListener) => void;
   onAnyGameEvent: (listener: GameEventListener) => CancelListenerCallback;
@@ -21,7 +19,7 @@ interface SocketEventHandler {
 const anyEventListeners: Set<GameEventListener> = new Set();
 const eventListeners: Map<string, Set<GameEventListener>> = new Map();
 
-const bindEventHandlers = (socket: Socket, onError: ErrorCallback): void => {
+const bindEventHandlers = (socket: Socket): void => {
   const eventChannels = ['event', 'game:event', 'game_event'];
   for (const channel of eventChannels) {
     socket.on(channel, handleIncomingEvent);
@@ -30,15 +28,6 @@ const bindEventHandlers = (socket: Socket, onError: ErrorCallback): void => {
   GAME_EVENT_CODES.forEach((eventCode) => {
     socket.on(eventCode, (data) => onEventCode(eventCode, data));
   });
-
-  const errorChannels = ['error', 'game:error', 'exception'];
-  for (const channel of errorChannels) {
-    socket.on(channel, (error: ExceptionCodeDto) => {
-      console.error(`[SocketService] Received error on '${channel}':`, error);
-      onError(error);
-      EventSystem.rawEmit('socket.error', error);
-    });
-  }
 }
 
 function onEventCode(eventCode: GameEventCode, data: any): void {

@@ -26,7 +26,7 @@ describe('GameApi', () => {
   });
 
   it('sendReady posts to /game/{gameCode}/ready with the code in Base64 URL-safe', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true } as Response);
 
     await sendReady('game/special+code');
 

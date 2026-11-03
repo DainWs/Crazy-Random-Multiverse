@@ -2,6 +2,7 @@ import type { GameResources } from "@/domain/Resources";
 import type { GameCode } from "@/domain/GameConfiguration";
 import type Action from "@/domain/Action";
 import { toBase64UrlSafe } from "@/api/models/Codification";
+import { checkResponse } from "@/api/models/ApiException";
 
 const sendPassTurnAction = async (gameCode: GameCode) => {
   console.log(`Sending pass turn action: ${gameCode}`);
@@ -19,7 +20,8 @@ const loadGameResourceManifest = async (gameCode: GameCode): Promise<GameResourc
 }
 
 const sendReady = async (gameCode: GameCode) => {
-  await fetch(`/game/${toBase64UrlSafe(gameCode)}/ready`, { method: 'POST' });
+  const response = await fetch(`/game/${toBase64UrlSafe(gameCode)}/ready`, { method: 'POST' });
+  await checkResponse(response);
 }
 
 export {

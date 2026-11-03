@@ -3,7 +3,6 @@ import type { SocketFactory, SocketConnectionOptions } from '@/api/models/Socket
 import type { SocketReconnectHandler } from '@/api/SocketReconnectHandler';
 import type { SocketEventHandler } from '@/api/SocketEventHandler';
 import type { StatusChangeListener, ReconnectListener, ErrorListener } from '@/api/models/Listeners';
-import type { ExceptionCodeDto } from '@/api/dtos/ExceptionDto';
 import socketReconnectHandler from '@/api/SocketReconnectHandler';
 import socketEventHandler from '@/api/SocketEventHandler';
 import { Socket } from 'socket.io-client';
@@ -48,7 +47,7 @@ class SocketService {
       emit: (event, ...args) => this.emit(event, ...args),
     });
 
-    this.eventHandler.bind(this.socket, (err) => this.notifyErrors(err));
+    this.eventHandler.bind(this.socket);
   }
 
   public disconnect(): void {
@@ -106,7 +105,7 @@ class SocketService {
     notifyListeners(this.statusListeners, 'statusChangeListener', newStatus);
   }
 
-  private notifyErrors(error: ExceptionCodeDto | Error): void {
+  private notifyErrors(error: Error): void {
     notifyListeners(this.errorListeners, 'errorListener', error);
   }
 }

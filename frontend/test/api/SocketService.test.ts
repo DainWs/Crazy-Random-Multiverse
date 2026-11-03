@@ -47,7 +47,7 @@ describe('SocketService', () => {
         onError: expect.any(Function),
         emit: expect.any(Function),
       }));
-      expect(mockEventHandler.bind).toHaveBeenCalledWith(mockSocket, expect.any(Function));
+      expect(mockEventHandler.bind).toHaveBeenCalledWith(mockSocket);
     });
 
     it('does not recreate socket if already connected', () => {
