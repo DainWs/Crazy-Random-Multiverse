@@ -95,7 +95,7 @@ describe('SessionSystem', () => {
   describe('state on connection', () => {
     beforeEach(async () => {
       await SessionSystem.start();
-      statusListener('connected');
+      statusListener('connecting');
     });
 
     it('goes idle when only user:synced arrives', () => {
@@ -135,17 +135,25 @@ describe('SessionSystem', () => {
       expect(SessionSystem.userState.value).toBe('GAME_LOADING');
     });
 
+    it('keeps the sync when the socket reports connected after user:synced', () => {
+      syncedListener();
+
+      statusListener('connected');
+
+      expect(SessionSystem.screen.value).toBe('MAIN_MENU');
+    });
+
     it('forgets the previous party when the socket connects again', () => {
       partyListener(createParty());
 
-      statusListener('connected');
+      statusListener('connecting');
 
       expect(SessionSystem.party.value).toBeUndefined();
     });
 
     // UI-17
     it('has no screen before user:synced', () => {
-      statusListener('connected');
+      statusListener('connecting');
 
       expect(SessionSystem.screen.value).toBeUndefined();
     });
@@ -177,7 +185,7 @@ describe('SessionSystem', () => {
     it('hides the screen again when the socket connects again', () => {
       syncedListener();
 
-      statusListener('connected');
+      statusListener('connecting');
 
       expect(SessionSystem.screen.value).toBeUndefined();
     });
@@ -187,7 +195,7 @@ describe('SessionSystem', () => {
   describe('state after the sync', () => {
     beforeEach(async () => {
       await SessionSystem.start();
-      statusListener('connected');
+      statusListener('connecting');
       syncedListener();
     });
 
@@ -269,7 +277,7 @@ describe('SessionSystem', () => {
   describe('state on connection', () => {
     beforeEach(async () => {
       await SessionSystem.start();
-      statusListener('connected');
+      statusListener('connecting');
     });
 
     it('keeps the state when user:synced repeats without a new connection', () => {

@@ -61,8 +61,9 @@ const leaveParty = () => {
 }
 
 const bindListeners = () => {
+  // The server sends the state before the connect ack, so the sync must start before the socket reports connected.
   socketService.onStatusChange((status) => {
-    if (status === 'connected') beginSync();
+    if (status === 'connecting' || status === 'reconnecting') beginSync();
   });
 
   gameEventApi.onGameApiEvent('GAME_SYNC', () => {
