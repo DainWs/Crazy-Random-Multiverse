@@ -75,7 +75,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Implement REST error handling (`CON-18`): read the 400 and its key, and stop listening to the `error`, `game:error` and `exception` socket channels
 - [x] Remove `login` from `UserApi.ts` and its test: `POST /login` no longer exists (`USER-6`)
 - [x] Read `owner` and `users` of `PartyDto` as `UserDto` in the frontend, and update `Party` (`CON-24`)
-- [ ] On start, call `GET /user` and, on `exception.user.not_found`, `POST /register` (`USER-6`)
+- [x] On start, call `GET /user` and, on `exception.user.not_found`, `POST /register` (`USER-6`)
 - [ ] Listen to `party:info` and `user:synced` in the client and apply `CON-23`: go to the party, the main menu or the game according to what arrives
 
 ## Phase 2.5 — Minimal lobby

@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import SessionSystem from '@/core/SessionSystem';
 
 class Boot extends Scene {
     constructor ()
@@ -12,8 +13,9 @@ class Boot extends Scene {
         //  The smaller the file size of the assets, the better, as the Boot Scene itself has no preloader.
     }
 
-    create ()
+    async create ()
     {
+        await SessionSystem.start();
         this.scene.start('Preloader');
     }
 }
