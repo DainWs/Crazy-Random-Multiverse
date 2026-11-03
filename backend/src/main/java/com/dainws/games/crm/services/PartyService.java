@@ -46,6 +46,7 @@ public class PartyService {
 			Party party = this.repository.find(partyCode);
 			party.add(user);
 			this.repository.save(party);
+			this.userClient.sendPartyInfo(party);
 			return party;
 		} catch (NotAllowedException e) {
 			throw new PartyException(e.getCode(), e);

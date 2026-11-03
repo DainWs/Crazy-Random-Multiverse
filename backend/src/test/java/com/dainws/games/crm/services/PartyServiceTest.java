@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.Party;
+import com.dainws.games.crm.domain.RecordingUserClient;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.mode.GameModes;
@@ -41,6 +42,20 @@ class PartyServiceTest {
 		Party another = this.createPartyOwnedBy("user-1");
 
 		assertThrows(PartyException.class, () -> partyService.createParty(another));
+	}
+
+	@Test
+	void testGivenPartyWithOwner_whenUserJoinsParty_thenEveryMemberReceivesThePartyInfo() {
+		PartyService partyService = new PartyService(new MemoryPartyRepository());
+		RecordingUserClient userClient = new RecordingUserClient();
+		partyService.setUserClient(userClient);
+		Party party = this.createPartyOwnedBy("owner");
+		partyService.createParty(party);
+		User joiner = new User("joiner", "Name", UserPlatform.WEB);
+
+		partyService.joinParty(party.getCode(), joiner);
+
+		assertThat(userClient.getRecipients()).containsExactlyInAnyOrder(party.getOwner(), joiner);
 	}
 
 	private Party createPartyOwnedBy(String userCode) {
