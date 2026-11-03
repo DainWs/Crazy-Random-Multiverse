@@ -4,7 +4,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 **MVP goal:** a complete game loop: deal -> placement -> combat -> victory/defeat.
 
-**MVP scope:** Phases 1 to 12. Phase 13 and the Post-MVP section are out of it.
+**MVP scope:** Phases 1 to 12 (including 2.5 and 2.6). Phase 13 and the Post-MVP section are out of it.
 
 ## Closed decisions
 
@@ -88,6 +88,17 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 - [x] Main menu: create a party with the default capacity and mode, and join one with its code, showing rejections below the field (`UI-1`, `UI-18`, `PARTY-1`, `PARTY-5`)
 - [x] Party screen: name, members out of capacity, owner marked, members from `party:info`, the code to copy, leaving, and starting the game for the owner, disabled while the party is locked or has fewer than 2 members (`UI-19`, `UI-20`, `UI-16`, `PARTY-9`, `PARTY-10`, `LOAD-1`)
 
+## Phase 2.6 — Game resource loading
+
+Starting a game from the party today stalls in `GAME_LOADING`: the client asks `GET /game/{gameCode}/resources`, which the backend does not have, and the load fails with `imageResources is not iterable`. The resources must be downloaded before the game starts, and `/ready` confirmed only after that (`LOAD-2`).
+
+- [ ] Define the resource manifest contract in `specs/CONTRACT.md`: endpoint or field, format and error keys. The server exposes it (closed with the user); its format is for a person to decide, do not invent it: ask
+- [ ] Implement the manifest in the backend, with its tests
+- [ ] Align `GameApi.loadGameResourceManifest` and its test with the contract
+- [ ] Replace mocked `GameLoad` flow with real backend state
+- [ ] Download the resources during `GAME_LOADING` and confirm `POST /game/{gameCode}/ready` only when they are loaded (`LOAD-2`)
+- [ ] Loading failure UI: show the failure and offer to retry, without confirming `/ready` (`UI-12`)
+
 ## Phase 3 — Authoritative game state and hand
 
 - [ ] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, then `TURN_CHANGE`, and the first round and turn like any other
@@ -99,7 +110,6 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 - [ ] Apply events in sequence order and discard those not newer than the last snapshot (`CON-12`)
 - [ ] Reconcile state after Socket.IO events and after reconnection (`CON-11`, `CON-23`)
 - [ ] Remove mocked game state, zones and hand
-- [ ] Replace mocked `GameLoad` flow with real backend state
 - [ ] Update Phaser views from authoritative state
 - [ ] Map the backend rows (row 0 is the leader row) to the frontend zone organization, so the leader is shown nearest to the local player (`CON-14`, `VIEW-1`)
 - [ ] Implement real initial hand synchronization and hand updates (`CON-13`)
@@ -181,7 +191,7 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
 - [ ] Round transition presentation and gameplay event notifications
-- [ ] Improve loading flow; loading failure UI (`UI-12`)
+- [ ] Improve loading flow
 
 ## Phase 11 — Menu, lobby, user
 
