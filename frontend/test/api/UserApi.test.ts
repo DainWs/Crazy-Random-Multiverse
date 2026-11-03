@@ -53,8 +53,8 @@ describe('UserApi', () => {
         gameMode: 'CLASSIC',
         userCount: 1,
         maxUsers: 4,
-        owner: 'usr-1',
-        users: ['usr-1'],
+        owner: { id: 'usr-1', username: 'One' },
+        users: [{ id: 'usr-1', username: 'One' }],
       })
     } as Response);
 
@@ -62,7 +62,7 @@ describe('UserApi', () => {
 
     expect(party).toBeInstanceOf(Party);
     expect(party.code).toBe('party-1');
-    expect(party.users).toEqual(['usr-1']);
+    expect(party.users).toEqual([new User('usr-1', 'One')]);
   });
 
   it('joinParty encodes party code and returns Party', async () => {
@@ -73,8 +73,8 @@ describe('UserApi', () => {
         gameMode: 'CLASSIC',
         userCount: 2,
         maxUsers: 4,
-        owner: 'usr-1',
-        users: ['usr-1', 'usr-2'],
+        owner: { id: 'usr-1', username: 'One' },
+        users: [{ id: 'usr-1', username: 'One' }, { id: 'usr-2', username: 'Two' }],
       })
     } as Response);
 
@@ -94,8 +94,8 @@ describe('UserApi', () => {
             gameMode: 'CLASSIC',
             userCount: 2,
             maxUsers: 4,
-            owner: 'usr-1',
-            users: ['usr-1', 'usr-2'],
+            owner: { id: 'usr-1', username: 'One' },
+            users: [{ id: 'usr-1', username: 'One' }, { id: 'usr-2', username: 'Two' }],
           }
         ]
       })

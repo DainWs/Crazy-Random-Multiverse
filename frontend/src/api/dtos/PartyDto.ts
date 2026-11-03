@@ -1,5 +1,6 @@
 import type { GameMode } from "@/domain/GameConfiguration";
-import type { UserCode } from "@/domain/User";
+import type { UserDto } from "@/api/dtos/UserDto";
+import { toUser } from "@/api/dtos/UserDto";
 import Party from "@/domain/Party";
 
 interface CreatePartyRequest {
@@ -18,8 +19,8 @@ interface PartyDto {
   gameMode: GameMode;
   userCount: number;
   maxUsers: number;
-  owner: UserCode;
-  users: UserCode[];
+  owner: UserDto;
+  users: UserDto[];
   locked: boolean;
 }
 
@@ -30,8 +31,8 @@ const toParty = (dto: PartyDto): Party => {
   party.gameMode = dto.gameMode;
   party.userCount = dto.userCount;
   party.maxUsers = dto.maxUsers;
-  party.owner = dto.owner;
-  party.users = dto.users;
+  party.owner = toUser(dto.owner);
+  party.users = dto.users.map(toUser);
   party.isLocked = dto.locked;
   return party;
 }
@@ -42,7 +43,7 @@ const toMinimalParty = (dto: PartyDto): Party => {
   party.gameMode = dto.gameMode;
   party.userCount = dto.userCount;
   party.maxUsers = dto.maxUsers;
-  party.owner = dto.owner;
+  party.owner = toUser(dto.owner);
   party.isLocked = dto.locked;
   return party;
 }

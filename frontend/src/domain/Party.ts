@@ -1,5 +1,5 @@
 import { GameMode } from "@/domain/GameConfiguration";
-import { UserCode } from "@/domain/User";
+import User from "@/domain/User";
 
 type PartyCode = string;
 
@@ -9,8 +9,8 @@ class Party {
   public gameMode: GameMode;
   public userCount: number;
   public maxUsers: number;
-  public owner: UserCode;
-  public users: UserCode[];
+  public owner?: User;
+  public users: User[];
   public isLocked: boolean;
 
   public constructor(code: PartyCode) {
@@ -19,7 +19,6 @@ class Party {
     this.gameMode = 'CLASSIC';
     this.userCount = 1;
     this.maxUsers = 4;
-    this.owner = '';
     this.users = [];
     this.isLocked = false;
   }

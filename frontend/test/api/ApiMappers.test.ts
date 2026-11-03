@@ -9,6 +9,7 @@ import { toParty, toMinimalParty } from '@/api/dtos/PartyDto';
 import Card, { CardCode } from '@/domain/Card';
 import Player from '@/domain/Player';
 import Party from '@/domain/Party';
+import User from '@/domain/User';
 
 describe('API Models and DTO Mappers', () => {
   describe('Codification', () => {
@@ -184,8 +185,8 @@ describe('API Models and DTO Mappers', () => {
       gameMode: 'CLASSIC' as const,
       userCount: 3,
       maxUsers: 4,
-      owner: 'u1',
-      users: ['u1', 'u2', 'u3'],
+      owner: { id: 'u1', username: 'One' },
+      users: [{ id: 'u1', username: 'One' }, { id: 'u2', username: 'Two' }, { id: 'u3', username: 'Three' }],
       locked: true,
     };
 
@@ -202,7 +203,8 @@ describe('API Models and DTO Mappers', () => {
 
       expect(party).toBeInstanceOf(Party);
       expect(party.code).toBe('party-xyz');
-      expect(party.users).toEqual(['u1', 'u2', 'u3']);
+      expect(party.owner).toEqual(new User('u1', 'One'));
+      expect(party.users).toEqual([new User('u1', 'One'), new User('u2', 'Two'), new User('u3', 'Three')]);
     });
 
     it('toMinimalParty leaves users empty', () => {
