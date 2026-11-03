@@ -70,6 +70,7 @@ Nested classes are not used: a class, record, enum or interface that another cla
 - Main dependencies arrive through the constructor, up to 3 parameters (section 9). Those that do not fit or are optional are injected with a public setter annotated with `@Autowired` (`WebPlayerController.setUserSession`).
 - Collaborators that tests may replace are exposed with a public setter (`GameService.setGameFactory`).
 - `@Autowired` is not tolerated unless it is on a setter or in a `@Configuration`.
+- `@Value` goes on a private field, never on a parameter of a `@Bean` method, a constructor or a setter: it adds too much noise to the signature. The expression is always written inline, `@Value("${crm.some.property}")`, never held in a constant. Classes that read a property keep a plain setter for tests.
 
 ```java
 @RestController

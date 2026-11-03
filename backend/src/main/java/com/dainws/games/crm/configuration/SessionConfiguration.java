@@ -23,10 +23,13 @@ public class SessionConfiguration {
 
 	private static final int DEFAULT_NAME_SUFFIX_LENGTH = 5;
 
+	@Value("${spring.session.timeout}")
+	private Duration timeout;
+
 	@Bean
-	MapSessionRepository sessionRepository(@Value("${spring.session.timeout}") Duration timeout) {
+	MapSessionRepository sessionRepository() {
 		MapSessionRepository repository = new MapSessionRepository(new ConcurrentHashMap<>());
-		repository.setDefaultMaxInactiveInterval(timeout);
+		repository.setDefaultMaxInactiveInterval(this.timeout);
 		return repository;
 	}
 

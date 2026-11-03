@@ -22,11 +22,11 @@ import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 
 @Service
 public class UserService {
-	private static final String GRACE_PERIOD_PROPERTY = "${crm.user.disconnect-grace-period}";
-
 	private UserRepository userRepository;
 	private PartyService partyService;
 	private Clock clock;
+
+	@Value("${crm.user.disconnect-grace-period}")
 	private Duration disconnectGracePeriod;
 
 	private final Logger logger;
@@ -98,8 +98,7 @@ public class UserService {
 		this.clock = clock;
 	}
 
-	@Autowired
-	public void setDisconnectGracePeriod(@Value(GRACE_PERIOD_PROPERTY) Duration disconnectGracePeriod) {
+	public void setDisconnectGracePeriod(Duration disconnectGracePeriod) {
 		this.disconnectGracePeriod = disconnectGracePeriod;
 	}
 }
