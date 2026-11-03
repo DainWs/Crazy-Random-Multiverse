@@ -3,6 +3,8 @@ package com.dainws.games.crm.controller.events;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.corundumstudio.socketio.HandshakeData;
@@ -12,6 +14,7 @@ public class RecordingSocketIOClient implements InvocationHandler {
 	private static final String GET_SESSION_ID = "getSessionId";
 	private static final String GET_HANDSHAKE_DATA = "getHandshakeData";
 	private static final String DISCONNECT = "disconnect";
+	private static final String SEND_EVENT = "sendEvent";
 	private static final String HASH_CODE = "hashCode";
 	private static final String EQUALS = "equals";
 	private static final String TO_STRING = "toString";
@@ -19,11 +22,13 @@ public class RecordingSocketIOClient implements InvocationHandler {
 	private UUID sessionId;
 	private HandshakeData handshakeData;
 	private boolean isDisconnected;
+	private List<String> sentChannels;
 
 	public RecordingSocketIOClient(UUID sessionId, HandshakeData handshakeData) {
 		this.sessionId = sessionId;
 		this.handshakeData = handshakeData;
 		this.isDisconnected = false;
+		this.sentChannels = new ArrayList<>();
 	}
 
 	public SocketIOClient asClient() {
@@ -36,6 +41,10 @@ public class RecordingSocketIOClient implements InvocationHandler {
 		return this.isDisconnected;
 	}
 
+	public List<String> getSentChannels() {
+		return List.copyOf(this.sentChannels);
+	}
+
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] arguments) {
 		switch (method.getName()) {
@@ -45,6 +54,9 @@ public class RecordingSocketIOClient implements InvocationHandler {
 			return this.handshakeData;
 		case DISCONNECT:
 			this.isDisconnected = true;
+			return null;
+		case SEND_EVENT:
+			this.sentChannels.add((String) arguments[0]);
 			return null;
 		case HASH_CODE:
 			return System.identityHashCode(proxy);

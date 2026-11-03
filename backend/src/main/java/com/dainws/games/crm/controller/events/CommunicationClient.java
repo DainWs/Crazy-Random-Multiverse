@@ -1,6 +1,7 @@
 package com.dainws.games.crm.controller.events;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -45,8 +46,8 @@ public class CommunicationClient implements UserClient {
 
 			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
 
-			this.findClientOf(player)
-				.ifPresent(client -> client.sendEvent("game:event", eventDto));
+			this.findClientsOf(player)
+				.forEach(client -> client.sendEvent("game:event", eventDto));
 		}
 	}
 
@@ -58,23 +59,29 @@ public class CommunicationClient implements UserClient {
 		return false;
 	}
 
-	private Optional<SocketIOClient> findClientOf(Player player) {
-		return this.findClientOf(this.getUserFrom(player));
+	private List<SocketIOClient> findClientsOf(Player player) {
+		return this.findClientsOf(UserCode.from(player.getCode()));
 	}
 
-	private Optional<SocketIOClient> findClientOf(User user) {
-		String sessionId = user.getSessionId();
-		if (sessionId == null) {
-			this.logger.debug("User {} has no open connection", user.getName());
-			return Optional.empty();
+	private List<SocketIOClient> findClientsOf(UserCode code) {
+		if (!this.userRepository.has(code)) {
+			return List.of();
 		}
 
-		return Optional.ofNullable(this.server.getClient(UUID.fromString(sessionId)));
-	}
+		User user = this.userRepository.find(code);
+		List<SocketIOClient> clients = new ArrayList<>();
+		for (String socketId : user.getSocketIds()) {
+			SocketIOClient client = this.server.getClient(UUID.fromString(socketId));
+			if (client != null) {
+				clients.add(client);
+			}
+		}
 
-	private User getUserFrom(Player player) {
-		UserCode code = UserCode.from(player.getCode());
-		return this.userRepository.find(code);
+		if (clients.isEmpty()) {
+			this.logger.debug("User {} has no open connection", user.getName());
+		}
+
+		return clients;
 	}
 
 	@Override
@@ -83,7 +90,7 @@ public class CommunicationClient implements UserClient {
 
 		PartyDto partyDto = ModelMapper.toPartyDto(party);
 
-		this.findClientOf(to)
-			.ifPresent(client -> client.sendEvent("party:info", partyDto));
+		this.findClientsOf(to.getCode())
+			.forEach(client -> client.sendEvent("party:info", partyDto));
 	}
 }

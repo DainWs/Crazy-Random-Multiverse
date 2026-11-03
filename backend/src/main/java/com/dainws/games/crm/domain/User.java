@@ -1,18 +1,24 @@
 package com.dainws.games.crm.domain;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
 	private String name;
 	private Locale locale;
-	private volatile String sessionId;
+	private final Set<String> socketIds;
+	private Instant withoutSocketSince;
 	private UserCode userCode;
 	private UserPlatform platform;
 
 	public User(String code, String name, UserPlatform platform) {
 		this.name = name;
 		this.locale = Locale.getDefault();
+		this.socketIds = new HashSet<>();
 		this.userCode = UserCode.from(code);
 		this.platform = platform;
 	}
@@ -33,16 +39,36 @@ public class User {
 		return platform;
 	}
 
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	public synchronized void bindSocket(String socketId) {
+		this.socketIds.add(socketId);
+		this.withoutSocketSince = null;
 	}
 
-	public boolean isConnected() {
-		return this.sessionId != null;
+	public synchronized void unbindSocket(String socketId, Instant now) {
+		this.socketIds.remove(socketId);
+		this.startWaitingForSocket(now);
 	}
 
-	public String getSessionId() {
-		return sessionId;
+	public synchronized void startWaitingForSocket(Instant now) {
+		if (this.socketIds.isEmpty() && this.withoutSocketSince == null) {
+			this.withoutSocketSince = now;
+		}
+	}
+
+	public synchronized boolean isConnected() {
+		return !this.socketIds.isEmpty();
+	}
+
+	public synchronized boolean hasBeenWithoutSocketLongerThan(Duration gracePeriod, Instant now) {
+		if (this.withoutSocketSince == null) {
+			return false;
+		}
+
+		return Duration.between(this.withoutSocketSince, now).compareTo(gracePeriod) > 0;
+	}
+
+	public synchronized Set<String> getSocketIds() {
+		return Set.copyOf(this.socketIds);
 	}
 
 	public UserCode getCode() {
@@ -67,8 +93,11 @@ public class User {
 
 	public User clone() {
 		User cloned = new User(this.userCode.text(), this.name, this.platform);
-		cloned.setSessionId(this.sessionId);
 		cloned.setLocale(this.locale);
+		synchronized (this) {
+			cloned.socketIds.addAll(this.socketIds);
+			cloned.withoutSocketSince = this.withoutSocketSince;
+		}
 		return cloned;
 	}
 

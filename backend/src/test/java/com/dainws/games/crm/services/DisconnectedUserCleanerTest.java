@@ -3,6 +3,10 @@ package com.dainws.games.crm.services;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,6 +21,8 @@ class DisconnectedUserCleanerTest {
 	private static final String CLEAN_METHOD = "deleteDisconnectedUsers";
 	private static final String INTERVAL_PROPERTY =
 			"${crm.user.cleanup-interval}";
+	private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
+	private static final Duration GRACE_PERIOD = Duration.ofMinutes(5);
 
 	@Test
 	void testGivenCleaner_whenRunsPeriodically_thenIntervalComesFromTheProperty() throws NoSuchMethodException {
@@ -28,12 +34,15 @@ class DisconnectedUserCleanerTest {
 	}
 
 	@Test
-	void testGivenUserWithoutSocket_whenClean_thenUserIsDeleted() {
+	void testGivenUserWithoutSocketBeyondTheGracePeriod_whenClean_thenUserIsDeleted() {
 		MemoryUserRepository userRepository = new MemoryUserRepository();
 		User user = new User("user-1", "Name", UserPlatform.WEB);
+		user.startWaitingForSocket(NOW);
 		userRepository.save(user);
 		PartyService partyService = new PartyService(new MemoryPartyRepository());
 		UserService userService = new UserService(userRepository, partyService);
+		userService.setDisconnectGracePeriod(GRACE_PERIOD);
+		userService.setClock(Clock.fixed(NOW.plus(GRACE_PERIOD).plusSeconds(1), ZoneOffset.UTC));
 		DisconnectedUserCleaner cleaner = new DisconnectedUserCleaner(userService);
 
 		cleaner.deleteDisconnectedUsers();

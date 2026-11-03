@@ -3,8 +3,6 @@ package com.dainws.games.crm.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dainws.games.crm.controller.dto.ModelMapper;
@@ -70,12 +68,6 @@ public class WebUserController implements UserController {
 	public PartyListDto getPartyList() {
 		List<Party> parties = this.userService.getParties();
 		return ModelMapper.toPartyListDto(parties);
-	}
-	
-	@EventListener
-	public void onSessionDestroyed(SessionDestroyedEvent event) {
-		UserCode userCode = UserCode.from(event.getId());
-		this.userService.delete(userCode);
 	}
 	
 	@Autowired

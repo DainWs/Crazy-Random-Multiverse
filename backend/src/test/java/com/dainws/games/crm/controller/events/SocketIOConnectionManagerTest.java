@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +53,8 @@ class SocketIOConnectionManagerTest {
 	private static final String HANDSHAKE_URL = "/";
 	private static final String UNKNOWN_SESSION = "unknown";
 	private static final String USER_CODE = "user-1";
+	private static final Instant NOW = Instant.parse("2026-01-01T00:00:00Z");
+	private static final Duration GRACE_PERIOD = Duration.ofMinutes(5);
 
 	MapSessionRepository sessionRepository;
 	MemoryUserRepository userRepository;
@@ -87,6 +93,7 @@ class SocketIOConnectionManagerTest {
 		this.connectionManager.setGameService(gameService);
 		this.connectionManager.setCommunicationClient(this.communicationClient);
 		this.connectionManager.setEventSequence(this.eventSequence);
+		this.connectionManager.setClock(Clock.fixed(NOW, ZoneOffset.UTC));
 
 		this.session = this.sessionRepository.createSession();
 		this.session.setAttribute(SessionConfiguration.USER_CODE_ATTRIBUTE, USER_CODE);
@@ -102,7 +109,19 @@ class SocketIOConnectionManagerTest {
 
 		this.connectionManager.onConnected(client.asClient());
 
-		assertThat(this.user.getSessionId()).isEqualTo(socketId.toString());
+		assertThat(this.user.getSocketIds()).containsExactly(socketId.toString());
+	}
+
+	@Test
+	void testGivenUserWithASocket_whenConnectAnotherOne_thenBothSocketsAreBound() {
+		this.userRepository.save(this.user);
+		RecordingSocketIOClient first = this.createClientOfUser();
+		RecordingSocketIOClient second = this.createClientOfUser();
+		this.connectionManager.onConnected(first.asClient());
+
+		this.connectionManager.onConnected(second.asClient());
+
+		assertThat(this.user.getSocketIds()).hasSize(2);
 	}
 
 	@Test
@@ -199,7 +218,19 @@ class SocketIOConnectionManagerTest {
 
 		this.connectionManager.onDisconnected(client.asClient());
 
-		assertThat(this.user.getSessionId()).isNull();
+		assertThat(this.user.getSocketIds()).isEmpty();
+	}
+
+	@Test
+	void testGivenConnectedUser_whenLastSocketDisconnects_thenGracePeriodStartsNow() {
+		this.userRepository.save(this.user);
+		RecordingSocketIOClient client = this.createClientOfUser();
+		this.connectionManager.onConnected(client.asClient());
+
+		this.connectionManager.onDisconnected(client.asClient());
+
+		Instant afterGracePeriod = NOW.plus(GRACE_PERIOD).plusSeconds(1);
+		assertThat(this.user.hasBeenWithoutSocketLongerThan(GRACE_PERIOD, afterGracePeriod)).isTrue();
 	}
 
 	@Test
@@ -237,7 +268,7 @@ class SocketIOConnectionManagerTest {
 
 		this.connectionManager.onDisconnected(oldClient.asClient());
 
-		assertThat(this.user.getSessionId()).isEqualTo(newSocketId.toString());
+		assertThat(this.user.getSocketIds()).containsExactly(newSocketId.toString());
 	}
 
 	private Game createGameInProgressWithTheUser() {

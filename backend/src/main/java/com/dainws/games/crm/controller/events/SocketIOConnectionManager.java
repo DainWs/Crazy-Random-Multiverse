@@ -1,5 +1,6 @@
 package com.dainws.games.crm.controller.events;
 
+import java.time.Clock;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class SocketIOConnectionManager {
 	private GameService gameService;
 	private CommunicationClient communicationClient;
 	private MemoryEventSequence eventSequence;
+	private Clock clock;
 
 	private Logger logger;
 
@@ -40,6 +42,7 @@ public class SocketIOConnectionManager {
 		this.server = server;
 		this.userService = userService;
 		this.sessionUserResolver = sessionUserResolver;
+		this.clock = Clock.systemUTC();
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -53,7 +56,7 @@ public class SocketIOConnectionManager {
 		Optional<User> optionalUser = this.findUserOf(client);
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
-			user.setSessionId(String.valueOf(client.getSessionId()));
+			user.bindSocket(String.valueOf(client.getSessionId()));
 
 			this.userService.update(user);
 			this.sendGameSyncIfGameInProgress(user);
@@ -67,12 +70,11 @@ public class SocketIOConnectionManager {
 		String socketId = String.valueOf(client.getSessionId());
 
 		this.findUserOf(client) //
-				.filter(user -> socketId.equals(user.getSessionId())) //
-				.ifPresent(this::unbindSocketOf);
+				.ifPresent(user -> this.unbindSocketOf(user, socketId));
 	}
 
-	private void unbindSocketOf(User user) {
-		user.setSessionId(null);
+	private void unbindSocketOf(User user, String socketId) {
+		user.unbindSocket(socketId, this.clock.instant());
 		this.userService.update(user);
 	}
 
@@ -115,5 +117,10 @@ public class SocketIOConnectionManager {
 	@Autowired
 	public void setEventSequence(MemoryEventSequence eventSequence) {
 		this.eventSequence = eventSequence;
+	}
+
+	@Autowired
+	public void setClock(Clock clock) {
+		this.clock = clock;
 	}
 }

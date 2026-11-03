@@ -1,5 +1,6 @@
 package com.dainws.games.crm.configuration;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -37,6 +38,11 @@ public class GeneralConfiguration {
 	@Bean
 	PlayerActionFacade playerActionFacade(ActionContextFactory actionContextFactory) {
 		return new PlayerActionFacade(actionContextFactory);
+	}
+
+	@Bean
+	Clock clock() {
+		return Clock.systemUTC();
 	}
 
 	@Bean

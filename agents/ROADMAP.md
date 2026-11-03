@@ -68,8 +68,8 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Publish each event to the clients before the game reacts to it, and `ROUND_CHANGE` before `TURN_CHANGE` (`CON-22`)
 - [x] Separate a public user id from the session id (`NFR-3`, `CON-24`): the user id is the HTTP session id and the parties share it with their members. `owner` and `users` in `PartyDto` become `UserDto`, and `PlayerDto.code` takes the public id
 - [x] Keep `POST /register` as the only way to create a user and remove `POST /login` (`USER-6`), with a session of 24 hours (`USER-7`)
-- [ ] Delete users only after the grace period (`CON-3`, `ABSENT-1`)
-- [ ] Check that a user can have several sockets at once and implement the differences (`CON-25`)
+- [x] Delete users only after the grace period (`CON-3`, `ABSENT-1`)
+- [x] Check that a user can have several sockets at once and implement the differences (`CON-25`)
 - [ ] Send the user's state when a socket is bound (`CON-23`): `GAME_SYNC` or `GAME_LOADING`, then `party:info`, and always `user:synced`; a repeated `/ready` has no effect (`LOAD-2`)
 - [ ] Implement REST `POST /game/{gameCode}/action` (`CON-16`)
 - [ ] Implement REST error handling (`CON-18`): read the 400 and its key, and stop listening to the `error`, `game:error` and `exception` socket channels

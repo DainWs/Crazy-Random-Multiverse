@@ -1,5 +1,6 @@
 package com.dainws.games.crm.controller.events;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.UUID;
@@ -7,8 +8,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.corundumstudio.socketio.Configuration;
-import com.corundumstudio.socketio.SocketIOServer;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
@@ -22,7 +21,11 @@ import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
 class CommunicationClientTest {
 
+	private static final String GAME_EVENT_CHANNEL = "game:event";
+	private static final String PARTY_INFO_CHANNEL = "party:info";
+
 	CommunicationClient communicationClient;
+	StubSocketIOServer server;
 	User user;
 	UserPlayer player;
 	Event event;
@@ -33,9 +36,9 @@ class CommunicationClientTest {
 		this.user = new User("user-1", "Name", UserPlatform.WEB);
 		userRepository.save(this.user);
 
-		SocketIOServer server = new SocketIOServer(new Configuration());
+		this.server = new StubSocketIOServer();
 		this.communicationClient =
-				new CommunicationClient(userRepository, server);
+				new CommunicationClient(userRepository, this.server);
 
 		this.player = new UserPlayer(this.user);
 		Game game = new GameBuilder().withPlayers(this.player).build();
@@ -58,9 +61,40 @@ class CommunicationClientTest {
 
 	@Test
 	void testGivenUserWhoseSocketIsGone_whenSendEvent_thenDoesNotFail() {
-		this.user.setSessionId(UUID.randomUUID().toString());
+		this.user.bindSocket(UUID.randomUUID().toString());
 
 		assertDoesNotThrow(
 				() -> this.communicationClient.sendEvent(this.player, this.event));
+	}
+
+	@Test
+	void testGivenUserWithTwoSockets_whenSendEvent_thenBothReceiveIt() {
+		RecordingSocketIOClient first = this.bindSocket();
+		RecordingSocketIOClient second = this.bindSocket();
+
+		this.communicationClient.sendEvent(this.player, this.event);
+
+		assertThat(first.getSentChannels()).containsExactly(GAME_EVENT_CHANNEL);
+		assertThat(second.getSentChannels()).containsExactly(GAME_EVENT_CHANNEL);
+	}
+
+	@Test
+	void testGivenUserWithTwoSockets_whenSendPartyInfo_thenBothReceiveIt() {
+		RecordingSocketIOClient first = this.bindSocket();
+		RecordingSocketIOClient second = this.bindSocket();
+		Party party = new Party(this.user, GameModes.CLASSIC);
+
+		this.communicationClient.sendPartyInfo(this.user, party);
+
+		assertThat(first.getSentChannels()).containsExactly(PARTY_INFO_CHANNEL);
+		assertThat(second.getSentChannels()).containsExactly(PARTY_INFO_CHANNEL);
+	}
+
+	private RecordingSocketIOClient bindSocket() {
+		UUID socketId = UUID.randomUUID();
+		RecordingSocketIOClient client = new RecordingSocketIOClient(socketId, null);
+		this.server.addClient(socketId, client.asClient());
+		this.user.bindSocket(socketId.toString());
+		return client;
 	}
 }
