@@ -1,8 +1,10 @@
 package com.dainws.games.crm.configuration;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.MapSessionRepository;
@@ -22,8 +24,10 @@ public class SessionConfiguration {
 	private static final int DEFAULT_NAME_SUFFIX_LENGTH = 5;
 
 	@Bean
-	MapSessionRepository sessionRepository() {
-		return new MapSessionRepository(new ConcurrentHashMap<>());
+	MapSessionRepository sessionRepository(@Value("${spring.session.timeout}") Duration timeout) {
+		MapSessionRepository repository = new MapSessionRepository(new ConcurrentHashMap<>());
+		repository.setDefaultMaxInactiveInterval(timeout);
+		return repository;
 	}
 
 	@Bean

@@ -17,9 +17,6 @@ public interface UserController {
 	@PostMapping("/register")
 	UserDto register();
 
-	@PostMapping("/login")
-	UserDto login(@RequestBody String username);
-
 	@GetMapping("/user")
 	UserDto getAccount();
 

@@ -31,17 +31,11 @@ public class WebUserController implements UserController {
 
 	@Override
 	public UserDto register() {
-		this.userService.create(this.userSession.clone());
+		if (!this.userService.exists(this.userSession.getCode())) {
+			this.userService.create(this.userSession.clone());
+		}
 
-		return ModelMapper.toUserDto(this.userSession);
-	}
-
-	@Override
-	public UserDto login(String username) {
-		this.userSession.setName(username);
-		this.userService.create(this.userSession.clone());
-
-		return ModelMapper.toUserDto(this.userSession);
+		return ModelMapper.toUserDto(this.userService.get(this.userSession.getCode()));
 	}
 
 	@Override
@@ -55,7 +49,7 @@ public class WebUserController implements UserController {
 
 	@Override
 	public UserDto getAccount() {
-		return ModelMapper.toUserDto(this.userSession);
+		return ModelMapper.toUserDto(this.userService.get(this.userSession.getCode()));
 	}
 
 	@Override
