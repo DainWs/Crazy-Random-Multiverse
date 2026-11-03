@@ -22,7 +22,7 @@ public class SecurityConfiguration {
 	private static final String ALL_PATHS = "/**";
 
 	@Value("${crm.communication.origin}")
-	private String origin;
+	String origin;
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

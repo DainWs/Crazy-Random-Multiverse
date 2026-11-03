@@ -11,7 +11,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 @ConditionalOnProperty(value = "crm.communication.socket-io.enabled", havingValue = "true", matchIfMissing = true)
 public class SocketIOConfiguration {
     @Value("${crm.communication.origin}")
-    private String origin;
+    String origin;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     SocketIOServer socketIOServer() {

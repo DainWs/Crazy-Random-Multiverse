@@ -24,7 +24,7 @@ public class SessionConfiguration {
 	private static final int DEFAULT_NAME_SUFFIX_LENGTH = 5;
 
 	@Value("${spring.session.timeout}")
-	private Duration timeout;
+	Duration timeout;
 
 	@Bean
 	MapSessionRepository sessionRepository() {
