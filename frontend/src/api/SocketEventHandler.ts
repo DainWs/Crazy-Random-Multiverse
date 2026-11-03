@@ -1,10 +1,16 @@
 import type { EventDto } from '@/api/dtos/EventDto';
+import type { PartyDto } from '@/api/dtos/PartyDto';
+import type Party from '@/domain/Party';
 import type { GameEventCode } from '@/api/models/GameEventCode';
-import type { GameEventListener, CancelListenerCallback } from '@/api/models/Listeners';
+import type { GameEventListener, CancelListenerCallback, Listener } from '@/api/models/Listeners';
 import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
 import { notifyListeners } from '@/api/models/Listeners';
+import { toParty } from '@/api/dtos/PartyDto';
 import { Socket } from 'socket.io-client';
 import EventSystem from '@/core/EventSystem';
+
+const PARTY_INFO_CHANNEL = 'party:info';
+const USER_SYNCED_CHANNEL = 'user:synced';
 
 type RawEvent = string | EventDto;
 
@@ -14,10 +20,14 @@ interface SocketEventHandler {
   offGameEvent: (eventCode: GameEventCode, listener: GameEventListener) => void;
   onAnyGameEvent: (listener: GameEventListener) => CancelListenerCallback;
   offAnyGameEvent: (listener: GameEventListener) => void;
+  onPartyInfo: (listener: Listener<Party>) => CancelListenerCallback;
+  onUserSynced: (listener: Listener<void>) => CancelListenerCallback;
 }
 
 const anyEventListeners: Set<GameEventListener> = new Set();
 const eventListeners: Map<string, Set<GameEventListener>> = new Map();
+const partyInfoListeners: Set<Listener<Party>> = new Set();
+const userSyncedListeners: Set<Listener<void>> = new Set();
 
 const bindEventHandlers = (socket: Socket): void => {
   const eventChannels = ['event', 'game:event', 'game_event'];
@@ -28,6 +38,9 @@ const bindEventHandlers = (socket: Socket): void => {
   GAME_EVENT_CODES.forEach((eventCode) => {
     socket.on(eventCode, (data) => onEventCode(eventCode, data));
   });
+
+  socket.on(PARTY_INFO_CHANNEL, (dto: PartyDto) => notifyListeners(partyInfoListeners, 'party info listener', toParty(dto)));
+  socket.on(USER_SYNCED_CHANNEL, () => notifyListeners(userSyncedListeners, 'user synced listener', undefined));
 }
 
 function onEventCode(eventCode: GameEventCode, data: any): void {
@@ -62,6 +75,16 @@ const offAnyGameEvent = (listener: GameEventListener): void => {
   anyEventListeners.delete(listener);
 }
 
+const onPartyInfo = (listener: Listener<Party>): CancelListenerCallback => {
+  partyInfoListeners.add(listener);
+  return () => partyInfoListeners.delete(listener);
+}
+
+const onUserSynced = (listener: Listener<void>): CancelListenerCallback => {
+  userSyncedListeners.add(listener);
+  return () => userSyncedListeners.delete(listener);
+}
+
 function handleIncomingEvent(rawEvent: RawEvent): void {
   if (!rawEvent) return;
   const event: EventDto = parseRawEvent(rawEvent);
@@ -93,6 +116,8 @@ const socketEventHandler: SocketEventHandler = {
   offGameEvent,
   onAnyGameEvent,
   offAnyGameEvent,
+  onPartyInfo,
+  onUserSynced,
 }
 
 export type { SocketEventHandler }

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import socketEventHandler from '@/api/SocketEventHandler';
 import EventSystem from '@/core/EventSystem';
 import { GAME_EVENT_CODES, GameEventCode } from '@/api/models/GameEventCode';
+import User from '@/domain/User';
 import { Socket } from 'socket.io-client';
 
 type Function = (...args: unknown[]) => unknown;
@@ -342,6 +343,63 @@ describe('SocketEventHandler', () => {
       socket.emit(eventCode, event);
 
       expect(listener).toHaveBeenCalledWith(event);
+    });
+  });
+
+  describe('party:info', () => {
+    const createPartyDto = () => {
+      const owner = { id: 'usr-1', username: 'One' };
+      return { code: 'party-1', name: 'Party', gameMode: 'CLASSIC', userCount: 1, maxUsers: 4, owner, users: [owner], locked: false };
+    };
+
+    it('notifies listeners with the mapped party', () => {
+      const { socket } = createSocket();
+      const listener = vi.fn();
+      socketEventHandler.onPartyInfo(listener);
+      socketEventHandler.bind(socket);
+
+      socket.emit('party:info', createPartyDto());
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener.mock.calls[0][0].code).toBe('party-1');
+      expect(listener.mock.calls[0][0].owner).toEqual(new User('usr-1', 'One'));
+    });
+
+    it('stops notifying after unsubscribing', () => {
+      const { socket } = createSocket();
+      const listener = vi.fn();
+      const unsubscribe = socketEventHandler.onPartyInfo(listener);
+      socketEventHandler.bind(socket);
+      unsubscribe();
+
+      socket.emit('party:info', createPartyDto());
+
+      expect(listener).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('user:synced', () => {
+    it('notifies listeners', () => {
+      const { socket } = createSocket();
+      const listener = vi.fn();
+      socketEventHandler.onUserSynced(listener);
+      socketEventHandler.bind(socket);
+
+      socket.emit('user:synced');
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops notifying after unsubscribing', () => {
+      const { socket } = createSocket();
+      const listener = vi.fn();
+      const unsubscribe = socketEventHandler.onUserSynced(listener);
+      socketEventHandler.bind(socket);
+      unsubscribe();
+
+      socket.emit('user:synced');
+
+      expect(listener).not.toHaveBeenCalled();
     });
   });
 
