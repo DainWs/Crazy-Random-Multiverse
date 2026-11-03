@@ -77,6 +77,7 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 - [x] Read `owner` and `users` of `PartyDto` as `UserDto` in the frontend, and update `Party` (`CON-24`)
 - [x] On start, call `GET /user` and, on `exception.user.not_found`, `POST /register` (`USER-6`)
 - [x] Listen to `party:info` and `user:synced` in the client and apply `CON-23`: go to the party, the main menu or the game according to what arrives
+- [x] Send `party:info` to every member when a user joins a party (`PARTY-10`)
 
 ## Phase 2.5 — Minimal lobby
 
