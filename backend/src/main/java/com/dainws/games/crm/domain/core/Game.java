@@ -50,6 +50,10 @@ public class Game {
 		return this.status.equals(status);
 	}
 
+	public Status getStatus() {
+		return this.status;
+	}
+
 	public boolean hasStarted() {
 		if (this.hasEnded()) {
 			return true;

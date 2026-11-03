@@ -379,5 +379,6 @@ Several players act on the same game at the same time.
 ## 19. Control flow
 
 - `switch` is not used, neither the statement nor the expression: it makes methods grow. A `Map` of handlers is used instead (`EnumMap` for enums). Besides, the project is on Java 17, where `switch` is still the traditional one: pattern matching for `switch` is only a preview feature until Java 21, so there is no exhaustiveness check over sealed types to compensate. Review this rule if the project moves to Java 21.
+- The ternary operator is not used to pick a value or a behavior from the state of an object (`game.inStatus(LOADING) ? A : B`). This is object-oriented Java, not JavaScript: the choice goes in a `Map` indexed by the state (`EnumMap`) or in the object itself through polymorphism.
 - `sealed` types are not used for the same reason: without pattern matching in `switch` they bring little here.
 - For simple things, structured programming (`if`, `for`, local variables) is preferred over method chaining (`Optional` chains, streams). Chains are kept for pipelines that really transform a collection (filter, map, collect); a lookup with a `null` check is written as `get` + `if (x == null) throw`, not as `Optional.ofNullable(...).map(...).orElseThrow(...)`.

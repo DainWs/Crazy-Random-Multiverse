@@ -1,6 +1,8 @@
 package com.dainws.games.crm.controller.events;
 
 import java.time.Clock;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ public class SocketIOConnectionManager {
 	private CommunicationClient communicationClient;
 	private MemoryEventSequence eventSequence;
 	private Clock clock;
+	private Map<Status, EventCode> stateEventCodes;
 
 	private Logger logger;
 
@@ -45,6 +48,9 @@ public class SocketIOConnectionManager {
 		this.userService = userService;
 		this.sessionUserResolver = sessionUserResolver;
 		this.clock = Clock.systemUTC();
+		this.stateEventCodes = new EnumMap<>(Status.class);
+		this.stateEventCodes.put(Status.LOADING, EventCode.GAME_LOADING);
+		this.stateEventCodes.put(Status.IN_PROGRESS, EventCode.GAME_SYNC);
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -108,8 +114,7 @@ public class SocketIOConnectionManager {
 			return;
 		}
 
-		EventCode eventCode = game.inStatus(Status.LOADING) ? EventCode.GAME_LOADING : EventCode.GAME_SYNC;
-		Event event = new Event(eventCode, game);
+		Event event = new Event(this.stateEventCodes.get(game.getStatus()), game);
 		event.setSequence(this.eventSequence.current(game.getCode()));
 		this.communicationClient.sendEvent(client, player, event);
 	}
