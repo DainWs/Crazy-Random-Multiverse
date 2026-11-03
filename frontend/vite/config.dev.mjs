@@ -3,6 +3,10 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+const backendHost = process.env.BACKEND_HOST ?? 'localhost'
+const restTarget = `http://${backendHost}:8080`
+const socketTarget = `http://${backendHost}:9092`
+
 // https://vitejs.dev/config/
 export default defineConfig({
     base: './',
@@ -15,6 +19,13 @@ export default defineConfig({
         }
     },
     server: {
-        port: 8080
+        port: 80,
+        proxy: {
+            '/game': restTarget,
+            '/party': restTarget,
+            '/register': restTarget,
+            '/user': restTarget,
+            '/socket.io': { target: socketTarget, ws: true }
+        }
     }
 })

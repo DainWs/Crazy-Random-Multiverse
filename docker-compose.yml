@@ -1,0 +1,29 @@
+services:
+  backend:
+    image: maven:3.9-eclipse-temurin-17
+    working_dir: /app
+    command: mvn spring-boot:run
+    environment:
+      CRM_COMMUNICATION_ORIGIN: http://localhost
+    ports:
+      - "8081:8080" # REST (8080 is taken by the frontend on the host)
+      - "9092:9092" # Socket.IO
+    volumes:
+      - ./backend:/app
+      - maven-cache:/root/.m2
+
+  frontend:
+    image: node:22
+    working_dir: /app
+    command: sh -c "npm ci && npx vite --config vite/config.dev.mjs --host"
+    environment:
+      BACKEND_HOST: backend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+
+volumes:
+  maven-cache:
+  frontend-node-modules:
