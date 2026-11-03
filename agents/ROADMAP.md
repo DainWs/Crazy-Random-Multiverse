@@ -185,7 +185,7 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 
 ## Phase 11 — Menu, lobby, user
 
-- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, owner succession, name rules, name of the party
+- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, owner succession, name rules, name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
 - [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`); leaving is already in Phase 2.5
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
