@@ -25,7 +25,6 @@ describe('CardStackLayoutHelper', () => {
 
   describe('calculateRevealedCardOffset', () => {
     const cardWidth = 200;
-    const offset = 20;
     const total = 220;
 
     it('returns [-total, 0] for 0 degrees', () => {

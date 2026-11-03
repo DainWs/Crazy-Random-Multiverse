@@ -24,10 +24,12 @@ export default [
         parser: tseslint.parser,
         ecmaVersion: 2020,
         sourceType: 'module',
+        extraFileExtensions: ['.vue'],
         project: ['./tsconfig.json', './tsconfig.test.json']
       }
     },
     rules: {
+      'no-undef': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-array-constructor': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],

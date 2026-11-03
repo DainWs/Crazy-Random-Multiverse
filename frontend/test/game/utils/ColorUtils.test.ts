@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { HexColor } from '@/game/utils/ColorUtils';
 import { isHexColor, toRGBColor } from '@/game/utils/ColorUtils';
 
 describe('ColorUtils', () => {
@@ -18,7 +19,7 @@ describe('ColorUtils', () => {
     });
 
     it('returns false for non-hex strings', () => {
-      expect(isHexColor('red')).toBe(false);
+      expect(isHexColor('red' as HexColor)).toBe(false);
       expect(isHexColor('#12')).toBe(false);
       expect(isHexColor('#12345')).toBe(false);
       expect(isHexColor('#gggggg')).toBe(false);

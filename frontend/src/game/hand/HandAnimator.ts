@@ -2,7 +2,7 @@ import type { Point2D } from "@/domain/Geometry";
 import type CardView from "@/game/cards/CardView";
 import type HandView from "@/game/hand/HandView";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
-import { MOVE_TO_DURATION, SLIDE_TO_DURATION } from "@/core/visual_effects/CardTweens";
+import { MOVE_TO_DURATION } from "@/core/visual_effects/CardTweens";
 
 type OnCompleteCallback = () => void;
 const NoneCallback = () => { };

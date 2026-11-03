@@ -2,15 +2,8 @@ import CombatantView from "@/game/cards/CombatantView";
 import EquipmentView from "@/game/cards/EquipmentView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { GameScene } from "@/scenes/Game";
 
 class CardController {
-  private readonly scene: GameScene;
-
-  public constructor(scene: GameScene) {
-    this.scene = scene;
-  }
-
   public putCardOnZoneSlot(cardView: CombatantView, handView: HandView, zoneSlotView: ZoneSlotView) {
     if (zoneSlotView.getCombatant() !== null) {
       console.warn("Target zone slot already has a card, cannot place another one.");

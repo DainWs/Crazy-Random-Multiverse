@@ -3,16 +3,18 @@ import CardInputManager from '@/core/interactions/CardInputManager';
 import type CardView from '@/game/cards/CardView';
 import type { GameScene } from '@/scenes/Game';
 
+type Listener = (...args: unknown[]) => void;
+
 describe('CardInputManager', () => {
   const createMockCard = () => {
-    const registeredListeners: { [event: string]: Function[] } = {};
+    const registeredListeners: { [event: string]: Listener[] } = {};
 
     const card = {
-      on: vi.fn((event: string, fn: Function) => {
+      on: vi.fn((event: string, fn: Listener) => {
         if (!registeredListeners[event]) registeredListeners[event] = [];
         registeredListeners[event].push(fn);
       }),
-      off: vi.fn((event: string, fn: Function) => {
+      off: vi.fn((event: string, fn: Listener) => {
         if (!registeredListeners[event]) return;
         registeredListeners[event] = registeredListeners[event].filter(l => l !== fn);
       }),

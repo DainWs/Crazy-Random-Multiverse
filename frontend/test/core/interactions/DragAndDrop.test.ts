@@ -6,7 +6,6 @@ import { getTopGameObjectAtCursor } from '@/core/interactions/InteractiveObjectM
 import CombatantView from '@/game/cards/CombatantView';
 import HandView from '@/game/hand/HandView';
 import ZoneSlotView from '@/game/zone/ZoneSlotView';
-import type CardView from '@/game/cards/CardView';
 import type { GameScene } from '@/scenes/Game';
 
 vi.mock('@/core/visual_effects/CardAnimator', () => ({

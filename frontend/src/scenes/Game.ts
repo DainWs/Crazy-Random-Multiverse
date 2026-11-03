@@ -29,7 +29,7 @@ class GameScene extends Scene {
         this.actionSystem = new ActionSystem('game-code');
         this.cameraSystem = new CameraSystem();
 
-        this.cardController = new CardController(this);
+        this.cardController = new CardController();
         this.handController = new HandController(this);
     }
 

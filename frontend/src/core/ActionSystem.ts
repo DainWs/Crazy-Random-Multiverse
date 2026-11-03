@@ -7,11 +7,6 @@ import CardPutPattern from "@/core/actions/CardPutPattern";
 import { gameApi } from "@/api";
 
 // TODO pensar seriamente si esta clase va a ser necesaria al final
-const resolvers: Array<ActionResolver> = [];
-//resolvers.push(ActionResolver.createFrom(new CardPutPattern()));
-//resolvers.push(ActionResolver.createFrom(new CardMovePattern()));
-
-
 class ActionSystem {
     private readonly gameCode: GameCode;
     private readonly resolvers: Array<ActionResolver>;
@@ -28,11 +23,11 @@ class ActionSystem {
         //EventBus.on('card.right-click', this.process, this);
     };
 
-    private addPattern(pattern: ActionPattern): void {
+    private addPattern(_pattern: ActionPattern): void {
         //this.resolvers.push(new ActionResolver(pattern));
     }
 
-    private async process(event: ActionEvent): Promise<void> {
+    public async process(event: ActionEvent): Promise<void> {
         const completedResolvers: Array<ActionResolver> = [];
 
         for (const resolver of this.resolvers) {
