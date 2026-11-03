@@ -1,8 +1,7 @@
 import type { PlayerCode } from "@/domain/Player";
-import type { UserCode, UserState } from "@/domain/User";
+import type { UserCode } from "@/domain/User";
 import type Player from "@/domain/Player";
 import type User from "@/domain/User";
-import type Party from "@/domain/Party";
 import type Zone from "@/domain/Zone";
 import type GameConfiguration from "@/domain/GameConfiguration";
 import type Card from "@/domain/Card";
@@ -28,12 +27,10 @@ type GameState = {
 
 type Store = {
   user?: User;
-  userState: UserState;
-  party?: Party;
   gameState?: GameState;
 }
 
-const store: Store = { userState: 'IDLE' };
+const store: Store = {};
 
 function initializeGame(gameState: GameState) {
   store.gameState = gameState;
@@ -63,22 +60,6 @@ function getUser(): User {
 function setUser(user: User): void {
   store.user = user;
   ExternalStoreApi.saveUser(user);
-}
-
-function getUserState(): UserState {
-  return store.userState;
-}
-
-function setUserState(userState: UserState): void {
-  store.userState = userState;
-}
-
-function getParty(): Party | undefined {
-  return store.party;
-}
-
-function setParty(party: Party | undefined): void {
-  store.party = party;
 }
 
 function getGameConfiguration(): GameConfiguration {
@@ -147,10 +128,6 @@ const StoreSystem = {
   isSessionCode,
   getUser,
   setUser,
-  getUserState,
-  setUserState,
-  getParty,
-  setParty,
   getGameConfiguration,
   getPlayer,
   getPlayerZone,

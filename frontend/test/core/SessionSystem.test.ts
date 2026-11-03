@@ -44,8 +44,6 @@ describe('SessionSystem', () => {
       syncedListener = listener as () => void;
       return () => undefined;
     });
-    StoreSystem.setUserState('IDLE');
-    StoreSystem.setParty(undefined);
   });
 
   describe('start', () => {
@@ -99,14 +97,14 @@ describe('SessionSystem', () => {
     it('goes idle when only user:synced arrives', () => {
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('IDLE');
+      expect(SessionSystem.userState.value).toBe('IDLE');
     });
 
     it('goes to the party when party:info arrives before user:synced', () => {
       partyListener(createParty());
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('IN_PARTY');
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
     });
 
     it('stores the party received', () => {
@@ -114,7 +112,7 @@ describe('SessionSystem', () => {
 
       partyListener(party);
 
-      expect(StoreSystem.getParty()).toBe(party);
+      expect(SessionSystem.party.value).toBe(party);
     });
 
     it('goes to the game in progress when GAME_SYNC arrives first', () => {
@@ -122,7 +120,7 @@ describe('SessionSystem', () => {
       partyListener(createParty());
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('GAME_IN_PROGRESS');
+      expect(SessionSystem.userState.value).toBe('GAME_IN_PROGRESS');
     });
 
     it('goes to the loading game when GAME_LOADING arrives first', () => {
@@ -130,7 +128,7 @@ describe('SessionSystem', () => {
       partyListener(createParty());
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('GAME_LOADING');
+      expect(SessionSystem.userState.value).toBe('GAME_LOADING');
     });
 
     it('forgets the previous party when the socket connects again', () => {
@@ -138,7 +136,7 @@ describe('SessionSystem', () => {
 
       statusListener('connected');
 
-      expect(StoreSystem.getParty()).toBeUndefined();
+      expect(SessionSystem.party.value).toBeUndefined();
     });
 
     it('ignores game events outside the connection sync', () => {
@@ -148,7 +146,7 @@ describe('SessionSystem', () => {
       statusListener('connected');
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('IDLE');
+      expect(SessionSystem.userState.value).toBe('IDLE');
     });
 
     it('keeps the state when user:synced repeats without a new connection', () => {
@@ -157,7 +155,7 @@ describe('SessionSystem', () => {
 
       syncedListener();
 
-      expect(StoreSystem.getUserState()).toBe('IN_PARTY');
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
     });
   });
 });

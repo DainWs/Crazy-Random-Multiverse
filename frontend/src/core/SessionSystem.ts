@@ -1,19 +1,28 @@
 import type { UserState } from '@/domain/User';
+import type Party from '@/domain/Party';
+import { computed, shallowRef } from 'vue';
 import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
 import StoreSystem from '@/core/StoreSystem';
+
+const currentParty = shallowRef<Party | undefined>();
+const currentUserState = shallowRef<UserState>('IDLE');
+
+/** Read-only views for Vue components; computed does not wrap the value in a proxy. */
+const party = computed(() => currentParty.value);
+const userState = computed(() => currentUserState.value);
 
 /** The state being built from the events sent when a socket is bound, or null outside that window (CON-23). */
 let syncingState: UserState | null = null;
 
 const beginSync = () => {
   syncingState = 'IDLE';
-  StoreSystem.setParty(undefined);
+  currentParty.value = undefined;
 }
 
 const finishSync = () => {
   if (syncingState === null) return;
 
-  StoreSystem.setUserState(syncingState);
+  currentUserState.value = syncingState;
   syncingState = null;
 }
 
@@ -30,8 +39,8 @@ const bindListeners = () => {
     if (syncingState !== null) syncingState = 'GAME_LOADING';
   });
 
-  userEventApi.onPartyInfo((party) => {
-    StoreSystem.setParty(party);
+  userEventApi.onPartyInfo((receivedParty) => {
+    currentParty.value = receivedParty;
     if (syncingState === 'IDLE') syncingState = 'IN_PARTY';
   });
 
@@ -50,6 +59,8 @@ const start = async (): Promise<void> => {
 }
 
 const SessionSystem = {
+  party,
+  userState,
   start
 }
 
