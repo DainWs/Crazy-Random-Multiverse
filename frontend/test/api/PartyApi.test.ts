@@ -47,6 +47,7 @@ describe('PartyApi', () => {
         `/party/${toBase64UrlSafe(party.code)}`,
         {
           method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             maxUsers: 6,
             gameMode: 'CLASSIC',

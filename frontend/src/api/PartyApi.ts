@@ -17,6 +17,7 @@ const updateParty = async (party: Party) => {
 
   const response = await fetch(`/party/${toBase64UrlSafe(party.code)}`, {
     method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
   });
   await checkResponse(response);

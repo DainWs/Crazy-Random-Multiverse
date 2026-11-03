@@ -45,6 +45,7 @@ const createParty = async () => {
 
   const response = await fetch('/party', {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(createPartyRequest)
   });
   await checkResponse(response);

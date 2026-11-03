@@ -70,7 +70,7 @@ describe('UserApi', () => {
   });
 
   it('createParty creates and returns a Party', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         code: 'party-1',
@@ -88,6 +88,10 @@ describe('UserApi', () => {
     expect(party).toBeInstanceOf(Party);
     expect(party.code).toBe('party-1');
     expect(party.users).toEqual([new User('usr-1', 'One')]);
+    expect(fetchSpy).toHaveBeenCalledWith('/party', expect.objectContaining({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    }));
   });
 
   it('joinParty encodes party code and returns Party', async () => {
