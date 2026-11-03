@@ -39,7 +39,10 @@ const bindListeners = () => {
 }
 
 const start = async (): Promise<void> => {
-  const user = (await userApi.findAccount()) ?? (await userApi.register());
+  let account = await userApi.findAccount();
+  if (!account) account = await userApi.register();
+
+  const user = account;
   StoreSystem.setUser(user);
 
   bindListeners();
