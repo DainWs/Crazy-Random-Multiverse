@@ -2,7 +2,6 @@ import type { CardRender } from "@/game/cards/renders/CardRender";
 import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/cards/CardBounds";
 import type Card from "@/domain/Card";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
-import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import Phaser from "phaser";
 
 abstract class CardView extends Phaser.GameObjects.Container {
@@ -45,7 +44,6 @@ abstract class CardView extends Phaser.GameObjects.Container {
 
     scene.input.setDraggable(this);
     scene.add.existing(this);
-    InteractiveObjectManager.registerGameObject(this.scene, this);
   }
 
   protected initializeView() {
@@ -148,11 +146,6 @@ abstract class CardView extends Phaser.GameObjects.Container {
     this.setScale(scaleX, scaleY);
   }
 
-  // Others
-  protected preDestroy(): void {
-    super.preDestroy();
-    InteractiveObjectManager.unregisterGameObject(this.scene, this);
-  }
 }
 
 export { CardView };
