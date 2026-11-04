@@ -1,8 +1,8 @@
 import type { CardRender } from "@/game/cards/renders/CardRender";
 import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/cards/CardBounds";
 import type Card from "@/domain/Card";
-import { UNKNOWN_CARD_KEY } from "@/domain/ResourceKeys";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import { createCardArtwork } from "@/game/cards/CardArtwork";
 import Phaser from "phaser";
 
 abstract class CardView extends Phaser.GameObjects.Container {
@@ -61,16 +61,9 @@ abstract class CardView extends Phaser.GameObjects.Container {
   }
 
   protected initializeCardImage() {
-    let cardImage = this.card.getImage();
-    if (!this.scene.textures.exists(cardImage)) {
-      cardImage = UNKNOWN_CARD_KEY;
-    }
-
     const cardImageSize = this.background.displayWidth;
     const cardY = -(cardImageSize - this.background.displayHeight / 2);
-    this.cardImage = this.scene.add.image(0, cardY, cardImage);
-    this.cardImage.setDisplaySize(cardImageSize, cardImageSize);
-    this.cardImage.setOrigin(0.5, 0.5);
+    this.cardImage = createCardArtwork(this.scene, this.card.getImage(), 0, cardY, cardImageSize);
   }
 
   // General

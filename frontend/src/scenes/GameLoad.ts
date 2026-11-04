@@ -11,7 +11,7 @@ import Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
 import StoreSystem, { GameState } from '@/core/StoreSystem';
 import SessionSystem from '@/core/SessionSystem';
-import { RESOURCE_LOAD_TIMEOUT_MS } from '@/core/Constants';
+import ResourceSystem, { IMAGE_XHR_SETTINGS } from '@/core/ResourceSystem';
 import { getText } from '@/core/Texts';
 import { isFinalRejection, planLoad } from '@/core/GameLoadPlanner';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
@@ -31,9 +31,6 @@ const RETRY_TEXT_OFFSET_Y = 104;
 const TEXT_COLOR = '#ffffff';
 const STATUS_TEXT_SIZE = '20px';
 const RETRY_TEXT_SIZE = '24px';
-
-/** A manifest image that does not arrive in time counts as failed (LOAD-7). */
-const IMAGE_XHR_SETTINGS: Phaser.Types.Loader.XHRSettingsObject = { responseType: 'blob', timeout: RESOURCE_LOAD_TIMEOUT_MS };
 
 /** Files that exist only for the mocked hand, served by the frontend until Phase 3 removes it. */
 const MOCK_ASSETS_PATH = 'assets';
@@ -111,6 +108,7 @@ class GameLoadScene extends Scene {
             const manifest = this.manifest ?? (await gameApi.loadGameResourceManifest(this.activeGame.gameCode));
             if (this.closed) return;
             this.manifest = manifest;
+            ResourceSystem.registerDynamic(manifest.dynamic);
 
             const failedKeys = await this.downloadResources(manifest);
             if (this.closed) return;

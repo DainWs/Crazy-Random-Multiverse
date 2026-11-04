@@ -101,7 +101,7 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 - [x] Download the `fixed` resources and try the leader images during `GAME_LOADING`, with the time limit of `LOAD-7`, and confirm `POST /game/{gameCode}/ready` only after that (`LOAD-2`), and stop on `GAME_CANCELLED` (`LOAD-5`)
 - [x] Loading screen: progress of the downloads, then the wait for the other players (`UI-22`)
 - [x] Download the `fixed` resources before showing a game in progress, without `/ready` (`LOAD-6`)
-- [ ] Download card images when a card is first shown, with `card.unknown` until they arrive or if they fail (`UI-21`)
+- [x] Download card images when a card is first shown, with `card.unknown` until they arrive or if they fail (`UI-21`)
 - [x] Loading failure UI: show the failure and offer to retry only what failed, without confirming `/ready` (`UI-12`)
 
 ## Phase 3 — Authoritative game state and hand

@@ -2,8 +2,8 @@ import type { GameScene } from "@/scenes/Game";
 import type Card from "@/domain/Card";
 import type CardView from "@/game/cards/CardView";
 import type { CardTooltip } from "@/game/cards/tooltip";
-import { UNKNOWN_CARD_KEY } from "@/domain/ResourceKeys";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import { createCardArtwork } from "@/game/cards/CardArtwork";
 
 const SCALE_FACTOR = 1.6;
 const WIDTH = CARD_WIDTH * SCALE_FACTOR;
@@ -167,16 +167,8 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private addCardArtwork(card: Card) {
-    // TODO defensive programming?
-    let texture = card.getImage();
-    if (!this.scene.textures.exists(texture)) {
-      texture = UNKNOWN_CARD_KEY;
-    }
     const imageY = -(WIDTH - HEIGHT / 2);
-    const artwork = this.scene.add.image(0, imageY, texture);
-    artwork.setDisplaySize(WIDTH, WIDTH);
-    artwork.setOrigin(0.5, 0.5);
-    return artwork;
+    return createCardArtwork(this.scene, card.getImage(), 0, imageY, WIDTH);
   }
 
   private addCardStrategyObjects(cardView: CardView) {
