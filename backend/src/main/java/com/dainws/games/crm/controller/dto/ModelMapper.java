@@ -9,6 +9,8 @@ import com.dainws.games.crm.controller.dto.response.PartyDto;
 import com.dainws.games.crm.controller.dto.response.PartyListDto;
 import com.dainws.games.crm.controller.dto.response.UserDto;
 import com.dainws.games.crm.controller.dto.response.PlayerDto;
+import com.dainws.games.crm.controller.dto.response.ResourceDto;
+import com.dainws.games.crm.controller.dto.response.ResourceManifestDto;
 import com.dainws.games.crm.controller.dto.response.ZoneDto;
 import com.dainws.games.crm.controller.dto.response.ZoneSlotDto;
 import com.dainws.games.crm.domain.Party;
@@ -25,6 +27,8 @@ import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.services.GameResource;
+import com.dainws.games.crm.services.ResourceManifest;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
 import com.dainws.games.crm.usecase.dto.PositionDto;
 
@@ -35,6 +39,21 @@ public class ModelMapper {
 		userDto.setId(user.getCode().text());
 		userDto.setUsername(user.getName());
 		return userDto;
+	}
+
+	public static ResourceManifestDto toResourceManifestDto(ResourceManifest manifest) {
+		ResourceManifestDto dto = new ResourceManifestDto();
+		dto.setFixed(manifest.fixed().stream().map(ModelMapper::toResourceDto).toList());
+		dto.setDynamic(manifest.dynamic().stream().map(ModelMapper::toResourceDto).toList());
+		return dto;
+	}
+
+	private static ResourceDto toResourceDto(GameResource resource) {
+		ResourceDto dto = new ResourceDto();
+		dto.setKey(resource.key());
+		dto.setType(resource.type());
+		dto.setUrl(resource.url());
+		return dto;
 	}
 
 	public static PartyListDto toPartyListDto(List<Party> parties) {
