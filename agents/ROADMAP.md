@@ -95,7 +95,7 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 - [x] Define the resource manifest contract in `specs/CONTRACT.md`: endpoint or field, format and error keys. The server exposes it (closed with the user); its format is for a person to decide, do not invent it: ask
 - [ ] Serve the `fixed` files from the backend under `/resources`, on its classpath, moving them from `frontend/public/assets`, and add `/resources` to the Vite dev proxy (`CON-29`). `logo` and the menu background stay in the frontend. The test art (`common-01`, `mythic-01`, `cards/pop_02` and their audios) matches no card of `CARD-5` and is not moved
 - [x] Implement the manifest in the backend, with its tests (`CON-28`, `CON-30`, `CON-31`)
-- [ ] Align `GameApi.loadGameResourceManifest` and its test with the contract
+- [x] Align `GameApi.loadGameResourceManifest` and its test with the contract
 - [ ] Derive the manifest keys of images, frames, icons and slot marks in the client (`CARD-4`, `CON-30`)
 - [ ] Replace mocked `GameLoad` flow with real backend state: the game code comes from `GAME_LOADING` instead of `Code:1`. The board, zones and hand stay mocked until Phase 3
 - [ ] Download the `fixed` resources and try the leader images during `GAME_LOADING`, with the time limit of `LOAD-7`, and confirm `POST /game/{gameCode}/ready` only after that (`LOAD-2`), and stop on `GAME_CANCELLED` (`LOAD-5`)

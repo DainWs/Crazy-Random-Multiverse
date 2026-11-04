@@ -7,9 +7,8 @@ import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOver
 import GameConfiguration from '@/domain/GameConfiguration';
 import Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
-import type { CardResource, GameResources, Resource } from '@/domain/Resources';
+import type { ResourceManifest } from '@/domain/Resources';
 import { gameApi } from '@/api';
-import { CardType } from '@/domain/Card';
 
 class GameLoadScene extends Scene {
     private playerCount: number = 2;
@@ -59,7 +58,7 @@ class GameLoadScene extends Scene {
         this.alreadyProcessed = true;
 
         const gameConfiguration = StoreSystem.getGameConfiguration();
-        let manifest: GameResources | null = null;
+        let manifest: ResourceManifest | null = null;
 
         if (gameConfiguration) {
             try {
@@ -129,50 +128,22 @@ class GameLoadScene extends Scene {
         this.enqueueAudio('mythic-die-1-1', 'mythic-die-01.mp3');
     }
 
-    private registerManifestResources(manifest: GameResources) {
-        // 1. Descargar recursos generales (images y audios)
-        this.enqueueImages(manifest.images);
-        this.enqueueAudios(manifest.audios);
-
-        // 2. Registrar los demás recursos con su URL (ej: cartas en registry para carga bajo demanda)
-        this.enqueueCards(manifest.cards);
-    }
-
-    private enqueueCards(cardResources: CardResource[]) {
-        for (const cardResource of cardResources) {
-            this.enqueueCard(cardResource);
+    private registerManifestResources(manifest: ResourceManifest) {
+        // The manifest URLs are relative to the server, not to the assets folder of the base files.
+        this.load.setPath('');
+        for (const resource of manifest.fixed) {
+            this.enqueueImage(resource.key, resource.url);
         }
-    }
 
-    private enqueueCard(cardResource: CardResource) {
-        const { code, type, image, audios } = cardResource;
-
-        const resourceId = `${type.toLowerCase()}-${code}` as `${CardType}-${number}`;
-
-        this.registry.set(`${resourceId}-summary`, cardResource);
-        this.registry.set(`${resourceId}`, image.path);
-
-        for (const audio of audios) {
-            const audioId = audio.id as `${number}-${number}`;
-            this.registry.set(`${resourceId}-${audioId}`, audio.path);
-        }
-    }
-
-    private enqueueImages(imageResources: Resource[]) {
-        for (const image of imageResources) {
-            this.enqueueImage(image.id, image.path);
+        // The dynamic resources are downloaded when a card is shown, so only their URLs are kept.
+        for (const resource of manifest.dynamic) {
+            this.registry.set(resource.key, resource.url);
         }
     }
 
     private enqueueImage(key: string, path: string) {
         this.totalItemsToLoad++;
         this.load.image(key, path);
-    }
-
-    private enqueueAudios(audioResources: Resource[]) {
-        for (const audio of audioResources) {
-            this.enqueueAudio(audio.id, audio.path);
-        }
     }
 
     private enqueueAudio(key: string, path: string) {

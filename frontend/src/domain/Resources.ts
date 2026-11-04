@@ -1,23 +1,14 @@
-import { CardType } from "@/domain/Card";
+type ResourceType = 'IMAGE' | 'AUDIO';
 
-type Resource = {
-  id: string;
-  path: string;
+type GameResource = {
+  key: string;
+  type: ResourceType;
+  url: string;
 };
 
-type CardResource = {
-  code: string;
-  type: CardType;
-  name: string;
-  description: string;
-  image: Resource;
-  audios: Resource[];
-}
-
-type GameResources = {
-  images: Resource[];
-  audios: Resource[];
-  cards: CardResource[];
+type ResourceManifest = {
+  fixed: GameResource[];
+  dynamic: GameResource[];
 };
 
-export type { Resource, CardResource, GameResources }
+export type { ResourceType, GameResource, ResourceManifest }

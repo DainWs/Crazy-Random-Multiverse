@@ -1,6 +1,8 @@
-import type { GameResources } from "@/domain/Resources";
+import type { ResourceManifest } from "@/domain/Resources";
+import type { ResourceManifestDto } from "@/api/dtos/ResourceManifestDto";
 import type { GameCode } from "@/domain/GameConfiguration";
 import type Action from "@/domain/Action";
+import { toResourceManifest } from "@/api/dtos/ResourceManifestDto";
 import { toBase64UrlSafe } from "@/api/models/Codification";
 import { checkResponse } from "@/api/models/ApiException";
 
@@ -14,9 +16,11 @@ const sendAction = async (action: Action) => {
   console.log(`Sending action: ${action}`);
 }
 
-const loadGameResourceManifest = async (gameCode: GameCode): Promise<GameResources> => {
+const loadGameResourceManifest = async (gameCode: GameCode): Promise<ResourceManifest> => {
   const response = await fetch(`/game/${toBase64UrlSafe(gameCode)}/resources`);
-  return await response.json();
+  await checkResponse(response);
+  const body: ResourceManifestDto = await response.json();
+  return toResourceManifest(body);
 }
 
 const sendReady = async (gameCode: GameCode) => {
