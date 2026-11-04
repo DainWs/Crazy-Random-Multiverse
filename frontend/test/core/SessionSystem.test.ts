@@ -11,7 +11,7 @@ vi.mock('@/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api')>()),
   userApi: { findAccount: vi.fn(), register: vi.fn() },
   socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
-  gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn() },
+  gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn(), onGameSync: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
 }));
 
@@ -19,6 +19,7 @@ describe('SessionSystem', () => {
   let statusListener: StatusChangeListener;
   let gameListeners: Map<string, GameEventListener>;
   let gameLoadingListener: Listener<ActiveGame>;
+  let gameSyncListener: Listener<ActiveGame>;
   let partyListener: (party: Party) => void;
   let syncedListener: () => void;
 
@@ -45,6 +46,10 @@ describe('SessionSystem', () => {
     });
     vi.mocked(gameEventApi.onGameLoading).mockImplementation((listener) => {
       gameLoadingListener = listener;
+      return () => undefined;
+    });
+    vi.mocked(gameEventApi.onGameSync).mockImplementation((listener) => {
+      gameSyncListener = listener;
       return () => undefined;
     });
     vi.mocked(userEventApi.onPartyInfo).mockImplementation((listener) => {
@@ -126,8 +131,15 @@ describe('SessionSystem', () => {
       expect(SessionSystem.party.value).toBe(party);
     });
 
+    // LOAD-6
+    it('keeps the game announced by GAME_SYNC', () => {
+      gameSyncListener(activeGame);
+
+      expect(SessionSystem.activeGame.value).toBe(activeGame);
+    });
+
     it('goes to the game in progress when GAME_SYNC arrives first', () => {
-      gameListeners.get('GAME_SYNC')!(gameEvent);
+      gameSyncListener(activeGame);
       partyListener(createParty());
       syncedListener();
 

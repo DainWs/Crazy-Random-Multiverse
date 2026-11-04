@@ -75,7 +75,8 @@ const bindListeners = () => {
     if (status === 'connecting' || status === 'reconnecting') beginSync();
   });
 
-  gameEventApi.onGameApiEvent('GAME_SYNC', () => {
+  gameEventApi.onGameSync((game) => {
+    currentActiveGame.value = game;
     if (syncingState !== null) syncingState = 'GAME_IN_PROGRESS';
   });
 

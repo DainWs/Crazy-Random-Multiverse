@@ -12,6 +12,10 @@ const onGameLoading = (listener: Listener<ActiveGame>) => {
   return socketEventHandler.onGameEvent('GAME_LOADING', (event) => listener(toActiveGame(event.details.game)));
 }
 
+const onGameSync = (listener: Listener<ActiveGame>) => {
+  return socketEventHandler.onGameEvent('GAME_SYNC', (event) => listener(toActiveGame(event.details.game)));
+}
+
 const onAnyGameApiEvent = (listener: GameEventListener) => {
   return socketEventHandler.onAnyGameEvent(listener);
 }
@@ -19,5 +23,6 @@ const onAnyGameApiEvent = (listener: GameEventListener) => {
 export {
   onGameApiEvent,
   onGameLoading,
+  onGameSync,
   onAnyGameApiEvent
 }
