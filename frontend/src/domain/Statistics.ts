@@ -1,3 +1,5 @@
+import { HEALTH_ICON_KEY, statisticIconKey } from "@/domain/ResourceKeys";
+
 type DamageType = 'PHYSICAL' | 'MAGIC' | 'TRUE';
 type ArmorType = 'PHYSICAL' | 'MAGIC';
 
@@ -22,7 +24,7 @@ function Damage(type: DamageType, value: number): Statistic {
     value,
     valueType: type,
     text: () => `${value}`,
-    icon: () => `statistic-icon_${type.toLowerCase()}_damage`
+    icon: () => statisticIconKey('damage', type)
   }
 }
 
@@ -32,7 +34,7 @@ function Armor(type: ArmorType, value: number): Statistic {
     value,
     valueType: type,
     text: () => `${value}`,
-    icon: () => `statistic-icon_${type.toLowerCase()}_armor`
+    icon: () => statisticIconKey('armor', type)
   }
 }
 
@@ -42,7 +44,7 @@ function Health(value: number, maxValue: number): Statistic {
     value,
     maxValue,
     text: () => `${value}/${maxValue}`,
-    icon: () => 'statistic-icon_health'
+    icon: () => HEALTH_ICON_KEY
   }
 }
 

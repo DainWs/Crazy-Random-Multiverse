@@ -1,3 +1,4 @@
+import { UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
 import resolveTween from '@/core/visual_effects/OverlayTweens';
 import Phaser from 'phaser';
 
@@ -56,7 +57,7 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
     for (const targetArea of this.collector()) {
       const centerX = targetArea.x + targetArea.width / 2;
       const centerY = targetArea.y + targetArea.height / 2;
-      const targetImage = this.scene.add.image(centerX, centerY, 'unknown');
+      const targetImage = this.scene.add.image(centerX, centerY, UNKNOWN_CARD_KEY);
       targetImage.setDepth(this.depth);
 
       targetImage.on("pointerover", () => this.onTargetHover(targetImage));

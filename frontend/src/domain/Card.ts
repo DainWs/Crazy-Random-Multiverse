@@ -1,23 +1,9 @@
 import { Armor, Damage, Health, Statistic, StatisticType } from "@/domain/Statistics";
 import Skill from "@/domain/Skills";
+import { ATTACK_AUDIO_VARIANTS, cardAudioKey, cardFrameKey, cardImageKey } from "@/domain/ResourceKeys";
 
 type CardType = 'LEADER' | 'WARRIOR' | 'EQUIPMENT' | 'SPELL';
 type CardRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'MYTHIC';
-type WarriorTexture =
-  | 'card'
-  | 'common-card'
-  | 'uncommon-card'
-  | 'rare-card'
-  | 'epic-card'
-  | 'legendary-card'
-  | 'mythic-card';
-
-type CardTexture =
-  | WarriorTexture
-  | 'leader-card'
-  | 'equipment-card'
-  | 'spell-card';
-
 type CardAudioType = 'put' | 'attack' | 'die';
 type Resource = string;
 
@@ -131,28 +117,16 @@ class Card {
   }
 
   public getAudio(type: CardAudioType): Resource {
-    if (this.isType("WARRIOR")) {
-      const number = (type == 'attack') ? Math.floor(Math.random() * 3) + 1 : 1;
-      return `${this.rarity?.toLowerCase()}-${type}-${this.code.code}-${number}`;
-    }
-
-    return `${this.type.toLowerCase()}-${type}-${this.code.code}`;
+    const variant = Math.floor(Math.random() * ATTACK_AUDIO_VARIANTS) + 1;
+    return cardAudioKey(this.getImage(), type, variant);
   }
 
   public getImage(): Resource {
-    if (this.isType("WARRIOR")) {
-      return `${this.rarity?.toLowerCase()}-${this.code.code}`;
-    }
-
-    return `${this.type.toLowerCase()}-${this.code.code}`;
+    return cardImageKey(this.type, this.code.code, this.rarity);
   }
 
-  public getTexture(): CardTexture {
-    if (this.isType("WARRIOR")) {
-      return `${this.rarity?.toLowerCase()}-card` as WarriorTexture;
-    }
-
-    return `${this.type.toLowerCase()}-card` as CardTexture;
+  public getTexture(): Resource {
+    return cardFrameKey(this.type, this.rarity);
   }
 
   public equals(that: Card) {
@@ -161,6 +135,6 @@ class Card {
 }
 
 export { CardCode };
-export type { CardAudioType, CardOptions, CardType, CardRarity, CardTexture };
+export type { CardAudioType, CardOptions, CardType, CardRarity };
 export type { CombatantCard, LeaderCard, WarriorCard, EquipmentCard, SpellCard };
 export default Card;

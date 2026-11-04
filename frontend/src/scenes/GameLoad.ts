@@ -8,6 +8,7 @@ import GameConfiguration from '@/domain/GameConfiguration';
 import Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
 import type { ResourceManifest } from '@/domain/Resources';
+import { HEALTH_ICON_KEY, UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
 import { gameApi } from '@/api';
 
 class GameLoadScene extends Scene {
@@ -88,44 +89,43 @@ class GameLoadScene extends Scene {
 
     private loadBaseAssets() {
         this.load.setPath('assets');
-        this.enqueueImage('unknown', 'unknown.png');
+        this.enqueueImage(UNKNOWN_CARD_KEY, 'unknown.png');
 
-        this.enqueueImage('statistic-icon_unknown', 'unknown.png');
-        this.enqueueImage('statistic-icon_true_damage', 'true_sword.png');
-        this.enqueueImage('statistic-icon_physical_damage', 'sword.png');
-        this.enqueueImage('statistic-icon_magic_damage', 'staff.png');
-        this.enqueueImage('statistic-icon_physical_armor', 'shield.png');
-        this.enqueueImage('statistic-icon_magic_armor', 'magic_shield.png');
-        this.enqueueImage('statistic-icon_health', 'hearth.png');
+        this.enqueueImage('icon.damage.true', 'true_sword.png');
+        this.enqueueImage('icon.damage.physical', 'sword.png');
+        this.enqueueImage('icon.damage.magic', 'staff.png');
+        this.enqueueImage('icon.armor.physical', 'shield.png');
+        this.enqueueImage('icon.armor.magic', 'magic_shield.png');
+        this.enqueueImage(HEALTH_ICON_KEY, 'hearth.png');
 
-        this.enqueueImage('common-card', 'card-common.png');
-        this.enqueueImage('uncommon-card', 'card-uncommon.png');
-        this.enqueueImage('rare-card', 'card-rare.png');
-        this.enqueueImage('epic-card', 'card-epic.png');
-        this.enqueueImage('legendary-card', 'card-legendary.png');
-        this.enqueueImage('mythic-card', 'card-mythic.png');
+        this.enqueueImage('frame.common', 'card-common.png');
+        this.enqueueImage('frame.uncommon', 'card-uncommon.png');
+        this.enqueueImage('frame.rare', 'card-rare.png');
+        this.enqueueImage('frame.epic', 'card-epic.png');
+        this.enqueueImage('frame.legendary', 'card-legendary.png');
+        this.enqueueImage('frame.mythic', 'card-mythic.png');
 
-        this.enqueueImage('leader-card', 'card-leader.png');
-        this.enqueueImage('equipment-card', 'card-equipment.png');
-        this.enqueueImage('spell-card', 'card-spell.png');
+        this.enqueueImage('frame.leader', 'card-leader.png');
+        this.enqueueImage('frame.equipment', 'card-equipment.png');
+        // TODO mock-only: spells are not in the manifest (CON-30); remove with the mocked hand in Phase 3
+        this.enqueueImage('frame.spell', 'card-spell.png');
 
-        this.enqueueImage('zoneslot-mark-warrior', 'warrior_mark.png');
-        this.enqueueImage('zoneslot-mark-leader', 'leader_mark.png');
+        this.enqueueImage('slot.warrior', 'warrior_mark.png');
+        this.enqueueImage('slot.leader', 'leader_mark.png');
 
-        this.enqueueImage('warrior-0', 'logo.png');
-        this.enqueueImage('common-1', 'common-01.png');
-        this.enqueueAudio('common-put-1-1', 'common-put-01.mp3');
-        this.enqueueAudio('common-attack-1-1', 'common-attack-01-1.mp3');
-        this.enqueueAudio('common-attack-1-2', 'common-attack-01-2.mp3');
-        this.enqueueAudio('common-attack-1-3', 'common-attack-01-3.mp3');
-        this.enqueueAudio('common-die-1-1', 'common-die-01.mp3');
+        this.enqueueImage('warrior.common.1', 'common-01.png');
+        this.enqueueAudio('warrior.common.1.put', 'common-put-01.mp3');
+        this.enqueueAudio('warrior.common.1.attack.1', 'common-attack-01-1.mp3');
+        this.enqueueAudio('warrior.common.1.attack.2', 'common-attack-01-2.mp3');
+        this.enqueueAudio('warrior.common.1.attack.3', 'common-attack-01-3.mp3');
+        this.enqueueAudio('warrior.common.1.die', 'common-die-01.mp3');
 
-        this.enqueueImage('mythic-1', 'mythic-01.png');
-        this.enqueueAudio('mythic-put-1-1', 'mythic-put-01.mp3');
-        this.enqueueAudio('mythic-attack-1-1', 'mythic-attack-01-1.mp3');
-        this.enqueueAudio('mythic-attack-1-2', 'mythic-attack-01-1.mp3');
-        this.enqueueAudio('mythic-attack-1-3', 'mythic-attack-01-1.mp3');
-        this.enqueueAudio('mythic-die-1-1', 'mythic-die-01.mp3');
+        this.enqueueImage('warrior.mythic.1', 'mythic-01.png');
+        this.enqueueAudio('warrior.mythic.1.put', 'mythic-put-01.mp3');
+        this.enqueueAudio('warrior.mythic.1.attack.1', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('warrior.mythic.1.attack.2', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('warrior.mythic.1.attack.3', 'mythic-attack-01-1.mp3');
+        this.enqueueAudio('warrior.mythic.1.die', 'mythic-die-01.mp3');
     }
 
     private registerManifestResources(manifest: ResourceManifest) {

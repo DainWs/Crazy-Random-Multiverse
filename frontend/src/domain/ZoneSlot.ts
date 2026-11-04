@@ -1,8 +1,8 @@
 import Card, { CombatantCard } from "@/domain/Card";
 import { ZonePosition } from "@/domain/Position";
+import { slotMarkKey } from "@/domain/ResourceKeys";
 
 type AllowedCombatant = 'LEADER' | 'WARRIOR';
-type ZoneSlotMarkTexture = `zoneslot-mark-${Lowercase<AllowedCombatant>}`;
 
 class ZoneSlot {
   public readonly position: ZonePosition;
@@ -31,10 +31,10 @@ class ZoneSlot {
     return this.combatant !== null;
   }
 
-  public getMaskTexture(): ZoneSlotMarkTexture {
-    return `zoneslot-mark-${this.allowedCombatant.toLowerCase()}` as ZoneSlotMarkTexture;
+  public getMaskTexture(): string {
+    return slotMarkKey(this.allowedCombatant);
   }
 }
 
-export type { AllowedCombatant, ZoneSlotMarkTexture };
+export type { AllowedCombatant };
 export default ZoneSlot;

@@ -57,7 +57,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
   private initializeView() {
     this.backgroundGraphics = this.scene.add.graphics();
-    this.mark = this.scene.add.image(0, 0, `zoneslot-mark-${this.zoneSlot.allowedCombatant.toLowerCase()}`);
+    this.mark = this.scene.add.image(0, 0, this.zoneSlot.getMaskTexture());
 
     ZoneSlotViewRenderer.render(this.backgroundGraphics, this.mark, this);
 

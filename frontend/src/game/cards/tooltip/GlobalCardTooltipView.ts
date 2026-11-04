@@ -2,6 +2,7 @@ import type { GameScene } from "@/scenes/Game";
 import type Card from "@/domain/Card";
 import type CardView from "@/game/cards/CardView";
 import type { CardTooltip } from "@/game/cards/tooltip";
+import { UNKNOWN_CARD_KEY } from "@/domain/ResourceKeys";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 
 const SCALE_FACTOR = 1.6;
@@ -169,7 +170,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     // TODO defensive programming?
     let texture = card.getImage();
     if (!this.scene.textures.exists(texture)) {
-      texture = 'warrior-0';
+      texture = UNKNOWN_CARD_KEY;
     }
     const imageY = -(WIDTH - HEIGHT / 2);
     const artwork = this.scene.add.image(0, imageY, texture);

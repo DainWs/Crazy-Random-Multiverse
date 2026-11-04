@@ -1,6 +1,7 @@
 import type { CardRender } from "@/game/cards/renders/CardRender";
 import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/cards/CardBounds";
 import type Card from "@/domain/Card";
+import { UNKNOWN_CARD_KEY } from "@/domain/ResourceKeys";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import Phaser from "phaser";
 
@@ -62,7 +63,7 @@ abstract class CardView extends Phaser.GameObjects.Container {
   protected initializeCardImage() {
     let cardImage = this.card.getImage();
     if (!this.scene.textures.exists(cardImage)) {
-      cardImage = 'warrior-0';
+      cardImage = UNKNOWN_CARD_KEY;
     }
 
     const cardImageSize = this.background.displayWidth;
