@@ -25,6 +25,7 @@ export default defineConfig({
             '/party': restTarget,
             '/register': restTarget,
             '/user': restTarget,
+            '/resources': restTarget,
             '/socket.io': { target: socketTarget, ws: true }
         }
     }
