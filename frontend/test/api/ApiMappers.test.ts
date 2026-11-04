@@ -5,6 +5,7 @@ import { notifyListeners } from '@/api/models/Listeners';
 import { CardDto, toCard, toCardCode, toCardCodeDto } from '@/api/dtos/CardDto';
 import { toPlayer, toPlayerCode } from '@/api/dtos/PlayerDto';
 import { toZone } from '@/api/dtos/ZoneDto';
+import { toActiveGame, type GameDto } from '@/api/dtos/GameDto';
 import { toParty, toMinimalParty } from '@/api/dtos/PartyDto';
 import Card, { CardCode } from '@/domain/Card';
 import Player from '@/domain/Player';
@@ -175,6 +176,38 @@ describe('API Models and DTO Mappers', () => {
       const zone = toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }, 'FRIENDLY');
 
       expect(zone.slots[0][0].combatant).toBeNull();
+    });
+  });
+
+  describe('GameDto', () => {
+    const player = { code: 'p1', name: 'One', isSpectator: false, isAlive: true, handSize: 0 };
+    const leaderCard = (code: string) => ({ catalogCode: { code, type: 'LEADER' as const }, name: code, description: '', type: 'LEADER' as const });
+    const zone = (leaderCode?: string) => ({
+      owner: player,
+      type: 'BASE' as const,
+      combatants: [[{ allowedCombatant: 'LEADER' as const, combatant: leaderCode ? leaderCard(leaderCode) : undefined }], [{ allowedCombatant: 'WARRIOR' as const }]]
+    });
+    const game = (...zones: ReturnType<typeof zone>[]): GameDto => ({ code: 'game-1', zones });
+
+    it('toActiveGame keeps the game code', () => {
+      expect(toActiveGame(game(zone('0'))).gameCode).toBe('game-1');
+    });
+
+    it('toActiveGame lists the leader of each zone', () => {
+      const activeGame = toActiveGame(game(zone('0'), zone('1')));
+
+      expect(activeGame.leaders).toEqual([new CardCode('0', 'LEADER'), new CardCode('1', 'LEADER')]);
+    });
+
+    // DECK-5
+    it('toActiveGame lists a repeated leader once', () => {
+      const activeGame = toActiveGame(game(zone('0'), zone('0')));
+
+      expect(activeGame.leaders).toEqual([new CardCode('0', 'LEADER')]);
+    });
+
+    it('toActiveGame skips a leader slot without a card', () => {
+      expect(toActiveGame(game(zone())).leaders).toEqual([]);
     });
   });
 

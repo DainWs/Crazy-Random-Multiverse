@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { GameEventListener, StatusChangeListener } from '@/api/models/Listeners';
+import type { GameEventListener, Listener, StatusChangeListener } from '@/api/models/Listeners';
+import type { ActiveGame } from '@/domain/ActiveGame';
 import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
 import Party from '@/domain/Party';
 import User from '@/domain/User';
@@ -10,13 +11,14 @@ vi.mock('@/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api')>()),
   userApi: { findAccount: vi.fn(), register: vi.fn() },
   socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
-  gameEventApi: { onGameApiEvent: vi.fn() },
+  gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
 }));
 
 describe('SessionSystem', () => {
   let statusListener: StatusChangeListener;
   let gameListeners: Map<string, GameEventListener>;
+  let gameLoadingListener: Listener<ActiveGame>;
   let partyListener: (party: Party) => void;
   let syncedListener: () => void;
 
@@ -27,6 +29,7 @@ describe('SessionSystem', () => {
     return party;
   };
   const gameEvent = { code: 'GAME_SYNC', details: {} } as never;
+  const activeGame: ActiveGame = { gameCode: 'game-1', leaders: [] };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -38,6 +41,10 @@ describe('SessionSystem', () => {
     });
     vi.mocked(gameEventApi.onGameApiEvent).mockImplementation((code, listener) => {
       gameListeners.set(code, listener);
+      return () => undefined;
+    });
+    vi.mocked(gameEventApi.onGameLoading).mockImplementation((listener) => {
+      gameLoadingListener = listener;
       return () => undefined;
     });
     vi.mocked(userEventApi.onPartyInfo).mockImplementation((listener) => {
@@ -128,7 +135,7 @@ describe('SessionSystem', () => {
     });
 
     it('goes to the loading game when GAME_LOADING arrives first', () => {
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
       partyListener(createParty());
       syncedListener();
 
@@ -141,6 +148,14 @@ describe('SessionSystem', () => {
       statusListener('connected');
 
       expect(SessionSystem.screen.value).toBe('MAIN_MENU');
+    });
+
+    it('forgets the previous game when the socket connects again', () => {
+      gameLoadingListener(activeGame);
+
+      statusListener('connecting');
+
+      expect(SessionSystem.activeGame.value).toBeUndefined();
     });
 
     it('forgets the previous party when the socket connects again', () => {
@@ -175,7 +190,7 @@ describe('SessionSystem', () => {
 
     // UI-17
     it('shows the game when GAME_LOADING arrives before user:synced', () => {
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
       partyListener(createParty());
       syncedListener();
 
@@ -208,14 +223,14 @@ describe('SessionSystem', () => {
     it('goes to loading when GAME_LOADING arrives in the party', () => {
       partyListener(createParty());
 
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
 
       expect(SessionSystem.userState.value).toBe('GAME_LOADING');
     });
 
     it('goes to the game when GAME_START arrives while loading', () => {
       partyListener(createParty());
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
 
       gameListeners.get('GAME_START')!(gameEvent);
 
@@ -224,7 +239,7 @@ describe('SessionSystem', () => {
 
     it('goes back to the party when GAME_CANCELLED arrives while loading', () => {
       partyListener(createParty());
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
 
       gameListeners.get('GAME_CANCELLED')!(gameEvent);
 
@@ -233,11 +248,47 @@ describe('SessionSystem', () => {
 
     it('keeps the loading state when party:info arrives', () => {
       partyListener(createParty());
-      gameListeners.get('GAME_LOADING')!(gameEvent);
+      gameLoadingListener(activeGame);
 
       partyListener(createParty());
 
       expect(SessionSystem.userState.value).toBe('GAME_LOADING');
+    });
+
+    // LOAD-2
+    it('keeps the game announced by GAME_LOADING', () => {
+      partyListener(createParty());
+
+      gameLoadingListener(activeGame);
+
+      expect(SessionSystem.activeGame.value).toBe(activeGame);
+    });
+
+    // UI-12
+    it('abandoning the game while loading goes back to the party', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+
+      SessionSystem.abandonGame();
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+    });
+
+    // UI-12
+    it('abandoning the game without a party goes to the main menu', () => {
+      gameLoadingListener(activeGame);
+
+      SessionSystem.abandonGame();
+
+      expect(SessionSystem.userState.value).toBe('IDLE');
+    });
+
+    it('abandoning the game outside of a game changes nothing', () => {
+      partyListener(createParty());
+
+      SessionSystem.abandonGame();
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
     });
 
     it('goes to the party when the server confirms entering it', () => {

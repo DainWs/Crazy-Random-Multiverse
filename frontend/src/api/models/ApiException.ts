@@ -4,6 +4,8 @@ const HTTP_BAD_REQUEST = 400;
 
 const EXCEPTION_KEYS = {
   USER_NOT_FOUND: 'exception.user.not_found',
+  GAME_NOT_FOUND: 'exception.game.not_found',
+  WRONG_GAME: 'exception.access_denied.wrong_game',
 } as const;
 
 class ApiException extends Error {

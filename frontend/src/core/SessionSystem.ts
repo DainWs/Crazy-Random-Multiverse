@@ -1,4 +1,5 @@
 import type { Screen, UserState } from '@/domain/User';
+import type { ActiveGame } from '@/domain/ActiveGame';
 import type Party from '@/domain/Party';
 import { computed, shallowRef } from 'vue';
 import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
@@ -6,10 +7,12 @@ import StoreSystem from '@/core/StoreSystem';
 
 const currentParty = shallowRef<Party | undefined>();
 const currentUserState = shallowRef<UserState>('IDLE');
+const currentActiveGame = shallowRef<ActiveGame | undefined>();
 
 /** Read-only views for Vue components; computed does not wrap the value in a proxy. */
 const party = computed(() => currentParty.value);
 const userState = computed(() => currentUserState.value);
+const activeGame = computed(() => currentActiveGame.value);
 
 const SCREEN_BY_USER_STATE: Record<UserState, Screen> = {
   IDLE: 'MAIN_MENU',
@@ -31,6 +34,7 @@ const beginSync = () => {
   isSynced.value = false;
   syncingState = 'IDLE';
   currentParty.value = undefined;
+  currentActiveGame.value = undefined;
 }
 
 const finishSync = () => {
@@ -54,6 +58,11 @@ const enterParty = (confirmed: Party) => {
   followLiveState('IN_PARTY', ['IDLE']);
 }
 
+/** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). */
+const abandonGame = () => {
+  followLiveState(currentParty.value ? 'IN_PARTY' : 'IDLE', ['GAME_LOADING', 'GAME_IN_PROGRESS']);
+}
+
 /** The user is no longer in a party: they left it, or the server says they were kicked (PARTY-12). */
 const leaveParty = () => {
   currentParty.value = undefined;
@@ -70,7 +79,8 @@ const bindListeners = () => {
     if (syncingState !== null) syncingState = 'GAME_IN_PROGRESS';
   });
 
-  gameEventApi.onGameApiEvent('GAME_LOADING', () => {
+  gameEventApi.onGameLoading((game) => {
+    currentActiveGame.value = game;
     if (syncingState !== null) syncingState = 'GAME_LOADING';
     else followLiveState('GAME_LOADING', ['IN_PARTY']);
   });
@@ -106,10 +116,12 @@ const start = async (): Promise<void> => {
 const SessionSystem = {
   party,
   userState,
+  activeGame,
   isSynced: isUserSynced,
   screen,
   enterParty,
   leaveParty,
+  abandonGame,
   start
 }
 
