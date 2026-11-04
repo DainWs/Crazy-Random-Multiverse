@@ -6,7 +6,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 - **UI-1** The flow is: main menu → create a party, party list or join by code → party → loading → game → result → party.
 - **UI-2** All texts are in Spanish and prepared to be translated. **[Post-MVP]** English and dynamic localization.
-- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards.
+- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game, after the load of `LOAD-6` if it applies. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards.
 
 ## Game
 
@@ -23,7 +23,9 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-9** If the connection is lost during a game, a notice covers the table and disables interaction while the client retries on its own. When the connection returns, the state is restored from `GAME_SYNC`.
 - **UI-10** If the session has expired, or the game no longer exists and the user is not in a party (`CON-23`), the client goes back to the main menu and explains what happened. An expired session starts as a new user (`USER-5`).
 - **UI-11** If the server does not respond, the client goes back to the main menu, explains what happened and offers to retry.
-- **UI-12** If loading the resources of a game fails, the client shows the failure and offers to retry, without confirming `/ready`. If the player closes the game, `LOAD-3` applies.
+- **UI-12** If the manifest, a `fixed` resource or `/ready` fails during the load (`LOAD-2`, `LOAD-6`), the client shows the failure and offers to retry, without confirming `/ready`. Retrying repeats only what failed. If the player closes the game, `LOAD-3` applies. A rejection with `exception.game.not_found` or `exception.access_denied.wrong_game` offers no retry: the client goes back to the party or, if the user is not in one, follows `UI-10`. `exception.user.not_found` follows `USER-8`.
+- **UI-21** The image of a card is downloaded the first time the card has to be shown, or during the load for the leaders of the game (`LOAD-2`), using the manifest (`CON-30`). Until it arrives, the card shows `card.unknown`, and the image replaces it when it does. A failed download keeps `card.unknown`, does not interrupt the game and is attempted again the next time the card is shown. A card the manifest does not list also keeps `card.unknown`.
+- **UI-22** The loading screen shows the progress of the downloads and, after confirming `/ready`, a text saying that it is waiting for the other players (`LOAD-3`).
 
 ## Menu
 

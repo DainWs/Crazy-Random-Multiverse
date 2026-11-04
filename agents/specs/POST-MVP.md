@@ -24,6 +24,9 @@ Still to be specified: abilities, which `COMBAT-8` mentions but no rule defines,
 
 - **VAR-1** Trolling cards show a circle next to health and damage. Green: a normal card. Red: the card moves to the center of the table and only attacks its owner.
 - **VAR-2** Combat log.
+- **VAR-3** A deck is uploaded to the backend as a zip with its cards (`DECK-1`). The backend hosts its files and lists them in the manifest of the games that use it (`CON-28`). This is why the backend hosts the resources and the manifest depends on the game.
+
+Still to be specified for `VAR-3`: who uploads a deck, the format of the zip, its validation and its lifetime.
 
 ## AI
 

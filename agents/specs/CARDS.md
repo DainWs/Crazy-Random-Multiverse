@@ -17,7 +17,7 @@
 
 ## Base content
 
-- **CARD-4** A card has a name, description, type, rarity if it is a warrior, statistics and a texture. The client derives the frame and image of a card from `type`, `rarity` and `catalogCode`, so `CardDto` has no texture field.
+- **CARD-4** A card has a name, description, type, rarity if it is a warrior, statistics and a texture. The client derives the manifest keys of the frame and image of a card from `type`, `rarity` and `catalogCode` (`CON-30`) and gets their URLs from the manifest, so `CardDto` has no texture field.
 - **CARD-5** The base content of the MVP is the following. All damage and armor are physical.
 - **CARD-6** A card in the deck can come with equipment already attached.
 - **CARD-7** The name and description of a card travel as the keys `card.<type>.<code>.name` and `card.<type>.<code>.description`, for example `card.warrior.0.name`, where `<code>` is the one in `catalogCode` (`CON-26`), and the client translates them. The tables below give their text in Spanish.

@@ -138,6 +138,8 @@ A statistic with value 0 is not sent.
 - `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users, locked }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto`, `users` a `UserDto[]`, and `locked` says whether the party is locked (`LOAD-1`, `LOAD-4`, `WIN-5`).
 - `PartyListDto`: `{ parties }`.
 - `gameMode`: `CLASSIC` is the only value in the MVP.
+- `ResourceManifestDto`: `{ fixed, dynamic }`, both `ResourceDto[]`. See `CON-28`.
+- `ResourceDto`: `{ key, type, url }`. `type` is `IMAGE` or `AUDIO`. See `CON-29` and `CON-30`.
 
 ## Commands
 
@@ -194,6 +196,23 @@ Types of the fields:
 
 - **CON-24** `UserDto.id` is a public id, different from the session id, because it is shared with the other users. `/party/{partyCode}/kick/{userCode}` uses it. `PlayerDto.code` has the same value, so the client identifies its own player without exposing the session.
 
+## Game resources
+
+- **CON-28** `GET /game/{gameCode}/resources` returns the `ResourceManifestDto` of the game: the location of the resources the client needs to show it. `fixed` is downloaded before the game is shown (`LOAD-2`, `LOAD-6`) and `dynamic` when it is needed (`UI-21`). Any player of the game can request it at any moment of the game, also when eliminated. The errors are `exception.game.not_found` and `exception.access_denied.wrong_game`.
+- **CON-29** The backend hosts the files under `/resources`, and each `url` is relative to the server, so the client reaches it the same way as the REST API, which requires both under one origin for the client. The client treats a `url` as opaque and finds a resource only by its `key`. The files need no session. A missing file is answered with a 404 without a key, as an exception to `CON-18`, because the client only reads the result of the download.
+- **CON-30** The keys are the following. `<rarity>` is the lowercase `rarity`, and `<code>` is the one in `catalogCode` (`CON-26`).
+
+| List | Resource | Keys |
+|---|---|---|
+| `fixed` | Statistic icons | `icon.damage.physical`, `icon.damage.magic`, `icon.damage.true`, `icon.armor.physical`, `icon.armor.magic`, `icon.health` |
+| `fixed` | Card frames | `frame.common`, `frame.uncommon`, `frame.rare`, `frame.epic`, `frame.legendary`, `frame.mythic`, `frame.leader`, `frame.equipment` |
+| `fixed` | Slot marks | `slot.warrior`, `slot.leader` |
+| `fixed` | Provisional image (`UI-21`) | `card.unknown` |
+| `dynamic` | Card images | `warrior.<rarity>.<code>`, `leader.<code>`, `equipment.<code>` |
+| `dynamic` | Combatant audios | `<image key>.put`, `<image key>.die`, `<image key>.attack.<n>`, with `n` from 1 to 3 |
+
+- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`).
+
 ## REST API
 
 | Method and path | Who | Body | Response |
@@ -208,6 +227,7 @@ Types of the fields:
 | `PUT /party/{partyCode}` | Owner | `{ gameMode, maxUsers }` | |
 | `POST /party/{partyCode}/kick/{userCode}` | Owner | | |
 | `POST /party/{partyCode}/start` | Owner | | |
+| `GET /game/{gameCode}/resources` | Player | | `ResourceManifestDto` |
 | `POST /game/{gameCode}/ready` | Player | | |
 | `POST /game/{gameCode}/action` | Player | `ActionDto` | See `CON-18` |
 

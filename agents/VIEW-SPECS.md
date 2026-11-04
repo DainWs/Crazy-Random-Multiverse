@@ -7,6 +7,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-1** The local player's leader is shown nearest to them.
 - **VIEW-2** The layout works for 2 to 10 players, with readable cards and hover previews.
 - **VIEW-3** Rival hands are shown as card backs.
+- **VIEW-12** When the board is first shown after `GAME_START`, the leaders play an animation of being placed in their slots, one after the other in the order of `zones`, each with its `put` audio once sounds exist (`VIEW-9`). The animation of the first cards received (`VIEW-8`) waits for it to end. It is only visual: the leaders are already placed (`SETUP-2`), and events are applied to the state as they arrive. It does not play when entering a game in progress (`LOAD-6`).
 
 ## Combat
 

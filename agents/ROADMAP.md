@@ -92,12 +92,17 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 
 Starting a game from the party today stalls in `GAME_LOADING`: the client asks `GET /game/{gameCode}/resources`, which the backend does not have, and the load fails with `imageResources is not iterable`. The resources must be downloaded before the game starts, and `/ready` confirmed only after that (`LOAD-2`).
 
-- [ ] Define the resource manifest contract in `specs/CONTRACT.md`: endpoint or field, format and error keys. The server exposes it (closed with the user); its format is for a person to decide, do not invent it: ask
-- [ ] Implement the manifest in the backend, with its tests
+- [x] Define the resource manifest contract in `specs/CONTRACT.md`: endpoint or field, format and error keys. The server exposes it (closed with the user); its format is for a person to decide, do not invent it: ask
+- [ ] Serve the `fixed` files from the backend under `/resources`, on its classpath, moving them from `frontend/public/assets`, and add `/resources` to the Vite dev proxy (`CON-29`). `logo` and the menu background stay in the frontend. The test art (`common-01`, `mythic-01`, `cards/pop_02` and their audios) matches no card of `CARD-5` and is not moved
+- [ ] Implement the manifest in the backend, with its tests (`CON-28`, `CON-30`, `CON-31`)
 - [ ] Align `GameApi.loadGameResourceManifest` and its test with the contract
-- [ ] Replace mocked `GameLoad` flow with real backend state
-- [ ] Download the resources during `GAME_LOADING` and confirm `POST /game/{gameCode}/ready` only when they are loaded (`LOAD-2`)
-- [ ] Loading failure UI: show the failure and offer to retry, without confirming `/ready` (`UI-12`)
+- [ ] Derive the manifest keys of images, frames, icons and slot marks in the client (`CARD-4`, `CON-30`)
+- [ ] Replace mocked `GameLoad` flow with real backend state: the game code comes from `GAME_LOADING` instead of `Code:1`. The board, zones and hand stay mocked until Phase 3
+- [ ] Download the `fixed` resources and try the leader images during `GAME_LOADING`, with the time limit of `LOAD-7`, and confirm `POST /game/{gameCode}/ready` only after that (`LOAD-2`), and stop on `GAME_CANCELLED` (`LOAD-5`)
+- [ ] Loading screen: progress of the downloads, then the wait for the other players (`UI-22`)
+- [ ] Download the `fixed` resources before showing a game in progress, without `/ready` (`LOAD-6`)
+- [ ] Download card images when a card is first shown, with `card.unknown` until they arrive or if they fail (`UI-21`)
+- [ ] Loading failure UI: show the failure and offer to retry only what failed, without confirming `/ready` (`UI-12`)
 
 ## Phase 3 — Authoritative game state and hand
 
@@ -156,7 +161,7 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 
 ## Phase 6 — Base assets and stability
 
-- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP. `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. The client holds the Spanish texts of the keys
+- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. The client holds the Spanish texts of the keys
 - [ ] Camera stability: zoom/pan must not break card interaction
 
 ## Phase 7 — Rounds, players and connection
@@ -184,8 +189,9 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 - [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [ ] Review/fix existing table grid-line TODO
 - [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment)
-- [ ] Display opponent card backs (`VIEW-3`)
+- [ ] Display opponent card backs (`VIEW-3`), adding the file, which does not exist yet, and its key to `fixed` (`CON-30`)
 - [ ] Complete stacked-card hover behavior if needed
+- [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 
 ## Phase 10 — UX
 
@@ -219,6 +225,7 @@ Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
+- [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
 - [ ] A person tests a real browser connection with the session cookie
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [ ] In the planning stage, before implementing `CON-21`, weigh the pros and cons of giving each event its own `EventDetails` implementation
@@ -235,7 +242,7 @@ Not tied to a phase.
 - Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
 - Teams: a team model in the backend (from the game configuration and from spells) and its exposure to the frontend (for example a `team` in each `ZoneDto`), and in the interface: display, team victory and dead teammates
 - Vote to kick a player in the middle of a game (the MVP has no turn time limit, so a disconnected player blocks the game until their user is deleted, and one who stays connected without acting blocks it indefinitely)
-- Several decks instead of a single one per server: today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `PersistenceConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode, uploaded by the owner), its format, validation and lifetime before designing it
+- Several decks instead of a single one per server: today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `PersistenceConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode, uploaded as a zip, `VAR-3`), who uploads it, its format, validation and lifetime before designing it
 - Leaders do not repeat when the deck has enough for every player
 - Names and descriptions for the leaders (`CARD-5`)
 - Balance of the base content: higher rarities do not stand out (Alien, Epic, has 5 damage and 15 health, worse than Perro, Uncommon, with 10 and 10; Policía reaches 20 damage with Pistolón), and Argoth and Odin are not dealt, because the schedule has no slots for their rarities

@@ -48,7 +48,7 @@
 
 ## Deck
 
-- **DECK-1** In the MVP, every game uses the single deck of the server. Choosing or uploading a deck is **[Post-MVP]**.
+- **DECK-1** In the MVP, every game uses the single deck of the server. Choosing or uploading a deck is **[Post-MVP]** (`VAR-3`).
 - **DECK-2** The deck never runs out. Each deal picks at random among the cards of the requested category, and cards can repeat.
 - **DECK-3** If the deck has no card of the requested category, nothing is dealt for that slot and the game continues.
 - **DECK-4** The deck contains at least one leader, because a game cannot start without one.
