@@ -48,10 +48,12 @@ public class Manifest {
 	}
 
 	public void addCard(CardResource card) {
-		if (!card.hasKey()) {
-			return;
+		if (card.hasKey()) {
+			this.addKeyedCard(card);
 		}
+	}
 
+	private void addKeyedCard(CardResource card) {
 		String key = card.getKey();
 		this.addImage(key, this.cardPath(key, IMAGE_EXTENSION));
 		if (TYPES_WITH_AUDIO.contains(card.getType())) {
