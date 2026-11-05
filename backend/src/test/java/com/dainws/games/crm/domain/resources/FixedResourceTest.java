@@ -1,4 +1,4 @@
-package com.dainws.games.crm.services;
+package com.dainws.games.crm.domain.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,9 +12,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class FixedResourceTest {
 
+	private static final String CLASSPATH_PREFIX = "static/resources/";
+
 	@Test
 	void testGivenFixedResources_whenListKeys_thenTheyAreTheOnesOfTheContract() {
-		List<String> keys = Arrays.stream(FixedResource.values()).map(FixedResource::key).toList();
+		List<String> keys = Arrays.stream(FixedResource.values()).map(FixedResource::getKey).toList();
 
 		assertEquals(List.of( //
 				"icon.damage.physical", "icon.damage.magic", "icon.damage.true", //
@@ -28,13 +30,8 @@ class FixedResourceTest {
 	@ParameterizedTest
 	@EnumSource(FixedResource.class)
 	void testGivenFixedResource_whenFindItInTheClasspath_thenTheFileExists(FixedResource resource) {
-		String location = ResourceLocation.classpath(resource.path());
+		String location = CLASSPATH_PREFIX + resource.getPath();
 
 		assertNotNull(getClass().getClassLoader().getResource(location), location);
-	}
-
-	@Test
-	void testGivenPath_whenCreateUrl_thenItIsRelativeToTheServer() {
-		assertEquals("/resources/icons/health.png", ResourceLocation.url("icons/health.png"));
 	}
 }

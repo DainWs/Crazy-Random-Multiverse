@@ -1,4 +1,4 @@
-package com.dainws.games.crm.services;
+package com.dainws.games.crm.domain.resources;
 
 public enum FixedResource {
 	ICON_DAMAGE_PHYSICAL("icon.damage.physical", "icons/damage-physical.png"),
@@ -27,11 +27,15 @@ public enum FixedResource {
 		this.path = path;
 	}
 
-	public String key() {
+	public String getKey() {
 		return this.key;
 	}
 
-	public String path() {
+	public String getPath() {
 		return this.path;
+	}
+
+	public ResourceType getType() {
+		return ResourceType.IMAGE;
 	}
 }

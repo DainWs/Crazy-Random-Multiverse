@@ -1,6 +1,6 @@
 package com.dainws.games.crm.controller.dto.response;
 
-import com.dainws.games.crm.services.ResourceType;
+import com.dainws.games.crm.domain.resources.ResourceType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ResourceDto {

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +23,10 @@ import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
-import com.dainws.games.crm.services.ResourceService;
+import com.dainws.games.crm.services.GameService;
+import com.dainws.games.crm.usecase.LoadUsecase;
 
-class WebResourceControllerTest {
+class WebLoadControllerTest {
 
 	private static final String RESOURCES_URL = "/game/{gameCode}/resources";
 	private static final String USER_CODE = "user-1";
@@ -47,11 +49,7 @@ class WebResourceControllerTest {
 		MemoryGameRepository gameRepository = new MemoryGameRepository();
 		gameRepository.save(this.game);
 
-		WebResourceController controller = new WebResourceController(new ResourceService(gameRepository, cardRepository));
-		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
-		this.mockMvc = MockMvcBuilders.standaloneSetup(controller) //
-				.setControllerAdvice(new RestExceptionAdvice()) //
-				.build();
+		this.mockMvc = this.mockMvc(gameRepository, cardRepository);
 	}
 
 	@Test
@@ -86,12 +84,7 @@ class WebResourceControllerTest {
 		Game otherGame = new GameBuilder().withPlayers(new PlayerBuilder().withCode("other-user").build()).build();
 		MemoryGameRepository gameRepository = new MemoryGameRepository();
 		gameRepository.save(otherGame);
-		WebResourceController controller = new WebResourceController(
-				new ResourceService(gameRepository, new MemoryCardRepository()));
-		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
-		MockMvc outsiderMvc = MockMvcBuilders.standaloneSetup(controller) //
-				.setControllerAdvice(new RestExceptionAdvice()) //
-				.build();
+		MockMvc outsiderMvc = this.mockMvc(gameRepository, new MemoryCardRepository());
 
 		outsiderMvc.perform(get(RESOURCES_URL, this.encode(otherGame.getCode()))) //
 				.andExpect(status().isBadRequest()) //
@@ -103,6 +96,16 @@ class WebResourceControllerTest {
 		this.mockMvc.perform(get(RESOURCES_URL, "***")) //
 				.andExpect(status().isBadRequest()) //
 				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
+	}
+
+	private MockMvc mockMvc(MemoryGameRepository gameRepository, MemoryCardRepository cardRepository) {
+		LoadUsecase loadUsecase = new LoadUsecase(gameRepository, cardRepository);
+		loadUsecase.setResourcesUrlPrefix("/resources/");
+		WebLoadController controller = new WebLoadController(new GameService(null, gameRepository, List.of()), loadUsecase);
+		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
+		return MockMvcBuilders.standaloneSetup(controller) //
+				.setControllerAdvice(new RestExceptionAdvice()) //
+				.build();
 	}
 
 	private String encode(GameCode gameCode) {

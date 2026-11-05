@@ -5,6 +5,11 @@
 	  "description": "Selects the repository implementations, default = \"MEMORY\""
 	},
 	{
+	  "name": "crm.resources.url-prefix",
+	  "type": "java.lang.String",
+	  "description": "Prefix of the URL of every resource in the manifest, it ends with \"/\", default = \"/resources/\""
+	},
+	{
 	  "name": "crm.user.cleanup-interval",
 	  "type": "java.lang.String",
 	  "description": "Time between two runs of the task that deletes the users without an open socket, as an ISO-8601 duration, default = \"PT1M\""
