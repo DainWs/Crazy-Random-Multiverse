@@ -46,5 +46,5 @@ function toZone(zoneDto: ZoneDto, team: Team): Zone {
   return zone;
 }
 
-export type { ZoneDto }
+export type { ZoneDto, ZoneSlotDto }
 export { toZone }
