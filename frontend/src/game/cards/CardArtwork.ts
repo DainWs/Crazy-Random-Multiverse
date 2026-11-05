@@ -11,14 +11,14 @@ const createCardArtwork = (scene: Phaser.Scene, imageKey: string, x: number, y: 
 
   if (!isLoaded) {
     void ResourceSystem.loadImage(scene, imageKey).then((available) => {
-      if (!available || !artwork.active) return;
-
-      artwork.setTexture(imageKey);
-      artwork.setDisplaySize(size, size);
+      if (available && artwork.active) {
+        artwork.setTexture(imageKey);
+        artwork.setDisplaySize(size, size);
+      }
     });
   }
 
   return artwork;
-}
+};
 
 export { createCardArtwork };

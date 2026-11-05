@@ -20,18 +20,22 @@ class ApiException extends Error {
 
 /** Accepted requests are 2xx and rejected ones are a 400 with an exception key (CON-18); any other status is an unexpected failure. */
 const readRejection = async (response: Response): Promise<ExceptionCodeDto | undefined> => {
-  if (response.ok) return undefined;
+  if (response.ok) {
+    return undefined;
+  }
 
   if (response.status === HTTP_BAD_REQUEST) {
     return await response.json();
   }
 
   throw new Error(`Unexpected response status ${response.status}`);
-}
+};
 
 const checkResponse = async (response: Response): Promise<void> => {
   const rejection = await readRejection(response);
-  if (rejection) throw new ApiException(rejection.key);
-}
+  if (rejection) {
+    throw new ApiException(rejection.key);
+  }
+};
 
 export { ApiException, EXCEPTION_KEYS, checkResponse, readRejection };

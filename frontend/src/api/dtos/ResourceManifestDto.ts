@@ -11,16 +11,20 @@ interface ResourceManifestDto {
   dynamic: ResourceDto[];
 }
 
-const toGameResource = (dto: ResourceDto): GameResource => ({
-  key: dto.key,
-  type: dto.type,
-  url: dto.url
-});
+const toResourceManifest = (dto: ResourceManifestDto): ResourceManifest => {
+  return {
+    fixed: dto.fixed.map(toGameResource),
+    dynamic: dto.dynamic.map(toGameResource)
+  };
+};
 
-const toResourceManifest = (dto: ResourceManifestDto): ResourceManifest => ({
-  fixed: dto.fixed.map(toGameResource),
-  dynamic: dto.dynamic.map(toGameResource)
-});
+function toGameResource(dto: ResourceDto): GameResource {
+  return {
+    key: dto.key,
+    type: dto.type,
+    url: dto.url
+  };
+}
 
 export type { ResourceDto, ResourceManifestDto }
 export { toResourceManifest }

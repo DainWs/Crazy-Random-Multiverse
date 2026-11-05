@@ -20,10 +20,12 @@ const planLoad = (manifest: ResourceManifest, leaders: CardCode[], isLoaded: (ke
     required: manifest.fixed.filter((resource) => !isLoaded(resource.key)),
     optional: manifest.dynamic.filter((resource) => leaderKeys.has(resource.key) && !isLoaded(resource.key))
   };
-}
+};
 
 /** The game is gone, is not the user's, or the session expired: retrying cannot fix it (UI-12). */
-const isFinalRejection = (error: unknown): boolean => error instanceof ApiException && FINAL_REJECTION_KEYS.includes(error.key);
+const isFinalRejection = (error: unknown): boolean => {
+  return error instanceof ApiException && FINAL_REJECTION_KEYS.includes(error.key);
+};
 
 export type { LoadPlan };
 export { isFinalRejection, planLoad };

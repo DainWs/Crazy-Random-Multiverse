@@ -7,19 +7,38 @@ const IMAGE_XHR_SETTINGS: Phaser.Types.Loader.XHRSettingsObject = { responseType
 const dynamicUrls = new Map<string, string>();
 const downloads = new Map<string, Promise<boolean>>();
 
-/** Name of the event Phaser emits when the image with that key has been loaded. */
-const fileCompleteEvent = (key: string) => `filecomplete-image-${key}`;
-
 /** Keeps where each dynamic image of the game is, to download it when a card needs it (UI-21). */
 const registerDynamic = (resources: GameResource[]) => {
   dynamicUrls.clear();
   for (const resource of resources) {
-    if (resource.type === 'IMAGE') dynamicUrls.set(resource.key, resource.url);
+    if (resource.type === 'IMAGE') {
+      dynamicUrls.set(resource.key, resource.url);
+    }
   }
-}
+};
 
-const download = (scene: Phaser.Scene, key: string, url: string): Promise<boolean> =>
-  new Promise((resolve) => {
+/**
+ * Makes sure the image of a card is in the scene, downloading it if it is not there yet (UI-21).
+ * Resolves with whether it is available: an image the manifest does not list, or that fails to download, is not, and the next request tries again.
+ */
+const loadImage = (scene: Phaser.Scene, key: string): Promise<boolean> => {
+  const url = dynamicUrls.get(key);
+  let request = downloads.get(key);
+
+  if (scene.textures.exists(key)) {
+    request = Promise.resolve(true);
+  } else if (url === undefined) {
+    request = Promise.resolve(false);
+  } else if (request === undefined) {
+    request = download(scene, key, url).finally(() => downloads.delete(key));
+    downloads.set(key, request);
+  }
+
+  return request;
+};
+
+function download(scene: Phaser.Scene, key: string, url: string): Promise<boolean> {
+  return new Promise((resolve) => {
     const finish = (loaded: boolean) => {
       scene.load.off(fileCompleteEvent(key), onComplete);
       scene.load.off('loaderror', onError);
@@ -28,7 +47,9 @@ const download = (scene: Phaser.Scene, key: string, url: string): Promise<boolea
     };
     const onComplete = () => finish(true);
     const onError = (file: Phaser.Loader.File) => {
-      if (file.key === key) finish(false);
+      if (file.key === key) {
+        finish(false);
+      }
     };
     const onShutdown = () => finish(false);
 
@@ -38,23 +59,11 @@ const download = (scene: Phaser.Scene, key: string, url: string): Promise<boolea
     scene.load.image(key, url, IMAGE_XHR_SETTINGS);
     scene.load.start();
   });
+}
 
-/**
- * Makes sure the image of a card is in the scene, downloading it if it is not there yet (UI-21).
- * Resolves with whether it is available: an image the manifest does not list, or that fails to download, is not, and the next request tries again.
- */
-const loadImage = (scene: Phaser.Scene, key: string): Promise<boolean> => {
-  if (scene.textures.exists(key)) return Promise.resolve(true);
-
-  const url = dynamicUrls.get(key);
-  if (url === undefined) return Promise.resolve(false);
-
-  const inFlight = downloads.get(key);
-  if (inFlight) return inFlight;
-
-  const request = download(scene, key, url).finally(() => downloads.delete(key));
-  downloads.set(key, request);
-  return request;
+/** Name of the event Phaser emits when the image with that key has been loaded. */
+function fileCompleteEvent(key: string): string {
+  return `filecomplete-image-${key}`;
 }
 
 const ResourceSystem = {

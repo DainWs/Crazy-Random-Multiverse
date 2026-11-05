@@ -61,7 +61,7 @@ const enterParty = (confirmed: Party) => {
 /** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). */
 const abandonGame = () => {
   followLiveState(currentParty.value ? 'IN_PARTY' : 'IDLE', ['GAME_LOADING', 'GAME_IN_PROGRESS']);
-}
+};
 
 /** The user is no longer in a party: they left it, or the server says they were kicked (PARTY-12). */
 const leaveParty = () => {
