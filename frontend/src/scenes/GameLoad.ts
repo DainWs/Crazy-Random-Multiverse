@@ -87,15 +87,14 @@ class GameLoadScene extends Scene {
 
     create() {
         const activeGame = SessionSystem.activeGame.value;
-        if (!activeGame) {
+        if (activeGame) {
+            this.activeGame = activeGame;
+            this.loadGameData();
+            void this.run();
+        } else {
             console.error('GameLoad started without an active game');
             SessionSystem.abandonGame();
-            return;
         }
-
-        this.activeGame = activeGame;
-        this.loadGameData();
-        void this.run();
     }
 
     /** Downloads what the game needs and, while loading, confirms with the server. Repeating it only repeats what is missing (UI-12). */
@@ -106,43 +105,61 @@ class GameLoadScene extends Scene {
 
         try {
             const manifest = this.manifest ?? (await gameApi.loadGameResourceManifest(this.activeGame.gameCode));
-            if (this.closed) return;
-            this.manifest = manifest;
-            ResourceSystem.registerDynamic(manifest.dynamic);
-
-            const failedKeys = await this.downloadResources(manifest);
-            if (this.closed) return;
-            if (failedKeys.length > 0) {
-                this.showFailure(getText('ui.game_load.failed'));
-                return;
+            if (!this.closed) {
+                await this.loadGame(manifest);
             }
+        } catch (error) {
+            if (!this.closed) {
+                this.onFailure(error);
+            }
+        }
+    }
 
+    private async loadGame(manifest: ResourceManifest) {
+        this.manifest = manifest;
+        ResourceSystem.registerDynamic(manifest.dynamic);
+
+        const failedKeys = await this.downloadResources(manifest);
+        const hasFailed = failedKeys.length > 0;
+        if (!this.closed && hasFailed) {
+            this.showFailure(getText('ui.game_load.failed'));
+        }
+
+        if (!this.closed && !hasFailed) {
             this.generateOverlays();
             await this.finishLoading();
-        } catch (error) {
-            if (!this.closed) this.onFailure(error);
         }
     }
 
     private async finishLoading() {
-        if (SessionSystem.userState.value !== 'GAME_LOADING') {
+        if (SessionSystem.userState.value === 'GAME_LOADING') {
+            await this.confirmReady();
+        } else {
             this.scene.start('Game');
-            return;
         }
+    }
 
+    private async confirmReady() {
         await gameApi.sendReady(this.activeGame.gameCode);
-        if (this.closed) return;
-        this.showStatus(getText('ui.game_load.waiting'));
+        if (!this.closed) {
+            this.showStatus(getText('ui.game_load.waiting'));
+        }
     }
 
     private onFailure(error: unknown) {
         if (isFinalRejection(error)) {
             SessionSystem.abandonGame();
-            return;
+        } else {
+            this.showFailure(this.failureMessage(error));
+        }
+    }
+
+    private failureMessage(error: unknown): string {
+        if (error instanceof ApiException) {
+            return getText(error.key);
         }
 
-        const message = error instanceof ApiException ? getText(error.key) : getText('ui.game_load.failed');
-        this.showFailure(message);
+        return getText('ui.game_load.failed');
     }
 
     private showStatus(message: string) {
@@ -204,10 +221,10 @@ class GameLoadScene extends Scene {
     }
 
     private generateOverlays() {
-        if (this.overlaysGenerated) return;
-
-        CalmTargetingOverlay.generateTexture(this);
-        this.overlaysGenerated = true;
+        if (!this.overlaysGenerated) {
+            CalmTargetingOverlay.generateTexture(this);
+            this.overlaysGenerated = true;
+        }
     }
 
     private loadGameData() {
