@@ -6,7 +6,9 @@ import { Armor, Damage, Health } from '@/domain/Statistics';
 import { ZonePosition } from '@/domain/Position';
 import { cardAudioKey, cardFrameKey, cardImageKey, slotMarkKey, statisticIconKey } from '@/domain/ResourceKeys';
 
-const createCard = (type: CardType, code: string, rarity?: CardRarity) => new Card({ code: new CardCode(code, type), name: 'name', description: '', type, rarity });
+function createCard(type: CardType, code: string, rarity?: CardRarity): Card {
+  return new Card({ code: new CardCode(code, type), name: 'name', description: '', type, rarity });
+}
 
 // CON-30
 describe('ResourceKeys', () => {

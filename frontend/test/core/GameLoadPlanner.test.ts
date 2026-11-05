@@ -4,10 +4,17 @@ import { ApiException } from '@/api/models/ApiException';
 import { CardCode } from '@/domain/Card';
 import { isFinalRejection, planLoad } from '@/core/GameLoadPlanner';
 
-const image = (key: string): GameResource => ({ key, type: 'IMAGE', url: `/resources/${key}.png` });
-const audio = (key: string): GameResource => ({ key, type: 'AUDIO', url: `/resources/${key}.mp3` });
+function image(key: string): GameResource {
+  return { key, type: 'IMAGE', url: `/resources/${key}.png` };
+}
 
-const keysOf = (resources: GameResource[]) => resources.map((resource) => resource.key);
+function audio(key: string): GameResource {
+  return { key, type: 'AUDIO', url: `/resources/${key}.mp3` };
+}
+
+function keysOf(resources: GameResource[]): string[] {
+  return resources.map((resource) => resource.key);
+}
 
 describe('GameLoadPlanner', () => {
   const manifest: ResourceManifest = {
