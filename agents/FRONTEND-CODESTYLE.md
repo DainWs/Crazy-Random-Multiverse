@@ -127,6 +127,9 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is not debated by hand.
 
 - 4-space indentation, single quotes, semicolons, no trailing commas, `printWidth` 160, `arrowParens: always`.
+- Every `if`, `for` and `while` declares its scope with `{}`, even when the body is one statement (`if (x) y();` is not written).
+- Private (not exported) functions of a module are `function name() {}` declarations, as in `ZoneDto.ts`, not `const name = () => {}`. A private function goes right below the one that uses it, not grouped at the end.
+- An arrow function that is a method or a named function (`const toActiveGame = (...) => { ... }`) is written in full: with `{}` and an explicit `return` when it returns something, never the one-line expression body. Inline callbacks (`computed(() => x)`, `some((known) => known.equals(leader))`) may keep the short form.
 - No wildcard imports. Order: libraries (`phaser`, `vue`, `socket.io-client`), `@/api`, `@/domain`, `@/core`, the rest.
 - Class and type files in `PascalCase.ts` (`CardView.ts`); modules with functions and domain utilities in `camelCase.ts` only where they already exist (`cardFactory.ts`).
 - `npm run lint` must pass with no new errors.

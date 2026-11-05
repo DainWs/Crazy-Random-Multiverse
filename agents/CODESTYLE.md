@@ -126,6 +126,8 @@ A value cannot live in two places. Event names and exception codes shared betwee
 
 - A function does one thing. If its name needs an `and`, they are two functions.
 - Target: fewer than 30 lines. It is a signal, not a hard limit; exceeding it must be justified.
+- Maximum 2 levels of nesting per method or function, and a conditional is never nested in another conditional (`if () { if () { } }`). The two levels are only a loop with a conditional (or another loop) inside, or the other way around: `if () { for }`, `for { if }`. Deeper code is split into methods.
+- Avoid whenever possible the early `return;` (a `return` with no value that cuts a method short), `break` and `continue`: they break the flow. Structure the code with a condition or a local variable instead.
 - Maximum 3 positional parameters. Beyond that, they are grouped into a value object. (For backend constructors the maximum is also 3: see `BACKEND-CODESTYLE.md`.)
 - Boolean parameters are forbidden in public signatures: turn it into two functions or an enum. A boolean at the call site forces you to open the definition to know what it means.
 - Modules by responsibility, not by type.
