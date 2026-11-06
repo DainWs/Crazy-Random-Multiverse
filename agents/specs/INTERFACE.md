@@ -6,7 +6,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 - **UI-1** The flow is: main menu → create a party, party list or join by code → party → loading → game → result → party.
 - **UI-2** All texts are in Spanish and prepared to be translated. **[Post-MVP]** English and dynamic localization.
-- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game, after the load of `LOAD-6` if it applies. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards.
+- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game, after the load of `LOAD-6` if it applies. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards. It keeps the game state from `GAME_LOADING` on, whatever scene is active (`LOAD-6`), and drops it when the user no longer has a game.
 
 ## Game
 
@@ -38,3 +38,4 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-16** The party screen disables starting the game while the party is locked (`PartyDto.locked`).
 - **UI-19** The party screen shows the name, the number of members out of the capacity, the members with the owner marked, and the code with a button to copy it (`PARTY-5`, `PARTY-11`). Any member can leave from it (`PARTY-6`).
 - **UI-20** Only the owner sees the start button. It is disabled while the party is locked (`UI-16`) or has fewer than 2 members (`PARTY-9`).
+- **UI-23** Only the owner sees the configuration controls: the capacity, from 2 to 10 (`PARTY-2`), the game mode selector, with Classic as its only option (`PARTY-3`, `SCOPE-3`), and a button to kick each member except themselves (`PARTY-6`). A rejection is shown as a brief message based on its key, as in `UI-18`.

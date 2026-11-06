@@ -25,7 +25,7 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 ```text
 scenes → controllers → core, game → domain
 scenes/controllers → api (to talk to the backend)
-api → domain (maps DTO ↔ domain)
+api → domain (maps DTO ↔ domain), core/StoreSystem (applies game events)
 domain → (nothing)
 ```
 
@@ -38,7 +38,7 @@ domain → (nothing)
 
 ## 2. State and communication
 
-- The game state lives in `StoreSystem` (with local persistence in `localStorageApi`). It is the single source of truth on the client; views read from it.
+- The game state lives in `StoreSystem`, only in memory, because `GAME_SYNC` restores it (`CON-11`). It is the single source of truth on the client; views read from it.
 - The authoritative state only changes when an event arrives from the backend (`CON-17`). **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
 - Flow of an action: interaction → `ActionSystem` / `ActionResolver` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` updates the `StoreSystem` → views update.
 - Internal UI events (`EventSystem`) are independent of network events. UI event names are declared in the `Event` union in `EventSystem.ts`; loose strings and `rawEmit` are not used in new code.

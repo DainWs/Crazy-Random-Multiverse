@@ -21,8 +21,8 @@
 - **PARTY-6** A member can leave and the owner can kick a member, except during a game. A spectator is the exception (`SPEC-3`). The owner cannot kick themselves: they leave instead.
 - **PARTY-7** If the owner leaves, the member who has been in the party the longest becomes the owner.
 - **PARTY-8** A party is removed when it becomes empty.
-- **PARTY-9** The owner can start the game at any moment if the party has at least 2 members. No confirmation from the other members is needed.
-- **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name.
+- **PARTY-9** The owner can start the game at any moment if the party has at least 2 members. No confirmation from the other members is needed. Starting is rejected while the party is locked (`exception.party.locked`).
+- **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name. The lock of `LOAD-1` is the exception and sends none, because every member is in the game.
 - **PARTY-11** The name of a party is the current name of its owner. It changes when the owner changes (`PARTY-7`) or renames themselves.
 - **PARTY-12** A kicked user receives a last `party:info` in which they no longer appear in `users`, and the client goes back to the main menu. If they are disconnected, they do not receive it, and they find out when a socket is bound again (`CON-23`) or through the error of their next request.
 
@@ -48,7 +48,7 @@
 - **LOAD-1** When the owner starts the game, the party locks and every player loads the game (`GAME_LOADING`).
 - **LOAD-2** Each client requests the manifest (`CON-28`), downloads the `fixed` resources it does not have yet, tries to download the images of the leaders of the game, and only then confirms with `POST /game/{gameCode}/ready`. A leader image that fails does not stop the load (`UI-21`). The other `dynamic` resources are not part of the load. The game starts (`GAME_START`) when every player has confirmed. Confirming again has no effect, because a client that reconnects loads again (`CON-23`).
 - **LOAD-3** The wait has no time limit. A disconnected player who has not confirmed blocks the start until their user is deleted, which removes them from the game (`ABSENT-3`). A player who stays connected without confirming, for example after a failed load (`UI-12`), blocks it indefinitely. Both are accepted risks of the MVP.
-- **LOAD-4** If that leaves fewer than 2 players, the game is cancelled (`GAME_CANCELLED`) and the party unlocks. The client goes back to the party and explains what happened.
+- **LOAD-4** A player removed during the load is eliminated like any other (`PLAYER_DIE`) and keeps their seat (`ROUND-2`). If that leaves fewer than 2 players, the game is cancelled (`GAME_CANCELLED`) instead of ending (`WIN-1`), the server removes it from memory and the party unlocks. The client goes back to the party and explains what happened.
 - **LOAD-5** A `GAME_CANCELLED` received during the load stops it, the client does not confirm, and `LOAD-4` applies.
 - **LOAD-6** A client without the `fixed` resources that enters a game in progress, for example after reloading the page or because `GAME_START` arrives during its load, downloads them before showing the table and does not send `/ready`. The events received meanwhile are applied to the state.
 - **LOAD-7** A file of the load that does not finish in 30 seconds counts as failed, so a stalled download cannot hold the load without offering a retry (`UI-12`).
