@@ -20,6 +20,7 @@ import com.dainws.games.crm.services.exception.PartyException;
 public class PartyService {
 
 	private UserClient userClient;
+	private PartyEventService partyEventService;
 	private PartyRepository repository;
 
 	public PartyService(PartyRepository repository) {
@@ -67,7 +68,7 @@ public class PartyService {
 			party.remove(user);
 
 			if (party.isEmpty()) {
-				this.repository.delete(party.getCode());
+				this.deleteParty(party);
 			} else {
 				this.userClient.sendPartyInfo(party);
 			}
@@ -76,6 +77,14 @@ public class PartyService {
 		} catch (GameRuntimeException e) {
 			throw new PartyException(e.getCode(), e);
 		}
+	}
+
+	private void deleteParty(Party party) {
+		if (party.isLocked()) {
+			this.partyEventService.discardGameOf(party);
+		}
+
+		this.repository.delete(party.getCode());
 	}
 
 	public Optional<Party> findPartyOf(User user) {
@@ -88,6 +97,11 @@ public class PartyService {
 
 	public List<Party> getParties() {
 		return this.repository.findAll();
+	}
+
+	@Autowired
+	public void setPartyEventService(PartyEventService partyEventService) {
+		this.partyEventService = partyEventService;
 	}
 
 	@Autowired

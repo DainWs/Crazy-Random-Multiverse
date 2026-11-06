@@ -17,6 +17,10 @@ public class MemoryEventSequence {
 		return this.counterOf(gameCode).incrementAndGet();
 	}
 
+	public void remove(GameCode gameCode) {
+		this.sequences.remove(gameCode);
+	}
+
 	public int current(GameCode gameCode) {
 		return this.counterOf(gameCode).get();
 	}

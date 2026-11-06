@@ -30,6 +30,31 @@ class MemoryGameRepositoryTest {
 	}
 
 	@Test
+	void testGivenGameWithPublishedEvents_whenDelete_thenItsSequenceStartsOver() {
+		MemoryEventSequence eventSequence = new MemoryEventSequence();
+		MemoryGameRepository repository = new MemoryGameRepository();
+		repository.setEventSequence(eventSequence);
+		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
+		repository.save(game);
+		eventSequence.next(game.getCode());
+
+		repository.delete(game.getCode());
+
+		assertThat(eventSequence.next(game.getCode())).isEqualTo(1);
+	}
+
+	@Test
+	void testGivenSavedGame_whenDelete_thenItNoLongerExists() {
+		MemoryGameRepository repository = new MemoryGameRepository();
+		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
+		repository.save(game);
+
+		repository.delete(game.getCode());
+
+		assertThat(repository.exists(game.getCode())).isFalse();
+	}
+
+	@Test
 	void testGivenNullCode_whenExists_thenIsFalse() {
 		MemoryGameRepository repository = new MemoryGameRepository();
 

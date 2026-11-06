@@ -16,9 +16,11 @@ public class MemoryGameRepository implements GameRepository {
 	private Logger logger;
 
 	private Map<GameCode, Game> games;
+	private MemoryEventSequence eventSequence;
 
 	public MemoryGameRepository() {
 		this.games = new ConcurrentHashMap<>();
+		this.eventSequence = new MemoryEventSequence();
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -32,6 +34,11 @@ public class MemoryGameRepository implements GameRepository {
 	public void delete(GameCode gameCode) {
 		this.logger.debug("Deleting game with code {}", gameCode);
 		this.games.remove(gameCode);
+		this.eventSequence.remove(gameCode);
+	}
+
+	public void setEventSequence(MemoryEventSequence eventSequence) {
+		this.eventSequence = eventSequence;
 	}
 
 	@Override

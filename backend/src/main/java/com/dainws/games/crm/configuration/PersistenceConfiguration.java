@@ -21,8 +21,10 @@ import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 public class PersistenceConfiguration {
 	@Bean(name = "GameRepository")
 	@ConditionalOnMissingBean(GameRepository.class)
-	MemoryGameRepository gameRepository() {
-		return new MemoryGameRepository();
+	MemoryGameRepository gameRepository(MemoryEventSequence eventSequence) {
+		MemoryGameRepository gameRepository = new MemoryGameRepository();
+		gameRepository.setEventSequence(eventSequence);
+		return gameRepository;
 	}
 	
 	@Bean(name = "CardRepository")
