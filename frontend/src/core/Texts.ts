@@ -18,6 +18,7 @@ const TEXTS: Record<string, string> = {
   'ui.game_load.waiting': 'Esperando a los demás jugadores...',
   'ui.game_load.failed': 'No se ha podido cargar la partida',
   'ui.game_load.retry': 'Reintentar',
+  'ui.game.hand_size': 'Mano:',
   'exception.unexpected': 'Ha ocurrido un error inesperado',
   'exception.user.not_found': 'Tu sesión ha caducado',
   'exception.party.not_found': 'No existe ninguna party con ese código',

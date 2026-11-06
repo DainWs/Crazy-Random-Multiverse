@@ -97,6 +97,24 @@ class HandView extends Phaser.GameObjects.Container {
     this.animator.animateIncomingCards(fromPoint, this.cards, incomingCards, onCompleteAnimation);
   }
 
+  /** Puts the cards in their slots without animating them: they were not received now (VIEW-8). */
+  public restoreCards(...restoredCards: CardView[]) {
+    const totalCards = this.cards.length + restoredCards.length;
+
+    for (const restoredCard of restoredCards) {
+      const index = this.cards.length;
+      const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(index, totalCards);
+
+      restoredCard.setOriginalPosition(slotPosition.x, slotPosition.y);
+      restoredCard.setOriginalDepth(this.cardsDepth + index);
+      restoredCard.setPosition(slotPosition.x, slotPosition.y);
+
+      this.interactionManager.attachListeners(this, restoredCard);
+      this.cards.push(restoredCard);
+      this.addAt(restoredCard, index);
+    }
+  }
+
   public removeCard(card: CardView) {
     if (!this.cards.includes(card)) return;
     this.interactionManager.deattachListeners(this, card);

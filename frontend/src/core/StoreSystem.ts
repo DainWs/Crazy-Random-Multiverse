@@ -7,7 +7,9 @@ import type GameConfiguration from "@/domain/GameConfiguration";
 import type Card from "@/domain/Card";
 import type { CardCode } from "@/domain/Card";
 import type Battlefield from "@/domain/Battlefield";
+import type { CancelListenerCallback, Listener } from "@/api/models/Listeners";
 import { localStorageApi as ExternalStoreApi } from "@/api";
+import { notifyListeners } from "@/api/models/Listeners";
 
 type SessionCode = UserCode | PlayerCode;
 
@@ -29,17 +31,31 @@ type GameState = {
 /** What a GameDto carries: the hand does not travel in every event (CON-11). */
 type GameSnapshot = Omit<GameState, 'playerHand'>;
 
+/** What changed in the game state: the views draw the zones again, restore the hand without animating it, or animate the cards that came or went. */
+type GameChange = 'GAME_UPDATED' | 'HAND_RESTORED' | 'HAND_CHANGED';
+
 type Store = {
   user?: User;
   gameState?: GameState;
 }
 
 const store: Store = {};
+const changeListeners = new Set<Listener<GameChange>>();
+
+function onChange(listener: Listener<GameChange>): CancelListenerCallback {
+  changeListeners.add(listener);
+  return () => changeListeners.delete(listener);
+}
+
+function notifyChange(change: GameChange) {
+  notifyListeners(changeListeners, 'game change listener', change);
+}
 
 /** Replaces the state with the one the server sent, and keeps the hand of the same game, which the snapshots do not replace. */
 function applyGame(snapshot: GameSnapshot) {
   const isSameGame = store.gameState?.gameConfiguration.gameCode === snapshot.gameConfiguration.gameCode;
   store.gameState = { ...snapshot, playerHand: (isSameGame && store.gameState?.playerHand) || [] };
+  notifyChange('GAME_UPDATED');
 }
 
 function clearGame() {
@@ -107,12 +123,14 @@ function getPlayerHand(): PlayerHand {
 function setPlayerHand(playerHand: PlayerHand): void {
   numberCopies(playerHand);
   store.gameState!.playerHand = playerHand;
+  notifyChange('HAND_RESTORED');
 }
 
 function addCardToHand(card: Card): void {
   const hand = getPlayerHand();
   hand.push(card);
   numberCopies(hand);
+  notifyChange('HAND_CHANGED');
 }
 
 /** Removes one copy of the card, as the server only says which card was played (CON-13, CON-26). */
@@ -121,6 +139,10 @@ function removeCardFromHand(cardCode: CardCode): Card | undefined {
   const index = hand.findIndex((card) => card.code.equals(cardCode));
   const [removed] = index === -1 ? [] : hand.splice(index, 1);
   numberCopies(hand);
+  if (removed) {
+    notifyChange('HAND_CHANGED');
+  }
+
   return removed;
 }
 
@@ -166,6 +188,7 @@ function getBattlefield(): Battlefield {
 }
 
 const StoreSystem = {
+  onChange,
   applyGame,
   clearGame,
   getSessionCode,
@@ -186,5 +209,5 @@ const StoreSystem = {
   getBattlefield
 }
 
-export type { GameSnapshot, GameState };
+export type { GameChange, GameSnapshot, GameState };
 export default StoreSystem;

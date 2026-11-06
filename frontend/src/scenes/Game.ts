@@ -1,4 +1,6 @@
+import type { GameChange } from '@/core/StoreSystem';
 import CardController from '@/controllers/CardController';
+import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
 import ActionSystem from '@/core/ActionSystem';
@@ -9,6 +11,7 @@ import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
+import CombatantView from '@/game/cards/CombatantView';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -22,6 +25,12 @@ class GameScene extends Scene {
     private cardTooltipView: GlobalCardTooltipView;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
+
+    private readonly storeChangeHandlers: Record<GameChange, () => void> = {
+        GAME_UPDATED: () => this.renderZones(),
+        HAND_RESTORED: () => this.renderHand(),
+        HAND_CHANGED: () => this.handController.syncCards(StoreSystem.getPlayerHand())
+    };
 
     public constructor() {
         super('Game');
@@ -50,6 +59,9 @@ class GameScene extends Scene {
         this.input.setPollAlways();
 
         this.renderAll();
+
+        const stopListening = StoreSystem.onChange((change) => this.storeChangeHandlers[change]());
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
     }
 
     private renderAll() {
@@ -58,8 +70,7 @@ class GameScene extends Scene {
     }
 
     private renderHand() {
-        this.handController.clearCards();
-        this.handController.addCards(...StoreSystem.getPlayerHand());
+        this.handController.restoreCards(StoreSystem.getPlayerHand());
     }
 
     private renderZones() {
@@ -74,6 +85,16 @@ class GameScene extends Scene {
         for (const zoneView of zoneViews) {
             this.zones.push(zoneView);
             this.battlefieldContainer.add(zoneView);
+            this.showCombatants(zoneView);
+        }
+    }
+
+    private showCombatants(zoneView: ZoneView) {
+        for (const slotView of zoneView.getSlots().flat()) {
+            const combatant = slotView.zoneSlot.combatant;
+            if (combatant) {
+                slotView.setCard(CardViewFactory.createCardView(this, combatant) as CombatantView);
+            }
         }
     }
 

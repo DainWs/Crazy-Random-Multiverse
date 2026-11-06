@@ -3,6 +3,7 @@ import Zone from "@/domain/Zone";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import ZoneSlotLayout from "@/game/zone/ZoneSlotLayout";
 import ProjectionSystem from "@/core/ProjectionSystem";
+import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
 
 interface ZoneViewOptions {
@@ -15,6 +16,11 @@ interface ZoneViewOptions {
   /** Space between slots in board-space units */
   spaceBetweenSlots?: number;
 }
+
+/** Distance in board-space between the leader slot and the label of the hand size, past it towards the edge of the table. */
+const HAND_SIZE_LABEL_MARGIN = 80;
+const HAND_SIZE_LABEL_FONT_SIZE = '64px';
+const HAND_SIZE_LABEL_COLOR = '#ffffff';
 
 type AllZoneViewOptions = Required<ZoneViewOptions>;
 type DefaultZoneViewOptions = Omit<AllZoneViewOptions, 'position' | 'rotation' | 'slotSize'>;
@@ -63,6 +69,34 @@ class ZoneView extends Phaser.GameObjects.Container {
       this.slots[position.row][position.column] = zoneSlotView;
       this.add(zoneSlotView);
     }
+
+    if (this.zone.team === 'ENEMY') {
+      this.add(this.createHandSizeLabel());
+    }
+  }
+
+  /** A rival hand is private, so only how many cards it holds is shown (HAND-3, UI-7). */
+  private createHandSizeLabel(): Phaser.GameObjects.Text[] {
+    const leaderSlot = this.zone.slots.flat().find((zoneSlot) => zoneSlot.allowedCombatant === 'LEADER');
+    const labels: Phaser.GameObjects.Text[] = [];
+
+    if (leaderSlot) {
+      const numRows = this.zone.slots.length;
+      const numCols = this.zone.slots[leaderSlot.position.row].length;
+      const distance = this.options.slotSize.height / 2 + HAND_SIZE_LABEL_MARGIN;
+      const board = this.slotLayout.calculateBoardPositionBehindSlot(leaderSlot.position, numRows, numCols, distance);
+      const screen = ProjectionSystem.toPoint3D(board);
+
+      const label = this.scene.add.text(screen.x - this.x, screen.y - this.y, `${getText('ui.game.hand_size')} ${this.zone.owner.handSize}`, {
+        fontSize: HAND_SIZE_LABEL_FONT_SIZE,
+        color: HAND_SIZE_LABEL_COLOR
+      });
+      label.setOrigin(0.5, 0.5);
+      label.setScale(screen.scale);
+      labels.push(label);
+    }
+
+    return labels;
   }
 
   public getSlots(): ZoneSlotView[][] {

@@ -31,12 +31,40 @@ class HandController {
     this.handView.addCards(...cardsToAdd);
   }
 
+  /** Shows the hand as it is, without animating it (VIEW-8). */
+  public restoreCards(cards: Card[]) {
+    this.clearCards();
+    this.handView.restoreCards(...this.createCardViews(cards));
+  }
+
+  /** Animates the cards that arrived and removes the ones that left, keeping the rest in place. */
+  public syncCards(cards: Card[]) {
+    const shownViews = this.handView.getCards();
+    const leftViews = shownViews.filter((view) => !cards.some((card) => card.equals(view.card)));
+    const arrivedCards = cards.filter((card) => !shownViews.some((view) => view.card.equals(card)));
+
+    this.destroyCardViews(leftViews);
+    if (arrivedCards.length > 0) {
+      this.addCards(...arrivedCards);
+    }
+  }
+
   private createCardViews(cards: Card[]): CardView[] {
     return cards.map(card => CardViewFactory.createCardView(this.scene, card));
   }
 
   public clearCards() {
+    const views = [...this.handView.getCards()];
     this.handView.clearCards();
+    this.destroyCardViews(views);
+  }
+
+  private destroyCardViews(views: CardView[]) {
+    for (const view of views) {
+      this.handView.removeCard(view);
+      this.scene.tweens.killTweensOf(view);
+      view.destroy();
+    }
   }
 
   // Useless?

@@ -89,6 +89,17 @@ class ZoneSlotLayout {
     };
   }
 
+  /** A point in board-space past the slot, towards the edge of the table: the zone is drawn with its last row on that side. */
+  public calculateBoardPositionBehindSlot(position: ZonePosition, numRows: number, numCols: number, distance: number): Point2D {
+    const offset = this.resolveOffsetForPosition(position, numRows, numCols);
+    const rotatedOffset = this.rotateBoardOffset({ x: offset.x, y: offset.y + distance });
+
+    return {
+      x: this.options.position.x + rotatedOffset.x,
+      y: this.options.position.y + rotatedOffset.y,
+    };
+  }
+
   public rotateBoardOffset(offset: Point2D): Point2D {
     const rad = (this.options.rotation * Math.PI) / 180;
     const cos = Math.cos(rad);

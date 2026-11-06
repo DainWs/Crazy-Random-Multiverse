@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { GameSnapshot } from '@/core/StoreSystem';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import type { GameChange, GameSnapshot } from '@/core/StoreSystem';
 import type Card from '@/domain/Card';
 import type Zone from '@/domain/Zone';
 import { CardCode } from '@/domain/Card';
@@ -225,6 +225,62 @@ describe('StoreSystem', () => {
       StoreSystem.setPlayerHand(createHand());
 
       expect(StoreSystem.removeCardFromHand(new CardCode('9', 'WARRIOR'))).toBeUndefined();
+    });
+  });
+
+  describe('onChange', () => {
+    let listener: Mock<(change: GameChange) => void>;
+    let cancel: () => void;
+
+    beforeEach(() => {
+      StoreSystem.applyGame(createSnapshot());
+      listener = vi.fn<(change: GameChange) => void>();
+      cancel = StoreSystem.onChange(listener);
+    });
+
+    afterEach(() => {
+      cancel();
+    });
+
+    it('notifies when a game is applied', () => {
+      StoreSystem.applyGame(createSnapshot({ round: 2 }));
+
+      expect(listener).toHaveBeenCalledWith('GAME_UPDATED');
+    });
+
+    it('notifies when the hand is restored', () => {
+      StoreSystem.setPlayerHand(createHand());
+
+      expect(listener).toHaveBeenCalledWith('HAND_RESTORED');
+    });
+
+    it('notifies when a card is added to the hand', () => {
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+
+      expect(listener).toHaveBeenCalledWith('HAND_CHANGED');
+    });
+
+    it('notifies when a card is removed from the hand', () => {
+      StoreSystem.setPlayerHand(createHand());
+      listener.mockClear();
+
+      StoreSystem.removeCardFromHand(new CardCode('1', 'WARRIOR'));
+
+      expect(listener).toHaveBeenCalledWith('HAND_CHANGED');
+    });
+
+    it('does not notify when the hand has no copy to remove', () => {
+      StoreSystem.removeCardFromHand(new CardCode('9', 'WARRIOR'));
+
+      expect(listener).not.toHaveBeenCalled();
+    });
+
+    it('stops notifying once cancelled', () => {
+      cancel();
+
+      StoreSystem.applyGame(createSnapshot({ round: 2 }));
+
+      expect(listener).not.toHaveBeenCalled();
     });
   });
 
