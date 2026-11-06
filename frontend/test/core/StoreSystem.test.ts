@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GameSnapshot } from '@/core/StoreSystem';
 import type Card from '@/domain/Card';
 import type Zone from '@/domain/Zone';
+import { CardCode } from '@/domain/Card';
+import cardFactory from '@/domain/cardFactory';
 import StoreSystem from '@/core/StoreSystem';
 
 vi.mock('@/api/LocalStorageApi', () => ({
@@ -21,7 +23,8 @@ describe('StoreSystem', () => {
     ...overrides
   });
 
-  const createHand = (): Card[] => [{ name: 'card-1' }, { name: 'card-2' }] as Card[];
+  const createHand = (): Card[] => [cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '2' })];
+  const copyNumbers = () => StoreSystem.getPlayerHand().map((card) => card.copyNumber);
 
   beforeEach(() => {
     StoreSystem.clearGame();
@@ -146,6 +149,82 @@ describe('StoreSystem', () => {
 
     it('returns battlefield', () => {
       expect(StoreSystem.getBattlefield().getMaxPlayersPerSide()).toBe(2);
+    });
+  });
+
+  describe('hand', () => {
+    beforeEach(() => {
+      StoreSystem.applyGame(createSnapshot());
+    });
+
+    it('adds a card to the hand', () => {
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+
+      expect(StoreSystem.getPlayerHand()).toHaveLength(1);
+    });
+
+    // HAND-4
+    it('numbers the copies of a card by how many the hand holds', () => {
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+
+      expect(copyNumbers()).toEqual([1, 2, 3]);
+    });
+
+    // HAND-4
+    it('numbers each card apart from the others', () => {
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '2' }));
+      StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
+
+      expect(copyNumbers()).toEqual([1, 1, 2]);
+    });
+
+    // HAND-4
+    it('numbers the copies of a restored hand', () => {
+      StoreSystem.setPlayerHand([cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })]);
+
+      expect(copyNumbers()).toEqual([1, 2]);
+    });
+
+    it('removes one copy of a card', () => {
+      StoreSystem.setPlayerHand([cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })]);
+
+      StoreSystem.removeCardFromHand(new CardCode('1', 'WARRIOR'));
+
+      expect(StoreSystem.getPlayerHand()).toHaveLength(1);
+    });
+
+    it('returns the card removed', () => {
+      const [first, second] = createHand();
+      StoreSystem.setPlayerHand([first, second]);
+
+      expect(StoreSystem.removeCardFromHand(new CardCode('2', 'WARRIOR'))).toBe(second);
+    });
+
+    // HAND-4
+    it('renumbers the copies left when one is removed', () => {
+      StoreSystem.setPlayerHand([cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })]);
+
+      StoreSystem.removeCardFromHand(new CardCode('1', 'WARRIOR'));
+
+      expect(copyNumbers()).toEqual([1, 2]);
+    });
+
+    // CON-26
+    it('tells a card of another type from a card with the same code', () => {
+      StoreSystem.setPlayerHand([cardFactory.createWarriorCard({ code: '1' })]);
+
+      StoreSystem.removeCardFromHand(new CardCode('1', 'EQUIPMENT'));
+
+      expect(StoreSystem.getPlayerHand()).toHaveLength(1);
+    });
+
+    it('returns nothing when the hand has no copy of the card', () => {
+      StoreSystem.setPlayerHand(createHand());
+
+      expect(StoreSystem.removeCardFromHand(new CardCode('9', 'WARRIOR'))).toBeUndefined();
     });
   });
 

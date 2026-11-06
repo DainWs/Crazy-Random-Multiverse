@@ -5,6 +5,7 @@ import type User from "@/domain/User";
 import type Zone from "@/domain/Zone";
 import type GameConfiguration from "@/domain/GameConfiguration";
 import type Card from "@/domain/Card";
+import type { CardCode } from "@/domain/Card";
 import type Battlefield from "@/domain/Battlefield";
 import { localStorageApi as ExternalStoreApi } from "@/api";
 
@@ -104,7 +105,32 @@ function getPlayerHand(): PlayerHand {
 }
 
 function setPlayerHand(playerHand: PlayerHand): void {
+  numberCopies(playerHand);
   store.gameState!.playerHand = playerHand;
+}
+
+function addCardToHand(card: Card): void {
+  const hand = getPlayerHand();
+  hand.push(card);
+  numberCopies(hand);
+}
+
+/** Removes one copy of the card, as the server only says which card was played (CON-13, CON-26). */
+function removeCardFromHand(cardCode: CardCode): Card | undefined {
+  const hand = getPlayerHand();
+  const index = hand.findIndex((card) => card.code.equals(cardCode));
+  const [removed] = index === -1 ? [] : hand.splice(index, 1);
+  numberCopies(hand);
+  return removed;
+}
+
+function numberCopies(hand: PlayerHand): void {
+  const copiesByCode = new Map<string, number>();
+  for (const card of hand) {
+    const copyNumber = (copiesByCode.get(card.code.text()) ?? 0) + 1;
+    copiesByCode.set(card.code.text(), copyNumber);
+    card.copyNumber = copyNumber;
+  }
 }
 
 function getPlayerZone(): PlayerZone {
@@ -153,6 +179,8 @@ const StoreSystem = {
   setPlayerZone,
   getPlayerHand,
   setPlayerHand,
+  addCardToHand,
+  removeCardFromHand,
   getZones,
   setZones,
   getBattlefield

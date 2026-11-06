@@ -338,6 +338,34 @@ describe('SessionSystem', () => {
       expect(StoreSystem.getPlayer().code).toBe('usr-1');
     });
 
+    // CON-23, UI-17
+    it('drops the game state when the socket connects again and the game is gone', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+      StoreSystem.applyGame(createSnapshot());
+
+      statusListener('reconnecting');
+      partyListener(createParty());
+      syncedListener();
+
+      expect(() => StoreSystem.getPlayer()).toThrowError('Game not initialized');
+    });
+
+    // CON-11
+    it('keeps the game state when the socket connects again and the game continues', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+      StoreSystem.applyGame(createSnapshot());
+
+      statusListener('reconnecting');
+      gameSyncListener(activeGame);
+      syncedListener();
+
+      expect(StoreSystem.getPlayer().code).toBe('usr-1');
+    });
+
     it('abandoning the game outside of a game changes nothing', () => {
       partyListener(createParty());
 

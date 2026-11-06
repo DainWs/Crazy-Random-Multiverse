@@ -63,6 +63,8 @@ class Card {
   public isProtected: boolean;
   public isTargetable: boolean;
   public isAttackAvailable: boolean;
+  /** Which copy of its code this card is in the hand (HAND-4). It is internal and never reaches the server. */
+  public copyNumber: number;
 
   public constructor(options: CardOptions) {
     this.uuid = self.crypto.randomUUID();
@@ -75,6 +77,7 @@ class Card {
     this.isProtected = false;
     this.isTargetable = false;
     this.isAttackAvailable = false;
+    this.copyNumber = 1;
   }
 
   public getStatistic(statisticType: StatisticType): Statistic | undefined {
