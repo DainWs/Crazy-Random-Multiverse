@@ -50,6 +50,17 @@ class PutActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
+	void testGivenContext_whenPerform_thenPlacedCardCannotAttackThisTurn() throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+
+		turnAction.perform(actionContext);
+
+		Zone zone = actionContext.getTargetZone();
+		assertFalse(zone.canAttackFrom(actionContext.getTargetCoordinate()));
+	}
+
+	@Test
 	void testGivenContextWithFilledCoordinate_whenPerform_thenDoNotPerformAction() throws GameException {
 		PlayerTurnAction turnAction = this.createPlayerTurnAction();
 		CustomActionContext actionContext = this.createActionContext();

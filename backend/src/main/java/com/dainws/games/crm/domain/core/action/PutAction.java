@@ -27,6 +27,7 @@ public class PutAction extends PlayerTurnAction {
 		Zone targetZone = context.getTargetZone();
 
 		targetZone.putCombatant(targetCoordinate, combatant);
+		combatant.startPlacementCooldown();
 		this.logTrace("La carta {0} ha sido colocada en {1}", combatant, targetCoordinate);
 
 		this.notifyActionEvent(EventCode.PLAYER_PUT_CARD, context);

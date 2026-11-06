@@ -15,6 +15,11 @@ public class Leader extends Combatant {
 	}
 
 	@Override
+	public void startPlacementCooldown() {
+		// BOARD-8: the leader has no cooldown when it is placed
+	}
+
+	@Override
 	public CardType getType() {
 		return CardType.LEADER;
 	}

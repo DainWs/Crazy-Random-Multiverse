@@ -40,6 +40,25 @@ class WarriorTest extends CombatantCardTest {
 		assertTrue(result);
 	}
 
+	@Test
+	void testGivenPlacedWarrior_whenCanAttack_thenReturnFalse() {
+		Warrior warrior = new CardBuilder().buildFullValidWarrior();
+
+		warrior.startPlacementCooldown();
+
+		assertFalse(warrior.canAttack());
+	}
+
+	@Test
+	void testGivenPlacedWarrior_whenOwnerTurnStarts_thenItCanAttack() {
+		Warrior warrior = new CardBuilder().buildFullValidWarrior();
+		warrior.startPlacementCooldown();
+
+		warrior.update();
+
+		assertTrue(warrior.canAttack());
+	}
+
 	@Override
 	Combatant createCombatantCard() {
 		return new CardBuilder().useWarrior()

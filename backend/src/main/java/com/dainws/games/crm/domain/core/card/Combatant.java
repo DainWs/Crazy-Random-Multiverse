@@ -70,6 +70,11 @@ public abstract class Combatant extends Card {
 		return new AttackResult(armorDamage, healthDamage, !this.isAlive());
 	}
 	
+	public void startPlacementCooldown() {
+		this.attackCount = this.maxAttackCount;
+		this.attackCooldown.activate();
+	}
+
 	private void increaseAttackCount() {
 		this.attackCount++;
 		
