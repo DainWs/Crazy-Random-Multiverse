@@ -16,14 +16,17 @@ type PlayerZone = Zone;
 type GameState = {
   gameConfiguration: GameConfiguration;
   battlefield: Battlefield;
-  turn: number; // TODO manage turns
-  round: number; // TODO manage round
+  round?: number;
+  playerWithTurn?: PlayerCode;
 
   zones: Zone[];
   player: Player;
   playerZone: PlayerZone;
   playerHand: PlayerHand;
 }
+
+/** What a GameDto carries: the hand does not travel in every event (CON-11). */
+type GameSnapshot = Omit<GameState, 'playerHand'>;
 
 type Store = {
   user?: User;
@@ -32,8 +35,13 @@ type Store = {
 
 const store: Store = {};
 
-function initializeGame(gameState: GameState) {
-  store.gameState = gameState;
+/** Replaces the state with the one the server sent, and keeps the hand, which the snapshots do not replace. */
+function applyGame(snapshot: GameSnapshot) {
+  store.gameState = { ...snapshot, playerHand: store.gameState?.playerHand ?? [] };
+}
+
+function clearGame() {
+  store.gameState = undefined;
 }
 
 function isSessionCode(code: PlayerCode | UserCode | null | undefined): boolean {
@@ -68,6 +76,14 @@ function getGameConfiguration(): GameConfiguration {
   }
 
   return store.gameState.gameConfiguration;
+}
+
+function getRound(): number | undefined {
+  if (!store.gameState) {
+    throw new Error('Game not initialized');
+  }
+
+  return store.gameState.round;
 }
 
 function getPlayer(): Player {
@@ -123,12 +139,14 @@ function getBattlefield(): Battlefield {
 }
 
 const StoreSystem = {
-  initializeGame,
+  applyGame,
+  clearGame,
   getSessionCode,
   isSessionCode,
   getUser,
   setUser,
   getGameConfiguration,
+  getRound,
   getPlayer,
   getPlayerZone,
   setPlayerZone,
@@ -139,5 +157,5 @@ const StoreSystem = {
   getBattlefield
 }
 
-export type { GameState };
+export type { GameSnapshot, GameState };
 export default StoreSystem;

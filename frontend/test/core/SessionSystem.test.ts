@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GameEventListener, Listener, StatusChangeListener } from '@/api/models/Listeners';
 import type { ActiveGame } from '@/domain/ActiveGame';
-import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
+import type { GameSnapshot } from '@/core/StoreSystem';
+import { gameEventApi, gameStateApi, socketService, userApi, userEventApi } from '@/api';
 import Party from '@/domain/Party';
 import User from '@/domain/User';
 import SessionSystem from '@/core/SessionSystem';
@@ -12,6 +13,7 @@ vi.mock('@/api', async (importOriginal) => ({
   userApi: { findAccount: vi.fn(), register: vi.fn() },
   socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
   gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn(), onGameSync: vi.fn() },
+  gameStateApi: { bind: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
 }));
 
@@ -93,6 +95,13 @@ describe('SessionSystem', () => {
       await SessionSystem.start();
 
       expect(socketService.connect).toHaveBeenCalledTimes(1);
+    });
+
+    // CON-10
+    it('binds the game state to the events', async () => {
+      await SessionSystem.start();
+
+      expect(gameStateApi.bind).toHaveBeenCalledTimes(1);
     });
 
     it('does not connect the socket when the user cannot be loaded', async () => {
@@ -293,6 +302,28 @@ describe('SessionSystem', () => {
       SessionSystem.abandonGame();
 
       expect(SessionSystem.userState.value).toBe('IDLE');
+    });
+
+    // UI-17
+    it('drops the game state when the game is abandoned', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      StoreSystem.applyGame({ player: { code: 'usr-1' } } as GameSnapshot);
+
+      SessionSystem.abandonGame();
+
+      expect(() => StoreSystem.getPlayer()).toThrowError('Game not initialized');
+    });
+
+    // UI-17
+    it('keeps the game state when the game starts', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      StoreSystem.applyGame({ player: { code: 'usr-1' } } as GameSnapshot);
+
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      expect(StoreSystem.getPlayer().code).toBe('usr-1');
     });
 
     it('abandoning the game outside of a game changes nothing', () => {

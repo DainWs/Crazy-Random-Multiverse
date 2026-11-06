@@ -3,13 +3,6 @@ import type { ResourceManifest } from '@/domain/Resources';
 import { Scene } from 'phaser';
 import { gameApi } from '@/api';
 import { ApiException } from '@/api/models/ApiException';
-import Zone from '@/domain/Zone';
-import Player from '@/domain/Player';
-import cardFactory from '@/domain/cardFactory';
-import GameConfiguration from '@/domain/GameConfiguration';
-import Battlefield from '@/domain/Battlefield';
-import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
-import StoreSystem, { GameState } from '@/core/StoreSystem';
 import SessionSystem from '@/core/SessionSystem';
 import ResourceSystem, { IMAGE_XHR_SETTINGS } from '@/core/ResourceSystem';
 import { getText } from '@/core/Texts';
@@ -32,13 +25,10 @@ const TEXT_COLOR = '#ffffff';
 const STATUS_TEXT_SIZE = '20px';
 const RETRY_TEXT_SIZE = '24px';
 
-/** Files that exist only for the mocked hand, served by the frontend until Phase 3 removes it. */
-const MOCK_ASSETS_PATH = 'assets';
 /** The manifest URLs are relative to the server, not to a folder. */
 const MANIFEST_ASSETS_PATH = '';
 
 class GameLoadScene extends Scene {
-    private playerCount: number = 2;
     private overlaysGenerated: boolean = false;
     private closed: boolean = false;
     private activeGame!: ActiveGame;
@@ -51,12 +41,9 @@ class GameLoadScene extends Scene {
         super('GameLoad');
     }
 
-    init(data: { playerCount?: number }) {
+    init() {
         this.closed = false;
         this.manifest = undefined;
-        if (data?.playerCount) {
-            this.playerCount = data.playerCount;
-        }
 
         this.events.once('shutdown', this.onShutdown, this);
         this.createLoadingView();
@@ -89,7 +76,6 @@ class GameLoadScene extends Scene {
         const activeGame = SessionSystem.activeGame.value;
         if (activeGame) {
             this.activeGame = activeGame;
-            this.loadGameData();
             void this.run();
         } else {
             console.error('GameLoad started without an active game');
@@ -184,8 +170,6 @@ class GameLoadScene extends Scene {
                 resolve(required.filter((resource) => !this.textures.exists(resource.key)).map((resource) => resource.key));
             });
 
-            this.enqueueMockAssets();
-
             this.load.setPath(MANIFEST_ASSETS_PATH);
             for (const resource of [...required, ...optional]) {
                 this.load.image(resource.key, resource.url, IMAGE_XHR_SETTINGS);
@@ -193,26 +177,6 @@ class GameLoadScene extends Scene {
 
             this.load.start();
         });
-    }
-
-    private enqueueMockAssets() {
-        this.load.setPath(MOCK_ASSETS_PATH);
-        // TODO mock-only: spells are not in the manifest (CON-30); remove with the mocked hand in Phase 3
-        this.load.image('frame.spell', 'card-spell.png');
-
-        this.load.image('warrior.common.1', 'common-01.png');
-        this.load.audio('warrior.common.1.put', 'common-put-01.mp3');
-        this.load.audio('warrior.common.1.attack.1', 'common-attack-01-1.mp3');
-        this.load.audio('warrior.common.1.attack.2', 'common-attack-01-2.mp3');
-        this.load.audio('warrior.common.1.attack.3', 'common-attack-01-3.mp3');
-        this.load.audio('warrior.common.1.die', 'common-die-01.mp3');
-
-        this.load.image('warrior.mythic.1', 'mythic-01.png');
-        this.load.audio('warrior.mythic.1.put', 'mythic-put-01.mp3');
-        this.load.audio('warrior.mythic.1.attack.1', 'mythic-attack-01-1.mp3');
-        this.load.audio('warrior.mythic.1.attack.2', 'mythic-attack-01-1.mp3');
-        this.load.audio('warrior.mythic.1.attack.3', 'mythic-attack-01-1.mp3');
-        this.load.audio('warrior.mythic.1.die', 'mythic-die-01.mp3');
     }
 
     private updateProgressBar(ratio: number) {
@@ -226,73 +190,6 @@ class GameLoadScene extends Scene {
             this.overlaysGenerated = true;
         }
     }
-
-    private loadGameData() {
-        const gameState = this.createGameState();
-        StoreSystem.initializeGame(gameState);
-    }
-
-    // TODO remove this method and receive the game state from the GameEngine
-    public createGameState(): GameState {
-        const PLAYER_COUNT = this.playerCount;
-        const gameConfiguration = new GameConfiguration(this.activeGame.gameCode, 'CLASSIC', PLAYER_COUNT);
-        const user = StoreSystem.getUser();
-        const player = new Player(user.code, user.name);
-        const playerZone = new Zone(player, 'FRIENDLY', 'BASE');
-        const battlefield = new Battlefield(DEFAULT_SKIN, gameConfiguration, playerZone);
-        const zones = this.getMockedZones(battlefield, playerZone);
-        battlefield.addZones(zones);
-
-        return {
-            gameConfiguration: gameConfiguration,
-            battlefield: battlefield,
-            turn: 1,
-            round: 1,
-            zones: zones,
-            player: player,
-            playerZone: playerZone,
-            playerHand: this.getPlayerMockedHand(),
-        };
-    }
-
-    // TODO remove this method and receive the game state from the GameEngine
-    private getPlayerMockedHand() {
-        return [
-            cardFactory.createLeaderCard(),
-            cardFactory.createWarriorCard({ rarity: 'COMMON', code: '1' }),
-            cardFactory.createWarriorCard({ rarity: 'MYTHIC', code: '1' }),
-            cardFactory.createWarriorCard({}),
-            cardFactory.createWarriorCard({}),
-            cardFactory.createEquipmentCard(),
-            cardFactory.createEquipmentCard(),
-            cardFactory.createSpellCard(),
-            cardFactory.createSpellCard(),
-            cardFactory.createSpellCard()
-        ];
-    }
-
-    // TODO remove this method and receive the game state from the GameEngine
-    private getMockedZones(battlefield: Battlefield, playerZone: Zone) {
-        const zones: Zone[] = [playerZone];
-
-        const maxAlies = 0;
-        const maxEnemies = battlefield.gameConfiguration.playerCount - (maxAlies + 1);
-
-        for (let i = 0; i < maxAlies; i++) {
-            const allyPlayer = new Player(`Ally:${i.toString()}`, `Ally ${i}`);
-            const allyPlayerZone = new Zone(allyPlayer, 'FRIENDLY', 'BASE');
-            zones.push(allyPlayerZone);
-        }
-
-        for (let i = 0; i < maxEnemies; i++) {
-            const enemyPlayer = new Player(`Enemy:${i.toString()}`, `Enemy ${i}`);
-            const enemyPlayerZone = new Zone(enemyPlayer, 'ENEMY', 'BASE');
-            zones.push(enemyPlayerZone);
-        }
-
-        return zones;
-    }
-
 }
 
 export { GameLoadScene as GameLoad }

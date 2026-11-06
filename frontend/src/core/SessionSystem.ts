@@ -2,7 +2,7 @@ import type { Screen, UserState } from '@/domain/User';
 import type { ActiveGame } from '@/domain/ActiveGame';
 import type Party from '@/domain/Party';
 import { computed, shallowRef } from 'vue';
-import { gameEventApi, socketService, userApi, userEventApi } from '@/api';
+import { gameEventApi, gameStateApi, socketService, userApi, userEventApi } from '@/api';
 import StoreSystem from '@/core/StoreSystem';
 
 const currentParty = shallowRef<Party | undefined>();
@@ -13,6 +13,8 @@ const currentActiveGame = shallowRef<ActiveGame | undefined>();
 const party = computed(() => currentParty.value);
 const userState = computed(() => currentUserState.value);
 const activeGame = computed(() => currentActiveGame.value);
+
+const GAME_USER_STATES: readonly UserState[] = ['GAME_LOADING', 'GAME_IN_PROGRESS'];
 
 const SCREEN_BY_USER_STATE: Record<UserState, Screen> = {
   IDLE: 'MAIN_MENU',
@@ -30,6 +32,14 @@ const screen = computed(() => (isSynced.value ? SCREEN_BY_USER_STATE[currentUser
 /** The state being built from the events sent when a socket is bound, or null outside that window (CON-23). */
 let syncingState: UserState | null = null;
 
+/** The game state is kept while the user has a game, and dropped when they no longer do (UI-17). */
+const setUserState = (state: UserState) => {
+  currentUserState.value = state;
+  if (!GAME_USER_STATES.includes(state)) {
+    StoreSystem.clearGame();
+  }
+}
+
 const beginSync = () => {
   isSynced.value = false;
   syncingState = 'IDLE';
@@ -40,14 +50,14 @@ const beginSync = () => {
 const finishSync = () => {
   if (syncingState === null) return;
 
-  currentUserState.value = syncingState;
+  setUserState(syncingState);
   syncingState = null;
   isSynced.value = true;
 }
 
 /** After the sync, the state follows the events that reach the user (UI-17). */
 const followLiveState = (state: UserState, from: readonly UserState[]) => {
-  if (syncingState === null && from.includes(currentUserState.value)) currentUserState.value = state;
+  if (syncingState === null && from.includes(currentUserState.value)) setUserState(state);
 }
 
 const isMember = (candidate: Party) => candidate.users.some((member) => member.code === StoreSystem.getUser().code);
@@ -111,6 +121,7 @@ const start = async (): Promise<void> => {
   StoreSystem.setUser(user);
 
   bindListeners();
+  gameStateApi.bind();
   socketService.connect();
 }
 

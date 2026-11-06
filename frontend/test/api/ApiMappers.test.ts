@@ -5,7 +5,7 @@ import { notifyListeners } from '@/api/models/Listeners';
 import { CardDto, toCard, toCardCode, toCardCodeDto } from '@/api/dtos/CardDto';
 import { toPlayer, toPlayerCode } from '@/api/dtos/PlayerDto';
 import { toZone } from '@/api/dtos/ZoneDto';
-import { toActiveGame, type GameDto } from '@/api/dtos/GameDto';
+import { toActiveGame, toGameSnapshot, type GameDto } from '@/api/dtos/GameDto';
 import { toParty, toMinimalParty } from '@/api/dtos/PartyDto';
 import Card, { CardCode } from '@/domain/Card';
 import Player from '@/domain/Player';
@@ -208,6 +208,62 @@ describe('API Models and DTO Mappers', () => {
 
     it('toActiveGame skips a leader slot without a card', () => {
       expect(toActiveGame(game(zone())).leaders).toEqual([]);
+    });
+
+    describe('toGameSnapshot', () => {
+      const other = { code: 'p2', name: 'Two', isSpectator: false, isAlive: true, handSize: 3 };
+      const zoneOf = (owner: typeof player) => ({ ...zone('0'), owner });
+      const twoPlayers = (overrides: Partial<GameDto> = {}): GameDto => ({ code: 'game-1', zones: [zoneOf(other), zoneOf(player)], ...overrides });
+
+      it('takes the local player from the zones', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').player.code).toBe('p1');
+      });
+
+      it('takes the zone of the local player', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').playerZone.owner.code).toBe('p1');
+      });
+
+      it('keeps the order of the zones', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').zones.map((snapshotZone) => snapshotZone.owner.code)).toEqual(['p2', 'p1']);
+      });
+
+      // VIEW-13
+      it('makes the zones of the other players enemies', () => {
+        const teams = toGameSnapshot(twoPlayers(), 'p1').zones.map((snapshotZone) => snapshotZone.team);
+
+        expect(teams).toEqual(['ENEMY', 'FRIENDLY']);
+      });
+
+      it('counts the zones as players', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').gameConfiguration.playerCount).toBe(2);
+      });
+
+      it('keeps the game code', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').gameConfiguration.gameCode).toBe('game-1');
+      });
+
+      it('puts the enemies on the battlefield', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').battlefield.enemyZones.map((enemy) => enemy.owner.code)).toEqual(['p2']);
+      });
+
+      // CON-32
+      it('keeps the player with the turn', () => {
+        const snapshot = toGameSnapshot(twoPlayers({ playerWithTurn: other }), 'p1');
+
+        expect(snapshot.playerWithTurn).toBe('p2');
+      });
+
+      it('has no player with the turn before the first TURN_CHANGE', () => {
+        expect(toGameSnapshot(twoPlayers(), 'p1').playerWithTurn).toBeUndefined();
+      });
+
+      it('keeps the round', () => {
+        expect(toGameSnapshot(twoPlayers({ round: 3 }), 'p1').round).toBe(3);
+      });
+
+      it('throws when the game has no zone for the local player', () => {
+        expect(() => toGameSnapshot(twoPlayers(), 'p9')).toThrowError('Game game-1 has no zone for the player p9');
+      });
     });
   });
 

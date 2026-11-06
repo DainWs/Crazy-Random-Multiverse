@@ -4,6 +4,7 @@ export { partyMemberApi, partyOwnerApi } from '@/api/PartyApi';
 
 export * as gameApi from '@/api/GameApi';
 export * as gameEventApi from '@/api/GameEventApi';
+export * as gameStateApi from '@/api/GameStateApi';
 export * as userEventApi from '@/api/UserEventApi';
 
 export * as localStorageApi from '@/api/LocalStorageApi';
