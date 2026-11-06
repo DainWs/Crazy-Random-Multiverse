@@ -120,7 +120,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Reconcile state after Socket.IO events and after reconnection (`CON-11`, `CON-23`)
 - [ ] Remove mocked game state, zones and hand, and the unused `saveHand` and `loadHand` of `LocalStorageApi`
 - [ ] Update Phaser views from authoritative state
-- [ ] Map the backend rows (row 0 is the leader row) to the frontend zone organization, with each leader at the edge of the table and the local zone at the bottom (`CON-14`, `VIEW-1`). `Battlefield` groups the zones by a team the contract does not have: in the MVP every other zone is an enemy (`VIEW-13`)
+- [x] Map the backend rows (row 0 is the leader row) to the frontend zone organization, with each leader at the edge of the table and the local zone at the bottom (`CON-14`, `VIEW-1`). `Battlefield` groups the zones by a team the contract does not have: in the MVP every other zone is an enemy (`VIEW-13`)
 - [ ] Implement the real hand: cleared and restored from `GAME_SYNC`, and a received card added only if the event carries it, without hardcoding the round schedule (`CON-11`, `CON-13`, `ROUND-4`)
 - [ ] Remove played cards from the hand when their event arrives, and empty it with the `PLAYER_DIE` of the local player (`HAND-2`, `CON-13`, `ELIM-3`)
 - [ ] Number the copies of a card in the hand (`HAND-4`)

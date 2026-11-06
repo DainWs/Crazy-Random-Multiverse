@@ -7,9 +7,6 @@ import Zone from "@/domain/Zone";
 import { ZoneOrganizationsType } from "@/domain/ZoneOrganizations";
 import ZoneSlot, { AllowedCombatant } from "@/domain/ZoneSlot";
 
-const LEADER_ROW = 0;
-const LEADER_COLUMN = 0;
-
 interface ZoneSlotDto {
   allowedCombatant: AllowedCombatant;
   combatant?: CardDto;
@@ -35,12 +32,18 @@ function toRowZoneSlots(slotsInRow: ZoneSlotDto[], row: number): ZoneSlot[] {
   return slotsInRow.map((zoneSlotDto, column) => toZoneSlot(zoneSlotDto, row, column));
 }
 
+/** The contract numbers the rows from the leader towards the center (CON-14), and the frontend numbers them the other way round (VIEW-1). */
+function toFrontendRows(backendRows: ZoneSlotDto[][]): ZoneSlot[][] {
+  const lastRow = backendRows.length - 1;
+  return backendRows.map((slotsInRow, backendRow) => toRowZoneSlots(slotsInRow, lastRow - backendRow)).reverse();
+}
+
 function toZone(zoneDto: ZoneDto, team: Team): Zone {
   const zone = new Zone(toPlayer(zoneDto.owner), team, zoneDto.type);
-  zone.slots = zoneDto.combatants.map(toRowZoneSlots);
+  zone.slots = toFrontendRows(zoneDto.combatants);
 
   // The server sends no zone health: it is the health of the leader card (CON-14)
-  const leaderHealth = zone.slots[LEADER_ROW]?.[LEADER_COLUMN]?.combatant?.health;
+  const leaderHealth = zone.slots.flat().find((slot) => slot.allowedCombatant === 'LEADER')?.combatant?.health;
   zone.health = leaderHealth?.value ?? Infinity;
   zone.maxHealth = leaderHealth?.maxValue ?? Infinity;
   return zone;

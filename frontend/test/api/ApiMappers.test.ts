@@ -172,6 +172,40 @@ describe('API Models and DTO Mappers', () => {
       expect([zone.health, zone.maxHealth]).toEqual([Infinity, Infinity]);
     });
 
+    // CON-14
+    describe('with the rows of the server', () => {
+      const warriorSlots = (count: number) => Array.from({ length: count }, () => ({ allowedCombatant: 'WARRIOR' as const }));
+      const baseZone = () => toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER', combatant: leaderDto }], warriorSlots(3), warriorSlots(2)] }, 'FRIENDLY');
+
+      it('toZone puts the leader row last', () => {
+        expect(baseZone().slots[2][0].allowedCombatant).toBe('LEADER');
+      });
+
+      it('toZone puts the row closest to the center first', () => {
+        expect(baseZone().slots[0]).toHaveLength(2);
+      });
+
+      it('toZone puts the row next to the leader second', () => {
+        expect(baseZone().slots[1]).toHaveLength(3);
+      });
+
+      it('toZone gives each slot its row in the frontend', () => {
+        const positions = baseZone().slots.map((row) => row[0].position.row);
+
+        expect(positions).toEqual([0, 1, 2]);
+      });
+
+      it('toZone gives each slot its column', () => {
+        const columns = baseZone().slots[1].map((slot) => slot.position.column);
+
+        expect(columns).toEqual([0, 1, 2]);
+      });
+
+      it('toZone takes the zone health from a leader that is not in row 0', () => {
+        expect(baseZone().health).toBe(12);
+      });
+    });
+
     it('toZone leaves a slot empty when the server sends no combatant', () => {
       const zone = toZone({ owner, type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }, 'FRIENDLY');
 
