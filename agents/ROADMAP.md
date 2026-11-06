@@ -118,7 +118,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Map the `game` and the cards of the details of each event for each recipient when the event is published, not when it is sent: the multicaster runs each listener on its own thread, so today they come from the live game (`CON-10`)
 - [x] Queue the events by `sequence` and apply them in that order, waiting for the missing ones, discard those already reflected in a snapshot, always apply the snapshots, and start over with each game (`CON-12`)
 - [ ] Reconcile state after Socket.IO events and after reconnection (`CON-11`, `CON-23`)
-- [ ] Remove mocked game state, zones and hand, and the unused `saveHand` and `loadHand` of `LocalStorageApi`
+- [x] Remove mocked game state, zones and hand, and the unused `saveHand` and `loadHand` of `LocalStorageApi`
 - [ ] Update Phaser views from authoritative state
 - [x] Map the backend rows (row 0 is the leader row) to the frontend zone organization, with each leader at the edge of the table and the local zone at the bottom (`CON-14`, `VIEW-1`). `Battlefield` groups the zones by a team the contract does not have: in the MVP every other zone is an enemy (`VIEW-13`)
 - [ ] Implement the real hand: cleared and restored from `GAME_SYNC`, and a received card added only if the event carries it, without hardcoding the round schedule (`CON-11`, `CON-13`, `ROUND-4`)

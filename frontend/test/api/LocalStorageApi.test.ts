@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { loadUser, saveUser, loadHand, saveHand } from '@/api/LocalStorageApi';
+import { loadUser, saveUser } from '@/api/LocalStorageApi';
 import User from '@/domain/User';
 
 describe('LocalStorageApi', () => {
   beforeEach(() => {
     localStorage.clear();
-    sessionStorage.clear();
     vi.restoreAllMocks();
   });
 
@@ -40,21 +39,6 @@ describe('LocalStorageApi', () => {
       const stored = JSON.parse(localStorage.getItem('user') || '{}');
       expect(stored.code).toBe('manual-code');
       expect(stored.name).toBe('Manual User');
-    });
-  });
-
-  describe('Hand storage', () => {
-    it('loadHand returns empty array when nothing in sessionStorage', () => {
-      expect(loadHand()).toEqual([]);
-    });
-
-    it('saveHand and loadHand persist cards across sessionStorage', () => {
-      const hand = [{ code: { code: 1, type: 'COMBATANT' }, name: 'Card 1' }] as any;
-
-      saveHand(hand);
-      const loaded = loadHand();
-
-      expect(loaded).toEqual(hand);
     });
   });
 });

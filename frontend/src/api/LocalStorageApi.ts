@@ -1,5 +1,4 @@
 import User from "@/domain/User";
-import Card from "@/domain/Card";
 
 function loadUser(): User {
   const userJson = localStorage.getItem('user');
@@ -27,19 +26,6 @@ function randomUsername() {
   return `${firstName} ${lastName}`;
 }
 
-function loadHand(): Card[] {
-  const handJson = sessionStorage.getItem('hand');
-  if (handJson) {
-    return JSON.parse(handJson);
-  }
-  return [];
-}
-
-function saveHand(hand: Card[]): void {
-  sessionStorage.setItem('hand', JSON.stringify(hand));
-}
-
-export { 
-  loadUser, saveUser,
-  loadHand, saveHand,
+export {
+  loadUser, saveUser
 };
