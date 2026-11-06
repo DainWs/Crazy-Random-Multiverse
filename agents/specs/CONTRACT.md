@@ -85,7 +85,7 @@ Types of the details:
 | `code` | text | |
 | `round` | number | The current round, starting at 1. Not sent before the first `ROUND_CHANGE` |
 | `playerWithTurn` | `PlayerDto` | Not sent before the first `TURN_CHANGE` or once the game has ended |
-| `zones` | `ZoneDto[]` | In turn order (`SETUP-3`), which does not change during the game |
+| `zones` | `ZoneDto[]` | In turn order (`SETUP-3`), starting with the starting player, and it does not change during the game |
 
 ### `PlayerDto`
 
@@ -114,7 +114,7 @@ Types of the details:
 | Field | Type | Notes |
 |---|---|---|
 | `catalogCode` | `CardCodeDto` | See `CON-26` |
-| `name`, `description` | text | Translation keys (`CARD-7`) |
+| `name`, `description` | text | Translation keys (`CARD-7`). `description` is absent for a card without one, such as a leader (`CARD-5`) |
 | `type` | text | `LEADER`, `WARRIOR`, `EQUIPMENT`, `SPELL` |
 | `rarity` | text | Warriors only: `COMMON`, `UNCOMMON`, `RARE`, `EPIC`, `LEGENDARY`, `MYTHIC` |
 | `damage`, `damageType` | number, text | `PHYSICAL`, `MAGIC`, `TRUE`. The type only in combatants (`EQUIP-1`) |
@@ -177,7 +177,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | Situation | Order |
 |---|---|
 | Start of a game | Leaders are dealt (`SETUP-2`), `GAME_CREATED`, `GAME_LOADING`, the players confirm, `GAME_START`, and the start of a round |
-| Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, `TURN_CHANGE` |
+| Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, `TURN_CHANGE` |
 | Turn passed | `PLAYER_PASS_TURN`, then `TURN_CHANGE`, or the start of a round if a new one starts |
 | Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the end of the game if only one leader is left, or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
 | End of a game | `GAME_END`, `GAME_END_WITH_WINNER` |

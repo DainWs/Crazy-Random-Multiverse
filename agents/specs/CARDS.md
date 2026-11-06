@@ -29,7 +29,7 @@
 | 0 | 0 | 10 | 0 | 100 |
 | 1 | 1 | 10 | 0 | 100 |
 
-The name of a leader is its code, and leaders have no description. **[Post-MVP]** Leaders have their own names and descriptions.
+The name of a leader is its code, and leaders have no description, so their `CardDto` carries no `description` (`CON-8`). **[Post-MVP]** Leaders have their own names and descriptions.
 
 ### Warriors
 

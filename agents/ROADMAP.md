@@ -108,7 +108,7 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 
 This phase synchronizes the state and renders it without animating it, except for the cards received. The actions arrive in Phase 4 and the combat feedback in Phase 5.
 
-- [ ] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, then `TURN_CHANGE`, and the first round and turn like any other
+- [ ] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, then `TURN_CHANGE`, and the first round and turn like any other. `zones` starts with the starting player (`GameDto`)
 - [ ] Check the game flow against `specs/GAME-FLOW.md` and implement the differences: the leaders placed when the game is created, without `PLAYER_RECEIVE_CARD` (`SETUP-2`; today a player seated before a random starting player never gets one), the whole turn order drawn at random (`SETUP-3`; today only the starting player is), what a round is, rounds numbered from 1 (`GameDto.round`), dealing to everyone at the start of the round, equipment in the spell slots, unlimited deck, missing categories and a deck without leaders (`DECK-4`)
 - [ ] Reject the attack of a protected leader with `exception.player-action.selected_source_leader_is_protected` (`PROT-4`): `attackAvailable` already excludes it, but `AttackAction` accepts it. `hasLeaderInBoard` in the frontend is unrelated and has no callers, so it goes with the cleanup of Phase 8
 - [ ] A newly placed card must not attack on the turn it is placed (`BOARD-8`), although it can move and be equipped (`BOARD-6`, `EQUIP-3`): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
@@ -170,7 +170,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 6 — Base assets and stability
 
-- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. The client holds the Spanish texts of the keys
+- [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
 - [ ] Camera stability: zoom/pan must not break card interaction
 
 ## Phase 7 — Rounds, players and connection
@@ -179,7 +179,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Highlight the current player; distinguish the local player's cards
 - [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
 - [ ] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
-- [ ] Connecting, disconnected, reconnecting and failure states (`UI-9`)
+- [ ] Connecting, disconnected, reconnecting and failure states, on every screen and with no retry limit (`UI-9`)
 - [ ] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-11`, `USER-8`)
 - [ ] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`). Nothing publishes `GAME_CANCELLED` today
 - [ ] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
@@ -192,6 +192,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Remove dead/unused architecture
 - [ ] Finish remaining TODOs in comments
 - [ ] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds
+- [ ] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`)
 - [ ] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
 
 ## Phase 9 — Board and cards
@@ -211,7 +212,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow
-- [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts` (`UI-2`)
+- [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
 
 ## Phase 11 — Menu, lobby, user
 
@@ -219,7 +220,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity, the join button disabled for a full party, and a rejected join shown as a message that reloads the list (`UI-1`, `UI-14`)
 - [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`), and the message for a kicked user (`PARTY-12`); leaving is already in Phase 2.5. Leaving and kicking ask for confirmation (`UI-15`)
 - [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)
-- [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
+- [ ] Username editing from the main menu, persisted with `PUT /user`, with a rejected name shown below the field (`USER-3`, `UI-13`)
 - [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)
 
@@ -246,7 +247,6 @@ Not tied to a phase.
 - [ ] A person tests a real browser connection with the session cookie
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
-- [ ] In the planning stage, before implementing `CON-21`, weigh the pros and cons of giving each event its own `EventDetails` implementation
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
 - [x] State in `PARTY-5` that the party screen shows its code to be copied, and that its format is up to the server
 - [x] State in `INTERFACE.md` that the party list is loaded when its screen opens and with a refresh button (`PARTY-4`)
