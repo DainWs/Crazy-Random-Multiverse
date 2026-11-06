@@ -4,13 +4,23 @@ import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.player.Player;
 
 public class TurnManager {
+	public static final int FIRST_ROUND = 1;
 
-	public void nextTurn(Game game) {
-		Turn nextTurn = this.getNextTurn(game);
-		this.changeTurn(game, nextTurn);
+	public void startRound(Game game, int round) {
+		game.setTurn(new Turn(game.getTurnNumber(), round));
+		game.publishEvent(EventCode.ROUND_CHANGE);
 	}
 
-	private Turn getNextTurn(Game game) {
+	public void beginTurn(Game game, Turn turn) {
+		game.setTurn(turn);
+		game.markTurnStarted();
+	}
+
+	public void announceTurn(Game game) {
+		game.publishEvent(EventCode.TURN_CHANGE);
+	}
+
+	public Turn getNextTurn(Game game) {
 		int turnNumber = game.getTurnNumber();
 		int roundNumber = game.getRoundNumber();
 

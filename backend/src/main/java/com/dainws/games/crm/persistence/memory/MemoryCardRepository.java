@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -89,35 +90,35 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	}
 
 	@Override
-	public Warrior drawWarrior(WarriorRarity rarity) {
+	public Optional<Warrior> drawWarrior(WarriorRarity rarity) {
 		List<Card> cards = this.findWarriorsByRarity(rarity);
 
 		Collections.shuffle(cards);
-		return this.cloneWarrior(cards.get(0));
+		return cards.stream().findFirst().map(this::cloneWarrior);
 	}
 
 	@Override
-	public Equipment drawEquipment() {
+	public Optional<Equipment> drawEquipment() {
 		List<Card> cards = this.findByCardType(CardType.EQUIPMENT);
 
 		Collections.shuffle(cards);
-		return this.cloneEquipment(cards.get(0));
+		return cards.stream().findFirst().map(this::cloneEquipment);
 	}
 
 	@Override
-	public Leader drawLeader() {
+	public Optional<Leader> drawLeader() {
 		List<Card> cards = this.findByCardType(CardType.LEADER);
 
 		Collections.shuffle(cards);
-		return this.cloneLeader(cards.get(0));
+		return cards.stream().findFirst().map(this::cloneLeader);
 	}
 
 	@Override
-	public Spell drawSpell() {
+	public Optional<Spell> drawSpell() {
 		List<Card> cards = this.findByCardType(CardType.SPELL);
 
 		Collections.shuffle(cards);
-		return this.cloneSpell(cards.get(0));
+		return cards.stream().findFirst().map(this::cloneSpell);
 	}
 
 	private Spell cloneSpell(Card card) {

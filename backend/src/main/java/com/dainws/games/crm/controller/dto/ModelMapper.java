@@ -101,7 +101,7 @@ public class ModelMapper {
 			gameDto.setRound(game.getRoundNumber());
 		}
 
-		if (game.inStatus(Status.IN_PROGRESS)) {
+		if (game.inStatus(Status.IN_PROGRESS) && game.isTurnStarted()) {
 			gameDto.setPlayerWithTurn(mapPlayerToDto(game.getPlayerWithTurn()));
 		}
 

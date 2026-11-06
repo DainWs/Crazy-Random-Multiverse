@@ -1,5 +1,7 @@
 package com.dainws.games.crm.domain.core.dealer;
 
+import java.util.Optional;
+
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Spell;
@@ -7,11 +9,11 @@ import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 
 public interface Deck {
-	Warrior drawWarrior(WarriorRarity rarity);
+	Optional<Warrior> drawWarrior(WarriorRarity rarity);
 
-	Equipment drawEquipment();
+	Optional<Equipment> drawEquipment();
 
-	Leader drawLeader();
+	Optional<Leader> drawLeader();
 
-	Spell drawSpell();
+	Optional<Spell> drawSpell();
 }

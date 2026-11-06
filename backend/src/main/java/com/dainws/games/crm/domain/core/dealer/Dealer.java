@@ -18,8 +18,10 @@ public class Dealer {
 		this.dealStrategyFactory = new RandomDealStrategyFactory();
 	}
 
-	public void dealCardsToPlayerWithTurn(Game game) {
-		this.dealCardsToPlayer(game, game.getPlayerWithTurn());
+	public void dealCardsToAlivePlayers(Game game) {
+		for (Player player : game.getAlivePlayers()) {
+			this.dealCardsToPlayer(game, player);
+		}
 	}
 
 	public void dealCardsToPlayer(Game game, Player player) {

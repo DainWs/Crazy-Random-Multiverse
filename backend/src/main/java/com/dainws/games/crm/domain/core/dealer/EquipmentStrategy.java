@@ -21,7 +21,7 @@ public class EquipmentStrategy implements DealStrategy {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.drawEquipment());
+			deck.drawEquipment().ifPresent(cards::add);
 		}
 		
 		return cards;

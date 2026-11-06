@@ -21,7 +21,7 @@ public class SpellStrategy implements DealStrategy {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.drawSpell());
+			deck.drawSpell().ifPresent(cards::add);
 		}
 		
 		return cards;

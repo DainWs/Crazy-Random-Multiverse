@@ -12,10 +12,12 @@ import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.GameModeStrategy;
 import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Board;
+import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerStorage;
 import com.dainws.games.crm.domain.mode.GameModes;
@@ -24,6 +26,7 @@ public class ClassicModeStrategy implements GameModeStrategy {
 
 	public static final GameMode CLASSIC_MODE = new GameMode("CLASSIC_MODE");
 	public static final int STARTING_ROUND = 0;
+	private static final int STARTING_SEAT = 0;
 
 	private Party party;
 	private Deck selectedDeck;
@@ -50,14 +53,19 @@ public class ClassicModeStrategy implements GameModeStrategy {
 
 	@Override
 	public Turn createTurn(PlayerStorage players) {
-		int index = this.random.nextInt(players.size());
-		Player playerWithTurn = players.get(index);
-		return new Turn(players, playerWithTurn, STARTING_ROUND);
+		return new Turn(STARTING_SEAT, STARTING_ROUND);
 	}
 
 	@Override
 	public Board createBoard(PlayerStorage players) {
-		return new Board(ZoneWithLeader::new, players);
+		Board board = new Board(ZoneWithLeader::new, players);
+
+		for (Player player : players) {
+			Zone zone = board.getZoneOf(player);
+			zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, this.selectedDeck.drawLeader().orElseThrow(NotFoundException::cardNotFound));
+		}
+
+		return board;
 	}
 
 	@Override
@@ -68,7 +76,17 @@ public class ClassicModeStrategy implements GameModeStrategy {
 			players.add(new UserPlayer(user));
 		}
 
-		return new PlayerStorage(players);
+		return new PlayerStorage(this.drawSeats(players));
+	}
+
+	private List<Player> drawSeats(List<Player> players) {
+		List<Player> seats = new ArrayList<>();
+
+		while (!players.isEmpty()) {
+			seats.add(players.remove(this.random.nextInt(players.size())));
+		}
+
+		return seats;
 	}
 
 	@Override

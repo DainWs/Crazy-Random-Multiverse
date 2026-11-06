@@ -9,8 +9,7 @@ import com.dainws.games.crm.domain.core.card.WarriorRarity;
 import com.dainws.games.crm.domain.core.dealer.ComposedStrategy;
 import com.dainws.games.crm.domain.core.dealer.DealStrategy;
 import com.dainws.games.crm.domain.core.dealer.DealStrategyFactory;
-import com.dainws.games.crm.domain.core.dealer.LeaderStrategy;
-import com.dainws.games.crm.domain.core.dealer.SpellStrategy;
+import com.dainws.games.crm.domain.core.dealer.EquipmentStrategy;
 import com.dainws.games.crm.domain.core.dealer.WarriorStrategy;
 
 public class ClassicDealStrategyFactory implements DealStrategyFactory {
@@ -18,17 +17,12 @@ public class ClassicDealStrategyFactory implements DealStrategyFactory {
 
 	public ClassicDealStrategyFactory() {
 		this.dealStrategyByRound = new HashMap<>();
-		this.put(0, this.createDealStrategyForRoundZero());
 		this.put(1, this.createDealStrategyForRoundOne());
 		this.put(2, this.createDealStrategyForRoundTwo());
 		this.put(3, this.createDealStrategyForRoundThree());
 		this.put(4, this.createDealStrategyForRoundFour());
 		this.put(5, this.createDealStrategyForRoundFive());
 		this.put(6, this.createDealStrategyForRoundSix());
-	}
-
-	private DealStrategy createDealStrategyForRoundZero() {
-		return new LeaderStrategy();
 	}
 
 	private DealStrategy createDealStrategyForRoundOne() {
@@ -44,7 +38,7 @@ public class ClassicDealStrategyFactory implements DealStrategyFactory {
 	}
 
 	private DealStrategy createDealStrategyForRoundThree() {
-		return new SpellStrategy();
+		return new EquipmentStrategy();
 	}
 
 	private DealStrategy createDealStrategyForRoundFour() {
@@ -54,7 +48,7 @@ public class ClassicDealStrategyFactory implements DealStrategyFactory {
 	private DealStrategy createDealStrategyForRoundFive() {
 		List<DealStrategy> dealStrategies = new ArrayList<>();
 		dealStrategies.add(new WarriorStrategy(WarriorRarity.RARE));
-		dealStrategies.add(new SpellStrategy());
+		dealStrategies.add(new EquipmentStrategy());
 		return new ComposedStrategy(dealStrategies);
 	}
 
@@ -72,6 +66,6 @@ public class ClassicDealStrategyFactory implements DealStrategyFactory {
 			return this.dealStrategyByRound.get(round);
 		}
 
-		return new SpellStrategy();
+		return new EquipmentStrategy();
 	}
 }

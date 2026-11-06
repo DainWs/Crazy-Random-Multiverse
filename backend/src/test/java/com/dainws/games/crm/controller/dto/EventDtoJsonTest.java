@@ -15,6 +15,7 @@ import com.dainws.games.crm.domain.builder.CardBuilder;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
+import com.dainws.games.crm.domain.core.TurnManager;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
@@ -65,6 +66,7 @@ class EventDtoJsonTest {
 		receiverZone.putCombatant(warriorCoordinate, warrior);
 		receiver.getHand().addCard(CardBuilder.buildCommonWarrior());
 		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
+		new TurnManager().beginTurn(game, game.getTurn());
 		Event event = new Event(EventCode.GAME_SYNC, game);
 		event.setSequence(SEQUENCE);
 

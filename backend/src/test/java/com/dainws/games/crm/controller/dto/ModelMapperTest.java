@@ -20,6 +20,7 @@ import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
+import com.dainws.games.crm.domain.core.TurnManager;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.DummyZone;
@@ -97,9 +98,20 @@ class ModelMapperTest {
 	}
 
 	@Test
+	void testGivenGameWithoutTurnChange_whenMapGame_thenThereIsNoPlayerWithTurn() {
+		Game game = new GameBuilder().withNRandomPlayers(2).build();
+		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
+
+		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
+
+		assertThat(gameDto.getPlayerWithTurn()).isNull();
+	}
+
+	@Test
 	void testGivenGameInProgress_whenMapGame_thenPlayerWithTurnIsSent() {
 		Game game = new GameBuilder().withNRandomPlayers(2).build();
 		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
+		new TurnManager().beginTurn(game, game.getTurn());
 
 		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
 

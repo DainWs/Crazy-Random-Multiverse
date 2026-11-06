@@ -21,7 +21,7 @@ public class LeaderStrategy implements DealStrategy {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.drawLeader());
+			deck.drawLeader().ifPresent(cards::add);
 		}
 		
 		return cards;

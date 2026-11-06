@@ -20,6 +20,7 @@ public class Game {
 	private Status status;
 
 	private boolean isRunning;
+	private boolean isTurnStarted;
 	private Turn turn;
 	private Board board;
 	private Dealer dealer;
@@ -146,6 +147,14 @@ public class Game {
 	
 	void setTurn(Turn turn) {
 		this.turn = turn;
+	}
+
+	void markTurnStarted() {
+		this.isTurnStarted = true;
+	}
+
+	public boolean isTurnStarted() {
+		return this.isTurnStarted;
 	}
 
 	public Turn getTurn() {

@@ -25,7 +25,7 @@ public class WarriorStrategy implements DealStrategy {
 		List<Card> cards = new ArrayList<>();
 		
 		for (int i = 0; i < this.amount; i++) {
-			cards.add(deck.drawWarrior(this.rarity));
+			deck.drawWarrior(this.rarity).ifPresent(cards::add);
 		}
 		
 		return cards;
