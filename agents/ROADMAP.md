@@ -161,7 +161,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Remove the equipment of a card when it dies (`EQUIP-8`)
 - [ ] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
 - [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
-- [ ] Determine winner from backend; victory and defeat screens, and automatic return to the party when it unlocks (`WIN-5`)
+- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
 - [ ] Disable interaction after game end (`WIN-4`)
 - [ ] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
 - [ ] Show protected cards and exposed leader state (`PROT-6`)
@@ -199,27 +199,27 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
 - [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [ ] Review/fix existing table grid-line TODO
-- [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment)
+- [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
 - [ ] Display opponent card backs (`VIEW-3`), adding the file, which does not exist yet, and its key to `fixed` (`CON-30`), and animate the card a rival receives (`VIEW-8`)
-- [ ] Complete stacked-card hover behavior if needed
-- [ ] Decide how a hand that does not fit is shown and add it to `VIEW-SPECS.md`: `HAND-1` sets no limit and `HandView` sizes its bounds for 10 cards. Probably the cards overlap
+- [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
+- [ ] Decide how a hand that does not fit is shown and close `VIEW-16`: `HAND-1` sets no limit and `HandView` sizes its bounds for 10 cards. Probably the cards overlap
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 
 ## Phase 10 — UX
 
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
-- [ ] Round transition presentation and gameplay event notifications
+- [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow
 - [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts` (`UI-2`)
 
 ## Phase 11 — Menu, lobby, user
 
-- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
-- [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
-- [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`); leaving is already in Phase 2.5
+- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, the default name (`USER-2`), deleting the user when the session expires (`USER-7`), `exception.party.user_not_in_party` (`PARTY-6`), name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
+- [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity and the join button disabled for a full party (`UI-1`, `UI-14`)
+- [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`), and the message for a kicked user (`PARTY-12`); leaving is already in Phase 2.5
 - [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
-- [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events (`USER-3`)
+- [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)
 
 ## Phase 12 — Testing

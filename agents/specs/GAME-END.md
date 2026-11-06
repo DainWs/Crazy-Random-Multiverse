@@ -20,7 +20,7 @@
 - **WIN-1** The game ends when only one leader is left alive, and its owner wins.
 - **WIN-2** There are no ties in the MVP, because there are no spells. **[Post-MVP]** See `SPELL-5`.
 - **WIN-3** The server decides the end of the game and the winner.
-- **WIN-4** When the game ends, the frontend shows the result and disables interaction.
+- **WIN-4** When the game ends, the frontend shows the result over the board and disables interaction. The result says victory or defeat for the local player, names the winner and counts down the seconds left until returning to the party (`WIN-5`).
 - **WIN-5** The party stays locked while the result is shown (15 seconds, `crm.game.result-duration`). When that time ends, the server removes the finished game from memory and unlocks the party (`party:info` with `locked` as `false`), and every client goes back to the party automatically when it receives it, so its owner can start another game. Any other `party:info` during the game or the result does not take a client out of them.
 
 ## Spectators
