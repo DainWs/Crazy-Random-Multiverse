@@ -7,6 +7,7 @@ import java.util.Map;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 
@@ -33,7 +34,7 @@ public class GameFactory {
 		}
 	}
 
-	public Game createGame(Party party) {
+	public Game createGame(Party party) throws NotAllowedException {
 		GameMode gameMode = party.getGameMode();
 		if (!this.gameModeFactories.containsKey(gameMode)) {
 			throw NotFoundException.gameModeNotFound();

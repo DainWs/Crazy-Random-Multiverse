@@ -5,6 +5,8 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.event.EventPublisher;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.core.exception.PartyExceptionCode;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.mode.GameModes;
 
@@ -24,12 +26,16 @@ public class ClassicGameModeFactory implements GameModeFactory {
 	}
 
 	@Override
-	public Game createGame(Party party) {
+	public Game createGame(Party party) throws NotAllowedException {
 		return this.createGame(party, this.deck);
 	}
 	
 	@Override
-	public Game createGame(Party party, Deck deck) {
+	public Game createGame(Party party, Deck deck) throws NotAllowedException {
+		if (deck.drawLeader().isEmpty()) {
+			throw new NotAllowedException(PartyExceptionCode.DECK_WITHOUT_LEADER);
+		}
+
 		ClassicModeStrategy strategy = new ClassicModeStrategy(party, deck);
 		strategy.setEventPublisher(this.eventPublisher);
 

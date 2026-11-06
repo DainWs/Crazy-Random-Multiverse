@@ -17,6 +17,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameFactory;
@@ -46,7 +47,7 @@ public class GameService {
 		}
 	}
 
-	public Game loadPartyGame(Party party) {
+	public Game loadPartyGame(Party party) throws NotAllowedException {
 		this.logger.trace("Creating game for party {}", party.getCode());
 
 		Game game = this.gameFactory.createGame(party);

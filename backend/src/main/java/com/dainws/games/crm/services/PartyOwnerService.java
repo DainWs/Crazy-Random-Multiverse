@@ -54,7 +54,13 @@ public class PartyOwnerService {
 
 	public void startPartyGame(User supposedOwner, PartyCode partyCode) throws PartyException {
 		Party party = this.getPartyOwnedBy(partyCode, supposedOwner);
-		this.gameService.loadPartyGame(party);
+
+		try {
+			this.gameService.loadPartyGame(party);
+		} catch (NotAllowedException e) {
+			throw new PartyException(e.getCode(), e);
+		}
+
 		this.repository.save(party);
 	}
 

@@ -1,7 +1,10 @@
 package com.dainws.games.crm.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +14,13 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.RecordingUserClient;
 import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.core.exception.PartyExceptionCode;
 import com.dainws.games.crm.domain.mode.GameModes;
+import com.dainws.games.crm.domain.mode.classic.ClassicGameModeFactory;
+import com.dainws.games.crm.persistence.memory.MemoryCardRepository;
+import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.services.exception.PartyException;
 import com.dainws.games.crm.usecase.dto.UpdatePartyRequest;
@@ -77,6 +85,30 @@ class PartyOwnerServiceTest {
 		this.service.kickUserFromParty(this.owner, this.party.getCode(), member.getCode());
 
 		assertThat(userClient.getRecipients()).contains(this.owner);
+	}
+
+	@Test
+	void testGivenDeckWithoutLeader_whenStartPartyGame_thenItIsRejectedBecauseOfTheDeck() {
+		PartyOwnerService serviceWithEmptyDeck = this.createServiceWithEmptyDeck();
+
+		assertThatThrownBy(() -> serviceWithEmptyDeck.startPartyGame(this.owner, this.party.getCode())) //
+				.isInstanceOfSatisfying(PartyException.class, //
+						exception -> assertThat(exception.getCode()).isEqualTo(PartyExceptionCode.DECK_WITHOUT_LEADER));
+	}
+
+	@Test
+	void testGivenDeckWithoutLeader_whenStartPartyGame_thenThePartyStaysUnlocked() {
+		PartyOwnerService serviceWithEmptyDeck = this.createServiceWithEmptyDeck();
+
+		assertThrows(PartyException.class, () -> serviceWithEmptyDeck.startPartyGame(this.owner, this.party.getCode()));
+
+		assertThat(this.party.isLocked()).isFalse();
+	}
+
+	private PartyOwnerService createServiceWithEmptyDeck() {
+		ClassicGameModeFactory modeFactory = new ClassicGameModeFactory(new MemoryCardRepository());
+		GameService gameService = new GameService(new GameLifeCycle(), new MemoryGameRepository(), List.of(modeFactory));
+		return new PartyOwnerService(this.repository, gameService);
 	}
 
 	private User addMember() throws NotAllowedException {
