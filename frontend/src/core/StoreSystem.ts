@@ -35,9 +35,10 @@ type Store = {
 
 const store: Store = {};
 
-/** Replaces the state with the one the server sent, and keeps the hand, which the snapshots do not replace. */
+/** Replaces the state with the one the server sent, and keeps the hand of the same game, which the snapshots do not replace. */
 function applyGame(snapshot: GameSnapshot) {
-  store.gameState = { ...snapshot, playerHand: store.gameState?.playerHand ?? [] };
+  const isSameGame = store.gameState?.gameConfiguration.gameCode === snapshot.gameConfiguration.gameCode;
+  store.gameState = { ...snapshot, playerHand: (isSameGame && store.gameState?.playerHand) || [] };
 }
 
 function clearGame() {

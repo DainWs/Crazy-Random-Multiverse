@@ -116,7 +116,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Feed `StoreSystem` with the real game state from `GAME_LOADING` on, independently of the scenes, and clear it when the user no longer has a game (`ARCH-2`, `LOAD-6`, `UI-17`)
 - [x] Synchronize `GameDto` from backend events (round, turn, players, zones, board cards), replacing the state with the `game` of each event (`CON-10`)
 - [x] Map the `game` and the cards of the details of each event for each recipient when the event is published, not when it is sent: the multicaster runs each listener on its own thread, so today they come from the live game (`CON-10`)
-- [ ] Queue the events by `sequence` and apply them in that order, waiting for the missing ones, discard those already reflected in a snapshot, always apply the snapshots, and start over with each game (`CON-12`)
+- [x] Queue the events by `sequence` and apply them in that order, waiting for the missing ones, discard those already reflected in a snapshot, always apply the snapshots, and start over with each game (`CON-12`)
 - [ ] Reconcile state after Socket.IO events and after reconnection (`CON-11`, `CON-23`)
 - [ ] Remove mocked game state, zones and hand, and the unused `saveHand` and `loadHand` of `LocalStorageApi`
 - [ ] Update Phaser views from authoritative state

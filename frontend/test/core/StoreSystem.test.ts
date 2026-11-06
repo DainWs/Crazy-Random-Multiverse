@@ -65,6 +65,15 @@ describe('StoreSystem', () => {
       expect(StoreSystem.getPlayerHand()).toHaveLength(2);
     });
 
+    it('drops the hand when the game is another one', () => {
+      StoreSystem.applyGame(createSnapshot());
+      StoreSystem.setPlayerHand(createHand());
+
+      StoreSystem.applyGame(createSnapshot({ gameConfiguration: { gameCode: 'game-2', playerCount: 4 } as GameSnapshot['gameConfiguration'] }));
+
+      expect(StoreSystem.getPlayerHand()).toEqual([]);
+    });
+
     it('replaces the zones', () => {
       StoreSystem.applyGame(createSnapshot());
 

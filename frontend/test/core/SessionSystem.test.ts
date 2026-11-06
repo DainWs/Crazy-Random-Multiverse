@@ -13,7 +13,7 @@ vi.mock('@/api', async (importOriginal) => ({
   userApi: { findAccount: vi.fn(), register: vi.fn() },
   socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
   gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn(), onGameSync: vi.fn() },
-  gameStateApi: { bind: vi.fn() },
+  gameStateApi: { bind: vi.fn(), reset: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
 }));
 
@@ -33,6 +33,7 @@ describe('SessionSystem', () => {
   };
   const gameEvent = { code: 'GAME_SYNC', details: {} } as never;
   const activeGame: ActiveGame = { gameCode: 'game-1', leaders: [] };
+  const createSnapshot = () => ({ gameConfiguration: { gameCode: 'game-1' }, player: { code: 'usr-1' } }) as GameSnapshot;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -308,18 +309,29 @@ describe('SessionSystem', () => {
     it('drops the game state when the game is abandoned', () => {
       partyListener(createParty());
       gameLoadingListener(activeGame);
-      StoreSystem.applyGame({ player: { code: 'usr-1' } } as GameSnapshot);
+      StoreSystem.applyGame(createSnapshot());
 
       SessionSystem.abandonGame();
 
       expect(() => StoreSystem.getPlayer()).toThrowError('Game not initialized');
     });
 
+    // CON-12
+    it('drops the events waiting when the game is abandoned', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      vi.mocked(gameStateApi.reset).mockClear();
+
+      SessionSystem.abandonGame();
+
+      expect(gameStateApi.reset).toHaveBeenCalledTimes(1);
+    });
+
     // UI-17
     it('keeps the game state when the game starts', () => {
       partyListener(createParty());
       gameLoadingListener(activeGame);
-      StoreSystem.applyGame({ player: { code: 'usr-1' } } as GameSnapshot);
+      StoreSystem.applyGame(createSnapshot());
 
       gameListeners.get('GAME_START')!(gameEvent);
 

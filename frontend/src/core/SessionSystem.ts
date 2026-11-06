@@ -37,6 +37,7 @@ const setUserState = (state: UserState) => {
   currentUserState.value = state;
   if (!GAME_USER_STATES.includes(state)) {
     StoreSystem.clearGame();
+    gameStateApi.reset();
   }
 }
 
