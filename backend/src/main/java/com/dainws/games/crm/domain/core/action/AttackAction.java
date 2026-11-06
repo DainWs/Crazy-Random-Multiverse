@@ -40,6 +40,11 @@ public class AttackAction extends PlayerTurnAction {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_ATTACK_IN_COOLDOWN));
 		}
 
+		Zone sourceZone = context.getSourceZone();
+		if (sourceZone.isProtectedLeaderAt(context.getSourceCoordinate())) {
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_LEADER_IS_PROTECTED));
+		}
+
 		Zone targetZone = context.getTargetZone();
 		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));

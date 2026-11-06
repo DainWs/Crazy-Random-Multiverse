@@ -2,6 +2,7 @@ package com.dainws.games.crm.domain.core.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,8 @@ import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
+import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
@@ -43,6 +46,24 @@ class AttackActionTest extends PlayerTurnActionTest {
 		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));
 	}
 
+	@Test
+	void testGivenLeaderProtectedByAWarrior_whenPerform_thenCodeIsSourceLeaderIsProtected() throws GameException {
+		CustomActionContext actionContext = this.createLeaderAttackContext();
+		Zone sourceZone = actionContext.getSourceZone();
+		sourceZone.putCombatant(FRONT_ROW_COORDINATE, new CardBuilder().buildFullValidWarrior());
+
+		ActionResult result = this.createPlayerTurnAction().perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_LEADER_IS_PROTECTED));
+	}
+
+	@Test
+	void testGivenLeaderWithoutWarriors_whenPerform_thenAttackIsPerformed() throws GameException {
+		CustomActionContext actionContext = this.createLeaderAttackContext();
+
+		assertTrue(this.createPlayerTurnAction().perform(actionContext).isSuccessful());
+	}
+
 	@Override
 	protected PlayerTurnAction createPlayerTurnAction() {
 		return new AttackAction();
@@ -69,6 +90,26 @@ class AttackActionTest extends PlayerTurnActionTest {
 		actionContext.setTargetPlayer(defender);
 		actionContext.setTargetCard(defenderCard);
 		actionContext.setTargetCoordinate(TARGET_COORDINATE);
+		return actionContext;
+	}
+
+	private CustomActionContext createLeaderAttackContext() throws NotAllowedException {
+		Game game = new GameBuilder().withNRandomPlayers(2).withZoneFactory(ZoneWithLeader::new).build();
+		Player attacker = this.getPlayerWithTurn(game);
+		Player defender = this.getPlayerWithoutTurn(game);
+		Leader attackerLeader = CardBuilder.buildLeader();
+		Leader defenderLeader = CardBuilder.buildLeader();
+		this.getZoneOfPlayer(game, attacker).putCombatant(ZoneWithLeader.LEADER_COORDINATE, attackerLeader);
+		this.getZoneOfPlayer(game, defender).putCombatant(ZoneWithLeader.LEADER_COORDINATE, defenderLeader);
+
+		CustomActionContext actionContext = new CustomActionContext();
+		actionContext.setGame(game);
+		actionContext.setSourcePlayer(attacker);
+		actionContext.setSourceCard(attackerLeader);
+		actionContext.setSourceCoordinate(ZoneWithLeader.LEADER_COORDINATE);
+		actionContext.setTargetPlayer(defender);
+		actionContext.setTargetCard(defenderLeader);
+		actionContext.setTargetCoordinate(ZoneWithLeader.LEADER_COORDINATE);
 		return actionContext;
 	}
 
