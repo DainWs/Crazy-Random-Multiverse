@@ -112,7 +112,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Check the game flow against `specs/GAME-FLOW.md` and implement the differences: the leaders placed when the game is created, without `PLAYER_RECEIVE_CARD` (`SETUP-2`; today a player seated before a random starting player never gets one), the whole turn order drawn at random (`SETUP-3`; today only the starting player is), what a round is, rounds numbered from 1 (`GameDto.round`), dealing to everyone at the start of the round, equipment in the spell slots, unlimited deck, missing categories and a deck without leaders (`DECK-4`)
 - [ ] Reject the attack of a protected leader with `exception.player-action.selected_source_leader_is_protected` (`PROT-4`): `attackAvailable` already excludes it, but `AttackAction` accepts it. `hasLeaderInBoard` in the frontend is unrelated and has no callers, so it goes with the cleanup of Phase 8
 - [ ] A newly placed card must not attack on the turn it is placed (`BOARD-8`), although it can move and be equipped (`BOARD-6`, `EQUIP-3`): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
-- [ ] Check the state of the turn against `CON-32` and implement the differences: `playerWithTurn` only changes with `TURN_CHANGE`, and attacks and cooldowns are reset before it is published, and it is not sent before the first `TURN_CHANGE` (`GameDto`)
+- [ ] Check the state of the turn against `CON-32` and implement the differences: `playerWithTurn` only changes with `TURN_CHANGE` and is not sent before the first one (`GameDto`), and attacks and cooldowns are reset before `TURN_CHANGE` is published
 - [ ] Feed `StoreSystem` with the real game state from `GAME_LOADING` on, independently of the scenes, and clear it when the user no longer has a game (`ARCH-2`, `LOAD-6`, `UI-17`)
 - [ ] Synchronize `GameDto` from backend events (round, turn, players, zones, board cards), replacing the state with the `game` of each event (`CON-10`)
 - [ ] Map the `game` and the cards of the details of each event for each recipient when the event is published, not when it is sent: the multicaster runs each listener on its own thread, so today they come from the live game (`CON-10`)
@@ -134,7 +134,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 - [ ] Check equipment against `EQUIP-*` and implement the differences: several pieces per card, only on the player's own cards, limits on the total, and the statistic types sent only in combatants, also with a value of 0 (`CardDto`)
 - [ ] Check the attack and placement rules on the server against `COMBAT-11`, `COMBAT-12`, `BOARD-5` and `BOARD-7`
-- [ ] Reject an action without a required field with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
+- [ ] Reject an action without a required field, or whose `game` is not the one of the path, with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
 - [ ] Reject an action or a `/ready` from a user who is not a player of the game with `exception.access_denied.wrong_game`: today membership is not checked, and an action ends in a null pointer (`CON-16`, `CON-18`)
 - [ ] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
 - [ ] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
@@ -147,14 +147,14 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [ ] Highlight valid targets and disable invalid ones (`UI-5`)
 - [ ] End Turn button (`PASS_TURN`)
-- [ ] Disable gameplay when it is not the player's turn (`UI-4`)
+- [ ] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5)
 - [ ] Prevent conflicting actions while an action is pending (`CON-19`)
 - [ ] Handle rejected and duplicate/pending actions (`UI-6`, `CON-19`)
 - [ ] Show clearly whose turn it is (`UI-3`)
 
 ## Phase 5 — Combat feedback and game end
 
-- [ ] Check elimination and absence against `ELIM-*`, `ABSENT-*`, `WIN-5` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`), and deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`), and surrender publishes no `PLAYER_DIE` (`CON-22`)
+- [ ] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
 - [ ] Attack animation and hit feedback (`VIEW-5`)
 - [ ] Animate armor and health changes (`VIEW-6`, `CON-21`)
 - [ ] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)
@@ -214,9 +214,10 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 11 — Menu, lobby, user
 
-- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start on a locked party (`PARTY-9`), owner succession, name rules, name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
+- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, name rules, name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
 - [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`); leaving is already in Phase 2.5
+- [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
 - [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events (`USER-3`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)

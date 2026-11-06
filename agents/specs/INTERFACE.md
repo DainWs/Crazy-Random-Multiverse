@@ -11,7 +11,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 ## Game
 
 - **UI-3** The interface shows whose turn it is and the current round.
-- **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, for a spectator and after the game ends.
+- **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations of the queue of `CON-12` are still playing, so that what is shown matches the state, for a spectator and after the game ends.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
 - **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key.
 - **UI-7** Rival hands show only how many cards they hold.
@@ -35,7 +35,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 ## Party
 
-- **UI-16** The party screen disables starting the game while the party is locked (`PartyDto.locked`).
+- **UI-16** The party screen disables starting the game, leaving, kicking and the configuration while the party is locked (`PartyDto.locked`).
 - **UI-19** The party screen shows the name, the number of members out of the capacity, the members with the owner marked, and the code with a button to copy it (`PARTY-5`, `PARTY-11`). Any member can leave from it (`PARTY-6`).
-- **UI-20** Only the owner sees the start button. It is disabled while the party is locked (`UI-16`) or has fewer than 2 members (`PARTY-9`).
+- **UI-20** Only the owner sees the start button. It is disabled while the party is locked (`UI-16`) or has fewer than 2 members (`PARTY-9`). A rejected start (`PARTY-9`, `DECK-4`) is shown as a brief message below the button, based on its key, as in `UI-18`.
 - **UI-23** Only the owner sees the configuration controls: the capacity, from 2 to 10 (`PARTY-2`), the game mode selector, with Classic as its only option (`PARTY-3`, `SCOPE-3`), and a button to kick each member except themselves (`PARTY-6`). A rejection is shown as a brief message based on its key, as in `UI-18`.

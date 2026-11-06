@@ -16,7 +16,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 | Channel | Payload |
 |---|---|
 | `game:event` | `EventDto` |
-| `party:info` | `PartyDto`, sent to the party members when the party changes, to a kicked user (`PARTY-12`), and to a member when their socket is bound (`CON-23`) |
+| `party:info` | `PartyDto`, sent to the party members when the party changes (`PARTY-10`), to a kicked user (`PARTY-12`), and to a member when their socket is bound (`CON-23`) |
 | `user:synced` | None. It closes the state sent when a socket is bound (`CON-23`) |
 
 ## Identifiers
@@ -30,7 +30,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 
 `EventDto`: `{ code, sequence, details }`.
 
-- **CON-9** `sequence` is a number per game, increased by one for each published event and assigned in publication order. The first event of a game has `sequence` 1. It restarts together with the games when the server restarts, and it is removed together with its game (`WIN-5`, `LOAD-4`).
+- **CON-9** `sequence` is a number per game, increased by one for each published event and assigned in publication order. The first event of a game has `sequence` 1. It is removed together with its game (`WIN-5`, `LOAD-4`).
 - **CON-10** `details` is an `EventDetailsDto`. It always carries `game` (a `GameDto` with the state right after the event) and optionally the fields in the table below.
 
 | `code` | Published when | Details besides `game` |
@@ -162,7 +162,7 @@ Types of the fields:
 | `sourceCard` | `CardCodeDto` |
 | `sourcePosition`, `targetPosition` | `PositionDto` |
 
-An action without one of the required fields of its type is rejected with `exception.request.malformed`.
+An action without `type`, `game`, `sourcePlayer` or one of the required fields of its type, or whose `game` is not the `{gameCode}` of the path, is rejected with `exception.request.malformed`.
 
 - **CON-17** A valid action changes the state, and the result reaches every client through events, including the client that sent it.
 - **CON-18** The response to a request says whether it was accepted: 2xx if it was, 400 with `ExceptionCodeDto` (`{ key }`, an `exception.*` key) if it was rejected. This applies to every endpoint and every expected error (game rules, parties, users, denied accesses, elements not found). The client tells them apart by the key. A 500 means an unexpected failure.
@@ -248,7 +248,7 @@ The keys of `CON-18`.
 | `exception.party.user_already_in_party` | The user already belongs to a party |
 | `exception.request.malformed` | The body or the path of the request cannot be read, or an action lacks a required field (`CON-16`) |
 | `exception.game.not_in_progress` | `TURN-7` |
-| `exception.party.locked` | The party has a game in progress (`PARTY-9`) |
+| `exception.party.locked` | The party is locked (`LOAD-1`, `PARTY-3`, `PARTY-5`, `PARTY-6`, `PARTY-9`) |
 | `exception.party.is_full` | The party has reached its capacity |
 | `exception.party.cannot_kick_owner` | `PARTY-6` |
 | `exception.party.max_users_out_of_range` | `PARTY-2` |
