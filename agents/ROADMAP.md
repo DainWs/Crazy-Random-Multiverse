@@ -122,11 +122,11 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Update Phaser views from authoritative state
 - [ ] Map the backend rows (row 0 is the leader row) to the frontend zone organization, with each leader at the edge of the table and the local zone at the bottom (`CON-14`, `VIEW-1`). `Battlefield` groups the zones by a team the contract does not have: in the MVP every other zone is an enemy (`VIEW-13`)
 - [ ] Implement the real hand: cleared and restored from `GAME_SYNC`, and a received card added only if the event carries it, without hardcoding the round schedule (`CON-11`, `CON-13`, `ROUND-4`)
-- [ ] Remove played cards from the hand when their event arrives (`HAND-2`, `CON-13`)
+- [ ] Remove played cards from the hand when their event arrives, and empty it with the `PLAYER_DIE` of the local player (`HAND-2`, `CON-13`, `ELIM-3`)
 - [ ] Number the copies of a card in the hand (`HAND-4`)
 - [ ] Animate the cards received in the local hand (`VIEW-8`)
 - [ ] Keep opponent hands private: the server sends `targetCard` only to the player who receives it (`CON-13`), and rival hands show how many cards they hold (`HAND-3`, `UI-7`). Card backs arrive in Phase 9
-- [ ] On the server, when the result time ends, remove the finished game, with its event sequence, and unlock the party (`WIN-5`, `CON-9`). Without it a party plays only one game until the server restarts. The result screens are in Phase 5
+- [ ] On the server, when the result time ends, remove the finished game, with its event sequence, and unlock the party (`WIN-5`, `CON-9`). Without it a party plays only one game until the server restarts. A party that becomes empty removes its game and cancels that wait (`PARTY-8`). The result screens are in Phase 5
 - [ ] Fix `CombatantRender`, which reads `card.equipment?.health.value` although a statistic with value 0 is not sent (`CON-8`): rendering an equipped card such as Policía throws
 - [ ] Fix `HandView.clearCards`, which removes from the array it iterates and leaves about half of the cards in the hand (`CON-11`)
 
@@ -214,7 +214,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 11 — Menu, lobby, user
 
-- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, name rules, name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
+- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button (`UI-1`, `UI-14`)
 - [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`); leaving is already in Phase 2.5
 - [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)

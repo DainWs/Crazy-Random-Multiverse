@@ -11,7 +11,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 ## Game
 
 - **UI-3** The interface shows whose turn it is and the current round.
-- **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations of the queue of `CON-12` are still playing, so that what is shown matches the state, for a spectator and after the game ends.
+- **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations are still playing (`CON-12`), for a spectator and after the game ends. Waiting for the animations keeps what is shown in step with the state.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
 - **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key.
 - **UI-7** Rival hands show only how many cards they hold.

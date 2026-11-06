@@ -74,7 +74,7 @@ Types of the details:
 
 ## Hand
 
-- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players also receive the type and rarity of the card, without knowing which card it is.
+- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players also receive the type and rarity of the card, without knowing which card it is.
 
 ## Data
 
@@ -121,7 +121,7 @@ Types of the details:
 | `armor`, `armorType` | number, text | `PHYSICAL`, `MAGIC`. The type only in combatants (`EQUIP-1`) |
 | `health`, `maxHealth` | number | |
 | `equipment` | `CardDto[]` | The equipment attached to a combatant (`EQUIP-4`) |
-| `protected` | boolean | A card stands in a row closer to the center |
+| `protected` | boolean | The card cannot be attacked, because its zone has cards in a row closer to the center (`PROT-1`, `PROT-2`) |
 | `attackAvailable` | boolean | The card can attack now: it belongs to the player who receives the event, it is their turn, and the card has not used its attacks this turn, is not in placement cooldown and is not a protected leader (`PROT-4`) |
 | `targetable` | boolean | The card is not protected and belongs to another player |
 
@@ -187,7 +187,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 
 ## State on connection
 
-- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to that socket. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. Then, if they are in a party, `party:info`. Last, always, `user:synced`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party. A `user:synced` with no state before it means that the user has neither a game nor a party, and the client goes to the main menu.
+- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to that socket. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. A game that has ended sends neither (see the scenario). Then, if they are in a party, `party:info`. Last, always, `user:synced`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party. A `user:synced` with no state before it means that the user has neither a game nor a party, and the client goes to the main menu.
 
 ### Scenario
 
@@ -251,7 +251,7 @@ The keys of `CON-18`.
 | `exception.party.locked` | The party is locked (`LOAD-1`, `PARTY-3`, `PARTY-5`, `PARTY-6`, `PARTY-9`) |
 | `exception.party.is_full` | The party has reached its capacity |
 | `exception.party.cannot_kick_owner` | `PARTY-6` |
-| `exception.party.max_users_out_of_range` | `PARTY-2` |
+| `exception.party.max_users_out_of_range` | The capacity is outside 2 to 10 or below the current members (`PARTY-2`) |
 | `exception.party.not_enough_players` | `PARTY-9` |
 | `exception.party.deck_without_leader` | `DECK-4` |
 | `exception.user.invalid_username` | `USER-4` |
