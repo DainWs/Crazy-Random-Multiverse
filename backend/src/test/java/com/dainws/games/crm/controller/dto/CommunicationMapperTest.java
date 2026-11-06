@@ -90,6 +90,41 @@ class CommunicationMapperTest {
 	}
 
 	@Test
+	void testGivenCardDealtToTheReceiver_whenMapToDto_thenDetailsHaveTheCard() {
+		Game game = this.createGame();
+		Player receiver = game.getPlayers().get(0);
+		Event event = this.createReceiveCardEvent(game, receiver);
+
+		EventDetailsDto detailsDto = this.mapper.mapToDto(event, receiver).getDetails();
+
+		assertThat(detailsDto.getTargetCard()).isNotNull();
+	}
+
+	@Test
+	void testGivenCardDealtToAnotherPlayer_whenMapToDto_thenDetailsHaveNoCard() {
+		Game game = this.createGame();
+		Player receiver = game.getPlayers().get(0);
+		Player dealtPlayer = game.getPlayers().get(1);
+		Event event = this.createReceiveCardEvent(game, dealtPlayer);
+
+		EventDetailsDto detailsDto = this.mapper.mapToDto(event, receiver).getDetails();
+
+		assertThat(detailsDto.getTargetCard()).isNull();
+	}
+
+	@Test
+	void testGivenCardDealtToAnotherPlayer_whenMapToDto_thenDetailsStillNameTheDealtPlayer() {
+		Game game = this.createGame();
+		Player receiver = game.getPlayers().get(0);
+		Player dealtPlayer = game.getPlayers().get(1);
+		Event event = this.createReceiveCardEvent(game, dealtPlayer);
+
+		EventDetailsDto detailsDto = this.mapper.mapToDto(event, receiver).getDetails();
+
+		assertThat(detailsDto.getTargetPlayer().getCode()).isEqualTo(dealtPlayer.getCode());
+	}
+
+	@Test
 	void testGivenEventThatIsNotAnAttack_whenMapToDto_thenDetailsHaveNoAttackResult() {
 		Game game = this.createGame();
 		Player receiver = game.getPlayers().get(0);
@@ -109,6 +144,13 @@ class CommunicationMapperTest {
 		EventDto eventDto = this.mapper.mapToDto(event, receiver);
 
 		assertThat(eventDto.getDetails().getHand()).isNull();
+	}
+
+	private Event createReceiveCardEvent(Game game, Player dealtPlayer) {
+		EventDetails details = new EventDetails(game);
+		details.setTargetPlayer(dealtPlayer);
+		details.setTargetCard(CardBuilder.buildCommonWarrior());
+		return new Event(EventCode.PLAYER_RECEIVE_CARD, details);
 	}
 
 	private Game createGame() {

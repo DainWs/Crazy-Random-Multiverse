@@ -6,6 +6,8 @@ import java.util.List;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.dainws.games.crm.controller.dto.CommunicationMapper;
+import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.core.event.Event;
@@ -23,13 +25,13 @@ public class RecordingCommunicationClient extends CommunicationClient {
 	}
 
 	@Override
-	public void sendEvent(Player player, Event event) {
-		this.sentEvents.add(new SentEvent(player, event));
+	public void sendEvent(Player player, EventDto eventDto) {
+		this.sentEvents.add(new SentEvent(player, eventDto));
 	}
 
 	@Override
 	public void sendEvent(SocketIOClient client, Player player, Event event) {
-		this.sentEvents.add(new SentEvent(player, event));
+		this.sentEvents.add(new SentEvent(player, new CommunicationMapper().mapToDto(event, player)));
 		this.sentChannels.add(GAME_EVENT_CHANNEL);
 	}
 

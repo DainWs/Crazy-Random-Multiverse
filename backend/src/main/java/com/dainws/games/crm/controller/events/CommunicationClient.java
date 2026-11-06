@@ -42,20 +42,24 @@ public class CommunicationClient implements UserClient {
 		this.logger = LoggerFactory.getLogger(getClass());
 	}
 
-	public void sendEvent(Player player, Event event) {
-		for (SocketIOClient client : this.findClientsOf(player)) {
-			this.sendEvent(client, player, event);
+	public void sendEvent(Player player, EventDto eventDto) {
+		if (this.canSendTo(player)) {
+			for (SocketIOClient client : this.findClientsOf(player)) {
+				this.sendEvent(client, player, eventDto);
+			}
 		}
 	}
 
 	public void sendEvent(SocketIOClient client, Player player, Event event) {
 		if (this.canSendTo(player)) {
-			this.logger.debug("Sending event {} to client {}", event.getCode(), player.getName());
-
-			EventDto eventDto = new CommunicationMapper().mapToDto(event, player);
-
-			client.sendEvent(GAME_EVENT_CHANNEL, eventDto);
+			this.sendEvent(client, player, new CommunicationMapper().mapToDto(event, player));
 		}
+	}
+
+	private void sendEvent(SocketIOClient client, Player player, EventDto eventDto) {
+		this.logger.debug("Sending event {} to client {}", eventDto.getCode(), player.getName());
+
+		client.sendEvent(GAME_EVENT_CHANNEL, eventDto);
 	}
 
 	public void sendPartyInfo(SocketIOClient client, Party party) {

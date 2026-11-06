@@ -2,21 +2,21 @@ package com.dainws.games.crm.controller.events;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.Player;
 
 class GameEventControllerTest {
 
-	private static final int SEQUENCE = 7;
 	private static final int PLAYERS = 3;
 
 	RecordingCommunicationClient communicationClient;
@@ -29,33 +29,33 @@ class GameEventControllerTest {
 	}
 
 	@Test
-	void testGivenPlayerReceivesCard_whenHandleEvent_thenEveryPlayerGetsTheEvent() {
-		Event event = this.createReceiveCardEvent();
+	void testGivenEventMappedForEveryPlayer_whenHandleEvent_thenEveryPlayerGetsTheEvent() {
+		MappedEvent mappedEvent = this.createMappedEvent();
 
-		this.controller.handleEvent(event);
+		this.controller.handleEvent(mappedEvent);
 
-		assertThat(this.communicationClient.getSentEvents()).hasSize(PLAYERS);
+		assertThat(this.communicationClient.getSentEvents()) //
+				.extracting(SentEvent::player) //
+				.containsExactlyElementsOf(mappedEvent.eventsByPlayer().keySet());
 	}
 
 	@Test
-	void testGivenPlayerReceivesCard_whenHandleEvent_thenEveryPlayerGetsTheSequence() {
-		Event event = this.createReceiveCardEvent();
+	void testGivenEventMappedForEveryPlayer_whenHandleEvent_thenEachPlayerGetsTheirOwnMapping() {
+		MappedEvent mappedEvent = this.createMappedEvent();
 
-		this.controller.handleEvent(event);
+		this.controller.handleEvent(mappedEvent);
 
-		List<SentEvent> sentEvents = this.communicationClient.getSentEvents();
-		assertThat(sentEvents) //
-				.extracting(sentEvent -> sentEvent.event().getSequence()) //
-				.containsOnly(SEQUENCE);
+		assertThat(this.communicationClient.getSentEvents()) //
+				.extracting(SentEvent::eventDto) //
+				.containsExactlyElementsOf(mappedEvent.eventsByPlayer().values());
 	}
 
-	private Event createReceiveCardEvent() {
+	private MappedEvent createMappedEvent() {
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
-		Player target = game.getPlayers().get(0);
-		EventDetails details = new EventDetails(game);
-		details.setTargetPlayer(target);
-		Event event = new Event(EventCode.PLAYER_RECEIVE_CARD, details);
-		event.setSequence(SEQUENCE);
-		return event;
+		Map<Player, EventDto> eventsByPlayer = new LinkedHashMap<>();
+		for (Player player : game.getPlayers()) {
+			eventsByPlayer.put(player, new EventDto());
+		}
+		return new MappedEvent(new Event(EventCode.TURN_CHANGE, game), eventsByPlayer);
 	}
 }

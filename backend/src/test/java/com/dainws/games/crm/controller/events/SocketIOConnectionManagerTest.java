@@ -172,7 +172,7 @@ class SocketIOConnectionManagerTest {
 		this.connectionManager.onConnected(client.asClient());
 
 		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
-		assertThat(sentEvent.event().getCode()).isEqualTo(EventCode.GAME_SYNC);
+		assertThat(sentEvent.eventDto().getCode()).isEqualTo(EventCode.GAME_SYNC);
 	}
 
 	@Test
@@ -197,7 +197,7 @@ class SocketIOConnectionManagerTest {
 		this.connectionManager.onConnected(client.asClient());
 
 		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
-		assertThat(sentEvent.event().getSequence()).isEqualTo(2);
+		assertThat(sentEvent.eventDto().getSequence()).isEqualTo(2);
 	}
 
 	@Test
@@ -208,7 +208,7 @@ class SocketIOConnectionManagerTest {
 		this.connectionManager.onConnected(client.asClient());
 
 		SentEvent sentEvent = this.communicationClient.getSentEvents().get(0);
-		assertThat(sentEvent.event().getCode()).isEqualTo(EventCode.GAME_LOADING);
+		assertThat(sentEvent.eventDto().getCode()).isEqualTo(EventCode.GAME_LOADING);
 	}
 
 	@Test

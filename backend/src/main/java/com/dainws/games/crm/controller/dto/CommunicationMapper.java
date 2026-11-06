@@ -21,7 +21,7 @@ public class CommunicationMapper {
 		eventDto.setSequence(event.getSequence());
 		EventDetails details = event.getDetails();
 		if (details != null) {
-			EventDetailsDto detailsDto = this.mapEventDetailsToDto(details, receiver);
+			EventDetailsDto detailsDto = this.mapEventDetailsToDto(event.getCode(), details, receiver);
 			detailsDto.setHand(hand);
 
 			eventDto.setDetails(detailsDto);
@@ -30,7 +30,7 @@ public class CommunicationMapper {
 		return eventDto;
 	}
 
-	private EventDetailsDto mapEventDetailsToDto(EventDetails details, Player receiver) {
+	private EventDetailsDto mapEventDetailsToDto(EventCode code, EventDetails details, Player receiver) {
 		EventDetailsDto detailsDto = new EventDetailsDto();
 		detailsDto.setGameDto(ModelMapper.mapGameToDto(details.getGame(), receiver));
 
@@ -50,7 +50,7 @@ public class CommunicationMapper {
 			detailsDto.setTargetPlayer(ModelMapper.mapPlayerToDto(details.getTargetPlayer()));
 		}
 
-		if (details.hasTargetCard()) {
+		if (details.hasTargetCard() && this.canSeeTargetCard(code, details, receiver)) {
 			detailsDto.setTargetCard(ModelMapper.mapCardToDto(details.getTargetCard()));
 		}
 
@@ -66,6 +66,10 @@ public class CommunicationMapper {
 		}
 
 		return detailsDto;
+	}
+
+	private boolean canSeeTargetCard(EventCode code, EventDetails details, Player receiver) {
+		return code != EventCode.PLAYER_RECEIVE_CARD || receiver.equals(details.getTargetPlayer());
 	}
 
 	private List<CardDto> mapHandToDto(Event event, Player player) {

@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.controller.dto.CommunicationMapper;
+import com.dainws.games.crm.controller.dto.response.EventDto;
 import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
@@ -28,7 +30,7 @@ class CommunicationClientTest {
 	StubSocketIOServer server;
 	User user;
 	UserPlayer player;
-	Event event;
+	EventDto eventDto;
 
 	@BeforeEach
 	void beforeEach() {
@@ -42,13 +44,14 @@ class CommunicationClientTest {
 
 		this.player = new UserPlayer(this.user);
 		Game game = new GameBuilder().withPlayers(this.player).build();
-		this.event = new Event(EventCode.TURN_CHANGE, game);
+		Event event = new Event(EventCode.TURN_CHANGE, game);
+		this.eventDto = new CommunicationMapper().mapToDto(event, this.player);
 	}
 
 	@Test
 	void testGivenUserWithoutOpenSocket_whenSendEvent_thenDoesNotFail() {
 		assertDoesNotThrow(
-				() -> this.communicationClient.sendEvent(this.player, this.event));
+				() -> this.communicationClient.sendEvent(this.player, this.eventDto));
 	}
 
 	@Test
@@ -64,7 +67,7 @@ class CommunicationClientTest {
 		this.user.bindSocket(UUID.randomUUID().toString());
 
 		assertDoesNotThrow(
-				() -> this.communicationClient.sendEvent(this.player, this.event));
+				() -> this.communicationClient.sendEvent(this.player, this.eventDto));
 	}
 
 	@Test
@@ -72,7 +75,7 @@ class CommunicationClientTest {
 		RecordingSocketIOClient first = this.bindSocket();
 		RecordingSocketIOClient second = this.bindSocket();
 
-		this.communicationClient.sendEvent(this.player, this.event);
+		this.communicationClient.sendEvent(this.player, this.eventDto);
 
 		assertThat(first.getSentChannels()).containsExactly(GAME_EVENT_CHANNEL);
 		assertThat(second.getSentChannels()).containsExactly(GAME_EVENT_CHANNEL);

@@ -12,6 +12,7 @@ import com.dainws.games.crm.domain.core.DummyGameStrategy;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.persistence.memory.MemoryEventSequence;
 
 class EventListenerOrderTest {
 
@@ -21,6 +22,7 @@ class EventListenerOrderTest {
 	private AnnotationConfigApplicationContext context;
 	private RecordingCommunicationClient communicationClient;
 	private ReactingModeEventDispatcher modeDispatcher;
+	private SpringEventPublisher publisher;
 	private Game game;
 
 	@BeforeEach
@@ -28,7 +30,8 @@ class EventListenerOrderTest {
 		this.game = new GameBuilder().withNRandomPlayers(1).build();
 		this.communicationClient = new RecordingCommunicationClient();
 		this.context = new AnnotationConfigApplicationContext();
-		this.modeDispatcher = new ReactingModeEventDispatcher(DummyGameStrategy.DUMMY_MODE, this.context);
+		this.publisher = new SpringEventPublisher(this.context, new MemoryEventSequence());
+		this.modeDispatcher = new ReactingModeEventDispatcher(DummyGameStrategy.DUMMY_MODE, this.publisher);
 		this.modeDispatcher.setCommunicationClient(this.communicationClient);
 		this.modeDispatcher.reactTo(EventCode.PLAYER_PASS_TURN, EventCode.TURN_CHANGE);
 		this.context.registerBean(RecordingCommunicationClient.class, () -> this.communicationClient);
@@ -45,16 +48,16 @@ class EventListenerOrderTest {
 
 	@Test
 	void testGivenEventThatTriggersAnother_whenPublish_thenTheCauseIsSentBeforeTheEffect() {
-		this.context.publishEvent(new Event(EventCode.PLAYER_PASS_TURN, this.game));
+		this.publisher.publish(new Event(EventCode.PLAYER_PASS_TURN, this.game));
 
 		assertThat(this.communicationClient.getSentEvents()) //
-				.extracting(sentEvent -> sentEvent.event().getCode()) //
+				.extracting(sentEvent -> sentEvent.eventDto().getCode()) //
 				.containsExactly(EventCode.PLAYER_PASS_TURN, EventCode.TURN_CHANGE);
 	}
 
 	@Test
 	void testGivenEvent_whenPublish_thenItIsSentBeforeTheGameReactsToIt() {
-		this.context.publishEvent(new Event(EventCode.PLAYER_PASS_TURN, this.game));
+		this.publisher.publish(new Event(EventCode.PLAYER_PASS_TURN, this.game));
 
 		assertThat(this.modeDispatcher.getSentEventsWhenReacting()) //
 				.containsExactly(ONE_EVENT_SENT, TWO_EVENTS_SENT);
