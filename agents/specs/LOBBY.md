@@ -19,7 +19,7 @@
 - **PARTY-4** Every party that is not locked (`LOAD-1`) appears in the public list, also when it is full. The list has no defined order. There are no private parties in the MVP.
 - **PARTY-5** A user joins from the list or with the party code. The party screen shows the code to be copied, and its format is up to the server. Nobody can join while the party is locked or when it is full.
 - **PARTY-6** A member can leave and the owner can kick a member, except while the party is locked. A spectator is the exception (`SPEC-3`). The owner cannot kick themselves: they leave instead. Leaving a party one does not belong to, or kicking a user who is not a member, is rejected with `exception.party.user_not_in_party`.
-- **PARTY-7** If the owner leaves, the member who has been in the party the longest becomes the owner.
+- **PARTY-7** If the owner leaves or their user is deleted, the member who has been in the party the longest becomes the owner.
 - **PARTY-8** A party is removed when it becomes empty. Its game, if any, is removed with it, and the wait of `WIN-5` is cancelled.
 - **PARTY-9** The owner can start the game whenever the party has at least 2 members and is not locked (`exception.party.locked`). No confirmation from the other members is needed.
 - **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name. The lock of `LOAD-1` is the exception and sends none, because every member is in the game.

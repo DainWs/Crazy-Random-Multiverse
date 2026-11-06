@@ -16,7 +16,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key.
 - **UI-7** Rival hands show only how many cards they hold.
 - **UI-8** A spectator or eliminated player sees the board with all interaction disabled, except a button to leave (`SPEC-3`).
-- **UI-15** Surrendering asks for confirmation (`ELIM-2`).
+- **UI-15** Surrendering asks for confirmation (`ELIM-2`), and so do leaving the party (`PARTY-6`), kicking a member (`UI-23`) and leaving the game as a spectator (`SPEC-3`).
 
 ## Connection and failures
 
@@ -30,7 +30,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 ## Menu
 
 - **UI-13** The name is edited from the main menu. The interface does not offer it inside a party, although the server accepts it (`USER-3`). There is no settings screen in the MVP.
-- **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`). Each party shows its name and its members out of the capacity, and a full one shows the join button disabled (`PARTY-5`, `UI-5`).
+- **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`). Each party shows its name and its members out of the capacity, and a full one shows the join button disabled (`PARTY-5`, `UI-5`). A rejected join is shown as a brief message based on its key, as in `UI-18`, and the list is loaded again, because it was out of date.
 - **UI-18** The main menu creates a party with one action, using the default capacity and the Classic mode (`PARTY-2`, `PARTY-3`), and joins one with a field for the party code. A rejection (`exception.party.*`) is shown as a message below the field, based on its key.
 
 ## Party

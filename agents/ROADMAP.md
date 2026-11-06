@@ -135,6 +135,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Check equipment against `EQUIP-*` and implement the differences: several pieces per card, only on the player's own cards, limits on the total, and the statistic types sent only in combatants, also with a value of 0 (`CardDto`)
 - [ ] Check the attack and placement rules on the server against `COMBAT-11`, `COMBAT-12`, `BOARD-5` and `BOARD-7`
 - [ ] Reject an action without a required field, or whose `game` is not the one of the path, with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
+- [ ] Add `targetPlayer` to `MOVE_ACTION` and `EQUIP_ACTION` in `ActionDto` on the backend and in `toActionDto` on the frontend, required as in `ATTACK_ACTION`, so that `selected_target_zone_is_not_source_zone` and `equip_target_not_owned` can be reached (`CON-16`, `BOARD-7`, `EQUIP-3`)
 - [ ] Reject an action or a `/ready` from a user who is not a player of the game with `exception.access_denied.wrong_game`: today membership is not checked, and an action ends in a null pointer (`CON-16`, `CON-18`)
 - [ ] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
 - [ ] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
@@ -161,7 +162,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Remove the equipment of a card when it dies (`EQUIP-8`)
 - [ ] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
 - [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
-- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
+- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
 - [ ] Disable interaction after game end (`WIN-4`)
 - [ ] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
 - [ ] Show protected cards and exposed leader state (`PROT-6`)
@@ -177,7 +178,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Display the current round (`UI-3`)
 - [ ] Highlight the current player; distinguish the local player's cards
 - [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
-- [ ] Spectator mode with all interaction disabled except a button to leave; a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
+- [ ] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
 - [ ] Connecting, disconnected, reconnecting and failure states (`UI-9`)
 - [ ] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-11`, `USER-8`)
 - [ ] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`). Nothing publishes `GAME_CANCELLED` today
@@ -215,8 +216,8 @@ This phase synchronizes the state and renders it without animating it, except fo
 ## Phase 11 — Menu, lobby, user
 
 - [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, the default name (`USER-2`), deleting the user when the session expires (`USER-7`), `exception.party.user_not_in_party` (`PARTY-6`), name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
-- [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity and the join button disabled for a full party (`UI-1`, `UI-14`)
-- [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`), and the message for a kicked user (`PARTY-12`); leaving is already in Phase 2.5
+- [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity, the join button disabled for a full party, and a rejected join shown as a message that reloads the list (`UI-1`, `UI-14`)
+- [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`), and the message for a kicked user (`PARTY-12`); leaving is already in Phase 2.5. Leaving and kicking ask for confirmation (`UI-15`)
 - [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)
 - [ ] Username editing from the main menu, persisted with `PUT /user` (`USER-3`, `UI-13`)
 - [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)

@@ -2,7 +2,7 @@
 
 ## Elimination
 
-- **ELIM-1** A player is eliminated when their leader dies or when they surrender.
+- **ELIM-1** A player is eliminated when their leader dies, when they surrender or when their user is deleted (`ABSENT-3`, `USER-7`).
 - **ELIM-2** A player can only surrender during their turn.
 - **ELIM-3** When a player is eliminated, their cards leave the board and their hand is discarded, whatever the cause.
 - **ELIM-4** If the eliminated player had the turn, it passes to the next living player.
@@ -20,7 +20,7 @@
 - **WIN-1** The game ends when only one leader is left alive, and its owner wins.
 - **WIN-2** There are no ties in the MVP, because there are no spells. **[Post-MVP]** See `SPELL-5`.
 - **WIN-3** The server decides the end of the game and the winner.
-- **WIN-4** When the game ends, the frontend shows the result over the board and disables interaction. The result says victory or defeat for the local player, names the winner and counts down the seconds left until returning to the party (`WIN-5`).
+- **WIN-4** When the game ends, the frontend shows the result over the board and disables interaction. The result says victory or defeat for the local player, names the winner and counts down the seconds left until returning to the party (`WIN-5`). The countdown starts from a client constant equal to the default duration of `WIN-5`. The return happens with the `party:info` of `WIN-5`, not when the countdown ends, so a different server setting only makes the countdown inaccurate.
 - **WIN-5** The party stays locked while the result is shown (15 seconds, `crm.game.result-duration`). When that time ends, the server removes the finished game from memory and unlocks the party (`party:info` with `locked` as `false`), and every client goes back to the party automatically when it receives it, so its owner can start another game. Any other `party:info` during the game or the result does not take a client out of them.
 
 ## Spectators
