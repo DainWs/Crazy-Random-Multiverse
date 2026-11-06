@@ -84,6 +84,10 @@ class Card {
     throw new Error(`Unknown statistic type: ${statisticType}`);
   }
 
+  public getEquipmentValue(statisticType: StatisticType): number | undefined {
+    return this.equipment?.getStatistic(statisticType)?.value;
+  }
+
   public isType(type: CardType, rarity?: CardRarity): boolean {
     return this.type === type && (rarity === undefined || this.rarity === rarity);
   }

@@ -55,7 +55,7 @@ function defineDamageStat(scene: Phaser.Scene, totalWidth: number, totalHeight: 
   const x = -(width / 2) - horizontalPadding / 2;
   const y = totalHeight / 2 - (height / 2 + verticalPadding * 2) - totalHeight * 0.02;
 
-  const equipmentDamage = card.equipment?.damage.value;
+  const equipmentDamage = card.getEquipmentValue('Damage');
   const damage = new CardStatisticView(scene, damageStat, equipmentDamage);
   damage.setIconPosition('left');
   damage.setPosition(x, y);
@@ -74,7 +74,7 @@ function defineHealthStat(scene: Phaser.Scene, totalWidth: number, totalHeight: 
   const x = (width / 2) + horizontalPadding / 2;
   const y = totalHeight / 2 - (height / 2 + verticalPadding * 2) - totalHeight * 0.02;
 
-  const equipmentHealth = card.equipment?.health.value;
+  const equipmentHealth = card.getEquipmentValue('Health');
   const health = new CardStatisticView(scene, healthStat, equipmentHealth);
   health.setIconPosition('right');
   health.setPosition(x, y);
@@ -91,7 +91,7 @@ function defineArmorStat(scene: Phaser.Scene, totalWidth: number, totalHeight: n
   const x = 0;
   const y = height * 2;
 
-  const equipmentArmor = card.equipment?.armor.value;
+  const equipmentArmor = card.getEquipmentValue('Armor');
   const armor = new CardStatisticView(scene, armorStat, equipmentArmor);
   armor.setIconPosition('top');
   armor.setPosition(x, y);
