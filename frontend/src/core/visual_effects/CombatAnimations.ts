@@ -1,8 +1,11 @@
 import type { CombatResult } from '@/domain/CombatResult';
+import type { StatisticType } from '@/domain/Statistics';
+import type { CardStatisticView } from '@/game/cards/components/CardStatisticView';
 import type CombatantView from '@/game/cards/CombatantView';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
 import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
+import { valueAfterDamage, withValue } from '@/core/visual_effects/StatisticCount';
 import * as Constants from '@/core/Constants';
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
@@ -25,6 +28,8 @@ async function playAttack(scene: GameScene, attackerSlot: ZoneSlotView, targetSl
   const reactions = [targetSlot.flash(Constants.HIT_FLASH_COLOR), showDamageTexts(scene, targetSlot, combat)];
   if (target) {
     reactions.push(shake(scene, target, Constants.HIT_SHAKE_REPEATS));
+    reactions.push(countDown(scene, target, 'Armor', combat.armorDamage));
+    reactions.push(countDown(scene, target, 'Health', combat.healthDamage));
   }
 
   await Promise.all(reactions);
@@ -48,6 +53,26 @@ function pulse(scene: GameScene, view: CombatantView): Promise<void> {
     duration: Constants.ATTACK_PULSE_DURATION_MS,
     yoyo: true,
     ease: 'Power1'
+  });
+}
+
+/** The statistic counts from its value to the one after the damage; the board drawn next already has that value (VIEW-6). */
+function countDown(scene: GameScene, view: CombatantView, type: StatisticType, damage: number): Promise<void> {
+  const statisticView = view.getByName(type) as CardStatisticView | null;
+  const statistic = view.combatant.getStatistic(type);
+  if (!statisticView || !statistic || damage <= 0) {
+    return Promise.resolve();
+  }
+
+  const equipmentValue = view.combatant.getEquipmentValue(type);
+  const counter = { value: statistic.value };
+  const showCounter = () => statisticView.update(withValue(statistic, Math.round(counter.value)), equipmentValue);
+
+  return playTween(scene, {
+    targets: counter,
+    value: valueAfterDamage(statistic, damage),
+    duration: Constants.STATISTIC_COUNT_DURATION_MS,
+    onUpdate: showCounter
   });
 }
 

@@ -185,9 +185,9 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 
 - [x] Disable gameplay while animations are still playing (`UI-4`): `AnimationSystem` queues the animations and `CardController.canAct` waits for it
 - [x] Attack animation and hit feedback (`VIEW-5`)
-- [x] Animate armor and health changes with a floating text over the target (`VIEW-6`, `CON-21`); the values on the card change when the board is drawn after it
+- [x] Animate armor and health changes: the values count down and a floating text rises over the target (`VIEW-6`, `CON-21`)
 - [x] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)
-- [x] Remove the equipment of a card when it dies (`EQUIP-8`): it is stacked inside the combatant, so it fades with it and the next board has none
+- [x] Remove the equipment of a card when it dies (`EQUIP-8`, `VIEW-18`): no animation of its own, it fades with its card and the next board has none
 - [x] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
 - [x] Show protected cards and exposed leader state (`PROT-6`): no mark of their own, only the highlight of valid targets (`VIEW-17`)
 
@@ -297,7 +297,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
 - [ ] A person plays a game in a real browser with two copies of the same card in the hand: place or equip the second one and check that the other copy stays visible in the hand, and that the result screen shows nothing until the winner arrives and then victory or defeat. Then play a second game from the same party and check that the hand works and the console shows no errors from the first game's `HandView`, whose `prerender` listener is removed when it is destroyed. Not checked: Phaser views are not tested with a real renderer
 - [ ] A person double-clicks End Turn against the running server and checks that only one turn passes, and that the clients apply the events in `sequence` order (`CON-12`, `CON-22`) now that the game reacts to each event in the thread that published it (`GameEventMulticaster`) while the sending stays in the thread pool. Not checked: it needs the real Socket.IO server
-- [ ] A person attacks in a real browser and checks the combat feedback (`VIEW-5`, `VIEW-6`, `VIEW-7`): the attacker grows and shrinks back, the target shakes and flashes red, the floating texts with the armor and health lost rise over it, a killed card shrinks and fades out and a killed leader shakes first and lasts longer. Several quick attacks must play one after another, the buttons and the cards must not react meanwhile (`UI-4`), and the result of the game must appear after the last animation. Not checked: Phaser views and tweens are not tested with a real renderer
+- [ ] A person attacks in a real browser and checks the combat feedback (`VIEW-5`, `VIEW-6`, `VIEW-7`): the attacker grows and shrinks back, the target shakes and flashes red, the armor and health count down, the floating texts with what was lost rise over it, a killed card shrinks and fades out and a killed leader shakes first and lasts longer. Several quick attacks must play one after another, the buttons and the cards must not react meanwhile (`UI-4`), and the result of the game must appear after the last animation. Not checked: Phaser views and tweens are not tested with a real renderer
 
 ## Post-MVP
 
