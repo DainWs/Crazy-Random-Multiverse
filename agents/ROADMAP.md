@@ -106,7 +106,7 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 
 ## Phase 3 — Authoritative game state and hand
 
-This phase synchronizes the state and renders it without animating it, except for the cards received. The actions arrive in Phase 4 and the combat feedback in Phase 5.
+This phase synchronizes the state and renders it without animating it, except for the cards received. The actions arrive in Phase 4 and the combat feedback in Phase 5.5.
 
 - [x] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, then `TURN_CHANGE`, and the first round and turn like any other. `zones` starts with the starting player (`GameDto`)
 - [x] Check the game flow against `specs/GAME-FLOW.md` and implement the differences: the leaders placed when the game is created, without `PLAYER_RECEIVE_CARD` (`SETUP-2`; today a player seated before a random starting player never gets one), the whole turn order drawn at random (`SETUP-3`; today only the starting player is), what a round is, rounds numbered from 1 (`GameDto.round`), dealing to everyone at the start of the round, equipment in the spell slots, unlimited deck, missing categories and a deck without leaders (`DECK-4`)
@@ -148,26 +148,31 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [x] Highlight valid targets and disable invalid ones (`UI-5`)
 - [x] End Turn button (`PASS_TURN`)
-- [x] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5)
+- [x] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5.5)
 - [x] Prevent conflicting actions while an action is pending (`CON-19`)
 - [x] Handle rejected and duplicate/pending actions (`UI-6`, `CON-19`)
 - [x] Show clearly whose turn it is (`UI-3`)
 
-## Phase 5 — Combat feedback and game end
+## Phase 5 — Elimination and game end
 
 - [ ] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
+- [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
+- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
+- [ ] Disable interaction after game end (`WIN-4`)
+- [ ] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
+- [ ] Clear targeting state after an action, turn change or invalid action
+
+## Phase 5.5 — Combat feedback
+
+Split from Phase 5 so that each session stays small. It needs the zones of eliminated players that Phase 5 keeps in `zones`. The store applies each event at once (`CON-12`); the animations play in order from the snapshot of each event, and the board is drawn from that snapshot once its animation ends (`UI-4`, `VIEW-12`). This needs a view-side animation queue that is not in `CODESTYLE.md`: propose it and get it confirmed before writing it.
+
 - [ ] Disable gameplay while animations are still playing (`UI-4`): `CardController.canAct` only covers the turn and the pending action
 - [ ] Attack animation and hit feedback (`VIEW-5`)
 - [ ] Animate armor and health changes (`VIEW-6`, `CON-21`)
 - [ ] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)
 - [ ] Remove the equipment of a card when it dies (`EQUIP-8`)
 - [ ] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
-- [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
-- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
-- [ ] Disable interaction after game end (`WIN-4`)
-- [ ] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
-- [ ] Show protected cards and exposed leader state (`PROT-6`)
-- [ ] Clear targeting state after an action, turn change or invalid action
+- [ ] Show protected cards and exposed leader state (`PROT-6`). How they look is not in `VIEW-SPECS.md`: ask
 
 ## Phase 6 — Base assets and stability
 
@@ -267,7 +272,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test
 - [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment
 - [ ] A person checks the board of a real game in a browser: the local zone at the bottom and each leader at the edge of the table (`VIEW-1`), the animation of the cards received in the hand (`VIEW-8`) and the number of cards in each rival hand (`HAND-3`). Not checked: Phaser views are not tested
-- [ ] A person attacks in a real browser (`ATTACK_ACTION`): click an own card of the board, move the pointer over the rivals (the arrow must be green over a card of another player and red elsewhere), click a rival card to attack and check that Escape or a click outside the cards cancels the selection. Not checked: Phaser views are not tested. The attack does not redraw the board yet: the frontend does not apply `PLAYER_ATTACK_CARD` (Phase 5)
+- [ ] A person attacks in a real browser (`ATTACK_ACTION`): click an own card of the board, move the pointer over the rivals (the arrow must be green over a card of another player and red elsewhere), click a rival card to attack and check that Escape or a click outside the cards cancels the selection. Not checked: Phaser views are not tested. The attack does not redraw the board yet: the frontend does not apply `PLAYER_ATTACK_CARD` (Phase 5.5)
 - [ ] A person starts an attack in a real browser and checks that the attacker is marked in red and the cards it can attack in green (`UI-5`), that a card with its attack used or a protected card is not marked, and that the highlight disappears when the attack is made or cancelled. Not checked: Phaser views are not tested with a real renderer
 - [ ] A person plays a turn in a real browser with the game HUD: the top-left text must show the round and "Tu turno" or the name of the player with the turn (`UI-3`), End Turn and Surrender must be dimmed and ignore clicks out of turn (`UI-4`), End Turn must pass the turn, and Surrender must ask for confirmation and only surrender on "Sí" (`UI-15`). Not checked: Phaser views are not tested with a real renderer
 - [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
