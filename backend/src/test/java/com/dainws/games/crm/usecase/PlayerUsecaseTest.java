@@ -3,9 +3,13 @@ package com.dainws.games.crm.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.builder.GameBuilder;
@@ -16,6 +20,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
@@ -27,6 +32,7 @@ class PlayerUsecaseTest {
 
 	private static final String USER_CODE = "user-1";
 	private static final String OTHER_USER_CODE = "user-2";
+	private static final String UNKNOWN_PLAYER_CODE = "unknown";
 	private static final String CARD_CODE = "42";
 	private static final ExceptionCode MALFORMED_REQUEST = new ExceptionCode("request.malformed");
 
@@ -152,7 +158,7 @@ class PlayerUsecaseTest {
 	@Test
 	void testGivenAttackActionWithoutSourcePosition_whenPerformAction_thenRequestIsMalformed() {
 		ActionDto actionDto = this.createActionDto(ActionType.ATTACK_ACTION);
-		actionDto.setTargetPlayerCode(OTHER_USER_CODE);
+		actionDto.setTargetPlayerCode(USER_CODE);
 		actionDto.setTargetPosition(new PositionDto());
 
 		ActionResult result = this.performAction(actionDto, this.gameCodeOf(actionDto));
@@ -179,6 +185,27 @@ class PlayerUsecaseTest {
 		ActionResult result = this.performAction(actionDto, this.gameCodeOf(actionDto));
 
 		assertThat(result.getExceptionCode()).isEqualTo(MALFORMED_REQUEST);
+	}
+
+	// CON-16, CON-18
+	@Test
+	void testGivenEquipActionOnAPlayerOutsideTheGame_whenPerformAction_thenPlayerIsNotFound() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		Executable performAction = this.performEquipOnPlayerOutsideTheGame(facade);
+
+		NotFoundException exception = assertThrows(NotFoundException.class, performAction);
+
+		assertEquals("exception.player.not_found", exception.getCode().value());
+	}
+
+	@Test
+	void testGivenEquipActionOnAPlayerOutsideTheGame_whenPerformAction_thenNothingIsPerformed() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		Executable performAction = this.performEquipOnPlayerOutsideTheGame(facade);
+
+		assertThrows(NotFoundException.class, performAction);
+
+		assertTrue(facade.getPerformedActions().isEmpty());
 	}
 
 	@Test
@@ -219,6 +246,18 @@ class PlayerUsecaseTest {
 		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		User user = this.createUser(USER_CODE);
 		return () -> playerUsecase.performAction(game.getCode(), user, actionDto);
+	}
+
+	private Executable performEquipOnPlayerOutsideTheGame(
+			RecordingPlayerActionFacade facade) {
+		GameCode gameCode = this.registerGame();
+		ActionDto actionDto = this.createActionDto(gameCode, ActionType.EQUIP_ACTION);
+		actionDto.setSourceCardCode(this.createCardCodeDto());
+		actionDto.setTargetPlayerCode(UNKNOWN_PLAYER_CODE);
+		actionDto.setTargetPosition(new PositionDto());
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
+		User user = this.createUser(USER_CODE);
+		return () -> playerUsecase.performAction(gameCode, user, actionDto);
 	}
 
 	private GameCode gameCodeOf(ActionDto actionDto) {

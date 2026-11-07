@@ -12,6 +12,8 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
+import com.dainws.games.crm.domain.core.exception.NotFoundException;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
@@ -56,8 +58,17 @@ public class PlayerUsecase {
 			throw AccessDeniedException.wrongGame();
 		}
 
+		if (this.hasTargetOutsideGame(game, actionDto)) {
+			throw NotFoundException.playerNotFound();
+		}
+
 		return this.actionResolver.get(actionDto.getType())
 				.apply(actionDto);
+	}
+
+	private boolean hasTargetOutsideGame(Game game, ActionDto actionDto) {
+		String targetPlayerCode = actionDto.getTargetPlayerCode();
+		return targetPlayerCode != null && game.getPlayer(PlayerCode.from(targetPlayerCode)) == null;
 	}
 
 	private boolean hasCommonFields(GameCode gameCode, ActionDto actionDto) {
