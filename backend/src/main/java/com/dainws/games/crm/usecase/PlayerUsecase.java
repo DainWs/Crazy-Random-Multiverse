@@ -42,19 +42,22 @@ public class PlayerUsecase {
 			return ActionResult.failed(MALFORMED_REQUEST);
 		}
 
-		if (!user.getCode().text().contentEquals(actionDto.getSourcePlayerCode())) {
+		String userCode = user.getCode().text();
+		if (!userCode.contentEquals(actionDto.getSourcePlayerCode())) {
 			throw AccessDeniedException.identityMismatch();
 		}
 
-		return this.actionResolver.get(actionDto.getType())
-				.apply(actionDto);
+		Function<ActionDto, ActionResult> actionHandler = this.actionResolver.get(actionDto.getType());
+		return actionHandler.apply(actionDto);
 	}
 
 	private boolean hasCommonFields(GameCode gameCode, ActionDto actionDto) {
-		return actionDto.getType() != null
-				&& actionDto.getSourcePlayerCode() != null
-				&& actionDto.getGameCode() != null
-				&& gameCode.text().contentEquals(actionDto.getGameCode());
+		boolean hasType = actionDto.getType() != null;
+		boolean hasSourcePlayer = actionDto.getSourcePlayerCode() != null;
+		boolean hasGame = actionDto.getGameCode() != null;
+		boolean hasAllFields = hasType && hasSourcePlayer && hasGame;
+
+		return hasAllFields && gameCode.text().contentEquals(actionDto.getGameCode());
 	}
 
 	private ActionResult putAction(ActionDto actionDto) {
@@ -67,8 +70,10 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedPut(ActionDto actionDto) {
-		return actionDto.getSourceCardCode() == null
-				|| actionDto.getTargetPosition() == null;
+		boolean hasSourceCard = actionDto.getSourceCardCode() != null;
+		boolean hasTargetPosition = actionDto.getTargetPosition() != null;
+
+		return !(hasSourceCard && hasTargetPosition);
 	}
 	
 	private ActionResult moveAction(ActionDto actionDto) {
@@ -81,9 +86,11 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedMove(ActionDto actionDto) {
-		return actionDto.getSourcePosition() == null
-				|| actionDto.getTargetPlayerCode() == null
-				|| actionDto.getTargetPosition() == null;
+		boolean hasSourcePosition = actionDto.getSourcePosition() != null;
+		boolean hasTargetPlayer = actionDto.getTargetPlayerCode() != null;
+		boolean hasTargetPosition = actionDto.getTargetPosition() != null;
+
+		return !(hasSourcePosition && hasTargetPlayer && hasTargetPosition);
 	}
 	
 	private ActionResult attackAction(ActionDto actionDto) {
@@ -96,9 +103,11 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedAttack(ActionDto actionDto) {
-		return actionDto.getSourcePosition() == null
-				|| actionDto.getTargetPlayerCode() == null
-				|| actionDto.getTargetPosition() == null;
+		boolean hasSourcePosition = actionDto.getSourcePosition() != null;
+		boolean hasTargetPlayer = actionDto.getTargetPlayerCode() != null;
+		boolean hasTargetPosition = actionDto.getTargetPosition() != null;
+
+		return !(hasSourcePosition && hasTargetPlayer && hasTargetPosition);
 	}
 	
 	private ActionResult equipAction(ActionDto actionDto) {
@@ -111,9 +120,11 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedEquip(ActionDto actionDto) {
-		return actionDto.getSourceCardCode() == null
-				|| actionDto.getTargetPlayerCode() == null
-				|| actionDto.getTargetPosition() == null;
+		boolean hasSourceCard = actionDto.getSourceCardCode() != null;
+		boolean hasTargetPlayer = actionDto.getTargetPlayerCode() != null;
+		boolean hasTargetPosition = actionDto.getTargetPosition() != null;
+
+		return !(hasSourceCard && hasTargetPlayer && hasTargetPosition);
 	}
 
 	private ActionResult surrenderAction(ActionDto actionDto) {

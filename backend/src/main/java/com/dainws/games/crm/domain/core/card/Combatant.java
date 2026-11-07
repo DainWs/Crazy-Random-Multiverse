@@ -3,10 +3,12 @@ package com.dainws.games.crm.domain.core.card;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
-import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import com.dainws.games.crm.domain.core.card.statistics.Armor;
+import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
 import com.dainws.games.crm.domain.core.card.statistics.Damage;
+import com.dainws.games.crm.domain.core.card.statistics.DamageType;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
 
 public abstract class Combatant extends Card {
@@ -102,8 +104,10 @@ public abstract class Combatant extends Card {
 			this.baseHealth = this.health;
 		}
 
-		double armorLost = this.getMaxArmorValue() - this.armor.getValue();
-		double healthLost = this.health.getMaxValue() - this.health.getValue();
+		double maxArmorValue = this.getMaxArmorValue();
+		double armorLost = maxArmorValue - this.armor.getValue();
+		double maxHealthValue = this.health.getMaxValue();
+		double healthLost = maxHealthValue - this.health.getValue();
 
 		this.equipment.add(piece);
 		this.updateDamage();
@@ -113,19 +117,27 @@ public abstract class Combatant extends Card {
 
 	private void updateDamage() {
 		if (!this.damage.isInfinite()) {
-			double damageValue = this.baseDamage.getValue() + this.sumOfPieces(Equipment::getDamageValue);
-			this.damage = Damage.newInstance(damageValue, this.baseDamage.getType());
+			double equipmentDamage = this.sumOfPieces(Equipment::getDamageValue);
+			double damageValue = this.baseDamage.getValue() + equipmentDamage;
+			DamageType damageType = this.baseDamage.getType();
+			this.damage = Damage.newInstance(damageValue, damageType);
 		}
 	}
 
 	private void updateArmor(double armorLost) {
-		this.armor = Armor.newInstance(this.getMaxArmorValue() - armorLost, this.baseArmor.getType());
+		double maxArmorValue = this.getMaxArmorValue();
+		double armorValue = maxArmorValue - armorLost;
+		ArmorType armorType = this.baseArmor.getType();
+		this.armor = Armor.newInstance(armorValue, armorType);
 	}
 
 	private void updateHealth(double healthLost) {
 		if (!this.health.isInfinite()) {
-			double maxValue = Math.max(MIN_HEALTH_WITH_EQUIPMENT, this.baseHealth.getMaxValue() + this.sumOfPieces(Equipment::getHealthValue));
-			double value = Math.max(MIN_HEALTH_WITH_EQUIPMENT, maxValue - healthLost);
+			double equipmentHealth = this.sumOfPieces(Equipment::getHealthValue);
+			double unlimitedMaxValue = this.baseHealth.getMaxValue() + equipmentHealth;
+			double maxValue = Math.max(MIN_HEALTH_WITH_EQUIPMENT, unlimitedMaxValue);
+			double unlimitedValue = maxValue - healthLost;
+			double value = Math.max(MIN_HEALTH_WITH_EQUIPMENT, unlimitedValue);
 			this.health = Health.newInstance(value, maxValue);
 		}
 	}
@@ -135,11 +147,14 @@ public abstract class Combatant extends Card {
 			return this.armor.getValue();
 		}
 
-		return Math.max(0, this.baseArmor.getValue() + this.sumOfPieces(Equipment::getArmorValue));
+		double equipmentArmor = this.sumOfPieces(Equipment::getArmorValue);
+		double unlimitedArmor = this.baseArmor.getValue() + equipmentArmor;
+		return Math.max(0, unlimitedArmor);
 	}
 
 	private double sumOfPieces(ToDoubleFunction<Equipment> effect) {
-		return this.equipment.stream().mapToDouble(effect).sum();
+		DoubleStream effects = this.equipment.stream().mapToDouble(effect);
+		return effects.sum();
 	}
 
 	public boolean isAlive() {
@@ -200,7 +215,10 @@ public abstract class Combatant extends Card {
 	@Override
 	public String toString() {
 		String cardAsString = super.toString();
-		String equipmentName = this.equipment.stream().map(piece -> piece.getCode().toString()).collect(Collectors.joining(","));
+		List<String> pieceCodes = this.equipment.stream()
+				.map(piece -> piece.getCode().toString())
+				.toList();
+		String equipmentName = String.join(",", pieceCodes);
 		return "%s[DMG=%s,ARM=%s,HP=%s,EQUIPMENT=%s]"
 				.formatted(cardAsString, this.damage, this.armor, this.health, equipmentName);
 	}

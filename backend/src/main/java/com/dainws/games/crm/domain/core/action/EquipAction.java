@@ -3,6 +3,7 @@ package com.dainws.games.crm.domain.core.action;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
 import com.dainws.games.crm.domain.core.card.Card;
+import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
@@ -37,8 +38,10 @@ public class EquipAction extends PlayerTurnAction {
 	}
 
 	private Equipment grabEquipmentFromHand(ActionContext context) {
-		Hand hand = context.getSourcePlayer().getHand();
-		return (Equipment) hand.grab(context.getSourceCard().getCode());
+		Player sourcePlayer = context.getSourcePlayer();
+		Hand hand = sourcePlayer.getHand();
+		CardCode equipmentCode = context.getSourceCard().getCode();
+		return (Equipment) hand.grab(equipmentCode);
 	}
 
 	private ActionResult checkContext(ActionContext context) {
@@ -58,7 +61,9 @@ public class EquipAction extends PlayerTurnAction {
 	}
 
 	private ActionResult checkTarget(ActionContext context) {
-		if (!context.getSourcePlayer().equals(context.getTargetPlayer())) {
+		Player sourcePlayer = context.getSourcePlayer();
+		Player targetPlayer = context.getTargetPlayer();
+		if (!sourcePlayer.equals(targetPlayer)) {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.EQUIP_TARGET_NOT_OWNED));
 		}
 

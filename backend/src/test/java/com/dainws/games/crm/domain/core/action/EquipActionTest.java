@@ -19,6 +19,7 @@ import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.exception.ZoneExceptionCode;
+import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
 
 class EquipActionTest extends PlayerTurnActionTest {
@@ -31,7 +32,9 @@ class EquipActionTest extends PlayerTurnActionTest {
 
 		this.createPlayerTurnAction().perform(actionContext);
 
-		Combatant combatant = actionContext.getTargetZone().getCombatant(actionContext.getTargetCoordinate());
+		Zone targetZone = actionContext.getTargetZone();
+		Coordinate targetCoordinate = actionContext.getTargetCoordinate();
+		Combatant combatant = targetZone.getCombatant(targetCoordinate);
 		assertThat(combatant.getEquipment()).hasSize(1);
 	}
 
@@ -42,7 +45,9 @@ class EquipActionTest extends PlayerTurnActionTest {
 
 		this.createPlayerTurnAction().perform(actionContext);
 
-		assertThat(actionContext.getSourcePlayer().getHand().contains(actionContext.getSourceCard())).isFalse();
+		Hand hand = actionContext.getSourcePlayer().getHand();
+		boolean isEquipmentInHand = hand.contains(actionContext.getSourceCard());
+		assertThat(isEquipmentInHand).isFalse();
 	}
 
 	// EQUIP-4
@@ -56,7 +61,9 @@ class EquipActionTest extends PlayerTurnActionTest {
 
 		this.createPlayerTurnAction().perform(actionContext);
 
-		Combatant combatant = actionContext.getTargetZone().getCombatant(actionContext.getTargetCoordinate());
+		Zone targetZone = actionContext.getTargetZone();
+		Coordinate targetCoordinate = actionContext.getTargetCoordinate();
+		Combatant combatant = targetZone.getCombatant(targetCoordinate);
 		assertThat(combatant.getEquipment()).hasSize(2);
 	}
 
@@ -98,13 +105,17 @@ class EquipActionTest extends PlayerTurnActionTest {
 
 		this.createPlayerTurnAction().perform(actionContext);
 
-		assertThat(actionContext.getSourcePlayer().getHand().contains(actionContext.getSourceCard())).isTrue();
+		Hand hand = actionContext.getSourcePlayer().getHand();
+		boolean isEquipmentInHand = hand.contains(actionContext.getSourceCard());
+		assertThat(isEquipmentInHand).isTrue();
 	}
 
 	@Test
 	void testGivenEmptySlot_whenPerform_thenCodeIsTargetPositionHasNoneCombatant() throws GameException {
 		CustomActionContext actionContext = this.createActionContext();
-		Coordinate emptyCoordinate = this.getAvaibleCoordinateOnPlayerZone(actionContext.getGame(), actionContext.getSourcePlayer());
+		Game game = actionContext.getGame();
+		Player sourcePlayer = actionContext.getSourcePlayer();
+		Coordinate emptyCoordinate = this.getAvaibleCoordinateOnPlayerZone(game, sourcePlayer);
 		actionContext.setTargetCoordinate(emptyCoordinate);
 
 		ExceptionCode code = this.performAndGetCode(actionContext);
@@ -128,9 +139,10 @@ class EquipActionTest extends PlayerTurnActionTest {
 
 	private CustomActionContext createActionContextOnCombatantOfAnotherPlayer() throws NotAllowedException {
 		CustomActionContext actionContext = this.createActionContext();
-		Player otherPlayer = this.getPlayerWithoutTurn(actionContext.getGame());
-		Coordinate coordinate = this.getAvaibleCoordinateOnPlayerZone(actionContext.getGame(), otherPlayer);
-		this.putWarrior(actionContext.getGame(), otherPlayer, coordinate);
+		Game game = actionContext.getGame();
+		Player otherPlayer = this.getPlayerWithoutTurn(game);
+		Coordinate coordinate = this.getAvaibleCoordinateOnPlayerZone(game, otherPlayer);
+		this.putWarrior(game, otherPlayer, coordinate);
 		actionContext.setTargetPlayer(otherPlayer);
 		actionContext.setTargetCoordinate(coordinate);
 		return actionContext;

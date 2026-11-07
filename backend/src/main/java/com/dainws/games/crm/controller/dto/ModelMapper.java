@@ -227,7 +227,11 @@ public class ModelMapper {
 		}
 
 		if (card instanceof Combatant combatant && !combatant.getEquipment().isEmpty()) {
-			cardDto.setEquipment(combatant.getEquipment().stream().map(ModelMapper::mapCardToDto).toList());
+			List<CardDto> equipmentDtos = combatant.getEquipment().stream()
+					.map(ModelMapper::mapCardToDto)
+					.toList();
+
+			cardDto.setEquipment(equipmentDtos);
 		}
 
 		return cardDto;

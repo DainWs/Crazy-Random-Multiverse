@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.dainws.games.crm.domain.core.card.statistics.Armor;
 import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
+import com.dainws.games.crm.domain.core.card.statistics.Damage;
 import com.dainws.games.crm.domain.core.card.statistics.DamageType;
 
 class CombatantEquipmentTest {
@@ -62,10 +64,11 @@ class CombatantEquipmentTest {
 
 	@Test
 	void testGivenWarriorWithoutArmorOfMagicType_whenEquipArmor_thenArmorHasTheMagicType() {
+		Armor magicArmorWithoutValue = Armor.newInstance(0, ArmorType.MAGIC);
 		Warrior warrior = Warrior.commonWarriorBuilder()
 				.withCode(CODE)
 				.withPhysicalDamage(5)
-				.withArmor(com.dainws.games.crm.domain.core.card.statistics.Armor.newInstance(0, ArmorType.MAGIC))
+				.withArmor(magicArmorWithoutValue)
 				.withHealth(10)
 				.build();
 
@@ -76,10 +79,11 @@ class CombatantEquipmentTest {
 
 	@Test
 	void testGivenWarriorWithoutArmorOfMagicType_whenEquipArmor_thenArmorHasTheValue() {
+		Armor magicArmorWithoutValue = Armor.newInstance(0, ArmorType.MAGIC);
 		Warrior warrior = Warrior.commonWarriorBuilder()
 				.withCode(CODE)
 				.withPhysicalDamage(5)
-				.withArmor(com.dainws.games.crm.domain.core.card.statistics.Armor.newInstance(0, ArmorType.MAGIC))
+				.withArmor(magicArmorWithoutValue)
 				.withHealth(10)
 				.build();
 
@@ -90,9 +94,10 @@ class CombatantEquipmentTest {
 
 	@Test
 	void testGivenWarriorWithoutDamageOfMagicType_whenEquipDamage_thenDamageHasTheMagicType() {
+		Damage magicDamageWithoutValue = Damage.newInstance(0, DamageType.MAGIC);
 		Warrior warrior = Warrior.commonWarriorBuilder()
 				.withCode(CODE)
-				.withDamage(com.dainws.games.crm.domain.core.card.statistics.Damage.newInstance(0, DamageType.MAGIC))
+				.withDamage(magicDamageWithoutValue)
 				.withNoneArmor()
 				.withHealth(10)
 				.build();
