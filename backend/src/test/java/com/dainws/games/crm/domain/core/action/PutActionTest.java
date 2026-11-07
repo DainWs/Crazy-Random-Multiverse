@@ -138,6 +138,40 @@ class PutActionTest extends PlayerTurnActionTest {
 		assertThat(code).isEqualTo(new ZoneExceptionCode(ZoneExceptionCode.Code.PREVIOUS_ROW_NEEDS_TO_BE_FILLED));
 	}
 
+	@Test
+	void testGivenGapInFirstRowAndCardInSecondRow_whenPerformOnSecondRow_thenCodeIsPreviousRowNeedsToBeFilled() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		this.setZoneWithGapInFirstRow(actionContext);
+		actionContext.setTargetCoordinate(new Coordinate(2, 1));
+
+		ExceptionCode code = this.performAndGetCode(actionContext);
+
+		assertThat(code).isEqualTo(new ZoneExceptionCode(ZoneExceptionCode.Code.PREVIOUS_ROW_NEEDS_TO_BE_FILLED));
+	}
+
+	@Test
+	void testGivenGapInFirstRowAndCardInSecondRow_whenPerformOnTheGap_thenActionIsPerformed() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		this.setZoneWithGapInFirstRow(actionContext);
+		actionContext.setTargetCoordinate(new Coordinate(1, 1));
+
+		boolean isSuccessful = this.createPlayerTurnAction().perform(actionContext).isSuccessful();
+
+		assertTrue(isSuccessful);
+	}
+
+	private void setZoneWithGapInFirstRow(CustomActionContext actionContext) throws GameException {
+		Zone zone = new ZoneWithLeader();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, new CardBuilder().buildFullValidLeader());
+		for (int column = 0; column < zone.getHorizontalDimension(1); column++) {
+			zone.putCombatant(new Coordinate(1, column), new CardBuilder().buildFullValidWarrior());
+		}
+
+		zone.putCombatant(new Coordinate(2, 0), new CardBuilder().buildFullValidWarrior());
+		zone.removeCombatant(new Coordinate(1, 1));
+		actionContext.getBoard().setZone(actionContext.getSourcePlayer(), zone);
+	}
+
 	private ExceptionCode performAndGetCode(CustomActionContext actionContext) {
 		return this.createPlayerTurnAction().perform(actionContext).getExceptionCode();
 	}
