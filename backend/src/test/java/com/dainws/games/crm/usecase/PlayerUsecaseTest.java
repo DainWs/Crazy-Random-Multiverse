@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Test;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
 import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
+import com.dainws.games.crm.services.exception.MalformedRequestException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionType;
 import com.dainws.games.crm.usecase.dto.CardCodeDto;
@@ -30,6 +32,7 @@ class PlayerUsecaseTest {
 		ActionType type = ActionType.EQUIP_ACTION;
 		ActionDto actionDto = this.createActionDto(gameCode, type);
 		actionDto.setSourceCardCode(this.createCardCodeDto());
+		actionDto.setTargetPlayerCode(USER_CODE);
 		actionDto.setTargetPosition(new PositionDto());
 
 		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
@@ -67,12 +70,12 @@ class PlayerUsecaseTest {
 	}
 
 	@Test
-	void testGivenActionOfAnotherGame_whenPerformAction_thenAccessIsDenied() {
+	void testGivenActionOfAnotherGame_whenPerformAction_thenRequestIsMalformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		ThrowingCallable performAction = this.performActionOfAnotherGame(facade);
 
 		assertThatThrownBy(performAction)
-				.isInstanceOf(AccessDeniedException.class);
+				.isInstanceOf(MalformedRequestException.class);
 	}
 
 	@Test
@@ -96,7 +99,7 @@ class PlayerUsecaseTest {
 	}
 
 	@Test
-	void testGivenActionWithoutType_whenPerformAction_thenIllegalArgumentIsThrown() {
+	void testGivenActionWithoutType_whenPerformAction_thenRequestIsMalformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
 		GameCode gameCode = new GameCode();
 		ActionDto actionDto = this.createActionDto(gameCode, null);
@@ -106,7 +109,7 @@ class PlayerUsecaseTest {
 		ThrowingCallable performAction = () -> playerUsecase.performAction(gameCode, user, actionDto);
 
 		assertThatThrownBy(performAction)
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(MalformedRequestException.class);
 	}
 
 	@Test
@@ -120,6 +123,67 @@ class PlayerUsecaseTest {
 		catchThrowable(() -> playerUsecase.performAction(gameCode, user, actionDto));
 
 		assertThat(facade.getPerformedActions()).isEmpty();
+	}
+
+	@Test
+	void testGivenPutActionWithoutSourceCard_whenPerformAction_thenRequestIsMalformed() {
+		ActionDto actionDto = this.createActionDto(ActionType.PUT_ACTION);
+		actionDto.setTargetPosition(new PositionDto());
+
+		assertThatThrownBy(() -> this.performAction(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
+	}
+
+	@Test
+	void testGivenMoveActionWithoutTargetPlayer_whenPerformAction_thenRequestIsMalformed() {
+		ActionDto actionDto = this.createActionDto(ActionType.MOVE_ACTION);
+		actionDto.setSourcePosition(new PositionDto());
+		actionDto.setTargetPosition(new PositionDto());
+
+		assertThatThrownBy(() -> this.performAction(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
+	}
+
+	@Test
+	void testGivenAttackActionWithoutSourcePosition_whenPerformAction_thenRequestIsMalformed() {
+		ActionDto actionDto = this.createActionDto(ActionType.ATTACK_ACTION);
+		actionDto.setTargetPlayerCode(OTHER_USER_CODE);
+		actionDto.setTargetPosition(new PositionDto());
+
+		assertThatThrownBy(() -> this.performAction(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
+	}
+
+	@Test
+	void testGivenEquipActionWithoutTargetPlayer_whenPerformAction_thenRequestIsMalformed() {
+		ActionDto actionDto = this.createActionDto(ActionType.EQUIP_ACTION);
+		actionDto.setSourceCardCode(this.createCardCodeDto());
+		actionDto.setTargetPosition(new PositionDto());
+
+		assertThatThrownBy(() -> this.performAction(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
+	}
+
+	@Test
+	void testGivenActionWithoutSourcePlayer_whenPerformAction_thenRequestIsMalformed() {
+		ActionDto actionDto = this.createActionDto(ActionType.PASS_TURN);
+		actionDto.setSourcePlayerCode(null);
+
+		assertThatThrownBy(() -> this.performAction(actionDto))
+				.isInstanceOf(MalformedRequestException.class);
+	}
+
+	private ActionResult performAction(ActionDto actionDto) {
+		PlayerUsecase playerUsecase = new PlayerUsecase(new RecordingPlayerActionFacade());
+		return playerUsecase.performAction(this.gameCodeOf(actionDto), this.createUser(USER_CODE), actionDto);
+	}
+
+	private GameCode gameCodeOf(ActionDto actionDto) {
+		return GameCode.from(actionDto.getGameCode());
+	}
+
+	private ActionDto createActionDto(ActionType type) {
+		return this.createActionDto(new GameCode(), type);
 	}
 
 	private ThrowingCallable performActionOfAnotherUser(

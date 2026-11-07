@@ -107,16 +107,6 @@ class PutActionTest extends PlayerTurnActionTest {
 	}
 
 	@Test
-	void testGivenNoTargetCoordinate_whenPerform_thenCodeIsTargetCoordinateIsNull() throws GameException {
-		CustomActionContext actionContext = this.createActionContext();
-		actionContext.setTargetCoordinate(null);
-
-		ExceptionCode code = this.performAndGetCode(actionContext);
-
-		assertThat(code).isEqualTo(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_COORDINATE_IS_NULL));
-	}
-
-	@Test
 	void testGivenCoordinateOutsideTheZone_whenPerform_thenCodeIsOutOfBounds() throws GameException {
 		CustomActionContext actionContext = this.createActionContext();
 		actionContext.setTargetCoordinate(new Coordinate(OUTSIDE_INDEX, OUTSIDE_INDEX));

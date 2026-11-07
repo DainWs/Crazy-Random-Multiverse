@@ -58,10 +58,6 @@ public class PutAction extends PlayerTurnAction {
 
 	private ActionResult checkTarget(ActionContext context, Card card) {
 		Coordinate targetCoordinate = context.getTargetCoordinate();
-		if (targetCoordinate == null) {
-			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_COORDINATE_IS_NULL));
-		}
-
 		Zone targetZone = context.getTargetZone();
 		if (!targetZone.isInside(targetCoordinate)) {
 			return ActionResult.failed(new ZoneExceptionCode(ZoneExceptionCode.Code.COORDINATE_OUT_OF_BOUNDS));

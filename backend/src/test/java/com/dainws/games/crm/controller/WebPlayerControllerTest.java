@@ -112,7 +112,7 @@ class WebPlayerControllerTest {
 	}
 
 	@Test
-	void testGivenActionOfAnotherGame_whenDispatchAction_thenBodyCarriesTheAccessDeniedKey() throws Exception {
+	void testGivenActionOfAnotherGame_whenDispatchAction_thenBodyCarriesTheMalformedKey() throws Exception {
 		GameCode otherGameCode = new GameCode();
 		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(otherGameCode.text(), USER_CODE);
 
@@ -120,7 +120,7 @@ class WebPlayerControllerTest {
 				.contentType(MediaType.APPLICATION_JSON) //
 				.content(body)) //
 				.andExpect(status().isBadRequest()) //
-				.andExpect(jsonPath("$.key").value("exception.access_denied.wrong_game"));
+				.andExpect(jsonPath("$.key").value("exception.request.malformed"));
 	}
 
 	@Test

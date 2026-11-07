@@ -7,7 +7,6 @@ public class PlayerActionExceptionCode extends ExceptionCode {
 		SELECTED_CARD_NOT_FOUND("selected_card_not_found"),
 		SELECTED_CARD_IS_NOT_COMBATANT("selected_card_is_not_combatant"),
 		SELECTED_CARD_IS_NOT_EQUIPMENT("selected_card_is_not_equipment"),
-		SELECTED_TARGET_COORDINATE_IS_NULL("selected_target_coordinate_is_null"),
 		SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT("selected_target_position_already_has_combatant"),
 		SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT("selected_source_position_has_none_combatant"),
 		SELECTED_TARGET_ZONE_IS_NOT_SOURCE_ZONE("selected_target_zone_is_not_source_zone"),
