@@ -57,10 +57,11 @@ Work on **one roadmap phase per session**. Do not start the next one.
 
 1. Read the indicated phase in `agents/ROADMAP.md`.
 2. Propose a short plan and wait for confirmation before writing code.
-3. Implement bullet by bullet.
-4. Write the tests in the same commit as the code they test.
-5. Record progress in `agents/ROADMAP.md` by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
-6. When the phase is finished, summarize what was done.
+3. Before the first change, record in the phase the commit it starts from (the current `HEAD`): `Started at: <short hash>`. In the same edit, close the previous phase with `Finished at: <short hash>`, which is that same `HEAD` (the last commit of the previous phase).
+4. Implement bullet by bullet.
+5. Write the tests in the same commit as the code they test.
+6. Record progress in `agents/ROADMAP.md` by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
+7. When the phase is finished, summarize what was done. Do not record `Finished at` yet: it is written when the next phase starts.
 
 When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
 
