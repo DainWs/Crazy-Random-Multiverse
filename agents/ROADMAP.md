@@ -132,13 +132,13 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 4 — Core gameplay
 
-- [ ] Check equipment against `EQUIP-*` and implement the differences: several pieces per card, only on the player's own cards, limits on the total, and the statistic types sent only in combatants, also with a value of 0 (`CardDto`)
+- [x] Check equipment against `EQUIP-*` and implement the differences: several pieces per card, only on the player's own cards, limits on the total, and the statistic types sent only in combatants, also with a value of 0 (`CardDto`)
 - [ ] Check the attack and placement rules on the server against `COMBAT-11`, `COMBAT-12`, `BOARD-5` and `BOARD-7`
 - [x] Reject an action without a required field, or whose `game` is not the one of the path, with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
 - [x] Add `targetPlayer` to `MOVE_ACTION` and `EQUIP_ACTION` in `ActionDto` on the backend and in `toActionDto` on the frontend, required as in `ATTACK_ACTION`, so that `selected_target_zone_is_not_source_zone` and `equip_target_not_owned` can be reached (`CON-16`, `BOARD-7`, `EQUIP-3`)
 - [ ] Reject an action or a `/ready` from a user who is not a player of the game with `exception.access_denied.wrong_game`: today membership is not checked, and an action ends in a null pointer (`CON-16`, `CON-18`)
 - [x] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
-- [ ] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
+- [x] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
 - [ ] Fix `ZoneSlot.hasAlreadyEquipment` in the frontend, which compares with `null` and always says true
 - [ ] Refactor `CardController` to send backend commands
 - [x] Card placement (`PUT_ACTION`, `BOARD-5`): validate available slots, row 2 before row 1
@@ -263,6 +263,9 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person moves and swaps cards on the board in a real browser (`MOVE_ACTION`): both cards must show their new places as a preview, and go back to their slots with the message when the server rejects the move. Not checked for the same reason
 - [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`): the conversion from the frontend rows (`mirrorRow`) is only tested with a simulated `fetch`
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test
+- [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment
+- [ ] A person checks the board of a real game in a browser: the local zone at the bottom and each leader at the edge of the table (`VIEW-1`), the animation of the cards received in the hand (`VIEW-8`) and the number of cards in each rival hand (`HAND-3`). Not checked: Phaser views are not tested
+- [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
 
 ## Post-MVP
 

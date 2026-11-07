@@ -15,6 +15,8 @@ public class PlayerActionExceptionCode extends ExceptionCode {
 		SELECTED_SOURCE_ATTACK_IN_COOLDOWN("selected_source_attack_in_cooldown"),
 		SELECTED_TARGET_IS_PROTECTED("selected_target_is_protected"),
 		SELECTED_SOURCE_LEADER_IS_PROTECTED("selected_source_leader_is_protected"),
+		SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT("selected_target_position_has_none_combatant"),
+		EQUIP_TARGET_NOT_OWNED("equip_target_not_owned"),
 		CARD_CANT_BE_USED("card_cant_be_used");
 
 		private final String text;

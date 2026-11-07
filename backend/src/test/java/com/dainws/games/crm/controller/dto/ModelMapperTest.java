@@ -30,6 +30,8 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
+import com.dainws.games.crm.domain.core.card.statistics.Armor;
+import com.dainws.games.crm.domain.core.card.statistics.ArmorType;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -328,6 +330,32 @@ class ModelMapperTest {
 		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
 
 		assertThat(cardDto.getEquipment().get(0).getType()).isEqualTo(CardType.EQUIPMENT);
+	}
+
+	@Test
+	void testGivenWarriorWithTwoPieces_whenMapCard_thenDtoListsBothPieces() {
+		Warrior warrior = CardBuilder.buildCommonWarrior();
+		warrior.equip(CardBuilder.buildEquipment());
+		warrior.equip(CardBuilder.buildEquipment());
+
+		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
+
+		assertThat(cardDto.getEquipment()).hasSize(2);
+	}
+
+	// CardDto: the type of a statistic with value 0 is sent
+	@Test
+	void testGivenWarriorWithoutArmorOfMagicType_whenMapCard_thenDtoKeepsTheArmorType() {
+		Warrior warrior = Warrior.commonWarriorBuilder() //
+				.withCode(1L) //
+				.withPhysicalDamage(5) //
+				.withArmor(Armor.newInstance(0, ArmorType.MAGIC)) //
+				.withHealth(10) //
+				.build();
+
+		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
+
+		assertThat(cardDto.getArmorType()).isEqualTo(ArmorType.MAGIC);
 	}
 
 	@Test
