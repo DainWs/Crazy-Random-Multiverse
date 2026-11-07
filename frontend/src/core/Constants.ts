@@ -159,6 +159,12 @@ export const HEALTH_DAMAGE_TEXT_COLOR = '#e74c3c';
 /** Milliseconds the armor and the health of a card take to count down to their new values (VIEW-6). */
 export const STATISTIC_COUNT_DURATION_MS = 500;
 
+/** Color of the outline of the floating text with the damage, so it reads over any card (VIEW-6). */
+export const DAMAGE_TEXT_STROKE_COLOR = '#000000';
+
+/** Width in pixels of the outline of the floating text with the damage (VIEW-6). */
+export const DAMAGE_TEXT_STROKE_WIDTH = 6;
+
 /** Distance in pixels the floating text with the damage rises (VIEW-6). */
 export const DAMAGE_TEXT_RISE = 120;
 

@@ -4,6 +4,7 @@ import { valueAfterDamage, withValue } from '@/domain/Statistics';
 import type { CardStatisticView } from '@/game/cards/components/CardStatisticView';
 import type CombatantView from '@/game/cards/CombatantView';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
+import DamageTextLayout from '@/game/cards/DamageTextLayout';
 import type { GameScene } from '@/scenes/Game';
 import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
 import * as Constants from '@/core/Constants';
@@ -108,22 +109,24 @@ async function fadeOut(scene: GameScene, view: CombatantView, isLeader: boolean)
 /** The texts are placed in the world, not in the slot, because the slot is rotated with its zone and the text would turn upside down. */
 async function showDamageTexts(scene: GameScene, slot: ZoneSlotView, combat: CombatResult): Promise<void> {
   const { tx, ty } = slot.getWorldTransformMatrix();
+  const layout = new DamageTextLayout({ x: tx, y: ty });
   const rises = toDamageTexts(combat).map(({ text, color }, index) => {
-    const style = { fontSize: Constants.DAMAGE_TEXT_FONT_SIZE, color, stroke: '#000000', strokeThickness: 6 };
-    const damageText = scene.add.text(tx, ty - index * Constants.DAMAGE_TEXT_GAP, text, style);
+    const style = { fontSize: Constants.DAMAGE_TEXT_FONT_SIZE, color, stroke: Constants.DAMAGE_TEXT_STROKE_COLOR, strokeThickness: Constants.DAMAGE_TEXT_STROKE_WIDTH };
+    const start = layout.startPosition(index);
+    const damageText = scene.add.text(start.x, start.y, text, style);
     damageText.setOrigin(0.5, 0.5);
     damageText.setDepth(Constants.DAMAGE_TEXT_DEPTH);
 
-    return rise(scene, damageText);
+    return rise(scene, damageText, layout.riseTargetY(index));
   });
 
   await Promise.all(rises);
 }
 
-async function rise(scene: GameScene, damageText: Phaser.GameObjects.Text): Promise<void> {
+async function rise(scene: GameScene, damageText: Phaser.GameObjects.Text, targetY: number): Promise<void> {
   await playTween(scene, {
     targets: damageText,
-    y: damageText.y - Constants.DAMAGE_TEXT_RISE,
+    y: targetY,
     alpha: 0,
     duration: Constants.DAMAGE_TEXT_DURATION_MS,
     ease: 'Power1'
