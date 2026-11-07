@@ -72,10 +72,8 @@ public class GameLifeCycle {
 	}
 
 	private synchronized boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
-		List<Player> gameLoadingPlayers = this.getLoadingPlayersOf(game);
-		boolean wasRemoved = gameLoadingPlayers.removeIf(player -> player.isCode(code));
-		this.setLoadingPlayersOf(game, gameLoadingPlayers);
-		return wasRemoved;
+		List<Player> gameLoadingPlayers = this.loadingPlayers.get(game.getCode());
+		return gameLoadingPlayers != null && gameLoadingPlayers.removeIf(player -> player.isCode(code));
 	}
 
 	private int countLoadingPlayersFrom(Game game) {
@@ -131,9 +129,5 @@ public class GameLifeCycle {
 
 	private List<Player> getLoadingPlayersOf(Game game) {
 		return this.loadingPlayers.getOrDefault(game.getCode(), new ArrayList<>());
-	}
-
-	private void setLoadingPlayersOf(Game game, List<Player> players) {
-		this.loadingPlayers.put(game.getCode(), players);
 	}
 }

@@ -1,6 +1,7 @@
 package com.dainws.games.crm.domain.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,18 @@ class GameLifeCycleTest {
 		this.gameLifeCycle.loadCompleteFor(this.game, this.second.getPlayerCode());
 
 		assertThat(this.game.inStatus(Status.IN_PROGRESS)).isTrue();
+	}
+
+	// LOAD-2: confirming again has no effect, and a game that no longer
+	// loads keeps nothing
+	@Test
+	void testGivenStartedGame_whenAPlayerConfirmsAgain_thenGameLeavesNothingRegistered() {
+		this.gameLifeCycle.loadCompleteFor(this.game, this.first.getPlayerCode());
+		this.gameLifeCycle.loadCompleteFor(this.game, this.second.getPlayerCode());
+
+		this.gameLifeCycle.loadCompleteFor(this.game, this.first.getPlayerCode());
+
+		assertTrue(this.gameLifeCycle.register(this.game, player -> true));
 	}
 
 	@Test
