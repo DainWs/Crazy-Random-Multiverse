@@ -75,6 +75,7 @@ describe('CardDragAndDropManager', () => {
   const createMockZoneSlot = (canPlace = true, cardIndex = 0) => {
     const slot = Object.create(ZoneSlotView.prototype);
     slot.canReceive = vi.fn(() => canPlace);
+    slot.canReceiveFrom = vi.fn(() => canPlace);
     slot.applyAnimation = vi.fn();
     slot.previewCard = vi.fn();
     slot.stopPreviewingCard = vi.fn();
@@ -142,6 +143,30 @@ describe('CardDragAndDropManager', () => {
 
       expect(slot.previewCard).not.toHaveBeenCalled();
       expect(slot.applyAnimation).not.toHaveBeenCalledWith('highlight_as_target');
+    });
+
+    it('previews card when dragged from a zone slot over a slot that can receive it', () => {
+      const card = createMockCard(true);
+      const sourceSlot = createMockZoneSlot();
+      const targetSlot = createMockZoneSlot(true);
+      vi.mocked(getTopGameObjectAtCursor).mockReturnValue(sourceSlot);
+      dragAndDrop.onGrabCard(mockScene, card);
+
+      dragAndDrop.onDragEnter(mockScene, card, targetSlot);
+
+      expect(targetSlot.canReceiveFrom).toHaveBeenCalledWith(sourceSlot);
+      expect(targetSlot.previewCard).toHaveBeenCalledWith(card);
+    });
+
+    it('does not preview card dragged from a zone slot over a slot that cannot receive it', () => {
+      const card = createMockCard(true);
+      const targetSlot = createMockZoneSlot(false);
+      vi.mocked(getTopGameObjectAtCursor).mockReturnValue(createMockZoneSlot());
+      dragAndDrop.onGrabCard(mockScene, card);
+
+      dragAndDrop.onDragEnter(mockScene, card, targetSlot);
+
+      expect(targetSlot.previewCard).not.toHaveBeenCalled();
     });
 
     it('stops preview and unhighlights on onDragLeave', () => {

@@ -64,6 +64,18 @@ class Zone {
     return slot !== undefined && slot.canPlaceCard(card) && (!card.isCombatant() || this.isRowTowardsLeaderFilled(position.row));
   }
 
+  /** A warrior moves to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
+  public canMoveCard(from: ZonePosition, to: ZonePosition): boolean {
+    const source = this.slots[from.row]?.[from.column];
+    const target = this.slots[to.row]?.[to.column];
+    const isSameSlot = from.row === to.row && from.column === to.column;
+    return !isSameSlot && this.isMovable(source) && target !== undefined && target.allowedCombatant === 'WARRIOR' && (target.isOccupied() || this.isRowTowardsLeaderFilled(to.row));
+  }
+
+  private isMovable(slot: ZoneSlot | undefined): boolean {
+    return slot !== undefined && slot.isOccupied() && !slot.combatant?.isType('LEADER');
+  }
+
   private isRowTowardsLeaderFilled(row: number): boolean {
     const rowTowardsLeader = this.slots[row + 1];
     return rowTowardsLeader === undefined || rowTowardsLeader.every((slot) => slot.isOccupied());

@@ -7,7 +7,7 @@ import ZoneSlot from '@/domain/ZoneSlot';
 
 const WARRIOR_COLUMNS = 3;
 
-const createCard = (type: 'WARRIOR' | 'EQUIPMENT'): Card => {
+const createCard = (type: 'LEADER' | 'WARRIOR' | 'EQUIPMENT'): Card => {
   return new Card({ code: new CardCode('1', type), name: 'name', description: 'description', type, rarity: type === 'WARRIOR' ? 'COMMON' : undefined });
 };
 
@@ -29,7 +29,7 @@ describe('Zone', () => {
   const createZone = (outerOccupied: number, innerOccupied: number): Zone => {
     const created = new Zone(new Player('p-1', 'One'), 'FRIENDLY');
     const leaderSlot = new ZoneSlot(new ZonePosition(2, 0), 'LEADER');
-    leaderSlot.combatant = createCard('WARRIOR') as CombatantCard;
+    leaderSlot.combatant = createCard('LEADER') as CombatantCard;
     created.slots = [createWarriorRow(0, outerOccupied), createWarriorRow(1, innerOccupied), [leaderSlot]];
     return created;
   };
@@ -75,6 +75,57 @@ describe('Zone', () => {
       zone.slots[2][0].combatant = null;
 
       expect(zone.canPlaceCard(new ZonePosition(2, 0), createCard('WARRIOR'))).toBe(false);
+    });
+  });
+
+  describe('canMoveCard', () => {
+    // BOARD-7
+    it('accepts a move to a free slot of a row whose previous row is filled', () => {
+      zone = createZone(1, 2);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 0), new ZonePosition(1, 2))).toBe(true);
+    });
+
+    it('rejects a move to a free slot of a row whose previous row is not filled', () => {
+      zone = createZone(0, 2);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 0), new ZonePosition(0, 0))).toBe(false);
+    });
+
+    it('accepts a move that leaves a gap behind', () => {
+      zone = createZone(0, WARRIOR_COLUMNS);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 1), new ZonePosition(0, 0))).toBe(true);
+    });
+
+    it('accepts a swap with another warrior', () => {
+      zone = createZone(1, 1);
+
+      expect(zone.canMoveCard(new ZonePosition(0, 0), new ZonePosition(1, 0))).toBe(true);
+    });
+
+    it('rejects moving the leader', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canMoveCard(new ZonePosition(2, 0), new ZonePosition(1, 1))).toBe(false);
+    });
+
+    it('rejects swapping with the leader', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 0), new ZonePosition(2, 0))).toBe(false);
+    });
+
+    it('rejects moving a card to its own slot', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 0), new ZonePosition(1, 0))).toBe(false);
+    });
+
+    it('rejects moving from an empty slot', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canMoveCard(new ZonePosition(1, 2), new ZonePosition(1, 1))).toBe(false);
     });
   });
 });

@@ -2,6 +2,7 @@ import type { GameCode } from "@/domain/GameConfiguration";
 import { gameApi } from "@/api";
 import { ApiException } from "@/api/models/ApiException";
 import StoreSystem from "@/core/StoreSystem";
+import type { ActionType } from "@/domain/Action";
 import Action from "@/domain/Action";
 import ActionEvent from "@/domain/ActionEvent";
 import CombatantView from "@/game/cards/CombatantView";
@@ -31,17 +32,18 @@ class CardController {
     }
 
     zoneSlotView.holdCard(cardView);
-    void this.sendPut(cardView, handView, zoneSlotView);
+    void this.send("PUT_ACTION", this.createPutAction(cardView, zoneSlotView), () => this.returnCardToHand(cardView, handView, zoneSlotView));
     return true;
   }
 
-  private async sendPut(cardView: CombatantView, handView: HandView, zoneSlotView: ZoneSlotView) {
+  /** Sends the action and undoes its preview if the server rejects it. */
+  private async send(type: ActionType, action: Action, undoPreview: () => void) {
     this.actionPending = true;
     try {
       const rowCount = StoreSystem.getPlayerZone().slots.length;
-      await gameApi.sendPlayerAction("PUT_ACTION", this.createPutAction(cardView, zoneSlotView), rowCount);
+      await gameApi.sendPlayerAction(type, action, rowCount);
     } catch (error) {
-      this.returnCardToHand(cardView, handView, zoneSlotView);
+      undoPreview();
       this.onRejected(error instanceof ApiException ? error.key : UNEXPECTED_ERROR_KEY);
     } finally {
       this.actionPending = false;
@@ -62,31 +64,49 @@ class CardController {
     cardView.reset();
   }
 
+  /** The cards show their new places as a preview until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public moveCardOnZoneSlot(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
-    if (fromZoneSlot.getCombatant() === null) {
-      console.warn("Source zone slot does not have a card.");
+    if (this.actionPending || !this.isMovable(combatantView, fromZoneSlot, toZoneSlot)) {
       return false;
     }
 
-    if (fromZoneSlot.getCombatant() !== combatantView) {
-      console.warn("Source zone slot does not have the card to move.");
-      return false;
-    }
-
-    if (toZoneSlot.getCombatant() !== null) {
-      console.warn("Target zone slot already has a card, cannot place another one.");
-      return false;
-    }
-
-    if (!toZoneSlot.zoneSlot.canPlaceCard(combatantView.combatant)) {
-      console.warn("Target zone slot does not allow this type of card.");
-      return false;
-    }
-
-    fromZoneSlot.removeCard();
-    toZoneSlot.setCard(combatantView);
-    // TODO propagar evento al backend
+    const swappedView = this.previewMove(combatantView, fromZoneSlot, toZoneSlot);
+    void this.send("MOVE_ACTION", this.createMoveAction(fromZoneSlot, toZoneSlot), () => this.undoMovePreview(combatantView, swappedView, fromZoneSlot, toZoneSlot));
     return true;
+  }
+
+  private isMovable(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): boolean {
+    const isOwnZone = fromZoneSlot.zone.isPlayerOwner(StoreSystem.getPlayer().code);
+    return isOwnZone && fromZoneSlot.getCombatant() === combatantView && toZoneSlot.canReceiveFrom(fromZoneSlot);
+  }
+
+  /** Returns the card that was in the target slot, which takes the place of the moved one. */
+  private previewMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): CombatantView | null {
+    fromZoneSlot.releaseCard();
+    const swappedView = toZoneSlot.releaseCard();
+    toZoneSlot.holdCard(combatantView);
+    if (swappedView) {
+      fromZoneSlot.holdCard(swappedView);
+    }
+
+    return swappedView;
+  }
+
+  private undoMovePreview(combatantView: CombatantView, swappedView: CombatantView | null, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
+    fromZoneSlot.releaseCard();
+    toZoneSlot.releaseCard();
+    fromZoneSlot.holdCard(combatantView);
+    if (swappedView) {
+      toZoneSlot.holdCard(swappedView);
+    }
+  }
+
+  private createMoveAction(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): Action {
+    const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
+    const player = StoreSystem.getPlayer();
+    const source = new ActionEvent({ element: "ZoneSlot.Card", input: "Grab", position: fromZoneSlot.zoneSlot.position, player, card: null });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: toZoneSlot.zoneSlot.position, player, card: null });
+    return new Action(gameCode, source, target);
   }
 
   public equipCardToCombatant(equipmentView: EquipmentView, combatantView: CombatantView, sourceHandView: HandView, targetSlotView: ZoneSlotView) {

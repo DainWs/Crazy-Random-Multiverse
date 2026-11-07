@@ -67,11 +67,19 @@ class CardDragAndDropManager {
   }
 
   private onZoneSlotDragEnter(cardView: CombatantView, targetGameObject: ZoneSlotView) {
-    if (targetGameObject.canReceive(cardView.card)) {
+    if (this.canDropOn(cardView, targetGameObject)) {
       this.targetGameObject = targetGameObject;
       targetGameObject.previewCard(cardView);
       targetGameObject.applyAnimation('highlight_as_target');
     }
+  }
+
+  private canDropOn(cardView: CombatantView, targetGameObject: ZoneSlotView): boolean {
+    if (this.sourceGameObject instanceof ZoneSlotView) {
+      return targetGameObject.canReceiveFrom(this.sourceGameObject);
+    }
+
+    return targetGameObject.canReceive(cardView.card);
   }
 
   // Drag leave

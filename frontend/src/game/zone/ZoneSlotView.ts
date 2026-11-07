@@ -15,7 +15,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
-  private zone: Zone;
+  public zone: Zone;
 
   public readonly zoneSlot: ZoneSlot;
   public readonly centerPoint: Point3D;
@@ -73,6 +73,11 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
   public canReceive(card: Card): boolean {
     return this.zone.canPlaceCard(this.zoneSlot.position, card);
+  }
+
+  /** Whether the card in `source` can be moved or swapped here, inside the same zone (BOARD-7). */
+  public canReceiveFrom(source: ZoneSlotView): boolean {
+    return source.zone === this.zone && this.zone.canMoveCard(source.zoneSlot.position, this.zoneSlot.position);
   }
 
   /** Shows a card here while the server answers, without changing the game state (ARCH-2). */

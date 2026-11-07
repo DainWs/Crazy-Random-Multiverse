@@ -127,4 +127,106 @@ describe('CardController', () => {
       expect(onRejected).toHaveBeenCalledWith('exception.unexpected');
     });
   });
+
+  describe('moveCardOnZoneSlot', () => {
+    let fromSlot: ZoneSlotView;
+    let swappedView: CombatantView;
+
+    const createSlot = (row: number, column: number, heldCard: CombatantView | null, isOwnZone = true): ZoneSlotView => {
+      return {
+        zone: { isPlayerOwner: vi.fn(() => isOwnZone) },
+        zoneSlot: { position: new ZonePosition(row, column) },
+        getCombatant: vi.fn(() => heldCard),
+        canReceiveFrom: vi.fn(() => true),
+        holdCard: vi.fn(),
+        releaseCard: vi.fn(() => heldCard)
+      } as unknown as ZoneSlotView;
+    };
+
+    beforeEach(() => {
+      swappedView = {} as CombatantView;
+      fromSlot = createSlot(1, 0, cardView);
+      slotView = createSlot(1, 2, null);
+    });
+
+    it('returns true and shows the card in the target slot', () => {
+      const result = controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      expect(result).toBe(true);
+      expect(slotView.holdCard).toHaveBeenCalledWith(cardView);
+    });
+
+    it('sends a MOVE_ACTION with the source and target positions', () => {
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      const [type, action, rowCount] = sendPlayerAction.mock.calls[0];
+      expect([type, rowCount]).toEqual(['MOVE_ACTION', ROW_COUNT]);
+      expect(action).toMatchObject({ game: GAME_CODE, sourcePlayer: player, targetPlayer: player, sourcePosition: { row: 1, column: 0 }, targetPosition: { row: 1, column: 2 } });
+    });
+
+    // BOARD-7
+    it('shows the card of the target slot in the source slot on a swap', () => {
+      slotView = createSlot(1, 2, swappedView);
+
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      expect(fromSlot.holdCard).toHaveBeenCalledWith(swappedView);
+    });
+
+    it('rejects the move and sends nothing when the target slot cannot receive the card', () => {
+      vi.mocked(slotView.canReceiveFrom).mockReturnValue(false);
+
+      const result = controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('rejects the move of a card outside the zone of the player', () => {
+      fromSlot = createSlot(1, 0, cardView, false);
+
+      const result = controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    // CON-19
+    it('rejects a move while another action is pending', () => {
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      const result = controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      expect(result).toBe(false);
+    });
+
+    // UI-6
+    it('shows the card in its source slot again when the server rejects the move', async () => {
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.allowed_only_on_turn'));
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      await flushPromises();
+
+      expect(vi.mocked(fromSlot.holdCard).mock.calls.at(-1)).toEqual([cardView]);
+    });
+
+    it('shows the swapped card in the target slot again when the server rejects the move', async () => {
+      slotView = createSlot(1, 2, swappedView);
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.allowed_only_on_turn'));
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      await flushPromises();
+
+      expect(vi.mocked(slotView.holdCard).mock.calls.at(-1)).toEqual([swappedView]);
+    });
+
+    it('reports the key of the rejection', async () => {
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.selected_target_position_not_allowed'));
+      controller.moveCardOnZoneSlot(cardView, fromSlot, slotView);
+
+      await flushPromises();
+
+      expect(onRejected).toHaveBeenCalledWith('exception.player-action.selected_target_position_not_allowed');
+    });
+  });
 });
