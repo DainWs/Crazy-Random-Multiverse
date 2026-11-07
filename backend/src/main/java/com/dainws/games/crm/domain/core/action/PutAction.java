@@ -7,7 +7,7 @@ import com.dainws.games.crm.domain.core.card.CardCode;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
+import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.exception.ZoneExceptionCode;
 import com.dainws.games.crm.domain.core.player.Hand;
 import com.dainws.games.crm.domain.core.player.Player;
@@ -46,11 +46,11 @@ public class PutAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_CARD_NOT_FOUND);
+			return ActionResult.playerActionFailed(Code.SELECTED_CARD_NOT_FOUND);
 		}
 
 		if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
-			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_CARD_IS_NOT_COMBATANT);
+			return ActionResult.playerActionFailed(Code.SELECTED_CARD_IS_NOT_COMBATANT);
 		}
 
 		return this.checkTarget(context, card);
@@ -64,7 +64,7 @@ public class PutAction extends PlayerTurnAction {
 		}
 
 		if (targetZone.hasCombatant(targetCoordinate)) {
-			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
+			return ActionResult.playerActionFailed(Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
 		}
 
 		if (targetZone.isLeaderSlot(targetCoordinate) && !card.isType(CardType.LEADER)) {
