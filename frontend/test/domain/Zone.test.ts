@@ -180,11 +180,27 @@ describe('Zone', () => {
       zone = createZone(1, 1);
       rivalZone = new Zone(rival, 'ENEMY');
       rivalZone.slots = [createWarriorRow(0, 1), createWarriorRow(1, 1), [new ZoneSlot(new ZonePosition(2, 0), 'LEADER')]];
+      zone.slots[0][0].combatant!.isAttackAvailable = true;
+      rivalZone.slots[0][0].combatant!.isTargetable = true;
     });
 
     // COMBAT-11, COMBAT-12
     it('accepts an attack from an own card to a card of another player', () => {
       expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][0], owner)).toBe(true);
+    });
+
+    // UI-5
+    it('rejects an attack from a card that cannot attack now', () => {
+      zone.slots[0][0].combatant!.isAttackAvailable = false;
+
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][0], owner)).toBe(false);
+    });
+
+    // UI-5, PROT-6
+    it('rejects an attack on a card that is not targetable', () => {
+      rivalZone.slots[0][0].combatant!.isTargetable = false;
+
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][0], owner)).toBe(false);
     });
 
     it('rejects an attack from the zone of another player', () => {

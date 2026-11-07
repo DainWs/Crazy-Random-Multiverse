@@ -23,14 +23,14 @@ const onPointerUp = (scene: GameScene, card: CardView, pointer: Phaser.Input.Poi
   }
 }
 
-/** A click on a card of the board selects the attacker, and a second click on a card of another player attacks it (VIEW-4). */
+/** A click on a card of the board that can attack selects the attacker, and a second click on a card of another player attacks it (VIEW-4). */
 function onSimpleClickCard(scene: GameScene, card: CardView) {
   const slot = card.parentContainer;
   if (!(slot instanceof ZoneSlotView)) return;
 
   if (targeting) {
     attackFromSelected(scene, slot);
-  } else if (slot.zone.isPlayerOwner(StoreSystem.getPlayer())) {
+  } else if (slot.zone.isPlayerOwner(StoreSystem.getPlayer()) && scene.cardController.canAct() && card.card.isAttackAvailable) {
     selectAttacker(scene, slot);
   }
 }

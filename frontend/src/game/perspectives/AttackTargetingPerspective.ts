@@ -30,6 +30,7 @@ class AttackTargetingPerspective implements Perspective {
     }
 
     public enter(): void {
+        this.highlightSlots();
         this.arrow = this.scene.add.graphics();
         this.arrow.setDepth(Constants.ATTACK_ARROW_DEPTH);
 
@@ -41,12 +42,35 @@ class AttackTargetingPerspective implements Perspective {
     }
 
     public exit(): void {
+        this.unhighlightSlots();
         this.scene.input.off("pointermove", this.handlePointerMove);
         this.scene.input.off("pointerdown", this.handlePointerDown);
         this.scene.input.keyboard?.off(CANCEL_KEY_EVENT, this.handleCancelKey);
         this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.handleCancelKey);
         this.arrow?.destroy();
         this.arrow = null;
+    }
+
+    /** Marks the attacker and the cards it can attack (UI-5). */
+    private highlightSlots(): void {
+        this.sourceSlot.applyAnimation("highlight_as_source");
+        for (const slot of this.getSlots()) {
+            if (this.sourceSlot.canAttack(slot)) {
+                slot.applyAnimation("highlight_as_target");
+            }
+        }
+    }
+
+    private unhighlightSlots(): void {
+        for (const slot of [this.sourceSlot, ...this.getSlots()]) {
+            if (slot.active) {
+                slot.applyAnimation("unhighlight");
+            }
+        }
+    }
+
+    private getSlots(): ZoneSlotView[] {
+        return this.scene.zones.flatMap((zone) => zone.getSlots().flat());
     }
 
     /** The zones are drawn again when the state changes, which destroys the slot the arrow starts from. */

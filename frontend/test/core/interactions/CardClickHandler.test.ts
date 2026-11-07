@@ -33,11 +33,13 @@ vi.mock('@/core/StoreSystem', () => ({ default: { getPlayer: () => ({ code: 'p-1
 
 describe('CardClickHandler', () => {
   const attackCardOnZoneSlot = vi.fn();
-  const scene = { cardController: { attackCardOnZoneSlot } } as unknown as GameScene;
+  const canAct = vi.fn(() => true);
+  const scene = { cardController: { attackCardOnZoneSlot, canAct } } as unknown as GameScene;
   const clickInTime = createMockPointer(Constants.DRAG_TIME_THRESHOLD - 10, Constants.DRAG_DISTANCE_THRESHOLD - 2);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    canAct.mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -57,8 +59,8 @@ describe('CardClickHandler', () => {
     return slot;
   }
 
-  function createCard(parentContainer: unknown, canBeClicked = true): CardView {
-    return { canBeClicked: vi.fn(() => canBeClicked), parentContainer } as unknown as CardView;
+  function createCard(parentContainer: unknown, canBeClicked = true, isAttackAvailable = true): CardView {
+    return { canBeClicked: vi.fn(() => canBeClicked), parentContainer, card: { isAttackAvailable } } as unknown as CardView;
   }
 
   describe('onPointerDown', () => {
@@ -85,6 +87,25 @@ describe('CardClickHandler', () => {
       CardClickHandler.onPointerUp(scene, card, clickInTime);
 
       expect(mockEnter).toHaveBeenCalledTimes(1);
+    });
+
+    // UI-5
+    it('does not select the attacker when the card cannot attack now', () => {
+      const card = createCard(createSlot(true), true, false);
+
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
+      expect(mockEnter).not.toHaveBeenCalled();
+    });
+
+    // UI-4
+    it('does not select the attacker when the player cannot act', () => {
+      canAct.mockReturnValue(false);
+      const card = createCard(createSlot(true));
+
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
+      expect(mockEnter).not.toHaveBeenCalled();
     });
 
     it('does not select the attacker if pointer duration reaches the threshold (held too long)', () => {

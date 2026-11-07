@@ -146,11 +146,11 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
 - [x] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
 - [x] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
-- [ ] Highlight valid targets and disable invalid ones (`UI-5`)
+- [x] Highlight valid targets and disable invalid ones (`UI-5`)
 - [x] End Turn button (`PASS_TURN`)
 - [x] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5)
-- [ ] Prevent conflicting actions while an action is pending (`CON-19`)
-- [ ] Handle rejected and duplicate/pending actions (`UI-6`, `CON-19`)
+- [x] Prevent conflicting actions while an action is pending (`CON-19`)
+- [x] Handle rejected and duplicate/pending actions (`UI-6`, `CON-19`)
 - [x] Show clearly whose turn it is (`UI-3`)
 
 ## Phase 5 — Combat feedback and game end
@@ -268,6 +268,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment
 - [ ] A person checks the board of a real game in a browser: the local zone at the bottom and each leader at the edge of the table (`VIEW-1`), the animation of the cards received in the hand (`VIEW-8`) and the number of cards in each rival hand (`HAND-3`). Not checked: Phaser views are not tested
 - [ ] A person attacks in a real browser (`ATTACK_ACTION`): click an own card of the board, move the pointer over the rivals (the arrow must be green over a card of another player and red elsewhere), click a rival card to attack and check that Escape or a click outside the cards cancels the selection. Not checked: Phaser views are not tested. The attack does not redraw the board yet: the frontend does not apply `PLAYER_ATTACK_CARD` (Phase 5)
+- [ ] A person starts an attack in a real browser and checks that the attacker is marked in red and the cards it can attack in green (`UI-5`), that a card with its attack used or a protected card is not marked, and that the highlight disappears when the attack is made or cancelled. Not checked: Phaser views are not tested with a real renderer
 - [ ] A person plays a turn in a real browser with the game HUD: the top-left text must show the round and "Tu turno" or the name of the player with the turn (`UI-3`), End Turn and Surrender must be dimmed and ignore clicks out of turn (`UI-4`), End Turn must pass the turn, and Surrender must ask for confirmation and only surrender on "Sí" (`UI-15`). Not checked: Phaser views are not tested with a real renderer
 - [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
 
