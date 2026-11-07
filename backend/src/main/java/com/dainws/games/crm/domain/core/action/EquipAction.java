@@ -38,9 +38,9 @@ public class EquipAction extends PlayerTurnAction {
 	}
 
 	private Equipment grabEquipmentFromHand(ActionContext context) {
-		Player sourcePlayer = context.getSourcePlayer();
-		Hand hand = sourcePlayer.getHand();
+		Hand hand = context.getSourcePlayer().getHand();
 		CardCode equipmentCode = context.getSourceCard().getCode();
+
 		return (Equipment) hand.grab(equipmentCode);
 	}
 
