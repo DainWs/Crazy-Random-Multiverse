@@ -47,8 +47,8 @@ public class PlayerUsecase {
 			throw AccessDeniedException.identityMismatch();
 		}
 
-		Function<ActionDto, ActionResult> actionHandler = this.actionResolver.get(actionDto.getType());
-		return actionHandler.apply(actionDto);
+		return this.actionResolver.get(actionDto.getType())
+				.apply(actionDto);
 	}
 
 	private boolean hasCommonFields(GameCode gameCode, ActionDto actionDto) {
