@@ -1,5 +1,5 @@
-import type { Point2D, Size2D } from "@/domain/Geometry";
-import * as Constants from "@/core/Constants";
+import type { Point2D, Size2D } from '@/domain/Geometry';
+import * as Constants from '@/core/Constants';
 
 type ConfirmDialogLayout = {
     veil: Size2D;

@@ -1,10 +1,10 @@
-import type Player from "@/domain/Player";
-import type { Point2D } from "@/domain/Geometry";
-import type { GameScene } from "@/scenes/Game";
-import GameHudLayout from "@/game/hud/GameHudLayout";
-import StoreSystem from "@/core/StoreSystem";
-import { getText } from "@/core/Texts";
-import * as Constants from "@/core/Constants";
+import type Player from '@/domain/Player';
+import type { Point2D } from '@/domain/Geometry';
+import type { GameScene } from '@/scenes/Game';
+import GameHudLayout from '@/game/hud/GameHudLayout';
+import StoreSystem from '@/core/StoreSystem';
+import { getText } from '@/core/Texts';
+import * as Constants from '@/core/Constants';
 
 type HudCallbacks = {
     onPassTurn: () => void;
@@ -26,15 +26,15 @@ class GameHudView {
         this.scene = scene;
         this.layout = new GameHudLayout(scene.scale);
 
-        this.turnText = this.createText(this.layout.turnTextPosition(), "");
+        this.turnText = this.createText(this.layout.turnTextPosition(), '');
         this.passTurnButton = this.createButton(
             this.layout.passTurnButtonAnchor(),
-            getText("ui.game.end_turn"),
+            getText('ui.game.end_turn'),
             () => this.whenEnabled(callbacks.onPassTurn)
         );
         this.surrenderButton = this.createButton(
             this.layout.surrenderButtonAnchor(this.passTurnButton.height),
-            getText("ui.game.surrender"),
+            getText('ui.game.surrender'),
             () => this.whenEnabled(() => this.askToSurrender(callbacks.onSurrender))
         );
 
@@ -69,21 +69,21 @@ class GameHudView {
 
     private refreshTurnText() {
         const round = StoreSystem.getRound();
-        const roundLabel = round === undefined ? "" : `${getText("ui.game.round")} ${round}`;
+        const roundLabel = round === undefined ? '' : `${getText('ui.game.round')} ${round}`;
         const playerWithTurn = StoreSystem.getPlayerWithTurn();
         const isOwnTurn = playerWithTurn?.code === StoreSystem.getPlayer().code;
         const turnLabel = this.turnLabel(playerWithTurn, isOwnTurn);
 
-        this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(" · "));
+        this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(' · '));
         this.turnText.setColor(isOwnTurn ? Constants.HUD_OWN_TURN_COLOR : Constants.HUD_COLOR);
     }
 
     private turnLabel(playerWithTurn: Player | undefined, isOwnTurn: boolean): string {
         if (!playerWithTurn) {
-            return "";
+            return '';
         }
 
-        return isOwnTurn ? getText("ui.game.your_turn") : `${getText("ui.game.turn_of")} ${playerWithTurn.name}`;
+        return isOwnTurn ? getText('ui.game.your_turn') : `${getText('ui.game.turn_of')} ${playerWithTurn.name}`;
     }
 
     private whenEnabled(onClick: () => void) {
@@ -102,7 +102,7 @@ class GameHudView {
         button.setPadding(Constants.HUD_BUTTON_PADDING);
         button.setOrigin(1, 1);
         button.setInteractive({ useHandCursor: true });
-        button.on("pointerup", onClick);
+        button.on('pointerup', onClick);
         return button;
     }
 
@@ -119,12 +119,12 @@ class GameHudView {
             .setInteractive();
         const panelShape = this.scene.add
             .rectangle(panel.x, panel.y, panel.width, panel.height, Constants.CONFIRM_DIALOG_BACKGROUND);
-        const question = this.createText(dialog.question, getText("ui.game.surrender_confirm")).setOrigin(0.5);
-        const yes = this.createDialogButton(dialog.yes, getText("ui.game.confirm_yes"), () => {
+        const question = this.createText(dialog.question, getText('ui.game.surrender_confirm')).setOrigin(0.5);
+        const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), () => {
             this.closeConfirmDialog();
             onConfirm();
         });
-        const no = this.createDialogButton(dialog.no, getText("ui.game.confirm_no"), () => this.closeConfirmDialog());
+        const no = this.createDialogButton(dialog.no, getText('ui.game.confirm_no'), () => this.closeConfirmDialog());
 
         this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
         this.confirmDialog.setScrollFactor(0);
