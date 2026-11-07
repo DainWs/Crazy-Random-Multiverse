@@ -20,7 +20,13 @@ describe('summarizeResult', () => {
     expect(summarizeResult(result, 'p1').winnerName).toBe('Player 2');
   });
 
-  it('says defeat and names nobody before the winner is known', () => {
-    expect(summarizeResult({}, 'p1')).toEqual({ isVictory: false, winnerName: '' });
+  // WIN-4
+  it('is decided once the winner is known', () => {
+    expect(summarizeResult(result, 'p1').isDecided).toBe(true);
+  });
+
+  // WIN-4
+  it('decides nothing before the winner is known', () => {
+    expect(summarizeResult({}, 'p2')).toEqual({ isDecided: false, isVictory: false, winnerName: '' });
   });
 });

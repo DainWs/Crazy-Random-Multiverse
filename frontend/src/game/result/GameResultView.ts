@@ -1,6 +1,7 @@
 import type { GameResult } from '@/core/StoreSystem';
 import type { Point2D } from '@/domain/Geometry';
 import type { GameScene } from '@/scenes/Game';
+import type { GameResultSummary } from '@/game/result/GameResultSummary';
 import GameResultLayout from '@/game/result/GameResultLayout';
 import { summarizeResult } from '@/game/result/GameResultSummary';
 import StoreSystem from '@/core/StoreSystem';
@@ -46,10 +47,18 @@ class GameResultView {
     public showResult(result: GameResult) {
         const summary = summarizeResult(result, StoreSystem.getPlayer().code);
 
-        this.title.setText(getText(summary.isVictory ? 'ui.game.victory' : 'ui.game.defeat'));
+        this.title.setText(this.titleOf(summary));
         this.title.setColor(summary.isVictory ? Constants.GAME_RESULT_VICTORY_COLOR : Constants.GAME_RESULT_DEFEAT_COLOR);
         this.winner.setText(summary.winnerName ? `${getText('ui.game.winner')} ${summary.winnerName}` : '');
         this.refreshCountdown();
+    }
+
+    private titleOf(summary: GameResultSummary): string {
+        if (!summary.isDecided) {
+            return '';
+        }
+
+        return getText(summary.isVictory ? 'ui.game.victory' : 'ui.game.defeat');
     }
 
     public destroy() {
