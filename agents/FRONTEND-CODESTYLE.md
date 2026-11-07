@@ -128,8 +128,11 @@ Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is n
 
 - 4-space indentation, single quotes, semicolons, no trailing commas, `printWidth` 160, `arrowParens: always`.
 - Every `if`, `for` and `while` declares its scope with `{}`, even when the body is one statement (`if (x) y();` is not written).
+- Inside a function body, statements are grouped by the object they build: the local variables it needs (`const veilColor = ...`), its creation and its configuration (`veilShape.setOrigin(0, 0);`) go together. A single blank line separates each group from the next, and also separates the shared setup at the start (`const { veil, panel } = dialog;`) from the first group. There are no blank lines inside a group, and never more than one in a row.
+- A Phaser `GameObject` is created into a variable and configured in separate statements on it (`veilShape.setOrigin(0, 0);` then `veilShape.setInteractive();`), not chained after `this.scene.add.*`.
 - Private (not exported) functions of a module are `function name() {}` declarations, as in `ZoneDto.ts`, not `const name = () => {}`. A private function goes right below the one that uses it, not grouped at the end.
 - An arrow function that is a method or a named function (`const toActiveGame = (...) => { ... }`) is written in full: with `{}` and an explicit `return` when it returns something, never the one-line expression body. Inline callbacks (`computed(() => x)`, `some((known) => known.equals(leader))`) may keep the short form.
+- A callback with more than one statement is not written inline: it goes to a named method or function, passed by reference (`this.onClickYes.bind(this)`).
 - No wildcard imports. Order: libraries (`phaser`, `vue`, `socket.io-client`), `@/api`, `@/domain`, `@/core`, the rest.
 - Class and type files in `PascalCase.ts` (`CardView.ts`); modules with functions and domain utilities in `camelCase.ts` only where they already exist (`cardFactory.ts`).
 - `npm run lint` must pass with no new errors.
