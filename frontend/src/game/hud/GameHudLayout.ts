@@ -35,16 +35,20 @@ class GameHudLayout {
     public confirmDialog(): ConfirmDialogLayout {
         const { width, height } = this.screen;
         const { width: dialogWidth, height: dialogHeight } = Constants.CONFIRM_DIALOG_SIZE;
+
         const centerX = width / 2;
         const centerY = height / 2;
-        const buttonY = centerY + dialogHeight / 4;
+
+        const quarterWidth = dialogWidth / 4;
+        const quarterHeight = dialogHeight / 4;
+        const buttonY = centerY + quarterHeight;
 
         return {
             veil: { width, height },
             panel: { x: centerX, y: centerY, width: dialogWidth, height: dialogHeight },
-            question: { x: centerX, y: centerY - dialogHeight / 4 },
-            yes: { x: centerX - dialogWidth / 4, y: buttonY },
-            no: { x: centerX + dialogWidth / 4, y: buttonY }
+            question: { x: centerX, y: centerY - quarterHeight },
+            yes: { x: centerX - quarterWidth, y: buttonY },
+            no: { x: centerX + quarterWidth, y: buttonY }
         };
     }
 }

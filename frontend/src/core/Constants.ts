@@ -68,6 +68,9 @@ export const HUD_COLOR = '#ffffff';
 /** Text color of the turn indicator while it is the turn of the local player (UI-3). */
 export const HUD_OWN_TURN_COLOR = '#2ecc71';
 
+/** Separator between the round and the turn in the turn indicator of the game HUD (UI-3). */
+export const HUD_TURN_SEPARATOR = ' · ';
+
 /** Alpha of a HUD button that cannot be used now (UI-4). */
 export const HUD_DISABLED_ALPHA = 0.4;
 
