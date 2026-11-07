@@ -203,6 +203,11 @@ class HandView extends Phaser.GameObjects.Container {
     return this.cards;
   }
 
+  /** Whether the card is still shown in the hand: a card dropped on the board or hidden while an action waits is not. */
+  public holds(card: CardView): boolean {
+    return card.active && card.visible && card.parentContainer === this;
+  }
+
   public hideCards() {
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();

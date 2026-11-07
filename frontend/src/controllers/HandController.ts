@@ -37,16 +37,35 @@ class HandController {
     this.handView.restoreCards(...this.createCardViews(cards));
   }
 
-  /** Animates the cards that arrived and removes the ones that left, keeping the rest in place. */
+  /** Matches views to cards by code: the view that left is the one no longer in the hand (CON-13). */
   public syncCards(cards: Card[]) {
-    const shownViews = this.handView.getCards();
-    const leftViews = shownViews.filter((view) => !cards.some((card) => card.equals(view.card)));
-    const arrivedCards = cards.filter((card) => !shownViews.some((view) => view.card.equals(card)));
+    const unmatchedCards = [...cards];
+    const shownViews = [...this.handView.getCards()];
+    const viewsInHand = shownViews.filter((view) => this.handView.holds(view));
+    const viewsOutOfHand = shownViews.filter((view) => !this.handView.holds(view));
+
+    const leftViews: CardView[] = [];
+    for (const view of [...viewsInHand, ...viewsOutOfHand]) {
+      if (!this.takeCardOf(view, unmatchedCards)) {
+        leftViews.push(view);
+      }
+    }
 
     this.destroyCardViews(leftViews);
-    if (arrivedCards.length > 0) {
-      this.addCards(...arrivedCards);
+    if (unmatchedCards.length > 0) {
+      this.addCards(...unmatchedCards);
     }
+  }
+
+  /** Removes from `cards` the first one with the code of the view, and tells whether there was one. */
+  private takeCardOf(view: CardView, cards: Card[]): boolean {
+    const index = cards.findIndex((card) => card.code.equals(view.card.code));
+    const isFound = index !== -1;
+    if (isFound) {
+      cards.splice(index, 1);
+    }
+
+    return isFound;
   }
 
   private createCardViews(cards: Card[]): CardView[] {

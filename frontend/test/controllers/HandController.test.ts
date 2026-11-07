@@ -16,6 +16,7 @@ const createFakeCardView = (card: Card): FakeCardView => ({ card, destroy: vi.fn
 
 describe('HandController', () => {
   let views: FakeCardView[];
+  let viewsOutOfHand: Set<FakeCardView>;
   let addCards: ReturnType<typeof vi.fn>;
   let restoreCards: ReturnType<typeof vi.fn>;
   let controller: HandController;
@@ -29,12 +30,14 @@ describe('HandController', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     views = [];
+    viewsOutOfHand = new Set();
     addCards = vi.fn((...incoming: FakeCardView[]) => views.push(...incoming));
     restoreCards = vi.fn((...incoming: FakeCardView[]) => views.push(...incoming));
     vi.mocked(CardViewFactory.createCardView).mockImplementation((_scene, card) => createFakeCardView(card) as unknown as CardView);
 
     const handView = {
       getCards: () => views,
+      holds: (view: FakeCardView) => !viewsOutOfHand.has(view),
       addCards,
       restoreCards,
       removeCard: (view: FakeCardView) => views.splice(views.indexOf(view), 1),
@@ -83,6 +86,52 @@ describe('HandController', () => {
       controller.syncCards([second]);
 
       expect(leftView.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    // CON-13
+    it('destroys the copy that left the hand', () => {
+      const [first, second] = [cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })];
+      showCards(first, second);
+      const droppedView = views[1];
+      viewsOutOfHand.add(droppedView);
+
+      controller.syncCards([first]);
+
+      expect(droppedView.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    // CON-13
+    it('keeps the copy that stays in the hand', () => {
+      const [first, second] = [cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })];
+      showCards(first, second);
+      const stayingView = views[0];
+      viewsOutOfHand.add(views[1]);
+
+      controller.syncCards([first]);
+
+      expect(stayingView.destroy).not.toHaveBeenCalled();
+    });
+
+    // CON-13
+    it('keeps a card waiting for the server', () => {
+      const card = cardFactory.createWarriorCard({ code: '1' });
+      showCards(card);
+      const pendingView = views[0];
+      viewsOutOfHand.add(pendingView);
+
+      controller.syncCards([card]);
+
+      expect(pendingView.destroy).not.toHaveBeenCalled();
+    });
+
+    // HAND-4
+    it('animates nothing for a renumbered copy', () => {
+      const [shown, renumbered] = [cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '1' })];
+      showCards(shown);
+
+      controller.syncCards([renumbered]);
+
+      expect(addCards).not.toHaveBeenCalled();
     });
 
     it('adds nothing when no card arrived', () => {

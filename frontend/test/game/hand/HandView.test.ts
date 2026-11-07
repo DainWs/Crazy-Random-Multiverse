@@ -18,7 +18,37 @@ const createFakeHand = (cardCount: number): FakeHand => {
   return hand;
 };
 
+type FakeCardView = {
+  active: boolean;
+  visible: boolean;
+  parentContainer: unknown;
+};
+
 describe('HandView', () => {
+  describe('holds', () => {
+    const hand = {};
+    const createCardView = (overrides: Partial<FakeCardView>): CardView => {
+      return { active: true, visible: true, parentContainer: hand, ...overrides } as unknown as CardView;
+    };
+
+    it('holds a card shown in the hand', () => {
+      const card = createCardView({});
+
+      expect(HandView.prototype.holds.call(hand, card)).toBe(true);
+    });
+
+    // HAND-2
+    it.each([
+      { description: 'dropped on the board', overrides: { parentContainer: {} } },
+      { description: 'hidden while the server answers', overrides: { visible: false } },
+      { description: 'destroyed', overrides: { active: false } }
+    ])('does not hold a card $description', ({ overrides }) => {
+      const card = createCardView(overrides);
+
+      expect(HandView.prototype.holds.call(hand, card)).toBe(false);
+    });
+  });
+
   describe('clearCards', () => {
     // CON-11
     it.each([{ cardCount: 1 }, { cardCount: 4 }, { cardCount: 7 }])('removes all $cardCount cards', ({ cardCount }) => {
