@@ -64,6 +64,8 @@ Work on **one roadmap phase per session**. Do not start the next one.
 
 When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
 
+Whenever something could not be verified (a check that needs a person, a real browser, a running server or anything outside the agent environment), record it as a `- [ ]` bullet in the "Pending checks" section of `agents/ROADMAP.md`, saying what to check and why it could not be done.
+
 ## Commits
 
 - In English, imperative, with a lowercase initial and no prefix

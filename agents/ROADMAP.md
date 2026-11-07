@@ -255,6 +255,15 @@ Not tied to a phase.
 - [x] State in `INTERFACE.md` that surrendering asks for confirmation (`ELIM-2`)
 - [x] State in `USER-4` that spaces are trimmed before validating the length, and in `USER-2` that the default name follows `USER-4`
 
+## Pending checks
+
+Not a phase. What could not be verified from the agent environment, for a person to check.
+
+- [ ] A person drops a card of the hand on the board in a real browser (`PUT_ACTION`). The card must stay in the slot while the server answers, the board must redraw with the event when it accepts it, and when it rejects it (for example out of turn) the card must go back to its place in the hand with the message. Not checked: Phaser views are not tested and the game is not started from the agent environment
+- [ ] A person moves and swaps cards on the board in a real browser (`MOVE_ACTION`): both cards must show their new places as a preview, and go back to their slots with the message when the server rejects the move. Not checked for the same reason
+- [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`): the conversion from the frontend rows (`mirrorRow`) is only tested with a simulated `fetch`
+- [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test
+
 ## Post-MVP
 
 - Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
