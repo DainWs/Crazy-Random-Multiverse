@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { Armor, Health } from '@/domain/Statistics';
-import { valueAfterDamage, withValue } from '@/core/visual_effects/StatisticCount';
+import { Armor, Health, valueAfterDamage, withValue } from '@/domain/Statistics';
 
-describe('StatisticCount', () => {
+describe('Statistics', () => {
   describe('withValue', () => {
     it('keeps the maximum of a health', () => {
       const statistic = withValue(Health(10, 15), 7);

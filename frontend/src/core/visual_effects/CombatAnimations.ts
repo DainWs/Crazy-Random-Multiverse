@@ -1,11 +1,11 @@
 import type { CombatResult } from '@/domain/CombatResult';
 import type { StatisticType } from '@/domain/Statistics';
+import { valueAfterDamage, withValue } from '@/domain/Statistics';
 import type { CardStatisticView } from '@/game/cards/components/CardStatisticView';
 import type CombatantView from '@/game/cards/CombatantView';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
 import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
-import { valueAfterDamage, withValue } from '@/core/visual_effects/StatisticCount';
 import * as Constants from '@/core/Constants';
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;

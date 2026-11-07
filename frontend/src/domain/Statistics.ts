@@ -48,5 +48,19 @@ function Health(value: number, maxValue: number): Statistic {
   }
 }
 
+/** The armor or health at another value, keeping its maximum and type. */
+function withValue(statistic: Statistic, value: number): Statistic {
+  if (statistic.type === 'Health') {
+    return Health(value, statistic.maxValue ?? statistic.value);
+  }
+
+  return Armor(statistic.valueType as ArmorType, value);
+}
+
+/** The value a statistic ends at after losing `damage`, never below 0 (CON-21). */
+function valueAfterDamage(statistic: Statistic, damage: number): number {
+  return Math.max(0, statistic.value - damage);
+}
+
 export type { StatisticType, DamageType, ArmorType, Statistic };
-export { Damage, Armor, Health };
+export { Damage, Armor, Health, withValue, valueAfterDamage };
