@@ -17,6 +17,8 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 1 — Backend contract (blockers)
 
+Started at: `f122c6a` · Finished at: `2137753`
+
 Must be resolved by a person before the dependent frontend work. Do not invent it: ask.
 
 - [x] Define the Socket.IO connection contract
@@ -50,6 +52,8 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 ## Phase 2 — Connectivity
 
+Started at: `2137753` · Finished at: `c0ba577`
+
 - [x] Remove the current AI implementation entirely (`SCOPE-4`), before adopting the new exception rule, so the AI does not have to be adapted to it. This includes its tests (`AIvsAIGameIntegationTest`, which times out in about half of the runs, goes with it), `docs/AISystem.md`, the AI references in `CODESTYLE.md`, `BACKEND-CODESTYLE.md` and `BACKEND-TESTS.md`, and the diagrams `class_diagram-ai_system` and `domain_model-ai_system`
 - [x] Replace STOMP with Socket.IO
 - [x] Remove `WebSocketCommunicationClient` and turn `CommunicationClient` into a concrete class, because Socket.IO is the only transport
@@ -81,6 +85,8 @@ Must be resolved by a person before the dependent frontend work. Do not invent i
 
 ## Phase 2.5 — Minimal lobby
 
+Started at: `4506182` · Finished at: `c4f0e15`
+
 Just enough to create a real game from the interface, which Phase 3 needs. The rest of the lobby is in Phase 11.
 
 - [x] Move the party and the user state from `StoreSystem` to `SessionSystem` as read-only `shallowRef`s, and update its tests. Separate refactoring commit (`FRONTEND-CODESTYLE.md`, section 2)
@@ -89,6 +95,8 @@ Just enough to create a real game from the interface, which Phase 3 needs. The r
 - [x] Party screen: name, members out of capacity, owner marked, members from `party:info`, the code to copy, leaving, and starting the game for the owner, disabled while the party is locked or has fewer than 2 members (`UI-19`, `UI-20`, `UI-16`, `PARTY-9`, `PARTY-10`, `LOAD-1`)
 
 ## Phase 2.6 — Game resource loading
+
+Started at: `fa5d9ea` · Finished at: `b6ee2aa`
 
 Starting a game from the party today stalls in `GAME_LOADING`: the client asks `GET /game/{gameCode}/resources`, which the backend does not have, and the load fails with `imageResources is not iterable`. The resources must be downloaded before the game starts, and `/ready` confirmed only after that (`LOAD-2`).
 
@@ -105,6 +113,8 @@ Starting a game from the party today stalls in `GAME_LOADING`: the client asks `
 - [x] Loading failure UI: show the failure and offer to retry only what failed, without confirming `/ready` (`UI-12`)
 
 ## Phase 3 — Authoritative game state and hand
+
+Started at: `b6ee2aa` · Finished at: `6515c9a`
 
 This phase synchronizes the state and renders it without animating it, except for the cards received. The actions arrive in Phase 4 and the combat feedback in Phase 5.5.
 
@@ -132,6 +142,8 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 4 — Core gameplay
 
+Started at: `6515c9a` · Finished at: `754e61d`
+
 - [x] Check equipment against `EQUIP-*` and implement the differences: several pieces per card, only on the player's own cards, limits on the total, and the statistic types sent only in combatants, also with a value of 0 (`CardDto`)
 - [x] Check the attack and placement rules on the server against `COMBAT-11`, `COMBAT-12`, `BOARD-5` and `BOARD-7`
 - [x] Reject an action without a required field, or whose `game` is not the one of the path, with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
@@ -154,6 +166,8 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Show clearly whose turn it is (`UI-3`)
 
 ## Phase 5 — Elimination and game end
+
+Started at: `754e61d` · Finished at: `89b9292`
 
 - [x] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
 - [x] Cancel the loading when a player removed during it leaves fewer than 2 (`LOAD-4`, `CON-22`): publish `GAME_CANCELLED`, remove the game and unlock the party with a `party:info`. Nobody publishes `GAME_CANCELLED` today, and a player removed during the load must not block the start (`LOAD-3`)

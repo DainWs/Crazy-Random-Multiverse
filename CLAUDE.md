@@ -13,7 +13,7 @@ Monorepo with two applications:
 
 ## Reference documentation
 
-Always read these files before writing code:
+**Always** read these files before writing code:
 
 - `agents/SPECS.md` — functional specification and index of `agents/specs/`, with one file per area. Source of truth for behavior. Read the files of the area you touch.
 - `agents/VIEW-SPECS.md` — appearance of the interface.
