@@ -287,7 +287,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - Excess damage of Legendary cards carried over to health (`COMBAT-5`), once Legendary cards are dealt
 - Combat log and dynamic localization
 - Premium animations (particles, special effects)
-- Effects that grow with the rarity of a card, like the audio variants: a glowing card border, and a screen that dims with a heartbeat when it attacks. `CalmTargetingOverlay` and `CardActionPerspective` are kept for this and are not used by the click attack of Phase 4
+- Effects that grow with the rarity of a card, like the audio variants: a glowing card border, and a screen that dims with a heartbeat when it attacks. `CalmTargetingOverlay` and `CardActionPerspective` are kept for this and are not used by the click attack of Phase 4 (`FX-*` in `specs/VISUAL-EFFECTS.md`)
 - Cursor animations
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`)
 - Advanced trolling cards, green/red indicators, center-table behavior
