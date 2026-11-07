@@ -73,17 +73,24 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   }
 
   public canReceive(card: Card): boolean {
-    return this.isOwnZone() && this.zone.canPlaceCard(this.zoneSlot.position, card);
+    const isPlaceable = this.zone.canPlaceCard(this.zoneSlot.position, card);
+
+    return this.isOwnZone() && isPlaceable;
   }
 
   /** The server only accepts actions on the cards of the player that sends them (EQUIP-3, CON-16). */
   private isOwnZone(): boolean {
-    return this.zone.isPlayerOwner(StoreSystem.getPlayer().code);
+    const player = StoreSystem.getPlayer();
+
+    return this.zone.isPlayerOwner(player.code);
   }
 
   /** Whether the card in `source` can be moved or swapped here, inside the same zone (BOARD-7). */
   public canReceiveFrom(source: ZoneSlotView): boolean {
-    return this.isOwnZone() && source.zone === this.zone && this.zone.canMoveCard(source.zoneSlot.position, this.zoneSlot.position);
+    const isSameZone = source.zone === this.zone;
+    const isMovable = this.zone.canMoveCard(source.zoneSlot.position, this.zoneSlot.position);
+
+    return this.isOwnZone() && isSameZone && isMovable;
   }
 
   /** Shows a card here while the server answers, without changing the game state (ARCH-2). */

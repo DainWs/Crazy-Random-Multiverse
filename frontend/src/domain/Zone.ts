@@ -61,7 +61,10 @@ class Zone {
   /** A warrior goes to a row only while the row towards the leader is filled (BOARD-5); the rows are numbered from the center (VIEW-1). */
   public canPlaceCard(position: ZonePosition, card: Card): boolean {
     const slot = this.slots[position.row]?.[position.column];
-    return slot !== undefined && slot.canPlaceCard(card) && (!card.isCombatant() || this.isRowTowardsLeaderFilled(position.row));
+    const slotAcceptsCard = slot !== undefined && slot.canPlaceCard(card);
+    const isRowAllowed = !card.isCombatant() || this.isRowTowardsLeaderFilled(position.row);
+
+    return slotAcceptsCard && isRowAllowed;
   }
 
   /** A warrior moves to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
@@ -69,16 +72,24 @@ class Zone {
     const source = this.slots[from.row]?.[from.column];
     const target = this.slots[to.row]?.[to.column];
     const isSameSlot = from.row === to.row && from.column === to.column;
-    return !isSameSlot && this.isMovable(source) && target !== undefined && target.allowedCombatant === 'WARRIOR' && (target.isOccupied() || this.isRowTowardsLeaderFilled(to.row));
+    const isWarriorSlot = target !== undefined && target.allowedCombatant === 'WARRIOR';
+    const isReachable = target !== undefined && (target.isOccupied() || this.isRowTowardsLeaderFilled(to.row));
+
+    return !isSameSlot && this.isMovable(source) && isWarriorSlot && isReachable;
   }
 
   private isMovable(slot: ZoneSlot | undefined): boolean {
-    return slot !== undefined && slot.isOccupied() && !slot.combatant?.isType('LEADER');
+    const isOccupied = slot !== undefined && slot.isOccupied();
+    const isLeader = slot?.combatant?.isType('LEADER') === true;
+
+    return isOccupied && !isLeader;
   }
 
   private isRowTowardsLeaderFilled(row: number): boolean {
     const rowTowardsLeader = this.slots[row + 1];
-    return rowTowardsLeader === undefined || rowTowardsLeader.every((slot) => slot.isOccupied());
+    const isLeaderRow = rowTowardsLeader === undefined;
+
+    return isLeaderRow || rowTowardsLeader.every((slot) => slot.isOccupied());
   }
 
   public isEnabledPosition(position: ZonePosition) {

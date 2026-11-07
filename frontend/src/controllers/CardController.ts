@@ -32,7 +32,9 @@ class CardController {
     }
 
     zoneSlotView.holdCard(cardView);
-    void this.send("PUT_ACTION", this.createPutAction(cardView, zoneSlotView), () => this.returnCardToHand(cardView, handView, zoneSlotView));
+    const action = this.createPutAction(cardView, zoneSlotView);
+    const undoPreview = () => this.returnCardToHand(cardView, handView, zoneSlotView);
+    void this.send("PUT_ACTION", action, undoPreview);
     return true;
   }
 
@@ -40,11 +42,13 @@ class CardController {
   private async send(type: ActionType, action: Action, undoPreview: () => void) {
     this.actionPending = true;
     try {
-      const rowCount = StoreSystem.getPlayerZone().slots.length;
+      const playerZone = StoreSystem.getPlayerZone();
+      const rowCount = playerZone.slots.length;
       await gameApi.sendPlayerAction(type, action, rowCount);
     } catch (error) {
       undoPreview();
-      this.onRejected(error instanceof ApiException ? error.key : UNEXPECTED_ERROR_KEY);
+      const key = error instanceof ApiException ? error.key : UNEXPECTED_ERROR_KEY;
+      this.onRejected(key);
     } finally {
       this.actionPending = false;
     }
@@ -53,14 +57,17 @@ class CardController {
   private createPutAction(cardView: CombatantView, zoneSlotView: ZoneSlotView): Action {
     const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
     const player = StoreSystem.getPlayer();
+    const targetPosition = zoneSlotView.zoneSlot.position;
     const source = new ActionEvent({ element: "Hand.Card", input: "Grab", position: null, player, card: cardView.card });
-    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: zoneSlotView.zoneSlot.position, player, card: null });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: targetPosition, player, card: null });
     return new Action(gameCode, source, target);
   }
 
   private returnCardToHand(cardView: CombatantView, handView: HandView, zoneSlotView: ZoneSlotView) {
     zoneSlotView.releaseCard();
-    handView.addAt(cardView, handView.getCards().indexOf(cardView));
+    const handCards = handView.getCards();
+    const handIndex = handCards.indexOf(cardView);
+    handView.addAt(cardView, handIndex);
     cardView.reset();
   }
 
@@ -70,8 +77,9 @@ class CardController {
       return false;
     }
 
-    const swappedView = this.previewMove(combatantView, fromZoneSlot, toZoneSlot);
-    void this.send("MOVE_ACTION", this.createMoveAction(fromZoneSlot, toZoneSlot), () => this.undoMovePreview(combatantView, swappedView, fromZoneSlot, toZoneSlot));
+    const undoPreview = this.previewMove(combatantView, fromZoneSlot, toZoneSlot);
+    const action = this.createMoveAction(fromZoneSlot, toZoneSlot);
+    void this.send("MOVE_ACTION", action, undoPreview);
     return true;
   }
 
@@ -79,8 +87,8 @@ class CardController {
     return fromZoneSlot.getCombatant() === combatantView && toZoneSlot.canReceiveFrom(fromZoneSlot);
   }
 
-  /** Returns the card that was in the target slot, which takes the place of the moved one. */
-  private previewMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): CombatantView | null {
+  /** Shows the moved card in the target slot and the card that was there, if any, in the source slot. Returns the function that undoes it. */
+  private previewMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): () => void {
     fromZoneSlot.releaseCard();
     const swappedView = toZoneSlot.releaseCard();
     toZoneSlot.holdCard(combatantView);
@@ -88,23 +96,23 @@ class CardController {
       fromZoneSlot.holdCard(swappedView);
     }
 
-    return swappedView;
-  }
-
-  private undoMovePreview(combatantView: CombatantView, swappedView: CombatantView | null, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
-    fromZoneSlot.releaseCard();
-    toZoneSlot.releaseCard();
-    fromZoneSlot.holdCard(combatantView);
-    if (swappedView) {
-      toZoneSlot.holdCard(swappedView);
-    }
+    return () => {
+      fromZoneSlot.releaseCard();
+      toZoneSlot.releaseCard();
+      fromZoneSlot.holdCard(combatantView);
+      if (swappedView) {
+        toZoneSlot.holdCard(swappedView);
+      }
+    };
   }
 
   private createMoveAction(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): Action {
     const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
     const player = StoreSystem.getPlayer();
-    const source = new ActionEvent({ element: "ZoneSlot.Card", input: "Grab", position: fromZoneSlot.zoneSlot.position, player, card: null });
-    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: toZoneSlot.zoneSlot.position, player, card: null });
+    const sourcePosition = fromZoneSlot.zoneSlot.position;
+    const targetPosition = toZoneSlot.zoneSlot.position;
+    const source = new ActionEvent({ element: "ZoneSlot.Card", input: "Grab", position: sourcePosition, player, card: null });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: targetPosition, player, card: null });
     return new Action(gameCode, source, target);
   }
 
@@ -115,21 +123,26 @@ class CardController {
     }
 
     equipmentView.setVisible(false);
-    void this.send("EQUIP_ACTION", this.createEquipAction(equipmentView, zoneSlotView), () => this.showEquipmentInHand(equipmentView, handView));
+    const action = this.createEquipAction(equipmentView, zoneSlotView);
+    const undoPreview = () => this.showEquipmentInHand(equipmentView, handView);
+    void this.send("EQUIP_ACTION", action, undoPreview);
     return true;
   }
 
   private createEquipAction(equipmentView: EquipmentView, zoneSlotView: ZoneSlotView): Action {
     const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
     const player = StoreSystem.getPlayer();
+    const targetPosition = zoneSlotView.zoneSlot.position;
     const source = new ActionEvent({ element: "Hand.Card", input: "Grab", position: null, player, card: equipmentView.card });
-    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: zoneSlotView.zoneSlot.position, player, card: null });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: targetPosition, player, card: null });
     return new Action(gameCode, source, target);
   }
 
   private showEquipmentInHand(equipmentView: EquipmentView, handView: HandView) {
     equipmentView.setVisible(true);
-    handView.addAt(equipmentView, handView.getCards().indexOf(equipmentView));
+    const handCards = handView.getCards();
+    const handIndex = handCards.indexOf(equipmentView);
+    handView.addAt(equipmentView, handIndex);
     equipmentView.reset();
   }
 }

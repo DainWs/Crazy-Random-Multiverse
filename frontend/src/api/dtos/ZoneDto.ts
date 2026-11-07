@@ -35,7 +35,13 @@ function toRowZoneSlots(slotsInRow: ZoneSlotDto[], row: number): ZoneSlot[] {
 
 /** The contract numbers the rows from the leader towards the center (CON-14), and the frontend numbers them the other way round (VIEW-1). */
 function toFrontendRows(backendRows: ZoneSlotDto[][]): ZoneSlot[][] {
-  return backendRows.map((slotsInRow, backendRow) => toRowZoneSlots(slotsInRow, mirrorRow(backendRow, backendRows.length))).reverse();
+  const rowCount = backendRows.length;
+  const rows: ZoneSlot[][] = backendRows.map((slotsInRow, backendRow) => {
+    const row = mirrorRow(backendRow, rowCount);
+    return toRowZoneSlots(slotsInRow, row);
+  });
+
+  return rows.reverse();
 }
 
 function toZone(zoneDto: ZoneDto, team: Team): Zone {

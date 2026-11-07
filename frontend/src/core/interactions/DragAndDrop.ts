@@ -66,8 +66,8 @@ class CardDragAndDropManager {
       this.onZoneSlotDragEnter(cardView, targetGameObject);
     }
 
-    if (cardView instanceof EquipmentView && targetGameObject instanceof ZoneSlotView && targetGameObject.canReceive(cardView.card)) {
-      targetGameObject.applyAnimation('highlight_as_target');
+    if (cardView instanceof EquipmentView && targetGameObject instanceof ZoneSlotView) {
+      this.onEquipmentDragEnter(cardView, targetGameObject);
     }
   }
 
@@ -79,12 +79,20 @@ class CardDragAndDropManager {
     }
   }
 
+  private onEquipmentDragEnter(equipmentView: EquipmentView, targetGameObject: ZoneSlotView) {
+    const canEquip = targetGameObject.canReceive(equipmentView.card);
+    if (canEquip) {
+      targetGameObject.applyAnimation('highlight_as_target');
+    }
+  }
+
   private canDropOn(cardView: CombatantView, targetGameObject: ZoneSlotView): boolean {
     if (this.sourceGameObject instanceof ZoneSlotView) {
       return targetGameObject.canReceiveFrom(this.sourceGameObject);
     }
 
-    return targetGameObject.canReceive(cardView.card);
+    const card = cardView.card;
+    return targetGameObject.canReceive(card);
   }
 
   // Drag leave

@@ -90,8 +90,14 @@ class Card {
 
   /** The total the pieces add or subtract, or undefined when none of them sends the statistic (CON-8). */
   public getEquipmentValue(statisticType: StatisticType): number | undefined {
-    const values = this.equipment.map((piece) => piece.getStatistic(statisticType)?.value).filter((value): value is number => value !== undefined);
-    return values.length > 0 ? values.reduce((total, value) => total + value, 0) : undefined;
+    const pieceValues: (number | undefined)[] = this.equipment.map((piece) => piece.getStatistic(statisticType)?.value);
+    const sentValues: number[] = pieceValues.filter((value): value is number => value !== undefined);
+    if (sentValues.length === 0) {
+      return undefined;
+    }
+
+    const total: number = sentValues.reduce((sum, value) => sum + value, 0);
+    return total;
   }
 
   public isType(type: CardType, rarity?: CardRarity): boolean {

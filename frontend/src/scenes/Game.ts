@@ -125,12 +125,17 @@ class GameScene extends Scene {
     /** Shows briefly why the server rejected an action (UI-6). */
     public showRejection(key: string) {
         this.rejectionText?.destroy();
-        this.rejectionText = this.add.text(this.scale.width / 2, Constants.REJECTION_MESSAGE_TOP_OFFSET, getText(key), {
-            fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE,
-            color: Constants.REJECTION_MESSAGE_COLOR
-        });
-        this.rejectionText.setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(Constants.REJECTION_MESSAGE_DEPTH);
-        this.time.delayedCall(Constants.REJECTION_MESSAGE_DURATION_MS, () => this.rejectionText?.destroy());
+
+        const centerX = this.scale.width / 2;
+        const message = getText(key);
+        const style = { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: Constants.REJECTION_MESSAGE_COLOR };
+        const rejectionText = this.add.text(centerX, Constants.REJECTION_MESSAGE_TOP_OFFSET, message, style);
+        rejectionText.setOrigin(0.5, 0.5);
+        rejectionText.setScrollFactor(0);
+        rejectionText.setDepth(Constants.REJECTION_MESSAGE_DEPTH);
+
+        this.rejectionText = rejectionText;
+        this.time.delayedCall(Constants.REJECTION_MESSAGE_DURATION_MS, () => rejectionText.destroy());
     }
 
     public getCardTooltipView(): GlobalCardTooltipView {

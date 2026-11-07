@@ -20,10 +20,13 @@ const sendAction = async (action: Action) => {
 
 /** Resolves once the server accepts the action; the state changes with its events (CON-17). */
 const sendPlayerAction = async (actionType: ActionType, action: Action, rowCount: number) => {
-  const response = await fetch(`/game/${toBase64UrlSafe(action.game)}/action`, {
+  const gameCodePath = toBase64UrlSafe(action.game);
+  const actionDto = toActionDto(actionType, action, rowCount);
+  const body = JSON.stringify(actionDto);
+  const response = await fetch(`/game/${gameCodePath}/action`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(toActionDto(actionType, action, rowCount))
+    body
   });
   await checkResponse(response);
 }

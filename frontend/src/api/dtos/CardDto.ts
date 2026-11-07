@@ -85,7 +85,8 @@ const toCard = (dto: CardDto): Card => {
   card.isAttackAvailable = dto.attackAvailable ?? false;
   card.isTargetable = dto.targetable ?? false;
 
-  card.equipment = (dto.equipment ?? []).map((piece) => toCard(piece) as EquipmentCard);
+  const pieceDtos: CardDto[] = dto.equipment ?? [];
+  card.equipment = pieceDtos.map((pieceDto) => toCard(pieceDto) as EquipmentCard);
 
   return card;
 }
