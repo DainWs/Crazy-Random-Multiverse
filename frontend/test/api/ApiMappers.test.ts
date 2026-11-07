@@ -4,11 +4,15 @@ import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
 import { notifyListeners } from '@/api/models/Listeners';
 import { CardDto, toCard, toCardCode, toCardCodeDto } from '@/api/dtos/CardDto';
 import { toPlayer, toPlayerCode } from '@/api/dtos/PlayerDto';
+import { toActionDto } from '@/api/dtos/ActionDto';
 import { toZone } from '@/api/dtos/ZoneDto';
 import { toActiveGame, toGameSnapshot, type GameDto } from '@/api/dtos/GameDto';
 import { toParty, toMinimalParty } from '@/api/dtos/PartyDto';
+import Action from '@/domain/Action';
+import type ActionEvent from '@/domain/ActionEvent';
 import Card, { CardCode } from '@/domain/Card';
 import Player from '@/domain/Player';
+import { ZonePosition } from '@/domain/Position';
 import Party from '@/domain/Party';
 import User from '@/domain/User';
 
@@ -335,6 +339,22 @@ describe('API Models and DTO Mappers', () => {
 
       expect(minimalParty.code).toBe('party-xyz');
       expect(minimalParty.users).toEqual([]);
+    });
+  });
+
+  describe('ActionDto', () => {
+    const createAction = (): Action => {
+      const source = { position: new ZonePosition(1, 0), player: new Player('p-1', 'One'), card: null } as unknown as ActionEvent;
+      const target = { position: new ZonePosition(2, 1), player: new Player('p-2', 'Two'), card: null } as unknown as ActionEvent;
+      return new Action('game-1', source, target);
+    };
+
+    it.each(['MOVE_ACTION', 'EQUIP_ACTION', 'ATTACK_ACTION'] as const)('toActionDto sends the target player of %s', (type) => {
+      expect(toActionDto(type, createAction()).targetPlayer).toBe('p-2');
+    });
+
+    it('toActionDto sends the source player', () => {
+      expect(toActionDto('MOVE_ACTION', createAction()).sourcePlayer).toBe('p-1');
     });
   });
 });

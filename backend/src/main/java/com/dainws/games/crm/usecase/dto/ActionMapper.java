@@ -23,13 +23,11 @@ public final class ActionMapper {
 	}
 
 	public static ActionContextTemplate mapMoveActionDto(ActionDto actionDto) {
-		PlayerCode playerCode = toPlayerCode(actionDto.getSourcePlayerCode());
-
 		ActionContextTemplate contextTemplate = new ActionContextTemplate();
 		contextTemplate.setGameCode(toGameCode(actionDto.getGameCode()));
-		contextTemplate.setSourcePlayerCode(playerCode);
+		contextTemplate.setSourcePlayerCode(toPlayerCode(actionDto.getSourcePlayerCode()));
 		contextTemplate.setSourceCoordinate(toPosition(actionDto.getSourcePosition()));
-		contextTemplate.setTargetPlayerCode(playerCode);
+		contextTemplate.setTargetPlayerCode(toPlayerCode(actionDto.getTargetPlayerCode()));
 		contextTemplate.setTargetCoordinate(toPosition(actionDto.getTargetPosition()));
 		return contextTemplate;
 	}
@@ -52,16 +50,11 @@ public final class ActionMapper {
 	}
 
 	public static ActionContextTemplate mapEquipActionDto(ActionDto actionDto) {
-		String targetPlayerCode = actionDto.getTargetPlayerCode();
-		if (targetPlayerCode == null) {
-			targetPlayerCode = actionDto.getSourcePlayerCode();
-		}
-
 		ActionContextTemplate contextTemplate = new ActionContextTemplate();
 		contextTemplate.setGameCode(toGameCode(actionDto.getGameCode()));
 		contextTemplate.setSourcePlayerCode(toPlayerCode(actionDto.getSourcePlayerCode()));
 		contextTemplate.setSourceCardCode(toCardCode(actionDto.getSourceCardCode()));
-		contextTemplate.setTargetPlayerCode(toPlayerCode(targetPlayerCode));
+		contextTemplate.setTargetPlayerCode(toPlayerCode(actionDto.getTargetPlayerCode()));
 		contextTemplate.setTargetCoordinate(toPosition(actionDto.getTargetPosition()));
 		return contextTemplate;
 	}

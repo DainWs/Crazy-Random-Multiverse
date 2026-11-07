@@ -42,15 +42,29 @@ class ActionMapperTest {
 	}
 
 	@Test
-	void testGivenEquipDtoWithoutTargetPlayer_whenMap_thenTargetPlayerIsSourcePlayer() {
+	void testGivenMoveDto_whenMap_thenTargetPlayerIsTheDtoTargetPlayer() {
 		ActionDto actionDto = this.createActionDto();
+		actionDto.setTargetPlayerCode(TARGET_PLAYER_CODE);
+		actionDto.setSourcePosition(new PositionDto());
+		actionDto.setTargetPosition(new PositionDto());
+
+		ActionContextTemplate template = ActionMapper.mapMoveActionDto(actionDto);
+
+		assertThat(template.getTargetPlayerCode())
+				.isEqualTo(PlayerCode.from(TARGET_PLAYER_CODE));
+	}
+
+	@Test
+	void testGivenEquipDto_whenMap_thenTargetPlayerIsTheDtoTargetPlayer() {
+		ActionDto actionDto = this.createActionDto();
+		actionDto.setTargetPlayerCode(TARGET_PLAYER_CODE);
 		actionDto.setSourceCardCode(this.createCardCodeDto());
 		actionDto.setTargetPosition(new PositionDto());
 
 		ActionContextTemplate template = ActionMapper.mapEquipActionDto(actionDto);
 
 		assertThat(template.getTargetPlayerCode())
-				.isEqualTo(PlayerCode.from(PLAYER_CODE));
+				.isEqualTo(PlayerCode.from(TARGET_PLAYER_CODE));
 	}
 
 	@Test
