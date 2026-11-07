@@ -79,8 +79,21 @@ public class GameService {
 		}
 
 		Game game = event.getDetails().getGame();
-		if (game.isRunning()) {
-			this.gameLifeCycle.updateGameProgress(game);			
+		if (game.inStatus(Status.IN_PROGRESS)) {
+			this.gameLifeCycle.updateGameProgress(game);
+		}
+	}
+
+	public void eliminate(User user) {
+		Optional<Game> activeGame = this.findActiveGameOf(user);
+		if (activeGame.isEmpty()) {
+			return;
+		}
+
+		Game game = activeGame.get();
+		Player player = game.getPlayer(PlayerCode.from(user.getCode().text()));
+		if (player != null) {
+			this.gameLifeCycle.eliminate(game, player);
 		}
 	}
 

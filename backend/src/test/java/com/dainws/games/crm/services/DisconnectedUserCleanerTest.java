@@ -7,12 +7,15 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.core.GameLifeCycle;
+import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
 import com.dainws.games.crm.persistence.memory.MemoryUserRepository;
 
@@ -39,8 +42,12 @@ class DisconnectedUserCleanerTest {
 		User user = new User("user-1", "Name", UserPlatform.WEB);
 		user.startWaitingForSocket(NOW);
 		userRepository.save(user);
-		PartyService partyService = new PartyService(new MemoryPartyRepository());
+		MemoryPartyRepository partyRepository = new MemoryPartyRepository();
+		PartyService partyService = new PartyService(partyRepository);
 		UserService userService = new UserService(userRepository, partyService);
+		GameService gameService = new GameService(new GameLifeCycle(), new MemoryGameRepository(), List.of());
+		gameService.setPartyRepository(partyRepository);
+		userService.setGameService(gameService);
 		userService.setDisconnectGracePeriod(GRACE_PERIOD);
 		userService.setClock(Clock.fixed(NOW.plus(GRACE_PERIOD).plusSeconds(1), ZoneOffset.UTC));
 		DisconnectedUserCleaner cleaner = new DisconnectedUserCleaner(userService);

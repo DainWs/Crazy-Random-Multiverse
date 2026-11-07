@@ -155,7 +155,8 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 5 — Elimination and game end
 
-- [ ] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
+- [x] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
+- [x] Cancel the loading when a player removed during it leaves fewer than 2 (`LOAD-4`, `CON-22`): publish `GAME_CANCELLED`, remove the game and unlock the party with a `party:info`. Nobody publishes `GAME_CANCELLED` today, and a player removed during the load must not block the start (`LOAD-3`)
 - [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
 - [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
 - [ ] Disable interaction after game end (`WIN-4`)

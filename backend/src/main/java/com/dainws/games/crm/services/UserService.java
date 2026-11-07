@@ -24,6 +24,7 @@ import com.dainws.games.crm.usecase.dto.CreatePartyRequest;
 public class UserService {
 	private UserRepository userRepository;
 	private PartyService partyService;
+	private GameService gameService;
 	private Clock clock;
 
 	@Value("${crm.user.disconnect-grace-period}")
@@ -81,16 +82,31 @@ public class UserService {
 
 		for (User user : this.userRepository.findAll()) {
 			if (user.hasBeenWithoutSocketLongerThan(this.disconnectGracePeriod, now)) {
-				this.logger.info("Deleting user {} after the grace period without a socket", user.getCode());
-				this.delete(user.getCode());
+				this.deleteAfterGracePeriod(user);
 			}
+		}
+	}
+
+	private void deleteAfterGracePeriod(User user) {
+		this.logger.info("Deleting user {} after the grace period without a socket", user.getCode());
+
+		try {
+			this.delete(user.getCode());
+		} catch (RuntimeException e) {
+			this.logger.error("User {} could not be deleted", user.getCode(), e);
 		}
 	}
 
 	public void delete(UserCode userCode) {
 		User user = this.userRepository.find(userCode);
-		this.partyService.leaveParty(user);
+		this.gameService.eliminate(user);
+		this.partyService.leaveDeletedUser(user);
 		this.userRepository.delete(userCode);
+	}
+
+	@Autowired
+	public void setGameService(GameService gameService) {
+		this.gameService = gameService;
 	}
 
 	@Autowired

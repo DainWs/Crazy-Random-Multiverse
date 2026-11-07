@@ -44,9 +44,11 @@ public class PartyEventService {
 	}
 
 	@EventListener
-	public void scheduleReleaseWhenGameEnds(Event event) {
+	public void releasePartiesWhenGameFinishes(Event event) {
 		if (event.getCode() == EventCode.GAME_END) {
 			this.scheduleRelease(event.getGameCode());
+		} else if (event.getCode() == EventCode.GAME_CANCELLED) {
+			this.releaseGameParties(event.getGameCode());
 		}
 	}
 
@@ -62,6 +64,14 @@ public class PartyEventService {
 		this.gameRepository.delete(code);
 
 		for (Party party : parties) {
+			this.sendOrRemove(party);
+		}
+	}
+
+	private void sendOrRemove(Party party) {
+		if (party.isEmpty()) {
+			this.repository.delete(party.getCode());
+		} else {
 			this.userClient.sendPartyInfo(party);
 		}
 	}

@@ -1,8 +1,10 @@
 package com.dainws.games.crm.domain;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameMode;
@@ -16,6 +18,7 @@ public class Party {
 	private GameMode gameMode;
 	private int maxUsers;
 	private Map<UserCode, User> users;
+	private Set<UserCode> pendingRemoval;
 
 	public Party(User partyOwner, GameMode gameMode) {
 		this(new PartyCode(), partyOwner, gameMode);
@@ -27,6 +30,7 @@ public class Party {
 		this.currentGame = GameCode.NONE;
 		this.gameMode = gameMode;
 		this.users = new HashMap<>();
+		this.pendingRemoval = new HashSet<>();
 		this.users.put(partyOwner.getCode(), partyOwner);
 		this.maxUsers = 5;
 	}
@@ -72,6 +76,18 @@ public class Party {
 			throw new NotAllowedException(PartyExceptionCode.LOCKED);
 		}
 
+		this.removeMember(userCode);
+	}
+
+	public void removeWhenUnlocked(UserCode userCode) {
+		if (this.isLocked()) {
+			this.pendingRemoval.add(userCode);
+		} else {
+			this.removeMember(userCode);
+		}
+	}
+
+	private void removeMember(UserCode userCode) {
 		this.users.remove(userCode);
 
 		if (this.ownerCode.equals(userCode) && this.users.size() > 0) {
@@ -124,7 +140,12 @@ public class Party {
 	}
 
 	public void setCurrentGame(GameCode gameCode) {
-		this.currentGame = gameCode;			
+		this.currentGame = gameCode;
+
+		if (!this.isLocked()) {
+			this.pendingRemoval.forEach(this::removeMember);
+			this.pendingRemoval.clear();
+		}
 	}
 
 	public GameCode getCurrentGame() {

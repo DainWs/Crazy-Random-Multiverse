@@ -15,6 +15,8 @@ import com.dainws.games.crm.domain.core.player.PlayerCode;
 
 public class GameLifeCycle {
 
+	private static final int MIN_PLAYERS = 2;
+
 	public enum Status {
 		NONE, CREATED, LOADING, IN_PROGRESS, ENDED;
 	}
@@ -86,6 +88,37 @@ public class GameLifeCycle {
 
 		game.setStatus(Status.IN_PROGRESS);
 		game.publishEvent(EventCode.GAME_START);
+	}
+
+	public void eliminate(Game game, Player player) {
+		if (player.isDeath()) {
+			return;
+		}
+
+		game.eliminate(player);
+
+		if (game.inStatus(Status.LOADING)) {
+			this.continueLoadingWithout(game, player);
+		}
+	}
+
+	private void continueLoadingWithout(Game game, Player player) {
+		this.removePlayerFromLoadingList(game, player.getPlayerCode());
+
+		if (game.countAlivePlayers() < MIN_PLAYERS) {
+			this.cancelLoading(game);
+		} else if (this.countLoadingPlayersFrom(game) == 0) {
+			this.startGame(game);
+		}
+	}
+
+	private void cancelLoading(Game game) {
+		this.logger.info("Cancelling the loading of game {}", game.getCode());
+		this.loadingPlayers.remove(game.getCode());
+
+		game.stopRunning();
+		game.setStatus(Status.ENDED);
+		game.publishEvent(EventCode.GAME_CANCELLED);
 	}
 
 	public void updateGameProgress(Game game) {

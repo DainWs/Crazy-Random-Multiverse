@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameFlow;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
@@ -79,7 +80,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 		Game game = this.getGameFromEvent(event);
 		this.gameFlow.updateGame(game);
 
-		if (game.getPlayerWithTurn().isDeath() && game.countAlivePlayers() > 1) {
+		if (game.inStatus(Status.IN_PROGRESS) && game.getPlayerWithTurn().isDeath() && game.countAlivePlayers() > 1) {
 			this.gameFlow.onNextTurn(game);
 		}
 	}

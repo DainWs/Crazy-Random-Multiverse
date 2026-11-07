@@ -55,10 +55,18 @@ public class PartyService {
 
 	}
 
-	public void leaveParty(User user) throws PartyException {
-		if (this.repository.hasPartyWhereUserIsMember(user)) {
-			Party party = this.repository.findPartyWhereUserIsMember(user.getCode());
-			this.leaveParty(party.getCode(), user);
+	public void leaveDeletedUser(User user) {
+		if (!this.repository.hasPartyWhereUserIsMember(user)) {
+			return;
+		}
+
+		Party party = this.repository.findPartyWhereUserIsMember(user.getCode());
+		party.removeWhenUnlocked(user.getCode());
+
+		if (party.isEmpty()) {
+			this.deleteParty(party);
+		} else {
+			this.userClient.sendPartyInfo(party);
 		}
 	}
 

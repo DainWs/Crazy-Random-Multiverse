@@ -70,4 +70,83 @@ class GameLifeCycleTest {
 				.count();
 		assertThat(gameStarts).isEqualTo(1);
 	}
+
+	// LOAD-4
+	@Test
+	void testGivenLoadingGameOfTwo_whenAPlayerIsEliminated_thenLoadingIsCancelled() {
+		this.gameLifeCycle.eliminate(this.game, this.second);
+
+		assertThat(this.codes()).containsExactly(
+				EventCode.GAME_CREATED, EventCode.GAME_LOADING, EventCode.PLAYER_DIE, EventCode.GAME_CANCELLED);
+	}
+
+	// LOAD-4
+	@Test
+	void testGivenCancelledLoading_whenPlayersConfirm_thenGameDoesNotStart() {
+		this.gameLifeCycle.eliminate(this.game, this.second);
+
+		this.gameLifeCycle.loadCompleteFor(this.game, this.first.getPlayerCode());
+
+		assertThat(this.game.inStatus(Status.IN_PROGRESS)).isFalse();
+	}
+
+	// LOAD-3
+	@Test
+	void testGivenLoadingGameOfThree_whenTheOnlyPlayerNotReadyIsEliminated_thenGameStarts() {
+		Player third = new PlayerBuilder().build();
+		Game threePlayers = this.createLoadingGame(third);
+		this.gameLifeCycle.loadCompleteFor(threePlayers, this.first.getPlayerCode());
+		this.gameLifeCycle.loadCompleteFor(threePlayers, this.second.getPlayerCode());
+
+		this.gameLifeCycle.eliminate(threePlayers, third);
+
+		assertThat(threePlayers.inStatus(Status.IN_PROGRESS)).isTrue();
+	}
+
+	// LOAD-4
+	@Test
+	void testGivenLoadingGameOfThree_whenAPlayerIsEliminated_thenLoadingContinues() {
+		Player third = new PlayerBuilder().build();
+		Game threePlayers = this.createLoadingGame(third);
+
+		this.gameLifeCycle.eliminate(threePlayers, third);
+
+		assertThat(threePlayers.inStatus(Status.LOADING)).isTrue();
+	}
+
+	// ABSENT-3
+	@Test
+	void testGivenGameInProgress_whenAPlayerIsEliminated_thenOnlyPlayerDieIsPublished() {
+		this.gameLifeCycle.loadCompleteFor(this.game, this.first.getPlayerCode());
+		this.gameLifeCycle.loadCompleteFor(this.game, this.second.getPlayerCode());
+		int published = this.eventMonitor.getPublishedEvents().size();
+
+		this.gameLifeCycle.eliminate(this.game, this.second);
+
+		assertThat(this.codes().subList(published, this.codes().size())).containsExactly(EventCode.PLAYER_DIE);
+	}
+
+	@Test
+	void testGivenEliminatedPlayer_whenEliminateAgain_thenNothingIsPublished() {
+		this.game.eliminate(this.second);
+		int published = this.eventMonitor.getPublishedEvents().size();
+
+		this.gameLifeCycle.eliminate(this.game, this.second);
+
+		assertThat(this.eventMonitor.getPublishedEvents()).hasSize(published);
+	}
+
+	private Game createLoadingGame(Player third) {
+		Game threePlayers = new GameBuilder() //
+				.withPlayers(this.first, this.second, third) //
+				.withEventPublisher(this.eventMonitor) //
+				.build();
+		this.gameLifeCycle.register(threePlayers, player -> true);
+		this.gameLifeCycle.startLoading(threePlayers);
+		return threePlayers;
+	}
+
+	private java.util.List<EventCode> codes() {
+		return this.eventMonitor.getPublishedEvents().stream().map(event -> event.getCode()).toList();
+	}
 }

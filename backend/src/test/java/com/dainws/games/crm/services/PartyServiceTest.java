@@ -17,11 +17,11 @@ import com.dainws.games.crm.services.exception.PartyException;
 class PartyServiceTest {
 
 	@Test
-	void testGivenUserWithoutParty_whenLeaveParty_thenDoesNotFail() {
+	void testGivenUserWithoutParty_whenLeaveDeletedUser_thenDoesNotFail() {
 		PartyService partyService = new PartyService(new MemoryPartyRepository());
 		User user = new User("user-1", "Name", UserPlatform.WEB);
 
-		assertDoesNotThrow(() -> partyService.leaveParty(user));
+		assertDoesNotThrow(() -> partyService.leaveDeletedUser(user));
 	}
 
 	@Test
