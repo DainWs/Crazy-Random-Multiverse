@@ -12,9 +12,9 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 |---|---|
 | `api/` | Single point of contact with the backend: REST (`*Api.ts`, using `fetch`), Socket.IO (`SocketService`, `SocketEventHandler`, `SocketReconnectHandler`). |
 | `controllers/` | Connect interaction and actions (`CardController`, `HandController`). They send commands to the backend; they do not mutate the authoritative state. |
-| `core/` | Static cross-cutting systems: `StoreSystem`, `EventSystem`, `ActionSystem`, `CameraSystem`, `ProjectionSystem`, plus `actions/`, `cameras/`, `interactions/`, `visual_effects/`. |
+| `core/` | Static cross-cutting systems: `StoreSystem`, `EventSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `interactions/`, `visual_effects/`. |
 | `domain/` | Frontend model (`Card`, `Zone`, `Player`, `Party`, `Battlefield`, `Action`…). No Phaser, no Vue, no `api`. |
-| `game/` | Phaser views: `battlefield`, `cards`, `hand`, `zone`, `perspectives`. They only draw and animate. |
+| `game/` | Phaser views: `battlefield`, `cards`, `hand`, `hud`, `zone`, `perspectives`. They only draw and animate. |
 | `scenes/` | Phaser scenes. They orchestrate, they contain no rules. |
 | `views/` | Vue screens of the menus (main menu, party). They show state and call `controllers/`; no logic of their own. Their texts come from `core/Texts.ts`, a temporary key to Spanish text module that will be replaced by real localization. |
 | `main.ts`, `App.vue`, `AppController.ts` | Vue and Phaser bootstrap. |
@@ -30,7 +30,7 @@ domain → (nothing)
 ```
 
 - `domain` does not import Phaser, Vue or `api`.
-- `game/*` (views) does not call `api` directly: commands go through `controllers/` and `core/ActionSystem`.
+- `game/*` (views) does not call `api` directly: commands go through `controllers/`.
 - Only `api/` knows the URLs, the Socket.IO event names and the backend DTOs. The rest works with `domain` types.
 - Vue (`.vue`) is used for the shell and menus. No game logic goes into Vue components.
 
@@ -40,15 +40,13 @@ domain → (nothing)
 
 - The game state lives in `StoreSystem`, only in memory, because `GAME_SYNC` restores it (`CON-11`). It is the single source of truth on the client; views read from it.
 - The authoritative state only changes when an event arrives from the backend (`CON-17`). **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
-- Flow of an action: interaction → `ActionSystem` / `ActionResolver` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` updates the `StoreSystem` → views update.
+- Flow of an action: interaction → `CardController` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` updates the `StoreSystem` → views update.
 - Internal UI events (`EventSystem`) are independent of network events. UI event names are declared in the `Event` union in `EventSystem.ts`; loose strings and `rawEmit` are not used in new code.
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
 - Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
 - Other players' hands are never stored.
 - The session state (the party and the user state, `CON-23`) lives in `SessionSystem`, not in `StoreSystem`: it is not game state and the game never reads it. It is exposed as read-only `shallowRef`s so that Vue components can react to it. Vue reactivity is used only there; `StoreSystem` and everything Phaser touches stay plain objects, never wrapped in a Vue proxy.
 - Which menu screen is shown is decided in `App.vue` from the user state (`UI-17`). Phaser scenes only switch when the state enters loading or game.
-
-> Removing `ActionSystem` / `ActionResolver` and having the `Controllers` send the actions is under consideration.
 
 ---
 

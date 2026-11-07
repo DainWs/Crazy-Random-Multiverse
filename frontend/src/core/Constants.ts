@@ -54,3 +54,40 @@ export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
 
 /** Depth of the attack arrow, above the cards and the hand. */
 export const ATTACK_ARROW_DEPTH = 20000;
+
+
+/** Distance in pixels from the edges of the screen to the turn indicator and the buttons of the game HUD (UI-3). */
+export const HUD_MARGIN = 24;
+
+/** Font size of the turn indicator and the buttons of the game HUD. */
+export const HUD_FONT_SIZE = '24px';
+
+/** Text color of the game HUD. */
+export const HUD_COLOR = '#ffffff';
+
+/** Text color of the turn indicator while it is the turn of the local player (UI-3). */
+export const HUD_OWN_TURN_COLOR = '#2ecc71';
+
+/** Alpha of a HUD button that cannot be used now (UI-4). */
+export const HUD_DISABLED_ALPHA = 0.4;
+
+/** Distance in pixels between two HUD buttons. */
+export const HUD_BUTTON_GAP = 16;
+
+/** Padding in pixels around the text of a HUD button. */
+export const HUD_BUTTON_PADDING = { x: 12, y: 6 };
+
+/** Background color of a HUD button. */
+export const HUD_BUTTON_BACKGROUND = '#34495e';
+
+/** Depth of the game HUD: above the cards and below the messages about rejected actions. */
+export const HUD_DEPTH = 15000;
+
+/** Width and height in pixels of the dialog that asks for confirmation (UI-15). */
+export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };
+
+/** Background color of the dialog that asks for confirmation. */
+export const CONFIRM_DIALOG_BACKGROUND = 0x1b2631;
+
+/** Alpha of the veil that covers the game behind the dialog that asks for confirmation. */
+export const CONFIRM_VEIL_ALPHA = 0.6;

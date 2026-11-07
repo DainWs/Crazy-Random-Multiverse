@@ -222,7 +222,7 @@ Scaffolding with no caller in production. Whether it stays is for Phase 8 or **[
 
 - **Backend, spells and effects:** `UseCardAction`, `UseSpellAction`, `PlayerActionFacade.playerUseSpell` (passes a null action), `Effect*`, `Skill`.
 - **Backend, others:** `CompositeGameFlow`, `RandomDealStrategyFactory` (replaced by the classic one), `PartyEventService`, `GameService.getActiveGame`, `Zone.getVisibleCombatants`, `onPrevTurn`.
-- **Frontend, actions:** `ActionSystem` (its patterns are commented out), `ActionResolver`, `CardMovePattern`, `CardPutPattern`, `toActionDto`.
+- **Frontend, actions:** `toActionDto`.
 - **Frontend, mappers:** `toZone`, `toZonePosition`.
 - **Frontend, others:** `saveHand`, `loadHand`, `GameOverOverlay`, `ImageUtils.loadTemplateImage`, `playSoundForAction`, the `MainMenu` scene, `Zone.isEnabledPosition`, the extra socket channels (`event`, `game_event`, one per event code).
 - **Frontend, debugging left in place:** `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView`, `showDebugBoxes` always on in development.

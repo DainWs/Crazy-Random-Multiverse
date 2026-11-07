@@ -145,17 +145,18 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Card movement (`MOVE_ACTION`, `BOARD-7`): prevent invalid movement
 - [x] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
 - [x] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
-- [ ] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
+- [x] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [ ] Highlight valid targets and disable invalid ones (`UI-5`)
-- [ ] End Turn button (`PASS_TURN`)
-- [ ] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5)
+- [x] End Turn button (`PASS_TURN`)
+- [x] Disable gameplay when it is not the player's turn (`UI-4`), and while animations are still playing once they exist (Phase 5)
 - [ ] Prevent conflicting actions while an action is pending (`CON-19`)
 - [ ] Handle rejected and duplicate/pending actions (`UI-6`, `CON-19`)
-- [ ] Show clearly whose turn it is (`UI-3`)
+- [x] Show clearly whose turn it is (`UI-3`)
 
 ## Phase 5 — Combat feedback and game end
 
 - [ ] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
+- [ ] Disable gameplay while animations are still playing (`UI-4`): `CardController.canAct` only covers the turn and the pending action
 - [ ] Attack animation and hit feedback (`VIEW-5`)
 - [ ] Animate armor and health changes (`VIEW-6`, `CON-21`)
 - [ ] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)
@@ -186,8 +187,8 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 ## Phase 8 — Architecture cleanup
 
-- [ ] Review `EventSystem` and `ActionSystem`
-- [ ] Complete or remove `ActionResolver`
+- [ ] Review `EventSystem`
+- [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4)
 - [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
 - [ ] Remove dead/unused architecture
 - [ ] Finish remaining TODOs in comments
@@ -267,6 +268,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment
 - [ ] A person checks the board of a real game in a browser: the local zone at the bottom and each leader at the edge of the table (`VIEW-1`), the animation of the cards received in the hand (`VIEW-8`) and the number of cards in each rival hand (`HAND-3`). Not checked: Phaser views are not tested
 - [ ] A person attacks in a real browser (`ATTACK_ACTION`): click an own card of the board, move the pointer over the rivals (the arrow must be green over a card of another player and red elsewhere), click a rival card to attack and check that Escape or a click outside the cards cancels the selection. Not checked: Phaser views are not tested. The attack does not redraw the board yet: the frontend does not apply `PLAYER_ATTACK_CARD` (Phase 5)
+- [ ] A person plays a turn in a real browser with the game HUD: the top-left text must show the round and "Tu turno" or the name of the player with the turn (`UI-3`), End Turn and Surrender must be dimmed and ignore clicks out of turn (`UI-4`), End Turn must pass the turn, and Surrender must ask for confirmation and only surrender on "Sí" (`UI-15`). Not checked: Phaser views are not tested with a real renderer
 - [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
 
 ## Post-MVP

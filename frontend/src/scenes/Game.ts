@@ -3,6 +3,7 @@ import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
+import GameHudView from '@/game/hud/GameHudView';
 import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
@@ -22,6 +23,7 @@ class GameScene extends Scene {
     public readonly handController: HandController;
 
     private cardTooltipView: GlobalCardTooltipView;
+    private hudView: GameHudView;
     private rejectionText?: Phaser.GameObjects.Text;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
@@ -57,6 +59,10 @@ class GameScene extends Scene {
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
 
+        this.hudView = new GameHudView(this, {
+            onPassTurn: () => this.cardController.passTurn(),
+            onSurrender: () => this.cardController.surrender()
+        });
         this.renderAll();
 
         const stopListening = StoreSystem.onChange((change) => this.storeChangeHandlers[change]());
@@ -104,6 +110,7 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
+        this.hudView.refresh(this.cardController.canAct());
 
         const playerZone = StoreSystem.getPlayerZone();
         if (!playerZone.isAlive()) {
