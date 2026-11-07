@@ -1,9 +1,5 @@
 import type { GameChange, GameChangeEvent } from '@/core/StoreSystem';
 import type Battlefield from '@/domain/Battlefield';
-import type { CombatResult } from '@/domain/CombatResult';
-import type { PlayerCode } from '@/domain/Player';
-import type { ZonePosition } from '@/domain/Position';
-import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
@@ -21,7 +17,7 @@ import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import CombatantView from '@/game/cards/CombatantView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
-import { playAttack, playDeath } from '@/core/visual_effects/CombatAnimations';
+import { playCombat } from '@/core/visual_effects/CombatAnimations';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -97,31 +93,12 @@ class GameScene extends Scene {
     /** The board of an event is drawn when the animations of the earlier events end, so each state is shown in order (CON-12, UI-4). */
     private queueZones({ snapshot, combat }: GameChangeEvent) {
         if (combat) {
-            AnimationSystem.enqueue(() => this.playCombat(combat));
+            AnimationSystem.enqueue(() => playCombat(this, combat));
         }
 
         AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield));
     }
 
-    /** The attack plays on the board as it was before it, which is the one drawn while this step runs (VIEW-5, VIEW-7). */
-    private async playCombat(combat: CombatResult) {
-        const attackerSlot = this.findSlot(combat.attackerPlayer, combat.attackerPosition);
-        const targetSlot = this.findSlot(combat.targetPlayer, combat.targetPosition);
-
-        if (attackerSlot && targetSlot) {
-            await playAttack(this, attackerSlot, targetSlot, combat);
-        }
-
-        if (targetSlot && combat.targetDead) {
-            await playDeath(this, targetSlot);
-        }
-    }
-
-    private findSlot(playerCode: PlayerCode, position: ZonePosition): ZoneSlotView | undefined {
-        const zoneView = this.zones.find((zone) => zone.zone.owner.code === playerCode);
-
-        return zoneView?.getSlots()[position.row]?.[position.column];
-    }
 
     /** The result covers the board only after the last animation, so it does not hide it (WIN-4). */
     private queueResult() {

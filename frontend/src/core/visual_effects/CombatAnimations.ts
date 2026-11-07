@@ -1,4 +1,6 @@
 import type { CombatResult } from '@/domain/CombatResult';
+import type { PlayerCode } from '@/domain/Player';
+import type { ZonePosition } from '@/domain/Position';
 import type { StatisticType } from '@/domain/Statistics';
 import { valueAfterDamage, withValue } from '@/domain/Statistics';
 import type { CardStatisticView } from '@/game/cards/components/CardStatisticView';
@@ -15,6 +17,26 @@ function playTween(scene: GameScene, config: TweenConfig): Promise<void> {
   return new Promise((resolve) => {
     scene.tweens.add({ ...config, onComplete: () => resolve() });
   });
+}
+
+/** The attack plays on the board as it was before it, which is the one drawn while its step runs (VIEW-5, VIEW-7). */
+async function playCombat(scene: GameScene, combat: CombatResult): Promise<void> {
+  const attackerSlot = findSlot(scene, combat.attackerPlayer, combat.attackerPosition);
+  const targetSlot = findSlot(scene, combat.targetPlayer, combat.targetPosition);
+
+  if (attackerSlot && targetSlot) {
+    await playAttack(scene, attackerSlot, targetSlot, combat);
+  }
+
+  if (targetSlot && combat.targetDead) {
+    await playDeath(scene, targetSlot);
+  }
+}
+
+function findSlot(scene: GameScene, playerCode: PlayerCode, position: ZonePosition): ZoneSlotView | undefined {
+  const zoneView = scene.zones.find((zone) => zone.zone.owner.code === playerCode);
+
+  return zoneView?.getSlotAt(position);
 }
 
 /** The attacker grows and shrinks back, and then the target reacts to the hit (VIEW-5, VIEW-6). */
@@ -135,4 +157,4 @@ async function rise(scene: GameScene, damageText: Phaser.GameObjects.Text, targe
   damageText.destroy();
 }
 
-export { playAttack, playDeath };
+export { playCombat };

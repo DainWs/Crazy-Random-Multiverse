@@ -5,6 +5,7 @@ import ZoneSlotLayout from "@/game/zone/ZoneSlotLayout";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
+import type { ZonePosition } from "@/domain/Position";
 
 interface ZoneViewOptions {
   /** Center position in board-space */
@@ -102,6 +103,10 @@ class ZoneView extends Phaser.GameObjects.Container {
 
   public getSlots(): ZoneSlotView[][] {
     return this.slots;
+  }
+
+  public getSlotAt(position: ZonePosition): ZoneSlotView | undefined {
+    return this.slots[position.row]?.[position.column];
   }
 }
 
