@@ -141,7 +141,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
 - [ ] Fix `ZoneSlot.hasAlreadyEquipment` in the frontend, which compares with `null` and always says true
 - [ ] Refactor `CardController` to send backend commands
-- [ ] Card placement (`PUT_ACTION`, `BOARD-5`): validate available slots, row 2 before row 1
+- [x] Card placement (`PUT_ACTION`, `BOARD-5`): validate available slots, row 2 before row 1
 - [ ] Card movement (`MOVE_ACTION`, `BOARD-7`): prevent invalid movement
 - [ ] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
 - [ ] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards

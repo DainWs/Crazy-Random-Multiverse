@@ -2,6 +2,7 @@ import { toCard, type CardDto } from "@/api/dtos/CardDto";
 import { toPlayer, type PlayerDto } from "@/api/dtos/PlayerDto";
 import { CombatantCard } from "@/domain/Card";
 import { ZonePosition } from "@/domain/Position";
+import { mirrorRow } from "@/api/dtos/ZonePositionDto";
 import Team from "@/domain/Team";
 import Zone from "@/domain/Zone";
 import { ZoneOrganizationsType } from "@/domain/ZoneOrganizations";
@@ -34,8 +35,7 @@ function toRowZoneSlots(slotsInRow: ZoneSlotDto[], row: number): ZoneSlot[] {
 
 /** The contract numbers the rows from the leader towards the center (CON-14), and the frontend numbers them the other way round (VIEW-1). */
 function toFrontendRows(backendRows: ZoneSlotDto[][]): ZoneSlot[][] {
-  const lastRow = backendRows.length - 1;
-  return backendRows.map((slotsInRow, backendRow) => toRowZoneSlots(slotsInRow, lastRow - backendRow)).reverse();
+  return backendRows.map((slotsInRow, backendRow) => toRowZoneSlots(slotsInRow, mirrorRow(backendRow, backendRows.length))).reverse();
 }
 
 function toZone(zoneDto: ZoneDto, team: Team): Zone {

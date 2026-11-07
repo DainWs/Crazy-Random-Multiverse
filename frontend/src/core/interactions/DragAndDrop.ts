@@ -67,7 +67,7 @@ class CardDragAndDropManager {
   }
 
   private onZoneSlotDragEnter(cardView: CombatantView, targetGameObject: ZoneSlotView) {
-    if (targetGameObject.zoneSlot.canPlaceCard(cardView.card)) {
+    if (targetGameObject.canReceive(cardView.card)) {
       this.targetGameObject = targetGameObject;
       targetGameObject.previewCard(cardView);
       targetGameObject.applyAnimation('highlight_as_target');

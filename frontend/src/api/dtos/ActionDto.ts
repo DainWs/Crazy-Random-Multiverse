@@ -21,18 +21,19 @@ interface ActionDto {
   targetPosition?: ZonePositionDto;
 }
 
-function toActionDto(actionType: ActionType, action: Action): ActionDto {
+/** `rowCount` is the number of rows of a zone, needed to number the rows as the contract does (CON-14). */
+function toActionDto(actionType: ActionType, action: Action, rowCount: number): ActionDto {
   return {
     game: action.game,
     type: actionType,
 
     sourceCard: toCardCodeDto(action.sourceCard?.code),
     sourcePlayer: toPlayerCode(action.sourcePlayer),
-    sourcePosition: toPositionDto(action.sourcePosition),
+    sourcePosition: toPositionDto(action.sourcePosition, rowCount),
 
     targetCard: toCardCodeDto(action.targetCard?.code),
     targetPlayer: toPlayerCode(action.targetPlayer),
-    targetPosition: toPositionDto(action.targetPosition),
+    targetPosition: toPositionDto(action.targetPosition, rowCount),
   };
 }
 

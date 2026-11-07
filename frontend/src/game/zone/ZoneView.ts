@@ -64,6 +64,7 @@ class ZoneView extends Phaser.GameObjects.Container {
       const numCols = this.zone.slots[position.row].length;
       const obb = this.slotLayout.resolveOBBForSlot(position, { x: this.x, y: this.y }, numRows, numCols);
       const zoneSlotView = new ZoneSlotView(this.scene as GameScene, obb, zoneSlot);
+      zoneSlotView.setZone(this.zone);
 
       if (!this.slots[position.row]) this.slots[position.row] = [];
       this.slots[position.row][position.column] = zoneSlotView;

@@ -20,3 +20,19 @@ export const DEFAULT_PARTY_MAX_USERS = 4;
 
 /** Members a party needs before its owner can start a game (PARTY-9). */
 export const MIN_PARTY_USERS_TO_START = 2;
+
+
+/** Time in milliseconds a message about a rejected action stays on screen (UI-6). */
+export const REJECTION_MESSAGE_DURATION_MS = 3000;
+
+/** Distance in pixels from the top of the screen to the message about a rejected action. */
+export const REJECTION_MESSAGE_TOP_OFFSET = 60;
+
+/** Font size of the message about a rejected action. */
+export const REJECTION_MESSAGE_FONT_SIZE = '28px';
+
+/** Color of the message about a rejected action. */
+export const REJECTION_MESSAGE_COLOR = '#ff6b6b';
+
+/** Depth of the message about a rejected action: above the cards. */
+export const REJECTION_MESSAGE_DEPTH = 20000;

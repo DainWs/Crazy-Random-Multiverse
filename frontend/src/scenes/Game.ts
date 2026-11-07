@@ -9,6 +9,7 @@ import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
+import { getText } from '@/core/Texts';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import CombatantView from '@/game/cards/CombatantView';
@@ -23,6 +24,7 @@ class GameScene extends Scene {
     public readonly handController: HandController;
 
     private cardTooltipView: GlobalCardTooltipView;
+    private rejectionText?: Phaser.GameObjects.Text;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
@@ -38,7 +40,7 @@ class GameScene extends Scene {
         this.actionSystem = new ActionSystem('game-code');
         this.cameraSystem = new CameraSystem();
 
-        this.cardController = new CardController();
+        this.cardController = new CardController((key) => this.showRejection(key));
         this.handController = new HandController(this);
     }
 
@@ -118,6 +120,17 @@ class GameScene extends Scene {
             this.scene.start('GameOver');
             return;
         }
+    }
+
+    /** Shows briefly why the server rejected an action (UI-6). */
+    public showRejection(key: string) {
+        this.rejectionText?.destroy();
+        this.rejectionText = this.add.text(this.scale.width / 2, Constants.REJECTION_MESSAGE_TOP_OFFSET, getText(key), {
+            fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE,
+            color: Constants.REJECTION_MESSAGE_COLOR
+        });
+        this.rejectionText.setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(Constants.REJECTION_MESSAGE_DEPTH);
+        this.time.delayedCall(Constants.REJECTION_MESSAGE_DURATION_MS, () => this.rejectionText?.destroy());
     }
 
     public getCardTooltipView(): GlobalCardTooltipView {

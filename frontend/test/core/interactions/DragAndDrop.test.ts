@@ -74,7 +74,7 @@ describe('CardDragAndDropManager', () => {
 
   const createMockZoneSlot = (canPlace = true, cardIndex = 0) => {
     const slot = Object.create(ZoneSlotView.prototype);
-    slot.zoneSlot = { canPlaceCard: vi.fn(() => canPlace) };
+    slot.canReceive = vi.fn(() => canPlace);
     slot.applyAnimation = vi.fn();
     slot.previewCard = vi.fn();
     slot.stopPreviewingCard = vi.fn();

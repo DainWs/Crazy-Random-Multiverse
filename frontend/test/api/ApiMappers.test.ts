@@ -343,6 +343,8 @@ describe('API Models and DTO Mappers', () => {
   });
 
   describe('ActionDto', () => {
+    const ROW_COUNT = 3;
+
     const createAction = (): Action => {
       const source = { position: new ZonePosition(1, 0), player: new Player('p-1', 'One'), card: null } as unknown as ActionEvent;
       const target = { position: new ZonePosition(2, 1), player: new Player('p-2', 'Two'), card: null } as unknown as ActionEvent;
@@ -350,11 +352,23 @@ describe('API Models and DTO Mappers', () => {
     };
 
     it.each(['MOVE_ACTION', 'EQUIP_ACTION', 'ATTACK_ACTION'] as const)('toActionDto sends the target player of %s', (type) => {
-      expect(toActionDto(type, createAction()).targetPlayer).toBe('p-2');
+      expect(toActionDto(type, createAction(), ROW_COUNT).targetPlayer).toBe('p-2');
+    });
+
+    // CON-14
+    it('toActionDto numbers the target row from the leader row', () => {
+      expect(toActionDto('PUT_ACTION', createAction(), ROW_COUNT).targetPosition).toEqual({ row: 0, column: 1 });
+    });
+
+    it('toActionDto sends no source position for a card of the hand', () => {
+      const action = createAction();
+      action.sourcePosition = null;
+
+      expect(toActionDto('PUT_ACTION', action, ROW_COUNT).sourcePosition).toBeUndefined();
     });
 
     it('toActionDto sends the source player', () => {
-      expect(toActionDto('MOVE_ACTION', createAction()).sourcePlayer).toBe('p-1');
+      expect(toActionDto('MOVE_ACTION', createAction(), ROW_COUNT).sourcePlayer).toBe('p-1');
     });
   });
 });

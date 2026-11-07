@@ -1,6 +1,8 @@
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
+import type Card from "@/domain/Card";
+import type Zone from "@/domain/Zone";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
@@ -13,6 +15,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
+  private zone: Zone;
 
   public readonly zoneSlot: ZoneSlot;
   public readonly centerPoint: Point3D;
@@ -62,6 +65,32 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     ZoneSlotViewRenderer.render(this.backgroundGraphics, this.mark, this);
 
     this.add([ this.backgroundGraphics, this.mark ]);
+  }
+
+  public setZone(zone: Zone) {
+    this.zone = zone;
+  }
+
+  public canReceive(card: Card): boolean {
+    return this.zone.canPlaceCard(this.zoneSlot.position, card);
+  }
+
+  /** Shows a card here while the server answers, without changing the game state (ARCH-2). */
+  public holdCard(combatantView: CombatantView) {
+    this.cardView = combatantView;
+    this.add(this.cardView);
+
+    zoneSlotCardHelper.applyCardTransformations(this, combatantView);
+  }
+
+  public releaseCard(): CombatantView | null {
+    const heldCard = this.cardView;
+    if (heldCard) {
+      this.remove(heldCard);
+      this.cardView = null;
+    }
+
+    return heldCard;
   }
 
   public setCard(combatantView: CombatantView) {

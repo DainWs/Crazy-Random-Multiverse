@@ -1,4 +1,5 @@
 import Owner, { PlayerCode } from '@/domain/Player';
+import type Card from '@/domain/Card';
 import { ZonePosition } from '@/domain/Position';
 import Team from '@/domain/Team';
 import { ZoneOrganizationsType, getZoneOrganization } from '@/domain/ZoneOrganizations';
@@ -55,6 +56,17 @@ class Zone {
     }
 
     return this.owner.code == playerIdentifier;
+  }
+
+  /** A warrior goes to a row only while the row towards the leader is filled (BOARD-5); the rows are numbered from the center (VIEW-1). */
+  public canPlaceCard(position: ZonePosition, card: Card): boolean {
+    const slot = this.slots[position.row]?.[position.column];
+    return slot !== undefined && slot.canPlaceCard(card) && (!card.isCombatant() || this.isRowTowardsLeaderFilled(position.row));
+  }
+
+  private isRowTowardsLeaderFilled(row: number): boolean {
+    const rowTowardsLeader = this.slots[row + 1];
+    return rowTowardsLeader === undefined || rowTowardsLeader.every((slot) => slot.isOccupied());
   }
 
   public isEnabledPosition(position: ZonePosition) {
