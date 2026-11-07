@@ -39,14 +39,14 @@ class CardController {
   }
 
   /** Sends the action and undoes its preview if the server rejects it. */
-  private async send(type: ActionType, action: Action, undoPreview?: () => void) {
+  private async send(type: ActionType, action: Action, undoPreview: () => void = () => {}) {
     this.actionPending = true;
     try {
       const playerZone = StoreSystem.getPlayerZone();
       const rowCount = playerZone.slots.length;
       await gameApi.sendPlayerAction(type, action, rowCount);
     } catch (error) {
-      undoPreview?.();
+      undoPreview();
       const key = error instanceof ApiException ? error.key : UNEXPECTED_ERROR_KEY;
       this.onRejected(key);
     } finally {
