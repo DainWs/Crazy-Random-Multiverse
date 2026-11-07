@@ -9,6 +9,7 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
+import { HIT_FLASH_DURATION_MS } from "@/core/Constants";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
@@ -147,6 +148,25 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
   public getCombatant(): CombatantView | null {
     return this.cardView;
+  }
+
+  /** Covers the slot with a color that fades out, for the hit of an attack (VIEW-5). */
+  public flash(color: number): Promise<void> {
+    const flashGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderBackground(flashGraphics, this.corners, color, color);
+    this.add(flashGraphics);
+
+    return new Promise((resolve) => {
+      this.scene.tweens.add({
+        targets: flashGraphics,
+        alpha: 0,
+        duration: HIT_FLASH_DURATION_MS,
+        onComplete: () => {
+          flashGraphics.destroy();
+          resolve();
+        }
+      });
+    });
   }
 
   public setBackgroundColor(color: number, borderColor?: number): void {

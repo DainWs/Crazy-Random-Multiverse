@@ -124,3 +124,61 @@ export const CONFIRM_VEIL_COLOR = 0x000000;
 
 /** Alpha of the veil that covers the game behind the dialog that asks for confirmation. */
 export const CONFIRM_VEIL_ALPHA = 0.6;
+
+
+/** Scale the attacker grows to while it attacks, relative to its own scale (VIEW-5). */
+export const ATTACK_PULSE_SCALE = 1.25;
+
+/** Milliseconds the attacker takes to grow to its attack scale; shrinking back takes the same (VIEW-5). */
+export const ATTACK_PULSE_DURATION_MS = 180;
+
+/** Distance in pixels a card hit by an attack moves to each side while it shakes (VIEW-5). */
+export const HIT_SHAKE_DISTANCE = 10;
+
+/** Milliseconds of each movement of the shake of a card hit by an attack (VIEW-5). */
+export const HIT_SHAKE_DURATION_MS = 50;
+
+/** Times the shake of a card hit by an attack goes back and forth (VIEW-5). */
+export const HIT_SHAKE_REPEATS = 3;
+
+/** Color of the flash over the slot of a card hit by an attack (VIEW-5). */
+export const HIT_FLASH_COLOR = 0xff0000;
+
+/** Milliseconds the flash over a hit card takes to fade out (VIEW-5). */
+export const HIT_FLASH_DURATION_MS = 350;
+
+/** Font size of the floating text with the damage a card received (VIEW-6). */
+export const DAMAGE_TEXT_FONT_SIZE = '48px';
+
+/** Color of the floating text with the armor a card lost (VIEW-6). */
+export const ARMOR_DAMAGE_TEXT_COLOR = '#5dade2';
+
+/** Color of the floating text with the health a card lost (VIEW-6). */
+export const HEALTH_DAMAGE_TEXT_COLOR = '#e74c3c';
+
+/** Distance in pixels the floating text with the damage rises (VIEW-6). */
+export const DAMAGE_TEXT_RISE = 120;
+
+/** Distance in pixels between the floating texts of the armor and the health lost by the same card (VIEW-6). */
+export const DAMAGE_TEXT_GAP = 60;
+
+/** Milliseconds the floating text with the damage takes to rise and fade out (VIEW-6). */
+export const DAMAGE_TEXT_DURATION_MS = 900;
+
+/** Depth of the floating text with the damage: above the cards and below the messages about rejected actions. */
+export const DAMAGE_TEXT_DEPTH = 14000;
+
+/** Milliseconds a dead card takes to shrink and fade out (VIEW-7). */
+export const DEATH_DURATION_MS = 500;
+
+/** Scale a dead card shrinks to, relative to its own scale (VIEW-7). */
+export const DEATH_SCALE = 0.6;
+
+/** Milliseconds a dead leader takes to shrink and fade out, after shaking: longer than a warrior (VIEW-7). */
+export const LEADER_DEATH_DURATION_MS = 1200;
+
+/** Scale a dead leader shrinks to, relative to its own scale (VIEW-7). */
+export const LEADER_DEATH_SCALE = 0.3;
+
+/** Times a dead leader shakes back and forth before it fades out (VIEW-7). */
+export const LEADER_DEATH_SHAKE_REPEATS = 8;
