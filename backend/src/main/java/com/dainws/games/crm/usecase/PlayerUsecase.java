@@ -67,7 +67,8 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedPut(ActionDto actionDto) {
-		return actionDto.getSourceCardCode() == null || actionDto.getTargetPosition() == null;
+		return actionDto.getSourceCardCode() == null
+				|| actionDto.getTargetPosition() == null;
 	}
 	
 	private ActionResult moveAction(ActionDto actionDto) {
@@ -80,7 +81,9 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedMove(ActionDto actionDto) {
-		return actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
+		return actionDto.getSourcePosition() == null
+				|| actionDto.getTargetPlayerCode() == null
+				|| actionDto.getTargetPosition() == null;
 	}
 	
 	private ActionResult attackAction(ActionDto actionDto) {
@@ -93,7 +96,9 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedAttack(ActionDto actionDto) {
-		return actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
+		return actionDto.getSourcePosition() == null
+				|| actionDto.getTargetPlayerCode() == null
+				|| actionDto.getTargetPosition() == null;
 	}
 	
 	private ActionResult equipAction(ActionDto actionDto) {
@@ -106,7 +111,9 @@ public class PlayerUsecase {
 	}
 
 	private boolean isMalformedEquip(ActionDto actionDto) {
-		return actionDto.getSourceCardCode() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
+		return actionDto.getSourceCardCode() == null
+				|| actionDto.getTargetPlayerCode() == null
+				|| actionDto.getTargetPosition() == null;
 	}
 
 	private ActionResult surrenderAction(ActionDto actionDto) {
