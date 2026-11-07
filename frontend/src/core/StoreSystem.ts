@@ -40,21 +40,27 @@ type GameSnapshot = Omit<GameState, 'playerHand' | 'result'>;
 /** What changed in the game state: the views draw the zones again, restore the hand without animating it, animate the cards that came or went, or show the result. */
 type GameChange = 'GAME_UPDATED' | 'HAND_RESTORED' | 'HAND_CHANGED' | 'GAME_ENDED';
 
+/** What a listener receives: the kind of change and the snapshot of the state right after it, so the views can draw that state later (CON-12). */
+type GameChangeEvent = {
+  change: GameChange;
+  snapshot: GameSnapshot;
+}
+
 type Store = {
   user?: User;
   gameState?: GameState;
 }
 
 const store: Store = {};
-const changeListeners = new Set<Listener<GameChange>>();
+const changeListeners = new Set<Listener<GameChangeEvent>>();
 
-function onChange(listener: Listener<GameChange>): CancelListenerCallback {
+function onChange(listener: Listener<GameChangeEvent>): CancelListenerCallback {
   changeListeners.add(listener);
   return () => changeListeners.delete(listener);
 }
 
-function notifyChange(change: GameChange) {
-  notifyListeners(changeListeners, 'game change listener', change);
+function notifyChange(change: GameChange, snapshot: GameSnapshot = store.gameState!) {
+  notifyListeners(changeListeners, 'game change listener', { change, snapshot });
 }
 
 /** Replaces the state with the one the server sent, and keeps the hand and the result of the same game, which the snapshots do not replace. */
@@ -65,7 +71,7 @@ function applyGame(snapshot: GameSnapshot) {
   const result = isSameGame ? previous?.result : undefined;
 
   store.gameState = { ...snapshot, playerHand, result };
-  notifyChange('GAME_UPDATED');
+  notifyChange('GAME_UPDATED', snapshot);
 }
 
 /** The server decided the end of the game, so nobody acts any more (WIN-3, WIN-4). */
@@ -253,5 +259,5 @@ const StoreSystem = {
   getBattlefield
 }
 
-export type { GameChange, GameResult, GameSnapshot, GameState };
+export type { GameChange, GameChangeEvent, GameResult, GameSnapshot, GameState };
 export default StoreSystem;

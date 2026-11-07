@@ -1,9 +1,11 @@
-import type { GameChange } from '@/core/StoreSystem';
+import type { GameChange, GameSnapshot } from '@/core/StoreSystem';
+import type Battlefield from '@/domain/Battlefield';
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
 import GameHudView from '@/game/hud/GameHudView';
+import AnimationSystem from '@/core/AnimationSystem';
 import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
@@ -31,11 +33,11 @@ class GameScene extends Scene {
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
-    private readonly storeChangeHandlers: Record<GameChange, () => void> = {
-        GAME_UPDATED: () => this.renderZones(),
+    private readonly storeChangeHandlers: Record<GameChange, (snapshot: GameSnapshot) => void> = {
+        GAME_UPDATED: (snapshot) => this.queueZones(snapshot),
         HAND_RESTORED: () => this.renderHand(),
         HAND_CHANGED: () => this.handController.syncCards(StoreSystem.getPlayerHand()),
-        GAME_ENDED: () => this.showResult()
+        GAME_ENDED: () => this.queueResult()
     };
 
     public constructor() {
@@ -73,8 +75,9 @@ class GameScene extends Scene {
             this.showResult();
         }
 
-        const stopListening = StoreSystem.onChange((change) => this.storeChangeHandlers[change]());
+        const stopListening = StoreSystem.onChange(({ change, snapshot }) => this.storeChangeHandlers[change](snapshot));
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => AnimationSystem.clear());
     }
 
     private renderAll() {
@@ -86,12 +89,21 @@ class GameScene extends Scene {
         this.handController.restoreCards(StoreSystem.getPlayerHand());
     }
 
-    private renderZones() {
+    /** The board of an event is drawn when the animations of the earlier events end, so each state is shown in order (CON-12, UI-4). */
+    private queueZones(snapshot: GameSnapshot) {
+        AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield));
+    }
+
+    /** The result covers the board only after the last animation, so it does not hide it (WIN-4). */
+    private queueResult() {
+        AnimationSystem.enqueue(async () => this.showResult());
+    }
+
+    private renderZones(battlefield: Battlefield = StoreSystem.getBattlefield()) {
         CardClickHandler.cancelTargeting();
         this.zones = [];
         this.battlefieldContainer.removeAll(true);
 
-        const battlefield = StoreSystem.getBattlefield();
         const battlefieldView = new BattlefieldView(this, battlefield);
         this.battlefieldContainer.add(battlefieldView);
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import type { GameChange, GameSnapshot } from '@/core/StoreSystem';
+import type { GameChangeEvent, GameSnapshot } from '@/core/StoreSystem';
 import type Card from '@/domain/Card';
 import type Zone from '@/domain/Zone';
 import { CardCode } from '@/domain/Card';
@@ -144,7 +144,7 @@ describe('StoreSystem', () => {
 
       StoreSystem.endGame();
 
-      expect(listener).toHaveBeenCalledWith('GAME_ENDED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'GAME_ENDED' }));
     });
 
     it('notifies GAME_ENDED when the winner is known', () => {
@@ -154,7 +154,7 @@ describe('StoreSystem', () => {
 
       StoreSystem.setWinner({ code: 'p2', name: 'Player 2' } as GameSnapshot['player']);
 
-      expect(listener).toHaveBeenCalledWith('GAME_ENDED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'GAME_ENDED' }));
     });
   });
 
@@ -352,12 +352,12 @@ describe('StoreSystem', () => {
   });
 
   describe('onChange', () => {
-    let listener: Mock<(change: GameChange) => void>;
+    let listener: Mock<(event: GameChangeEvent) => void>;
     let cancel: () => void;
 
     beforeEach(() => {
       StoreSystem.applyGame(createSnapshot());
-      listener = vi.fn<(change: GameChange) => void>();
+      listener = vi.fn<(event: GameChangeEvent) => void>();
       cancel = StoreSystem.onChange(listener);
     });
 
@@ -368,19 +368,27 @@ describe('StoreSystem', () => {
     it('notifies when a game is applied', () => {
       StoreSystem.applyGame(createSnapshot({ round: 2 }));
 
-      expect(listener).toHaveBeenCalledWith('GAME_UPDATED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'GAME_UPDATED' }));
+    });
+
+    it('sends the applied snapshot with the notification of a game', () => {
+      const snapshot = createSnapshot({ round: 2 });
+
+      StoreSystem.applyGame(snapshot);
+
+      expect(listener).toHaveBeenCalledWith({ change: 'GAME_UPDATED', snapshot });
     });
 
     it('notifies when the hand is restored', () => {
       StoreSystem.setPlayerHand(createHand());
 
-      expect(listener).toHaveBeenCalledWith('HAND_RESTORED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'HAND_RESTORED' }));
     });
 
     it('notifies when a card is added to the hand', () => {
       StoreSystem.addCardToHand(cardFactory.createWarriorCard({ code: '1' }));
 
-      expect(listener).toHaveBeenCalledWith('HAND_CHANGED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'HAND_CHANGED' }));
     });
 
     it('notifies when a card is removed from the hand', () => {
@@ -389,7 +397,7 @@ describe('StoreSystem', () => {
 
       StoreSystem.removeCardFromHand(new CardCode('1', 'WARRIOR'));
 
-      expect(listener).toHaveBeenCalledWith('HAND_CHANGED');
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ change: 'HAND_CHANGED' }));
     });
 
     it('does not notify when the hand has no copy to remove', () => {
