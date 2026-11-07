@@ -118,8 +118,9 @@ const bindListeners = () => {
     if (syncingState === 'IDLE') {
       syncingState = 'IN_PARTY';
     } else {
-      const from: UserState[] = ['IDLE'];
-      if (receivedParty.isLocked) from.push('GAME_IN_PROGRESS');
+      const from: UserState[] = receivedParty.isLocked
+        ? ['IDLE']
+        : ['IDLE', 'GAME_IN_PROGRESS'];
 
       followLiveState('IN_PARTY', from);
     }
