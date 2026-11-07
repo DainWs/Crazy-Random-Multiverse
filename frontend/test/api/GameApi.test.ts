@@ -90,7 +90,10 @@ describe('GameApi', () => {
 
       await sendPlayerAction('PUT_ACTION', createAction(), 3);
 
-      expect(JSON.parse(fetchSpy.mock.calls[0][1]!.body as string)).toMatchObject({ type: 'PUT_ACTION', targetPosition: { row: 2, column: 2 } });
+      const requestInit = fetchSpy.mock.calls[0][1];
+      const sentAction = JSON.parse(requestInit!.body as string);
+
+      expect(sentAction).toMatchObject({ type: 'PUT_ACTION', targetPosition: { row: 2, column: 2 } });
     });
 
     // CON-18
