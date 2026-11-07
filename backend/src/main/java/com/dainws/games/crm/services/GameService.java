@@ -24,6 +24,7 @@ import com.dainws.games.crm.domain.mode.GameFactory;
 import com.dainws.games.crm.domain.mode.GameModeFactory;
 import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
+import com.dainws.games.crm.services.exception.AccessDeniedException;
 
 @Service
 public class GameService {
@@ -64,6 +65,9 @@ public class GameService {
 
 	public void loadCompleteFor(GameCode gameCode, PlayerCode playerCode) {
 		Game game = this.gameRepository.find(gameCode);
+		if (game.getPlayer(playerCode) == null) {
+			throw AccessDeniedException.wrongGame();
+		}
 		this.gameLifeCycle.loadCompleteFor(game, playerCode);
 	}
 	

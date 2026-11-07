@@ -7,11 +7,13 @@ import java.util.function.Function;
 import org.springframework.stereotype.Component;
 
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionContextTemplate;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
 import com.dainws.games.crm.domain.core.player.PlayerActionFacade;
+import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionMapper;
@@ -23,10 +25,12 @@ public class PlayerUsecase {
 	private static final ExceptionCode MALFORMED_REQUEST = new ExceptionCode("request.malformed");
 
 	private PlayerActionFacade actionFacade;
+	private GameRepository gameRepository;
 	private Map<ActionType, Function<ActionDto, ActionResult>> actionResolver;
 	
-	public PlayerUsecase(PlayerActionFacade playerActionFacade) {
+	public PlayerUsecase(PlayerActionFacade playerActionFacade, GameRepository gameRepository) {
 		this.actionFacade = playerActionFacade;
+		this.gameRepository = gameRepository;
 		this.actionResolver = new EnumMap<>(ActionType.class);
 		this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 		this.actionResolver.put(ActionType.MOVE_ACTION, this::moveAction);
@@ -45,6 +49,11 @@ public class PlayerUsecase {
 		String userCode = user.getCode().text();
 		if (!userCode.contentEquals(actionDto.getSourcePlayerCode())) {
 			throw AccessDeniedException.identityMismatch();
+		}
+
+		Game game = this.gameRepository.find(gameCode);
+		if (game.getPlayer(user.getCode().toPlayerCode()) == null) {
+			throw AccessDeniedException.wrongGame();
 		}
 
 		return this.actionResolver.get(actionDto.getType())

@@ -17,10 +17,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.builder.GameBuilder;
+import com.dainws.games.crm.domain.builder.PlayerBuilder;
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
+import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.usecase.PlayerUsecase;
 import com.dainws.games.crm.usecase.RecordingPlayerActionFacade;
 
@@ -30,12 +34,14 @@ class WebPlayerControllerTest {
 	private static final String USER_CODE = "user-1";
 
 	private RecordingPlayerActionFacade facade;
+	private MemoryGameRepository gameRepository;
 	private MockMvc mockMvc;
 
 	@BeforeEach
 	void beforeEach() {
 		this.facade = new RecordingPlayerActionFacade();
-		WebPlayerController controller = new WebPlayerController(new PlayerUsecase(this.facade));
+		this.gameRepository = new MemoryGameRepository();
+		WebPlayerController controller = new WebPlayerController(new PlayerUsecase(this.facade, this.gameRepository));
 		controller.setUserSession(new User(USER_CODE, "name", UserPlatform.WEB));
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller) //
 				.setControllerAdvice(new RestExceptionAdvice()) //
@@ -155,8 +161,23 @@ class WebPlayerControllerTest {
 				.andExpect(status().isOk());
 	}
 
+	@Test
+	void testGivenUserOutsideTheGame_whenDispatchAction_thenBodyCarriesTheWrongGameKey() throws Exception {
+		Game game = new GameBuilder().withPlayers(new PlayerBuilder().withCode("other-user").build()).build();
+		this.gameRepository.save(game);
+		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(game.getCode().text(), USER_CODE);
+
+		this.mockMvc.perform(post(ACTION_URL, this.encode(game.getCode())) //
+				.contentType(MediaType.APPLICATION_JSON) //
+				.content(body)) //
+				.andExpect(status().isBadRequest()) //
+				.andExpect(jsonPath("$.key").value("exception.access_denied.wrong_game"));
+	}
+
 	private MockHttpServletRequestBuilder passTurnRequest() {
-		GameCode gameCode = new GameCode();
+		Game game = new GameBuilder().withPlayers(new PlayerBuilder().withCode(USER_CODE).build()).build();
+		this.gameRepository.save(game);
+		GameCode gameCode = game.getCode();
 		String body = "{\"game\":\"%s\",\"sourcePlayer\":\"%s\",\"type\":\"PASS_TURN\"}".formatted(gameCode.text(), USER_CODE);
 
 		return post(ACTION_URL, this.encode(gameCode)) //

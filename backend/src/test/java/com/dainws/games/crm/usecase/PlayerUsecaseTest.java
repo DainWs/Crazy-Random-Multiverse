@@ -8,11 +8,15 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 import com.dainws.games.crm.domain.User;
+import com.dainws.games.crm.domain.builder.GameBuilder;
+import com.dainws.games.crm.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.domain.UserPlatform;
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.action.ActionResult;
 import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.exception.ExceptionCode;
+import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.services.exception.AccessDeniedException;
 import com.dainws.games.crm.usecase.dto.ActionDto;
 import com.dainws.games.crm.usecase.dto.ActionType;
@@ -26,17 +30,19 @@ class PlayerUsecaseTest {
 	private static final String CARD_CODE = "42";
 	private static final ExceptionCode MALFORMED_REQUEST = new ExceptionCode("request.malformed");
 
+	private final MemoryGameRepository gameRepository = new MemoryGameRepository();
+
 	@Test
 	void testGivenEquipAction_whenPerformAction_thenEquipIsPerformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionType type = ActionType.EQUIP_ACTION;
 		ActionDto actionDto = this.createActionDto(gameCode, type);
 		actionDto.setSourceCardCode(this.createCardCodeDto());
 		actionDto.setTargetPlayerCode(USER_CODE);
 		actionDto.setTargetPosition(new PositionDto());
 
-		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		User user = this.createUser(USER_CODE);
 
 		playerUsecase.performAction(gameCode, user, actionDto);
@@ -48,11 +54,11 @@ class PlayerUsecaseTest {
 	@Test
 	void testGivenSurrenderAction_whenPerformAction_thenSurrenderIsPerformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionType type = ActionType.SURRENDER_ACTION;
 		ActionDto actionDto = this.createActionDto(gameCode, type);
 
-		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		User user = this.createUser(USER_CODE);
 
 		playerUsecase.performAction(gameCode, user, actionDto);
@@ -101,7 +107,7 @@ class PlayerUsecaseTest {
 
 	@Test
 	void testGivenActionWithoutType_whenPerformAction_thenRequestIsMalformed() {
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionDto actionDto = this.createActionDto(gameCode, null);
 
 		ActionResult result = this.performAction(actionDto, gameCode);
@@ -112,9 +118,9 @@ class PlayerUsecaseTest {
 	@Test
 	void testGivenActionWithoutType_whenPerformAction_thenNothingIsPerformed() {
 		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionDto actionDto = this.createActionDto(gameCode, null);
-		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		User user = this.createUser(USER_CODE);
 
 		catchThrowable(() -> playerUsecase.performAction(gameCode, user, actionDto));
@@ -175,9 +181,44 @@ class PlayerUsecaseTest {
 		assertThat(result.getExceptionCode()).isEqualTo(MALFORMED_REQUEST);
 	}
 
+	@Test
+	void testGivenUserOutsideTheGame_whenPerformAction_thenAccessIsDeniedWithWrongGameKey() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfOutsider(facade);
+
+		assertThatThrownBy(performAction)
+				.isInstanceOfSatisfying(AccessDeniedException.class,
+						exception -> assertThat(exception.getCode().value()).isEqualTo("exception.access_denied.wrong_game"));
+	}
+
+	@Test
+	void testGivenUserOutsideTheGame_whenPerformAction_thenNothingIsPerformed() {
+		RecordingPlayerActionFacade facade = new RecordingPlayerActionFacade();
+		ThrowingCallable performAction = this.performActionOfOutsider(facade);
+
+		catchThrowable(performAction);
+
+		assertThat(facade.getPerformedActions()).isEmpty();
+	}
+
 	private ActionResult performAction(ActionDto actionDto, GameCode gameCode) {
-		PlayerUsecase playerUsecase = new PlayerUsecase(new RecordingPlayerActionFacade());
+		PlayerUsecase playerUsecase = new PlayerUsecase(new RecordingPlayerActionFacade(), this.gameRepository);
 		return playerUsecase.performAction(gameCode, this.createUser(USER_CODE), actionDto);
+	}
+
+	private GameCode registerGame() {
+		Game game = new GameBuilder().withPlayers(new PlayerBuilder().withCode(USER_CODE).build()).build();
+		this.gameRepository.save(game);
+		return game.getCode();
+	}
+
+	private ThrowingCallable performActionOfOutsider(RecordingPlayerActionFacade facade) {
+		Game game = new GameBuilder().withPlayers(new PlayerBuilder().withCode(OTHER_USER_CODE).build()).build();
+		this.gameRepository.save(game);
+		ActionDto actionDto = this.createActionDto(game.getCode(), ActionType.PASS_TURN);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
+		User user = this.createUser(USER_CODE);
+		return () -> playerUsecase.performAction(game.getCode(), user, actionDto);
 	}
 
 	private GameCode gameCodeOf(ActionDto actionDto) {
@@ -185,25 +226,25 @@ class PlayerUsecaseTest {
 	}
 
 	private ActionDto createActionDto(ActionType type) {
-		return this.createActionDto(new GameCode(), type);
+		return this.createActionDto(this.registerGame(), type);
 	}
 
 	private ThrowingCallable performActionOfAnotherUser(
 			RecordingPlayerActionFacade facade) {
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionType type = ActionType.PASS_TURN;
 		ActionDto actionDto = this.createActionDto(gameCode, type);
 		User otherUser = this.createUser(OTHER_USER_CODE);
-		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		return () -> playerUsecase.performAction(gameCode, otherUser, actionDto);
 	}
 
 	private ThrowingCallable performActionOfAnotherGame(
 			RecordingPlayerActionFacade facade) {
-		GameCode gameCode = new GameCode();
+		GameCode gameCode = this.registerGame();
 		ActionDto actionDto = this.createActionDto(new GameCode(), ActionType.PASS_TURN);
 		User user = this.createUser(USER_CODE);
-		PlayerUsecase playerUsecase = new PlayerUsecase(facade);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
 		return () -> playerUsecase.performAction(gameCode, user, actionDto);
 	}
 

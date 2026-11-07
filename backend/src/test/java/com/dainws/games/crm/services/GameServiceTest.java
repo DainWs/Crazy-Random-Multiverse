@@ -1,6 +1,7 @@
 package com.dainws.games.crm.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
@@ -18,9 +19,11 @@ import com.dainws.games.crm.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
 import com.dainws.games.crm.persistence.memory.MemoryPartyRepository;
+import com.dainws.games.crm.services.exception.AccessDeniedException;
 
 class GameServiceTest {
 
@@ -66,6 +69,16 @@ class GameServiceTest {
 		this.createGameOfPartyWithStatus(status);
 
 		assertThat(this.gameService.findActiveGameOf(this.user)).isEmpty();
+	}
+
+	@Test
+	void testGivenUserOutsideTheGame_whenLoadCompleteFor_thenAccessIsDeniedWithWrongGameKey() {
+		Game game = this.createGameOfPartyWithStatus(Status.LOADING);
+		PlayerCode outsider = PlayerCode.from("outsider");
+
+		assertThatThrownBy(() -> this.gameService.loadCompleteFor(game.getCode(), outsider))
+				.isInstanceOfSatisfying(AccessDeniedException.class,
+						exception -> assertThat(exception.getCodeValue()).isEqualTo("exception.access_denied.wrong_game"));
 	}
 
 	private Game createGameOfPartyWithStatus(Status status) {
