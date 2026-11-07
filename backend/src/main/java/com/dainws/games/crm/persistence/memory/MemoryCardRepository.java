@@ -15,9 +15,6 @@ import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Spell;
 import com.dainws.games.crm.domain.core.card.Warrior;
-import com.dainws.games.crm.domain.core.card.statistics.Armor;
-import com.dainws.games.crm.domain.core.card.statistics.Damage;
-import com.dainws.games.crm.domain.core.card.statistics.Health;
 import com.dainws.games.crm.domain.core.card.WarriorRarity;
 import com.dainws.games.crm.domain.core.dealer.Deck;
 import com.dainws.games.crm.domain.core.exception.NotFoundException;
@@ -148,14 +145,11 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	private Warrior cloneWarrior(Card card) {
 		Warrior prototype = (Warrior) card;
 		CardCode cardCode = prototype.getCode();
-		Damage baseDamage = prototype.getBaseDamage();
-		Armor baseArmor = prototype.getBaseArmor();
-		Health baseHealth = prototype.getBaseHealth();
 		Warrior.Builder builder = Warrior.warriorBuilder(prototype.getRarity())
 				.withCode(cardCode.code())
-				.withDamage(baseDamage)
-				.withArmor(baseArmor)
-				.withHealth(baseHealth);
+				.withDamage(prototype.getBaseDamage())
+				.withArmor(prototype.getBaseArmor())
+				.withHealth(prototype.getBaseHealth());
 
 		for (Equipment piece : prototype.getEquipment()) {
 			Equipment pieceCopy = this.cloneEquipment(piece);
