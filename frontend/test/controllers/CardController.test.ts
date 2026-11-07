@@ -13,11 +13,14 @@ const ROW_COUNT = 3;
 const GAME_CODE = 'game-1';
 const player = new Player('p-1', 'One');
 
+const canPlayerAct = vi.hoisted(() => vi.fn(() => true));
+
 vi.mock('@/api', () => ({ gameApi: { sendPlayerAction: vi.fn() } }));
 vi.mock('@/core/StoreSystem', () => ({
   default: {
     getGameConfiguration: () => ({ gameCode: GAME_CODE }),
     getPlayer: () => player,
+    canPlayerAct,
     getPlayerZone: () => ({ slots: new Array(ROW_COUNT) })
   }
 }));
@@ -97,6 +100,7 @@ describe('CardController', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    canPlayerAct.mockReturnValue(true);
     onRejected = vi.fn<(key: string) => void>();
     controller = new CardController(onRejected);
     cardView = { card: { code: { code: '1', type: 'WARRIOR' } }, reset: vi.fn() } as unknown as CombatantView;
@@ -378,6 +382,78 @@ describe('CardController', () => {
       await flushPromises();
 
       expect(onRejected).toHaveBeenCalledWith('exception.player-action.equip_target_not_owned');
+    });
+  });
+
+  // UI-4
+  describe('when it is not the turn of the player', () => {
+    beforeEach(() => {
+      canPlayerAct.mockReturnValue(false);
+    });
+
+    it('rejects the drop of a card and sends nothing', () => {
+      const result = controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('rejects passing the turn and sends nothing', () => {
+      const result = controller.passTurn();
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('rejects surrendering and sends nothing', () => {
+      const result = controller.surrender();
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('reports that it cannot act', () => {
+      expect(controller.canAct()).toBe(false);
+    });
+  });
+
+  describe('passTurn', () => {
+    it('sends a PASS_TURN with the player and no cards or positions', () => {
+      controller.passTurn();
+
+      const [type, action] = sendPlayerAction.mock.calls[0];
+      expect(type).toBe('PASS_TURN');
+      expect(action).toMatchObject({ game: GAME_CODE, sourcePlayer: player, sourceCard: null, sourcePosition: null, targetPosition: null });
+    });
+
+    // CON-19
+    it('rejects a second command while the first one is pending', () => {
+      controller.passTurn();
+
+      const result = controller.surrender();
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).toHaveBeenCalledTimes(1);
+    });
+
+    // UI-6
+    it('reports the key of the rejection', async () => {
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.allowed_only_on_turn'));
+      controller.passTurn();
+
+      await flushPromises();
+
+      expect(onRejected).toHaveBeenCalledWith('exception.player-action.allowed_only_on_turn');
+    });
+  });
+
+  describe('surrender', () => {
+    it('sends a SURRENDER_ACTION with the player', () => {
+      controller.surrender();
+
+      const [type, action] = sendPlayerAction.mock.calls[0];
+      expect(type).toBe('SURRENDER_ACTION');
+      expect(action).toMatchObject({ game: GAME_CODE, sourcePlayer: player });
     });
   });
 

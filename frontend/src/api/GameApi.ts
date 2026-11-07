@@ -8,16 +8,6 @@ import { toResourceManifest } from "@/api/dtos/ResourceManifestDto";
 import { toBase64UrlSafe } from "@/api/models/Codification";
 import { checkResponse } from "@/api/models/ApiException";
 
-const sendPassTurnAction = async (gameCode: GameCode) => {
-  console.log(`Sending pass turn action: ${gameCode}`);
-
-  // await sendAction(null);
-}
-
-const sendAction = async (action: Action) => {
-  console.log(`Sending action: ${action}`);
-}
-
 /** Resolves once the server accepts the action; the state changes with its events (CON-17). */
 const sendPlayerAction = async (actionType: ActionType, action: Action, rowCount: number) => {
   const gameCodePath = toBase64UrlSafe(action.game);
@@ -44,9 +34,7 @@ const sendReady = async (gameCode: GameCode) => {
 }
 
 export {
-  sendAction,
   sendPlayerAction,
-  sendPassTurnAction,
   sendReady,
   loadGameResourceManifest
 };

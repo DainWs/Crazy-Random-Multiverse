@@ -27,9 +27,38 @@ class CardController {
     return this.actionPending;
   }
 
+  /** Gameplay is open only on the player's turn and while no action waits for its answer (UI-4, CON-19). */
+  public canAct(): boolean {
+    return !this.actionPending && StoreSystem.canPlayerAct();
+  }
+
+  public passTurn(): boolean {
+    return this.sendCommand("PASS_TURN");
+  }
+
+  public surrender(): boolean {
+    return this.sendCommand("SURRENDER_ACTION");
+  }
+
+  private sendCommand(type: ActionType): boolean {
+    if (!this.canAct()) {
+      return false;
+    }
+
+    void this.send(type, this.createCommandAction());
+    return true;
+  }
+
+  private createCommandAction(): Action {
+    const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
+    const player = StoreSystem.getPlayer();
+    const event = new ActionEvent({ element: "Button", input: "SimpleClick", position: null, player, card: null });
+    return new Action(gameCode, event, event);
+  }
+
   /** The card stays in the slot as a preview until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public putCardOnZoneSlot(cardView: CombatantView, handView: HandView, zoneSlotView: ZoneSlotView) {
-    if (this.actionPending || !zoneSlotView.canReceive(cardView.card)) {
+    if (!this.canAct() || !zoneSlotView.canReceive(cardView.card)) {
       return false;
     }
 
@@ -75,7 +104,7 @@ class CardController {
 
   /** The cards show their new places as a preview until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public moveCardOnZoneSlot(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
-    if (this.actionPending || !this.isMovable(combatantView, fromZoneSlot, toZoneSlot)) {
+    if (!this.canAct() || !this.isMovable(combatantView, fromZoneSlot, toZoneSlot)) {
       return false;
     }
 
@@ -120,7 +149,7 @@ class CardController {
 
   /** Nothing changes on screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public attackCardOnZoneSlot(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
-    if (this.actionPending || !fromZoneSlot.canAttack(toZoneSlot)) {
+    if (!this.canAct() || !fromZoneSlot.canAttack(toZoneSlot)) {
       return false;
     }
 
@@ -141,7 +170,7 @@ class CardController {
 
   /** The equipment disappears from the screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public equipCardOnZoneSlot(equipmentView: EquipmentView, handView: HandView, zoneSlotView: ZoneSlotView) {
-    if (this.actionPending || !zoneSlotView.canReceive(equipmentView.card)) {
+    if (!this.canAct() || !zoneSlotView.canReceive(equipmentView.card)) {
       return false;
     }
 

@@ -1,5 +1,5 @@
 type TriggerInput = 'SimpleClick' | 'DoubleClick' | 'Grab' | 'Drop';
-type TriggerElement = 'Hand' | 'Hand.Card' | 'ZoneSlot' | 'ZoneSlot.Card';
+type TriggerElement = 'Hand' | 'Hand.Card' | 'ZoneSlot' | 'ZoneSlot.Card' | 'Button';
 
 type ActionTrigger = {
   element: TriggerElement;

@@ -152,6 +152,57 @@ describe('StoreSystem', () => {
     });
   });
 
+  // UI-3, UI-4
+  describe('turn', () => {
+    const alivePlayer = { code: 'p1', name: 'Player 1', isAlive: true, isSpectator: false } as GameSnapshot['player'];
+    const applyTurn = (overrides: Partial<GameSnapshot> = {}) => {
+      const zones = [{ owner: alivePlayer }, { owner: { code: 'p2', name: 'Player 2' } }] as Zone[];
+      StoreSystem.applyGame(createSnapshot({ player: alivePlayer, zones, ...overrides }));
+    };
+
+    it('lets the player act on their turn', () => {
+      applyTurn({ playerWithTurn: 'p1' });
+
+      expect(StoreSystem.canPlayerAct()).toBe(true);
+    });
+
+    it('stops the player from acting on the turn of another player', () => {
+      applyTurn({ playerWithTurn: 'p2' });
+
+      expect(StoreSystem.canPlayerAct()).toBe(false);
+    });
+
+    it('stops the player from acting before the first turn', () => {
+      applyTurn({ playerWithTurn: undefined });
+
+      expect(StoreSystem.canPlayerAct()).toBe(false);
+    });
+
+    it('stops an eliminated player from acting on their turn', () => {
+      applyTurn({ playerWithTurn: 'p1', player: { ...alivePlayer, isAlive: false } as GameSnapshot['player'] });
+
+      expect(StoreSystem.canPlayerAct()).toBe(false);
+    });
+
+    it('stops a spectator from acting on their turn', () => {
+      applyTurn({ playerWithTurn: 'p1', player: { ...alivePlayer, isSpectator: true } as GameSnapshot['player'] });
+
+      expect(StoreSystem.canPlayerAct()).toBe(false);
+    });
+
+    it('returns the player who holds the turn', () => {
+      applyTurn({ playerWithTurn: 'p2' });
+
+      expect(StoreSystem.getPlayerWithTurn()?.name).toBe('Player 2');
+    });
+
+    it('returns no player with the turn before the first turn', () => {
+      applyTurn({ playerWithTurn: undefined });
+
+      expect(StoreSystem.getPlayerWithTurn()).toBeUndefined();
+    });
+  });
+
   describe('hand', () => {
     beforeEach(() => {
       StoreSystem.applyGame(createSnapshot());

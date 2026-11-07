@@ -3,7 +3,6 @@ import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
-import ActionSystem from '@/core/ActionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
@@ -18,7 +17,6 @@ class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
     public background: Phaser.GameObjects.Image;
 
-    public readonly actionSystem: ActionSystem;
     public readonly cameraSystem: CameraSystem;
     public readonly cardController: CardController;
     public readonly handController: HandController;
@@ -37,7 +35,6 @@ class GameScene extends Scene {
     public constructor() {
         super('Game');
 
-        this.actionSystem = new ActionSystem('game-code');
         this.cameraSystem = new CameraSystem();
 
         this.cardController = new CardController((key) => this.showRejection(key));

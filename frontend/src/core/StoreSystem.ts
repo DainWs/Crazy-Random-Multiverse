@@ -112,6 +112,18 @@ function getPlayer(): Player {
   return store.gameState.player;
 }
 
+/** Whether the local player holds the turn and can still act (UI-4, ELIM-2). */
+function canPlayerAct(): boolean {
+  const player = getPlayer();
+  return player.isAlive && !player.isSpectator && store.gameState?.playerWithTurn === player.code;
+}
+
+/** The player who holds the turn, unknown until the first `TURN_CHANGE` (CON-32). */
+function getPlayerWithTurn(): Player | undefined {
+  const code = store.gameState?.playerWithTurn;
+  return getZones().find((zone) => zone.owner.code === code)?.owner;
+}
+
 function getPlayerHand(): PlayerHand {
   if (!store.gameState?.playerHand) {
     throw new Error('Game not initialized');
@@ -198,6 +210,8 @@ const StoreSystem = {
   getGameConfiguration,
   getRound,
   getPlayer,
+  canPlayerAct,
+  getPlayerWithTurn,
   getPlayerZone,
   setPlayerZone,
   getPlayerHand,
