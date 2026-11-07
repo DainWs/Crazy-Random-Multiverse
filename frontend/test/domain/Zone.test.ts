@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import Card, { CardCode, type CombatantCard } from '@/domain/Card';
+import Card, { CardCode, type CombatantCard, type EquipmentCard } from '@/domain/Card';
 import Player from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
 import Zone from '@/domain/Zone';
@@ -75,6 +75,27 @@ describe('Zone', () => {
       zone.slots[2][0].combatant = null;
 
       expect(zone.canPlaceCard(new ZonePosition(2, 0), createCard('WARRIOR'))).toBe(false);
+    });
+
+    // EQUIP-3
+    it('accepts equipment on an occupied slot', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canPlaceCard(new ZonePosition(1, 0), createCard('EQUIPMENT'))).toBe(true);
+    });
+
+    it('rejects equipment on an empty slot', () => {
+      zone = createZone(0, 1);
+
+      expect(zone.canPlaceCard(new ZonePosition(1, 1), createCard('EQUIPMENT'))).toBe(false);
+    });
+
+    // EQUIP-4
+    it('accepts a second piece of equipment on a card that already has one', () => {
+      zone = createZone(0, 1);
+      zone.slots[1][0].combatant!.equipment = [createCard('EQUIPMENT') as EquipmentCard];
+
+      expect(zone.canPlaceCard(new ZonePosition(1, 0), createCard('EQUIPMENT'))).toBe(true);
     });
   });
 

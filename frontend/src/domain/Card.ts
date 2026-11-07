@@ -43,8 +43,8 @@ type RequireAndOmit<T, K extends keyof T, I extends keyof T> = Omit<T, I | K> & 
 type CombatantCard = Require<Card, 'damage' | 'armor' | 'health'>;
 type LeaderCard = CombatantCard;
 type WarriorCard = Require<Card, 'rarity'>;
-type EquipmentCard = RequireAndOmit<Card, 'damage' | 'armor' | 'health', 'activeSkill' | 'equipment'>;
-type SpellCard = RequireAndOmit<Card, 'activeSkill', 'rarity' | 'damage' | 'armor' | 'health' | 'passiveSkill' | 'equipment'>;
+type EquipmentCard = RequireAndOmit<Card, 'damage' | 'armor' | 'health', 'activeSkill'>;
+type SpellCard = RequireAndOmit<Card, 'activeSkill', 'rarity' | 'damage' | 'armor' | 'health' | 'passiveSkill'>;
 
 
 class Card {
@@ -59,7 +59,7 @@ class Card {
   public health?: Health;
   public activeSkill?: Skill;
   public passiveSkill?: Skill;
-  public equipment?: EquipmentCard;
+  public equipment: EquipmentCard[];
   public isProtected: boolean;
   public isTargetable: boolean;
   public isAttackAvailable: boolean;
@@ -74,6 +74,7 @@ class Card {
     this.type = options.type;
     this.rarity = options.rarity;
 
+    this.equipment = [];
     this.isProtected = false;
     this.isTargetable = false;
     this.isAttackAvailable = false;
@@ -87,8 +88,10 @@ class Card {
     throw new Error(`Unknown statistic type: ${statisticType}`);
   }
 
+  /** The total the pieces add or subtract, or undefined when none of them sends the statistic (CON-8). */
   public getEquipmentValue(statisticType: StatisticType): number | undefined {
-    return this.equipment?.getStatistic(statisticType)?.value;
+    const values = this.equipment.map((piece) => piece.getStatistic(statisticType)?.value).filter((value): value is number => value !== undefined);
+    return values.length > 0 ? values.reduce((total, value) => total + value, 0) : undefined;
   }
 
   public isType(type: CardType, rarity?: CardRarity): boolean {
@@ -97,10 +100,6 @@ class Card {
 
   public isCombatant(): boolean {
     return this.isType('LEADER') || this.isType('WARRIOR');
-  }
-
-  public hasAlreadyEquipment(): boolean {
-    return this.equipment !== null;
   }
 
   public hasStatistics(): boolean {

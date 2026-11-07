@@ -22,7 +22,7 @@ function internalActionDispatch(scene: GameScene, cardView: CardView, source?: S
   }
 
   if (source instanceof HandView && target instanceof ZoneSlotView && cardView instanceof EquipmentView) {
-    return scene.cardController.equipCardToCombatant(cardView, target.getCombatant()!, source, target);
+    return scene.cardController.equipCardOnZoneSlot(cardView, source, target);
   }
 
   if (source instanceof ZoneSlotView && target instanceof ZoneSlotView && cardView instanceof CombatantView) {

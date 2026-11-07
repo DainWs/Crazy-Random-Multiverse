@@ -21,7 +21,7 @@ class ZoneSlot {
     }
 
     if (card.isType('EQUIPMENT') && this.combatant) {
-      return !this.combatant.hasAlreadyEquipment();
+      return true;
     }
 
     return false;

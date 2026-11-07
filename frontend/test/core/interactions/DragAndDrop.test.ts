@@ -4,6 +4,7 @@ import CardAnimator from '@/core/visual_effects/CardAnimator';
 import { dispatchAction } from '@/core/interactions/CardInteractionDispatcher';
 import { getTopGameObjectAtCursor } from '@/core/interactions/InteractiveObjectManager';
 import CombatantView from '@/game/cards/CombatantView';
+import EquipmentView from '@/game/cards/EquipmentView';
 import HandView from '@/game/hand/HandView';
 import ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
@@ -168,6 +169,28 @@ describe('CardDragAndDropManager', () => {
 
       expect(targetSlot.previewCard).not.toHaveBeenCalled();
     });
+
+    // UI-5
+    it('highlights a zone slot that can receive the dragged equipment', () => {
+      const card = Object.create(EquipmentView.prototype);
+      card.card = { id: 'e1' };
+      const slot = createMockZoneSlot(true);
+
+      dragAndDrop.onDragEnter(mockScene, card, slot);
+
+      expect(slot.applyAnimation).toHaveBeenCalledWith('highlight_as_target');
+    });
+
+    it('does not highlight a zone slot that cannot receive the dragged equipment', () => {
+      const card = Object.create(EquipmentView.prototype);
+      card.card = { id: 'e1' };
+      const slot = createMockZoneSlot(false);
+
+      dragAndDrop.onDragEnter(mockScene, card, slot);
+
+      expect(slot.applyAnimation).not.toHaveBeenCalled();
+    });
+
 
     it('stops preview and unhighlights on onDragLeave', () => {
       const card = createMockCard(true);

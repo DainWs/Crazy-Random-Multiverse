@@ -139,12 +139,12 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Reject an action or a `/ready` from a user who is not a player of the game with `exception.access_denied.wrong_game`: today membership is not checked, and an action ends in a null pointer (`CON-16`, `CON-18`)
 - [x] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
 - [x] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
-- [ ] Fix `ZoneSlot.hasAlreadyEquipment` in the frontend, which compares with `null` and always says true
+- [x] Fix `ZoneSlot.hasAlreadyEquipment` in the frontend, which compares with `null` and always says true
 - [ ] Refactor `CardController` to send backend commands
 - [x] Card placement (`PUT_ACTION`, `BOARD-5`): validate available slots, row 2 before row 1
 - [x] Card movement (`MOVE_ACTION`, `BOARD-7`): prevent invalid movement
 - [ ] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
-- [ ] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
+- [x] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
 - [ ] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [ ] Highlight valid targets and disable invalid ones (`UI-5`)
 - [ ] End Turn button (`PASS_TURN`)
@@ -261,6 +261,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person tests a real browser connection with the session cookie
 - [ ] A person drops a card of the hand on the board in a real browser (`PUT_ACTION`). The card must stay in the slot while the server answers, the board must redraw with the event when it accepts it, and when it rejects it (for example out of turn) the card must go back to its place in the hand with the message. Not checked: Phaser views are not tested and the game is not started from the agent environment
 - [ ] A person moves and swaps cards on the board in a real browser (`MOVE_ACTION`): both cards must show their new places as a preview, and go back to their slots with the message when the server rejects the move. Not checked for the same reason
+- [ ] A person equips a card of the board from the hand in a real browser (`EQUIP_ACTION`): the equipment must disappear from the hand while the server answers, the stats of the card must change with the event, and the equipment must come back to its place with the message when the server rejects it. Not checked for the same reason as `PUT_ACTION`
 - [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`): the conversion from the frontend rows (`mirrorRow`) is only tested with a simulated `fetch`
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test
 - [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment

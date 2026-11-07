@@ -44,5 +44,25 @@ describe('Card', () => {
 
       expect(card.getEquipmentValue('Damage')).toBeUndefined();
     });
+
+    // EQUIP-4
+    it('returns the total the pieces add', () => {
+      const card = toCard(createWarriorDto({ equipment: [createEquipmentDto(), createEquipmentDto()] }));
+
+      expect(card.getEquipmentValue('Damage')).toBe(30);
+    });
+  });
+
+  describe('equipment', () => {
+    // EQUIP-4
+    it('holds every piece the server sends', () => {
+      const card = toCard(createWarriorDto({ equipment: [createEquipmentDto(), createEquipmentDto()] }));
+
+      expect(card.equipment).toHaveLength(2);
+    });
+
+    it('is empty for a card without equipment', () => {
+      expect(toCard(createWarriorDto()).equipment).toEqual([]);
+    });
   });
 });

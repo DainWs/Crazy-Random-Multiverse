@@ -76,8 +76,7 @@ class CardController {
   }
 
   private isMovable(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): boolean {
-    const isOwnZone = fromZoneSlot.zone.isPlayerOwner(StoreSystem.getPlayer().code);
-    return isOwnZone && fromZoneSlot.getCombatant() === combatantView && toZoneSlot.canReceiveFrom(fromZoneSlot);
+    return fromZoneSlot.getCombatant() === combatantView && toZoneSlot.canReceiveFrom(fromZoneSlot);
   }
 
   /** Returns the card that was in the target slot, which takes the place of the moved one. */
@@ -109,23 +108,29 @@ class CardController {
     return new Action(gameCode, source, target);
   }
 
-  public equipCardToCombatant(equipmentView: EquipmentView, combatantView: CombatantView, sourceHandView: HandView, targetSlotView: ZoneSlotView) {
-    if (targetSlotView.getCard() === null) {
-      console.warn("Target zone slot does not have a card.");
+  /** The equipment disappears from the screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
+  public equipCardOnZoneSlot(equipmentView: EquipmentView, handView: HandView, zoneSlotView: ZoneSlotView) {
+    if (this.actionPending || !zoneSlotView.canReceive(equipmentView.card)) {
       return false;
     }
 
-    if (combatantView.combatant.isType('EQUIPMENT')) {
-      console.warn("Target card is an equipment card, cannot equip another equipment card to it.");
-      return false;
-    }
-
-    sourceHandView.removeCard(equipmentView);
-    combatantView.stack(equipmentView);
-
-    combatantView.combatant.equipment = equipmentView.equipment;
-    // TODO propagar evento al backend
+    equipmentView.setVisible(false);
+    void this.send("EQUIP_ACTION", this.createEquipAction(equipmentView, zoneSlotView), () => this.showEquipmentInHand(equipmentView, handView));
     return true;
+  }
+
+  private createEquipAction(equipmentView: EquipmentView, zoneSlotView: ZoneSlotView): Action {
+    const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
+    const player = StoreSystem.getPlayer();
+    const source = new ActionEvent({ element: "Hand.Card", input: "Grab", position: null, player, card: equipmentView.card });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: zoneSlotView.zoneSlot.position, player, card: null });
+    return new Action(gameCode, source, target);
+  }
+
+  private showEquipmentInHand(equipmentView: EquipmentView, handView: HandView) {
+    equipmentView.setVisible(true);
+    handView.addAt(equipmentView, handView.getCards().indexOf(equipmentView));
+    equipmentView.reset();
   }
 }
 

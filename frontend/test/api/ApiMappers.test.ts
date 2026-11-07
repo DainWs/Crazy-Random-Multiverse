@@ -82,7 +82,7 @@ describe('API Models and DTO Mappers', () => {
       expect(card.damage?.value).toBe(5);
       expect(card.armor?.value).toBe(2);
       expect(card.health?.value).toBe(10);
-      expect(card.equipment?.name).toBe('Sword');
+      expect(card.equipment.map((piece) => piece.name)).toEqual(['Sword']);
     });
 
     it('toCard maps the runtime state sent by the server', () => {

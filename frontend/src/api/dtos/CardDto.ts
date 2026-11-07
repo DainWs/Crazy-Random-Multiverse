@@ -85,11 +85,7 @@ const toCard = (dto: CardDto): Card => {
   card.isAttackAvailable = dto.attackAvailable ?? false;
   card.isTargetable = dto.targetable ?? false;
 
-  // The domain holds a single piece until a card can carry several (EQUIP-4)
-  const [equipment] = dto.equipment ?? [];
-  if (equipment) {
-    card.equipment = toCard(equipment) as EquipmentCard;
-  }
+  card.equipment = (dto.equipment ?? []).map((piece) => toCard(piece) as EquipmentCard);
 
   return card;
 }

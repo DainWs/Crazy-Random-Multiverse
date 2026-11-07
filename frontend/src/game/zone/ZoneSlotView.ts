@@ -5,6 +5,7 @@ import type Card from "@/domain/Card";
 import type Zone from "@/domain/Zone";
 import ZoneSlot from "@/domain/ZoneSlot";
 import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
+import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
@@ -72,12 +73,17 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   }
 
   public canReceive(card: Card): boolean {
-    return this.zone.canPlaceCard(this.zoneSlot.position, card);
+    return this.isOwnZone() && this.zone.canPlaceCard(this.zoneSlot.position, card);
+  }
+
+  /** The server only accepts actions on the cards of the player that sends them (EQUIP-3, CON-16). */
+  private isOwnZone(): boolean {
+    return this.zone.isPlayerOwner(StoreSystem.getPlayer().code);
   }
 
   /** Whether the card in `source` can be moved or swapped here, inside the same zone (BOARD-7). */
   public canReceiveFrom(source: ZoneSlotView): boolean {
-    return source.zone === this.zone && this.zone.canMoveCard(source.zoneSlot.position, this.zoneSlot.position);
+    return this.isOwnZone() && source.zone === this.zone && this.zone.canMoveCard(source.zoneSlot.position, this.zoneSlot.position);
   }
 
   /** Shows a card here while the server answers, without changing the game state (ARCH-2). */

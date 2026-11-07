@@ -4,6 +4,7 @@ import { dispatchAction } from "@/core/interactions/CardInteractionDispatcher";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
 import CombatantView from "@/game/cards/CombatantView";
+import EquipmentView from "@/game/cards/EquipmentView";
 import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
@@ -64,6 +65,10 @@ class CardDragAndDropManager {
     if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragEnter(cardView, targetGameObject);
     }
+
+    if (cardView instanceof EquipmentView && targetGameObject instanceof ZoneSlotView && targetGameObject.canReceive(cardView.card)) {
+      targetGameObject.applyAnimation('highlight_as_target');
+    }
   }
 
   private onZoneSlotDragEnter(cardView: CombatantView, targetGameObject: ZoneSlotView) {
@@ -87,6 +92,10 @@ class CardDragAndDropManager {
   public onDragLeave(_1: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
     if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragLeave(cardView, targetGameObject);
+    }
+
+    if (cardView instanceof EquipmentView && targetGameObject instanceof ZoneSlotView) {
+      targetGameObject.applyAnimation('unhighlight');
     }
   }
 

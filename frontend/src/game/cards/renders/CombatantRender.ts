@@ -110,10 +110,10 @@ function updateStatisticView(view: CombatantView, statisticType: StatisticType) 
   if (!cardStatisticView) return;
 
   const statistic = view.combatant.getStatistic(statisticType);
-  const equipmentStatistic = view.combatant.equipment?.getStatistic(statisticType);
+  const equipmentValue = view.combatant.getEquipmentValue(statisticType);
 
   if (!statistic) return;
-  cardStatisticView.update(statistic, equipmentStatistic?.value);
+  cardStatisticView.update(statistic, equipmentValue);
 }
 
 const combatantRender: CardRender = {

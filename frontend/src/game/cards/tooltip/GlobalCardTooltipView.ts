@@ -190,9 +190,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.clearEquipmentTexts();
 
     let currentY = this.descriptionText.y + this.descriptionText.height + PADDING;
-    // Support for future multiple equipments
-    const equipmentCards = card.equipment ? [card.equipment] : [];
-    for (const equipmentCard of equipmentCards) {
+    for (const equipmentCard of card.equipment) {
       currentY = this.renderEquipment(equipmentCard as Card, currentY);
     }
   }

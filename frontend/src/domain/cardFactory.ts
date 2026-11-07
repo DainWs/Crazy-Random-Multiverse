@@ -63,7 +63,7 @@ function createWarriorCard(options: {code?: string, name?: string, description?:
     fillStatistics(card, options.damage, options.damageType, options.armor, options.armorType, options.health, options.maxHealth);
   }
   if (shouldSpawn(30)) { // 30% of spawnRate
-    card.equipment = createEquipmentCard();
+    card.equipment = [createEquipmentCard()];
   }
   return card as WarriorCard;
 }
