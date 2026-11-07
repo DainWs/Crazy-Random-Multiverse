@@ -61,7 +61,10 @@ const followLiveState = (state: UserState, from: readonly UserState[]) => {
   if (syncingState === null && from.includes(currentUserState.value)) setUserState(state);
 }
 
-const isMember = (candidate: Party) => candidate.users.some((member) => member.code === StoreSystem.getUser().code);
+const isMember = (candidate: Party) => {
+  return candidate.users.some((member) => 
+    member.code === StoreSystem.getUser().code);
+}
 
 /** The server confirmed the user is in the party, through the response to creating or joining it. */
 const enterParty = (confirmed: Party) => {
@@ -71,7 +74,12 @@ const enterParty = (confirmed: Party) => {
 
 /** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). */
 const abandonGame = () => {
-  followLiveState(currentParty.value ? 'IN_PARTY' : 'IDLE', ['GAME_LOADING', 'GAME_IN_PROGRESS']);
+  let state: UserState = 'IDLE';
+  if (currentParty.value) {
+    state = 'IN_PARTY';
+  }
+
+  followLiveState(state, ['GAME_LOADING', 'GAME_IN_PROGRESS']);
 };
 
 /** The user is no longer in a party: they left it, or the server says they were kicked (PARTY-12). */
@@ -107,8 +115,14 @@ const bindListeners = () => {
     }
 
     currentParty.value = receivedParty;
-    if (syncingState === 'IDLE') syncingState = 'IN_PARTY';
-    else followLiveState('IN_PARTY', receivedParty.isLocked ? ['IDLE'] : ['IDLE', 'GAME_IN_PROGRESS']);
+    if (syncingState === 'IDLE') {
+      syncingState = 'IN_PARTY';
+    } else {
+      const from: UserState[] = ['IDLE'];
+      if (receivedParty.isLocked) from.push('GAME_IN_PROGRESS');
+
+      followLiveState('IN_PARTY', from);
+    }
   });
 
   userEventApi.onUserSynced(finishSync);
