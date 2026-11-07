@@ -161,7 +161,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
 - [x] Disable interaction after game end (`WIN-4`)
 - [x] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
-- [ ] Clear targeting state after an action, turn change or invalid action
+- [x] Clear targeting state after an action, turn change or invalid action
 
 ## Phase 5.5 — Combat feedback
 

@@ -49,6 +49,7 @@ function attackFromSelected(scene: GameScene, targetSlot: ZoneSlotView) {
   }
 }
 
+/** The selection ends with an action, a click elsewhere, Escape, and with every state change, such as a new turn (VIEW-4). */
 function cancelTargeting() {
   targeting?.exit();
   targeting = null;
@@ -56,7 +57,8 @@ function cancelTargeting() {
 
 const CardClickHandler = {
   onPointerDown,
-  onPointerUp
+  onPointerUp,
+  cancelTargeting
 }
 
 export default CardClickHandler;

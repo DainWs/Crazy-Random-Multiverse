@@ -63,6 +63,32 @@ describe('CardClickHandler', () => {
     return { canBeClicked: vi.fn(() => canBeClicked), parentContainer, card: { isAttackAvailable } } as unknown as CardView;
   }
 
+  describe('cancelTargeting', () => {
+    // VIEW-4
+    it('stops targeting', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+
+      CardClickHandler.cancelTargeting();
+
+      expect(mockExit).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing without a selected attacker', () => {
+      CardClickHandler.cancelTargeting();
+
+      expect(mockExit).not.toHaveBeenCalled();
+    });
+
+    it('lets the next click select an attacker again', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+      CardClickHandler.cancelTargeting();
+
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+
+      expect(mockEnter).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('onPointerDown', () => {
     it('is a no-op so Phaser can distinguish click vs drag', () => {
       const card = createCard(createSlot(true));

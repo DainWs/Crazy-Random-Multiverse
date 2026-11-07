@@ -14,6 +14,7 @@ import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import CombatantView from '@/game/cards/CombatantView';
 import GameResultView from '@/game/result/GameResultView';
+import CardClickHandler from '@/core/interactions/CardClickHandler';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -86,6 +87,7 @@ class GameScene extends Scene {
     }
 
     private renderZones() {
+        CardClickHandler.cancelTargeting();
         this.zones = [];
         this.battlefieldContainer.removeAll(true);
 
