@@ -15,8 +15,9 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 - **VIEW-4** While choosing a target, an arrow or highlight is shown while dragging.
 - **VIEW-5** A hit shows feedback, such as a shake or a red flash.
-- **VIEW-6** Changes in armor and health are animated.
+- **VIEW-6** Changes in armor and health are animated, and a floating text over the target shows the armor and health it lost (`CON-21`).
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.
+- **VIEW-17** Protected cards and an exposed leader have no mark of their own: the only highlight is the one of the valid targets while attacking (`UI-5`, `PROT-6`).
 
 ## Other
 

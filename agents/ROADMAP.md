@@ -167,7 +167,7 @@ Started at: `6515c9a` · Finished at: `754e61d`
 
 ## Phase 5 — Elimination and game end
 
-Started at: `754e61d` · Finished at: `89b9292`
+Started at: `754e61d` · Finished at: `faf6a51`
 
 - [x] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
 - [x] Cancel the loading when a player removed during it leaves fewer than 2 (`LOAD-4`, `CON-22`): publish `GAME_CANCELLED`, remove the game and unlock the party with a `party:info`. Nobody publishes `GAME_CANCELLED` today, and a player removed during the load must not block the start (`LOAD-3`)
@@ -179,6 +179,8 @@ Started at: `754e61d` · Finished at: `89b9292`
 
 ## Phase 5.5 — Combat feedback
 
+Started at: `faf6a51`
+
 Split from Phase 5 so that each session stays small. It needs the zones of eliminated players that Phase 5 keeps in `zones`. The store applies each event at once (`CON-12`); the animations play in order from the snapshot of each event, and the board is drawn from that snapshot once its animation ends (`UI-4`, `VIEW-12`). This needs a view-side animation queue that is not in `CODESTYLE.md`: propose it and get it confirmed before writing it.
 
 - [ ] Disable gameplay while animations are still playing (`UI-4`): `CardController.canAct` only covers the turn and the pending action
@@ -187,7 +189,7 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [ ] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)
 - [ ] Remove the equipment of a card when it dies (`EQUIP-8`)
 - [ ] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
-- [ ] Show protected cards and exposed leader state (`PROT-6`). How they look is not in `VIEW-SPECS.md`: ask
+- [x] Show protected cards and exposed leader state (`PROT-6`): no mark of their own, only the highlight of valid targets (`VIEW-17`)
 
 ## Phase 6 — Base assets and stability
 
@@ -207,7 +209,7 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 
 ## Phase 8 — Architecture cleanup
 
-- [ ] Review `EventSystem`
+- [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4)
 - [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
 - [ ] Remove dead/unused architecture
