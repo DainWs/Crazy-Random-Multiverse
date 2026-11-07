@@ -46,11 +46,11 @@ public class PutAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_NOT_FOUND));
+			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_CARD_NOT_FOUND);
 		}
 
 		if (!card.isType(CardType.WARRIOR) && !card.isType(CardType.LEADER)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_CARD_IS_NOT_COMBATANT));
+			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_CARD_IS_NOT_COMBATANT);
 		}
 
 		return this.checkTarget(context, card);
@@ -64,7 +64,7 @@ public class PutAction extends PlayerTurnAction {
 		}
 
 		if (targetZone.hasCombatant(targetCoordinate)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(PlayerActionExceptionCode.Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT));
+			return ActionResult.playerActionFailed(PlayerActionExceptionCode.Code.SELECTED_TARGET_POSITION_ALREADY_HAS_COMBATANT);
 		}
 
 		if (targetZone.isLeaderSlot(targetCoordinate) && !card.isType(CardType.LEADER)) {

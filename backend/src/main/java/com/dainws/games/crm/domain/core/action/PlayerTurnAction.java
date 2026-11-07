@@ -8,7 +8,6 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
@@ -28,7 +27,7 @@ public abstract class PlayerTurnAction implements Action {
 		this.prepareTrack(context);
 
 		if (!this.sourcePlayerHasTurn(context)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.ALLOWED_ONLY_ON_TURN));
+			return ActionResult.playerActionFailed(Code.ALLOWED_ONLY_ON_TURN);
 		}
 
 		return this.performPlayerAction(context);

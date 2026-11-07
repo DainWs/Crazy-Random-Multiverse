@@ -5,7 +5,6 @@ import com.dainws.games.crm.domain.core.card.AttackResult;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
-import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 
 public class AttackAction extends PlayerTurnAction {
@@ -38,28 +37,28 @@ public class AttackAction extends PlayerTurnAction {
 	private ActionResult checkContext(ActionContext context, Combatant sourceCombatant) {
 		Zone sourceZone = context.getSourceZone();
 		if (!sourceZone.hasCombatant(context.getSourceCoordinate())) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT));
+			return ActionResult.playerActionFailed(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT);
 		}
 
 		if (context.getSourcePlayer().equals(context.getTargetPlayer())) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_OWN));
+			return ActionResult.playerActionFailed(Code.SELECTED_TARGET_IS_OWN);
 		}
 
 		Zone targetZone = context.getTargetZone();
 		if (!targetZone.hasCombatant(context.getTargetCoordinate())) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT));
+			return ActionResult.playerActionFailed(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT);
 		}
 
 		if (!sourceCombatant.canAttack()) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_ATTACK_IN_COOLDOWN));
+			return ActionResult.playerActionFailed(Code.SELECTED_SOURCE_ATTACK_IN_COOLDOWN);
 		}
 
 		if (sourceZone.isProtectedLeaderAt(context.getSourceCoordinate())) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_LEADER_IS_PROTECTED));
+			return ActionResult.playerActionFailed(Code.SELECTED_SOURCE_LEADER_IS_PROTECTED);
 		}
 
 		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));
+			return ActionResult.playerActionFailed(Code.SELECTED_TARGET_IS_PROTECTED);
 		}
 
 		return ActionResult.successful();

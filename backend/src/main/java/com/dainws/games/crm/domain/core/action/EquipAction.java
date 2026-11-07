@@ -8,7 +8,6 @@ import com.dainws.games.crm.domain.core.card.CardType;
 import com.dainws.games.crm.domain.core.card.Combatant;
 import com.dainws.games.crm.domain.core.card.Equipment;
 import com.dainws.games.crm.domain.core.event.EventCode;
-import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
 import com.dainws.games.crm.domain.core.exception.ZoneExceptionCode;
 import com.dainws.games.crm.domain.core.player.Hand;
@@ -50,11 +49,11 @@ public class EquipAction extends PlayerTurnAction {
 		Card card = context.getSourceCard();
 
 		if (!playerHand.contains(card)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_CARD_NOT_FOUND));
+			return ActionResult.playerActionFailed(Code.SELECTED_CARD_NOT_FOUND);
 		}
 
 		if (!card.isType(CardType.EQUIPMENT)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_CARD_IS_NOT_EQUIPMENT));
+			return ActionResult.playerActionFailed(Code.SELECTED_CARD_IS_NOT_EQUIPMENT);
 		}
 
 		return this.checkTarget(context);
@@ -64,7 +63,7 @@ public class EquipAction extends PlayerTurnAction {
 		Player sourcePlayer = context.getSourcePlayer();
 		Player targetPlayer = context.getTargetPlayer();
 		if (!sourcePlayer.equals(targetPlayer)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.EQUIP_TARGET_NOT_OWNED));
+			return ActionResult.playerActionFailed(Code.EQUIP_TARGET_NOT_OWNED);
 		}
 
 		Zone targetZone = context.getTargetZone();
@@ -74,7 +73,7 @@ public class EquipAction extends PlayerTurnAction {
 		}
 
 		if (!targetZone.hasCombatant(targetCoordinate)) {
-			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT));
+			return ActionResult.playerActionFailed(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT);
 		}
 
 		return ActionResult.successful();
