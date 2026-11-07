@@ -62,8 +62,11 @@ public class PlayerUsecase {
 			throw NotFoundException.playerNotFound();
 		}
 
-		return this.actionResolver.get(actionDto.getType())
-				.apply(actionDto);
+		// One writer at a time per game (BACKEND-CODESTYLE, section 16)
+		synchronized (game) {
+			return this.actionResolver.get(actionDto.getType())
+					.apply(actionDto);
+		}
 	}
 
 	private boolean hasTargetOutsideGame(Game game, ActionDto actionDto) {

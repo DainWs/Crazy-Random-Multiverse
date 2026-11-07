@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -206,6 +208,21 @@ class PlayerUsecaseTest {
 		assertThrows(NotFoundException.class, performAction);
 
 		assertTrue(facade.getPerformedActions().isEmpty());
+	}
+
+	// BACKEND-CODESTYLE 16: one writer at a time per game
+	@Test
+	void testGivenAction_whenPerformAction_thenItRunsWithTheGameLocked() {
+		GameCode gameCode = this.registerGame();
+		Game game = this.gameRepository.find(gameCode);
+		LockObservingFacade facade = new LockObservingFacade(game);
+		PlayerUsecase playerUsecase = new PlayerUsecase(facade, this.gameRepository);
+		ActionType type = ActionType.PASS_TURN;
+		ActionDto actionDto = this.createActionDto(gameCode, type);
+
+		playerUsecase.performAction(gameCode, this.createUser(USER_CODE), actionDto);
+
+		assertEquals(List.of(true), facade.getLockedWhilePerforming());
 	}
 
 	@Test

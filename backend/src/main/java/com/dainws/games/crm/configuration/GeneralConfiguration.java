@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 
+import com.dainws.games.crm.controller.events.GameEventMulticaster;
 import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.action.ActionContextFactory;
@@ -20,9 +21,7 @@ public class GeneralConfiguration {
 
 	@Bean(name = "applicationEventMulticaster")
 	SimpleApplicationEventMulticaster simpleApplicationEventMulticaster() {
-		SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
-		eventMulticaster.setTaskExecutor(Executors.newCachedThreadPool());
-		return eventMulticaster;
+		return new GameEventMulticaster(Executors.newCachedThreadPool());
 	}
 
 	@Bean("availableGameModes")

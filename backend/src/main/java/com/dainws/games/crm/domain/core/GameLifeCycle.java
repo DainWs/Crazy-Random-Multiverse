@@ -1,9 +1,9 @@
 package com.dainws.games.crm.domain.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -26,17 +26,15 @@ public class GameLifeCycle {
 
 	public GameLifeCycle() {
 		this.logger = LoggerFactory.getLogger(getClass());
-		this.loadingPlayers = new HashMap<>();
+		this.loadingPlayers = new ConcurrentHashMap<>();
 	}
 
 	public boolean register(Game game, Predicate<Player> playerLoadingFilter) {
-		if (this.loadingPlayers.containsKey(game.getCode())) {
+		List<Player> players = new ArrayList<>(game.getPlayers(playerLoadingFilter));
+		if (this.loadingPlayers.putIfAbsent(game.getCode(), players) != null) {
 			this.logger.warn("That game is already registered");
 			return false;
 		}
-
-		List<Player> players = new ArrayList<>(game.getPlayers(playerLoadingFilter));
-		this.loadingPlayers.put(game.getCode(), players);
 
 		game.setStatus(Status.CREATED);
 		game.publishEvent(EventCode.GAME_CREATED);
@@ -71,7 +69,7 @@ public class GameLifeCycle {
 		}
 	}
 
-	private synchronized boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
+	private boolean removePlayerFromLoadingList(Game game, PlayerCode code) {
 		List<Player> gameLoadingPlayers = this.loadingPlayers.get(game.getCode());
 		return gameLoadingPlayers != null && gameLoadingPlayers.removeIf(player -> player.isCode(code));
 	}

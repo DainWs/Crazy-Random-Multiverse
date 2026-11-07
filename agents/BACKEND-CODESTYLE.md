@@ -353,6 +353,7 @@ Full guide in `agents/BACKEND-TESTS.md`. Summary:
 Several players act on the same game at the same time.
 
 - All the actions on a game are serialized: one writer at a time per game (a lock per `GameCode`). Every player goes through the same path.
+- The game reacts to its events in the thread that published them (`GameEventMulticaster`), so an action ends after its consequences and the next one sees the state they left. Sending to the clients goes to the executor. An exception in a reaction reaches the action, which is answered as an unexpected failure (`CON-18`), so reactions do not throw game exceptions: the action is already applied and must not look rejected (`TURN-6`).
 - In-memory repositories use concurrent collections and atomic operations (`compute`, `computeIfAbsent`, `merge`), never `get` followed by `put`.
 - Events and value objects are immutable once published.
 - No shared mutable `static` state.

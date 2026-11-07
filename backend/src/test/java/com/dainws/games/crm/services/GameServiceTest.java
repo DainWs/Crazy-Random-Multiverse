@@ -2,6 +2,7 @@ package com.dainws.games.crm.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
+import com.dainws.games.crm.domain.core.event.LockRecordingPublisher;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
@@ -31,6 +33,7 @@ import com.dainws.games.crm.services.exception.AccessDeniedException;
 
 class GameServiceTest {
 
+	GameLifeCycle gameLifeCycle;
 	MemoryPartyRepository partyRepository;
 	MemoryGameRepository gameRepository;
 	GameService gameService;
@@ -40,7 +43,8 @@ class GameServiceTest {
 	void beforeEach() {
 		this.partyRepository = new MemoryPartyRepository();
 		this.gameRepository = new MemoryGameRepository();
-		this.gameService = new GameService(new GameLifeCycle(), this.gameRepository, List.of());
+		this.gameLifeCycle = new GameLifeCycle();
+		this.gameService = new GameService(this.gameLifeCycle, this.gameRepository, List.of());
 		this.gameService.setPartyRepository(this.partyRepository);
 		this.user = new User("user-1", "Name", UserPlatform.WEB);
 	}
@@ -85,6 +89,31 @@ class GameServiceTest {
 						exception -> assertThat(exception.getCodeValue()).isEqualTo("exception.access_denied.wrong_game"));
 	}
 
+	// The game reacts to the last ready inside the lock,
+	// so no action sees the game halfway
+	@Test
+	void testGivenLastPlayerToLoad_whenLoadCompleteFor_thenTheGameStartsWithTheGameLocked() {
+		EventCode watched = EventCode.GAME_START;
+		LockRecordingPublisher publisher = new LockRecordingPublisher(watched);
+		Game game = this.createLoadingGameOfTheUser(publisher);
+		String userCode = this.user.getCode().text();
+
+		this.gameService.loadCompleteFor(game.getCode(), PlayerCode.from(userCode));
+
+		assertEquals(List.of(true), publisher.getLockedWhenPublished());
+	}
+
+	@Test
+	void testGivenLoadingGameWithTwoPlayers_whenOneIsEliminated_thenTheLoadingIsCancelledWithTheGameLocked() {
+		EventCode watched = EventCode.GAME_CANCELLED;
+		LockRecordingPublisher publisher = new LockRecordingPublisher(watched);
+		this.createLoadingGameOfTheUser(publisher);
+
+		this.gameService.eliminate(this.user);
+
+		assertEquals(List.of(true), publisher.getLockedWhenPublished());
+	}
+
 	// CON-22
 	@Test
 	void testGivenOneLivingPlayer_whenPlayerDie_thenGameEnds() {
@@ -103,6 +132,22 @@ class GameServiceTest {
 		this.gameService.updateEventGame(new Event(EventCode.PLAYER_SURRENDER, new EventDetails(game)));
 
 		assertThat(game.hasEnded()).isFalse();
+	}
+
+	private Game createLoadingGameOfTheUser(LockRecordingPublisher publisher) {
+		Game game = new GameBuilder() //
+				.withPlayers(new UserPlayer(this.user), new PlayerBuilder().build()) //
+				.withEventPublisher(publisher) //
+				.build();
+		publisher.setGame(game);
+		this.gameLifeCycle.register(game, player -> player instanceof UserPlayer);
+		this.gameLifeCycle.startLoading(game);
+		this.gameRepository.save(game);
+
+		Party party = new Party(this.user, GameModes.CLASSIC);
+		party.setCurrentGame(game.getCode());
+		this.partyRepository.save(party);
+		return game;
 	}
 
 	private Game createGameWithOneLivingPlayer() {

@@ -69,7 +69,9 @@ public class GameService {
 		if (game.getPlayer(playerCode) == null) {
 			throw AccessDeniedException.wrongGame();
 		}
-		this.gameLifeCycle.loadCompleteFor(game, playerCode);
+		synchronized (game) {
+			this.gameLifeCycle.loadCompleteFor(game, playerCode);
+		}
 	}
 	
 	@EventListener
@@ -93,7 +95,9 @@ public class GameService {
 		Game game = activeGame.get();
 		Player player = game.getPlayer(PlayerCode.from(user.getCode().text()));
 		if (player != null) {
-			this.gameLifeCycle.eliminate(game, player);
+			synchronized (game) {
+				this.gameLifeCycle.eliminate(game, player);
+			}
 		}
 	}
 
