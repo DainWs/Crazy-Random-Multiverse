@@ -64,6 +64,36 @@ class AttackActionTest extends PlayerTurnActionTest {
 		assertTrue(this.createPlayerTurnAction().perform(actionContext).isSuccessful());
 	}
 
+	@Test
+	void testGivenTargetOfTheSamePlayer_whenPerform_thenCodeIsTargetIsOwn() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.setTargetPlayer(actionContext.getSourcePlayer());
+
+		ActionResult result = this.createPlayerTurnAction().perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_OWN));
+	}
+
+	@Test
+	void testGivenEmptyTargetSlot_whenPerform_thenCodeIsTargetPositionHasNoneCombatant() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.getTargetZone().removeCombatant(TARGET_COORDINATE);
+
+		ActionResult result = this.createPlayerTurnAction().perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT));
+	}
+
+	@Test
+	void testGivenEmptySourceSlot_whenPerform_thenCodeIsSourcePositionHasNoneCombatant() throws GameException {
+		CustomActionContext actionContext = this.createActionContext();
+		actionContext.getSourceZone().removeCombatant(ATTACKER_COORDINATE);
+
+		ActionResult result = this.createPlayerTurnAction().perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT));
+	}
+
 	@Override
 	protected PlayerTurnAction createPlayerTurnAction() {
 		return new AttackAction();

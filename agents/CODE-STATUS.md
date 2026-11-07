@@ -149,7 +149,7 @@ The "new" and "renamed" marks of the error table in `specs/CONTRACT.md` are out 
 | `COMBAT-5` | Missing | Excess damage is always discarded |
 | `COMBAT-7` | Partial | A dead warrior is removed. A dead leader stays in its slot, and `PLAYER_DIE` follows. No frontend |
 | `COMBAT-11` | Done | The source zone is always the source player's |
-| `COMBAT-12` | Partial | An attack on one's own card is accepted. An empty target is a null pointer |
+| `COMBAT-12` | Done | An attack on one's own card or on an empty slot is rejected |
 
 No test class exists for `EquipAction`, and no test name covers `COMBAT-5`.
 

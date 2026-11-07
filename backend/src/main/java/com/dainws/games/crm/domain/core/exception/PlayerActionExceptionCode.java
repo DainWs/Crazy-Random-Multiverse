@@ -16,6 +16,7 @@ public class PlayerActionExceptionCode extends ExceptionCode {
 		SELECTED_TARGET_IS_PROTECTED("selected_target_is_protected"),
 		SELECTED_SOURCE_LEADER_IS_PROTECTED("selected_source_leader_is_protected"),
 		SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT("selected_target_position_has_none_combatant"),
+		SELECTED_TARGET_IS_OWN("selected_target_is_own"),
 		EQUIP_TARGET_NOT_OWNED("equip_target_not_owned"),
 		CARD_CANT_BE_USED("card_cant_be_used");
 

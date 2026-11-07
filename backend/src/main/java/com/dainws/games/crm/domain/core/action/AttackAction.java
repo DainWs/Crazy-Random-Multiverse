@@ -36,16 +36,28 @@ public class AttackAction extends PlayerTurnAction {
 	}
 
 	private ActionResult checkContext(ActionContext context, Combatant sourceCombatant) {
+		Zone sourceZone = context.getSourceZone();
+		if (!sourceZone.hasCombatant(context.getSourceCoordinate())) {
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_POSITION_HAS_NONE_COMBATANT));
+		}
+
+		if (context.getSourcePlayer().equals(context.getTargetPlayer())) {
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_OWN));
+		}
+
+		Zone targetZone = context.getTargetZone();
+		if (!targetZone.hasCombatant(context.getTargetCoordinate())) {
+			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_POSITION_HAS_NONE_COMBATANT));
+		}
+
 		if (!sourceCombatant.canAttack()) {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_ATTACK_IN_COOLDOWN));
 		}
 
-		Zone sourceZone = context.getSourceZone();
 		if (sourceZone.isProtectedLeaderAt(context.getSourceCoordinate())) {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_SOURCE_LEADER_IS_PROTECTED));
 		}
 
-		Zone targetZone = context.getTargetZone();
 		if (targetZone.isProtectedAt(context.getTargetCoordinate())) {
 			return ActionResult.failed(new PlayerActionExceptionCode(Code.SELECTED_TARGET_IS_PROTECTED));
 		}
