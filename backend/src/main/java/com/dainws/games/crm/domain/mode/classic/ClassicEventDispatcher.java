@@ -66,13 +66,13 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 
 	private void handleGameStart(Event event) {
 		Game game = this.getGameFromEvent(event);
-		this.logger.debug("Game {0} has started", game.getCode());
+		this.logger.debug("Game {} has started", game.getCode());
 		this.gameFlow.onStartGame(game);
 	}
 
 	private void handleGameEnd(Event event) {
 		Game game = this.getGameFromEvent(event);
-		this.logger.debug("Game {0} has ended", game.getCode());
+		this.logger.debug("Game {} has ended", game.getCode());
 		this.gameFlow.onEndGame(game);
 	}
 

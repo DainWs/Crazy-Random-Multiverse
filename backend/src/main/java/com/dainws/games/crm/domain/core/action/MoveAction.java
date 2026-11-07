@@ -29,7 +29,7 @@ public class MoveAction extends PlayerTurnAction {
 			sourceZone.removeCombatant(fromCoordinate);
 		}
 
-		this.logTrace("{0} ha sido movido desde {1} a {2}", combatant, fromCoordinate, toCoordinate);
+		this.logTrace("{} ha sido movido desde {} a {}", combatant, fromCoordinate, toCoordinate);
 		this.notifyActionEvent(EventCode.PLAYER_MOVE_CARD, context);
 		return ActionResult.successful();
 	}

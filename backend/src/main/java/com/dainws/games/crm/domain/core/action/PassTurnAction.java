@@ -7,7 +7,7 @@ import com.dainws.games.crm.domain.core.exception.GameExceptionCode;
 public class PassTurnAction extends PlayerTurnAction {
 	@Override
 	protected ActionResult performPlayerAction(ActionContext context) {
-		this.logTrace("The player can pass turn?: {1}", this.canPassTurn(context));
+		this.logTrace("The player can pass turn?: {}", this.canPassTurn(context));
 		if (this.canPassTurn(context)) {
 			this.notifyActionEvent(EventCode.PLAYER_PASS_TURN, context);
 			return ActionResult.successful();
