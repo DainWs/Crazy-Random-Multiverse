@@ -7,6 +7,7 @@ import type GameConfiguration from "@/domain/GameConfiguration";
 import type Card from "@/domain/Card";
 import type { CardCode } from "@/domain/Card";
 import type Battlefield from "@/domain/Battlefield";
+import type { CombatResult } from "@/domain/CombatResult";
 import type { CancelListenerCallback, Listener } from "@/api/models/Listeners";
 import { localStorageApi as ExternalStoreApi } from "@/api";
 import { notifyListeners } from "@/api/models/Listeners";
@@ -44,6 +45,7 @@ type GameChange = 'GAME_UPDATED' | 'HAND_RESTORED' | 'HAND_CHANGED' | 'GAME_ENDE
 type GameChangeEvent = {
   change: GameChange;
   snapshot: GameSnapshot;
+  combat?: CombatResult;
 }
 
 type Store = {
@@ -59,19 +61,19 @@ function onChange(listener: Listener<GameChangeEvent>): CancelListenerCallback {
   return () => changeListeners.delete(listener);
 }
 
-function notifyChange(change: GameChange, snapshot: GameSnapshot = store.gameState!) {
-  notifyListeners(changeListeners, 'game change listener', { change, snapshot });
+function notifyChange(change: GameChange, snapshot: GameSnapshot = store.gameState!, combat?: CombatResult) {
+  notifyListeners(changeListeners, 'game change listener', { change, snapshot, combat });
 }
 
-/** Replaces the state with the one the server sent, and keeps the hand and the result of the same game, which the snapshots do not replace. */
-function applyGame(snapshot: GameSnapshot) {
+/** Replaces the state with the one the server sent, and keeps the hand and the result of the same game, which the snapshots do not replace. `combat` is the attack that led to it. */
+function applyGame(snapshot: GameSnapshot, combat?: CombatResult) {
   const previous = store.gameState;
   const isSameGame = previous?.gameConfiguration.gameCode === snapshot.gameConfiguration.gameCode;
   const playerHand = (isSameGame && previous?.playerHand) || [];
   const result = isSameGame ? previous?.result : undefined;
 
   store.gameState = { ...snapshot, playerHand, result };
-  notifyChange('GAME_UPDATED', snapshot);
+  notifyChange('GAME_UPDATED', snapshot, combat);
 }
 
 /** The server decided the end of the game, so nobody acts any more (WIN-3, WIN-4). */

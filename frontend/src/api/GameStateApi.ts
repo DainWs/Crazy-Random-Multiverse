@@ -3,6 +3,7 @@ import type { CancelListenerCallback } from '@/api/models/Listeners';
 import type { GameEventCode } from '@/api/models/GameEventCode';
 import type { PlayerCode } from '@/domain/Player';
 import { toCard, toCardCode } from '@/api/dtos/CardDto';
+import { toCombatResult } from '@/api/dtos/CombatResultDto';
 import { toGameSnapshot } from '@/api/dtos/GameDto';
 import { toPlayer } from '@/api/dtos/PlayerDto';
 import GameEventQueue from '@/api/GameEventQueue';
@@ -26,7 +27,9 @@ const reset = (): void => {
 
 function applyEvent(event: EventDto) {
   const localPlayerCode = StoreSystem.getUser().code;
-  StoreSystem.applyGame(toGameSnapshot(event.details.game, localPlayerCode));
+  const snapshot = toGameSnapshot(event.details.game, localPlayerCode);
+  const combat = event.code === 'PLAYER_ATTACK_CARD' ? toCombatResult(event.details, snapshot.playerZone.slots.length) : undefined;
+  StoreSystem.applyGame(snapshot, combat);
   applyHand(event, localPlayerCode);
   applyResult(event);
 }

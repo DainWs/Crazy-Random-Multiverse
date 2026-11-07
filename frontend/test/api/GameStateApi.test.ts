@@ -79,6 +79,41 @@ describe('GameStateApi', () => {
   });
 
   // WIN-3
+  describe('combat', () => {
+    const attackDetails = (): Partial<EventDetailsDto> => ({
+      sourcePlayer: createPlayer('p1'),
+      sourcePosition: { row: 0, column: 0 },
+      targetPlayer: createPlayer('p2'),
+      targetPosition: { row: 0, column: 0 },
+      armorDamage: 1,
+      healthDamage: 4,
+      targetDead: false
+    });
+
+    // CON-21
+    it('sends the attack of PLAYER_ATTACK_CARD with the game it leads to', () => {
+      const received = vi.fn();
+      const stopListening = StoreSystem.onChange(received);
+
+      listener(createEvent(1, 'PLAYER_ATTACK_CARD', attackDetails()));
+      stopListening();
+
+      expect(received).toHaveBeenCalledWith(
+        expect.objectContaining({ change: 'GAME_UPDATED', combat: expect.objectContaining({ attackerPlayer: 'p1', healthDamage: 4 }) })
+      );
+    });
+
+    it('sends no attack with an event that is not an attack', () => {
+      const received = vi.fn();
+      const stopListening = StoreSystem.onChange(received);
+
+      listener(createEvent(1, 'TURN_CHANGE', attackDetails()));
+      stopListening();
+
+      expect(received).toHaveBeenCalledWith(expect.objectContaining({ combat: undefined }));
+    });
+  });
+
   describe('game end', () => {
     it('ends the game with GAME_END', () => {
       listener(createEvent(1, 'GAME_END'));

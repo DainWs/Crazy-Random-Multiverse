@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import type { GameChangeEvent, GameSnapshot } from '@/core/StoreSystem';
 import type Card from '@/domain/Card';
+import type { CombatResult } from '@/domain/CombatResult';
 import type Zone from '@/domain/Zone';
 import { CardCode } from '@/domain/Card';
 import cardFactory from '@/domain/cardFactory';
@@ -377,6 +378,15 @@ describe('StoreSystem', () => {
       StoreSystem.applyGame(snapshot);
 
       expect(listener).toHaveBeenCalledWith({ change: 'GAME_UPDATED', snapshot });
+    });
+
+    it('sends the combat that led to the game with its notification', () => {
+      const snapshot = createSnapshot({ round: 2 });
+      const combat = { attackerPlayer: 'p1', targetPlayer: 'p2' } as CombatResult;
+
+      StoreSystem.applyGame(snapshot, combat);
+
+      expect(listener).toHaveBeenCalledWith({ change: 'GAME_UPDATED', snapshot, combat });
     });
 
     it('notifies when the hand is restored', () => {
