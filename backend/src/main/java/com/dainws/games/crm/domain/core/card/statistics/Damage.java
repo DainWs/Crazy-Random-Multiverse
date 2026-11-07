@@ -34,9 +34,18 @@ public class Damage extends Statistic {
 		return "%s %s".formatted(this.type, this.value);
 	}
 	
+	/** A zero keeps its type, because equipment takes the type of the card (EQUIP-1). */
+	private static Damage zero(DamageType type) {
+		if (type == NONE.type) {
+			return NONE;
+		}
+
+		return new Damage(0, type);
+	}
+
 	public static Damage newInstance(double baseValue, DamageType type) {
 		if (baseValue <= 0) {
-			return NONE;
+			return zero(type);
 		}
 		
 		return new Damage(baseValue, type);

@@ -226,8 +226,8 @@ public class ModelMapper {
 			cardDto.setMaxHealth(leader.getHealth().getMaxValue());
 		}
 
-		if (card instanceof Combatant combatant && combatant.getEquipment() != null) {
-			cardDto.setEquipment(List.of(mapCardToDto(combatant.getEquipment())));
+		if (card instanceof Combatant combatant && !combatant.getEquipment().isEmpty()) {
+			cardDto.setEquipment(combatant.getEquipment().stream().map(ModelMapper::mapCardToDto).toList());
 		}
 
 		return cardDto;

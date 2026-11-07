@@ -145,12 +145,16 @@ public class MemoryCardRepository implements CardRepository, Deck {
 	private Warrior cloneWarrior(Card card) {
 		Warrior prototype = (Warrior) card;
 		CardCode cardCode = prototype.getCode();
-		return Warrior.warriorBuilder(prototype.getRarity())
+		Warrior.Builder builder = Warrior.warriorBuilder(prototype.getRarity())
 				.withCode(cardCode.code())
-				.withDamage(prototype.getDamage())
-				.withArmor(prototype.getArmor())
-				.withHealth(prototype.getHealth())
-				.withEquipment(prototype.getEquipment())
-				.build();
+				.withDamage(prototype.getBaseDamage())
+				.withArmor(prototype.getBaseArmor())
+				.withHealth(prototype.getBaseHealth());
+
+		for (Equipment piece : prototype.getEquipment()) {
+			builder.withEquipment(this.cloneEquipment(piece));
+		}
+
+		return builder.build();
 	}
 }

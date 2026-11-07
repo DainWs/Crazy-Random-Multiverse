@@ -1,14 +1,24 @@
 package com.dainws.games.crm.domain.core.card;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
+
 import com.dainws.games.crm.domain.core.card.statistics.Armor;
 import com.dainws.games.crm.domain.core.card.statistics.Damage;
 import com.dainws.games.crm.domain.core.card.statistics.Health;
 
 public abstract class Combatant extends Card {
+	private static final double MIN_HEALTH_WITH_EQUIPMENT = 1;
+
 	protected Damage damage;
 	protected Armor armor;
 	protected Health health;
-	protected Equipment equipment;
+	protected List<Equipment> equipment;
+	private Damage baseDamage;
+	private Armor baseArmor;
+	private Health baseHealth;
 	protected Skill skill;
 	
 	protected int attackCount;
@@ -21,6 +31,7 @@ public abstract class Combatant extends Card {
 		this.armor = Armor.NONE;
 		this.health = Health.NONE;
 		this.skill = Skill.NONE;
+		this.equipment = new ArrayList<>();
 		this.attackCount = 0;
 		this.maxAttackCount = 1;
 		this.attackCooldown = new Cooldown(1);
@@ -31,8 +42,8 @@ public abstract class Combatant extends Card {
 			this.updateAttackCooldown();
 		}
 		
-		if (this.equipment != null) {
-			this.equipment.update();
+		for (Equipment piece : this.equipment) {
+			piece.update();
 		}
 		
 		if (this.hasSkill()) {
@@ -83,40 +94,52 @@ public abstract class Combatant extends Card {
 		}
 	}
 
-	public void equip(Equipment equipment) {
-		this.unequip();
-		this.updateDamageWith(equipment.getDamageValue());
-		this.updateArmorWith(equipment.getArmorValue());
-		this.updateHealthWith(equipment.getHealthValue(), equipment.getHealthValue());
-		this.equipment = equipment;
-	}
-
-	public void unequip() {
-		if (this.equipment != null) {
-			this.updateDamageWith(-this.equipment.getDamageValue());
-			this.updateArmorWith(-this.equipment.getArmorValue());
-			this.updateHealthWith(0, -this.equipment.getHealthValue());
+	/** The effects of all the pieces add up and the limits apply to the total (EQUIP-4, EQUIP-5). */
+	public void equip(Equipment piece) {
+		if (this.equipment.isEmpty()) {
+			this.baseDamage = this.damage;
+			this.baseArmor = this.armor;
+			this.baseHealth = this.health;
 		}
+
+		double armorLost = this.getMaxArmorValue() - this.armor.getValue();
+		double healthLost = this.health.getMaxValue() - this.health.getValue();
+
+		this.equipment.add(piece);
+		this.updateDamage();
+		this.updateArmor(armorLost);
+		this.updateHealth(healthLost);
 	}
 
-	private void updateDamageWith(double value) {
+	private void updateDamage() {
 		if (!this.damage.isInfinite()) {
-			double damageValue = this.damage.getValue() + value;
-			this.damage = Damage.newInstance(damageValue, this.damage.getType());
+			double damageValue = this.baseDamage.getValue() + this.sumOfPieces(Equipment::getDamageValue);
+			this.damage = Damage.newInstance(damageValue, this.baseDamage.getType());
 		}
 	}
 
-	private void updateArmorWith(double value) {
-		double armorValue = this.armor.getValue() + value;
-		this.armor = Armor.newInstance(armorValue, this.armor.getType());
+	private void updateArmor(double armorLost) {
+		this.armor = Armor.newInstance(this.getMaxArmorValue() - armorLost, this.baseArmor.getType());
 	}
 
-	private void updateHealthWith(double value, double maxValue) {
+	private void updateHealth(double healthLost) {
 		if (!this.health.isInfinite()) {
-			double healthValue = this.health.getValue() + value;
-			double maxHealthValue = this.health.getMaxValue() + maxValue;
-			this.health = Health.newInstance(healthValue, maxHealthValue);
+			double maxValue = Math.max(MIN_HEALTH_WITH_EQUIPMENT, this.baseHealth.getMaxValue() + this.sumOfPieces(Equipment::getHealthValue));
+			double value = Math.max(MIN_HEALTH_WITH_EQUIPMENT, maxValue - healthLost);
+			this.health = Health.newInstance(value, maxValue);
 		}
+	}
+
+	private double getMaxArmorValue() {
+		if (this.equipment.isEmpty()) {
+			return this.armor.getValue();
+		}
+
+		return Math.max(0, this.baseArmor.getValue() + this.sumOfPieces(Equipment::getArmorValue));
+	}
+
+	private double sumOfPieces(ToDoubleFunction<Equipment> effect) {
+		return this.equipment.stream().mapToDouble(effect).sum();
 	}
 
 	public boolean isAlive() {
@@ -127,8 +150,35 @@ public abstract class Combatant extends Card {
 		return this.skill.isPresent();
 	}
 	
-	public Equipment getEquipment() {
-		return this.equipment;
+	public List<Equipment> getEquipment() {
+		return List.copyOf(this.equipment);
+	}
+
+	/** The damage without the equipment. */
+	public Damage getBaseDamage() {
+		if (this.equipment.isEmpty()) {
+			return this.damage;
+		}
+
+		return this.baseDamage;
+	}
+
+	/** The armor without the equipment. */
+	public Armor getBaseArmor() {
+		if (this.equipment.isEmpty()) {
+			return this.armor;
+		}
+
+		return this.baseArmor;
+	}
+
+	/** The health without the equipment. */
+	public Health getBaseHealth() {
+		if (this.equipment.isEmpty()) {
+			return this.health;
+		}
+
+		return this.baseHealth;
 	}
 
 	public Damage getDamage() {
@@ -150,10 +200,7 @@ public abstract class Combatant extends Card {
 	@Override
 	public String toString() {
 		String cardAsString = super.toString();
-		String equipmentName = "";
-		if (this.equipment != null) {
-			equipmentName = this.equipment.getCode().toString();
-		}
+		String equipmentName = this.equipment.stream().map(piece -> piece.getCode().toString()).collect(Collectors.joining(","));
 		return "%s[DMG=%s,ARM=%s,HP=%s,EQUIPMENT=%s]"
 				.formatted(cardAsString, this.damage, this.armor, this.health, equipmentName);
 	}

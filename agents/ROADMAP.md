@@ -137,7 +137,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Reject an action without a required field, or whose `game` is not the one of the path, with `exception.request.malformed`, and remove `exception.player-action.selected_target_coordinate_is_null` (`CON-16`)
 - [x] Add `targetPlayer` to `MOVE_ACTION` and `EQUIP_ACTION` in `ActionDto` on the backend and in `toActionDto` on the frontend, required as in `ATTACK_ACTION`, so that `selected_target_zone_is_not_source_zone` and `equip_target_not_owned` can be reached (`CON-16`, `BOARD-7`, `EQUIP-3`)
 - [ ] Reject an action or a `/ready` from a user who is not a player of the game with `exception.access_denied.wrong_game`: today membership is not checked, and an action ends in a null pointer (`CON-16`, `CON-18`)
-- [ ] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
+- [x] Fix the clone of a warrior with equipment in `MemoryCardRepository`, which adds the equipment twice: Policía has 35 damage instead of 20 (`CARD-5`, `CARD-6`)
 - [ ] Remove the equipment from the hand when it is equipped: `EquipAction` keeps it, so it can be equipped without limit (`HAND-2`)
 - [ ] Fix `ZoneSlot.hasAlreadyEquipment` in the frontend, which compares with `null` and always says true
 - [ ] Refactor `CardController` to send backend commands
@@ -242,9 +242,7 @@ The AI is rethought around an LLM, starting from nothing. The current implementa
 Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
-- [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
 - [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
-- [ ] A person tests a real browser connection with the session cookie
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
@@ -259,6 +257,8 @@ Not tied to a phase.
 
 Not a phase. What could not be verified from the agent environment, for a person to check.
 
+- [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
+- [ ] A person tests a real browser connection with the session cookie
 - [ ] A person drops a card of the hand on the board in a real browser (`PUT_ACTION`). The card must stay in the slot while the server answers, the board must redraw with the event when it accepts it, and when it rejects it (for example out of turn) the card must go back to its place in the hand with the message. Not checked: Phaser views are not tested and the game is not started from the agent environment
 - [ ] A person moves and swaps cards on the board in a real browser (`MOVE_ACTION`): both cards must show their new places as a preview, and go back to their slots with the message when the server rejects the move. Not checked for the same reason
 - [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`): the conversion from the frontend rows (`mirrorRow`) is only tested with a simulated `fetch`

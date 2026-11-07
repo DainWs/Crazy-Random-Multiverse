@@ -1,5 +1,7 @@
 package com.dainws.games.crm.domain.core.card;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.dainws.games.crm.domain.core.card.statistics.Armor;
@@ -70,7 +72,7 @@ public class Warrior extends Combatant {
 		private Armor armor;
 		private Health health;
 		private Skill skill;
-		private Equipment equipment;
+		private List<Equipment> equipment = new ArrayList<>();
 
 		private Builder(WarriorRarity rarity) {
 			this.rarity = rarity;
@@ -163,7 +165,7 @@ public class Warrior extends Combatant {
 		}
 
 		public Builder withEquipment(Equipment equipment) {
-			this.equipment = equipment;
+			this.equipment.add(equipment);
 			return this;
 		}
 
@@ -174,8 +176,8 @@ public class Warrior extends Combatant {
 			Objects.requireNonNull(this.health);
 
 			Warrior warrior = new Warrior(this);
-			if (this.equipment != null) {
-				warrior.equip(this.equipment);
+			for (Equipment piece : this.equipment) {
+				warrior.equip(piece);
 			}
 
 			return warrior;
