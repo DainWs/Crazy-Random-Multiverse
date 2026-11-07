@@ -54,6 +54,7 @@ domain → (nothing)
 
 - The systems in `core/` are classes with static methods and module state (`EventSystem`, `StoreSystem`). This is the established pattern; it is followed for new cross-cutting systems, but **a new one is not created** if the behavior fits in an existing one.
 - Phaser views are classes (`CardView`, `ZoneView`, `HandView`) that extend Phaser classes. The remaining pieces (layout calculations, resolvers, strategies) are functions or small classes with no Phaser state, so they can be tested with Vitest.
+- Every calculation of the size or position of an object `X` lives in its `XLayout` class (`GameHudLayout`, `ZoneLayout`, `ZoneSlotLayout`); the view `X` only applies the results.
 - Geometry and layout calculations go in pure classes/functions separated from the view (`HandLayoutCalculator`, `ZoneLayout`, `CardStackLayoutHelper`, `CameraCalculations`). That separation is what makes the visual layer testable: it is kept.
 - View strategies: `BattlefieldViewStrategy` and its dispatcher. A new board mode adds a strategy, not an `if` per mode.
 - `api/` modules are exported as objects or namespaces from `api/index.ts` (`gameApi`, `partyOwnerApi`…). A new API function is added to the module it belongs to and re-exported there. (The API can only be used through `api/index.ts`.)
