@@ -5,8 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
+import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.Board;
 import com.dainws.games.crm.domain.core.board.Coordinate;
 import com.dainws.games.crm.domain.core.board.Zone;
@@ -60,6 +64,19 @@ public abstract class PlayerTurnActionTest implements ActionTest {
 		assertTrue(turnAction.perform(actionContext).isSuccessful());
 	}
 	
+	// TURN-7
+	@ParameterizedTest
+	@EnumSource(value = Status.class, names = { "CREATED", "LOADING", "ENDED" })
+	void testGivenGameNotInProgress_whenPerform_thenCodeIsGameNotInProgress(Status status) throws GameException {
+		PlayerTurnAction turnAction = this.createPlayerTurnAction();
+		CustomActionContext actionContext = this.createActionContext();
+		GameStatusSetter.setStatus(actionContext.getGame(), status);
+
+		ActionResult result = turnAction.perform(actionContext);
+
+		assertThat(result.getExceptionCode()).isEqualTo(new PlayerActionExceptionCode(Code.GAME_NOT_IN_PROGRESS));
+	}
+
 	protected abstract CustomActionContext createActionContext() throws GameException;
 	protected abstract PlayerTurnAction createPlayerTurnAction();
 	

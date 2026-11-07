@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameCode;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.exception.PlayerActionExceptionCode.Code;
@@ -25,6 +26,10 @@ public abstract class PlayerTurnAction implements Action {
 	@Override
 	public final ActionResult perform(ActionContext context) {
 		this.prepareTrack(context);
+
+		if (!context.getGame().inStatus(Status.IN_PROGRESS)) {
+			return ActionResult.playerActionFailed(Code.GAME_NOT_IN_PROGRESS);
+		}
 
 		if (!this.sourcePlayerHasTurn(context)) {
 			return ActionResult.playerActionFailed(Code.ALLOWED_ONLY_ON_TURN);

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.dainws.games.crm.domain.core.DummyGameStrategy;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
+import com.dainws.games.crm.domain.core.GameStatusSetter;
 import com.dainws.games.crm.domain.core.board.DummyZone;
 import com.dainws.games.crm.domain.core.board.ZoneFactory;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
@@ -92,6 +94,8 @@ public class GameBuilder {
 		strategy.setZoneFactory(this.zoneFactory);
 		strategy.setPlayers(new PlayerStorage(this.players));
 		strategy.setEventPublisher(this.eventPublisher);
-		return new Game(strategy);
+		Game game = new Game(strategy);
+		GameStatusSetter.setStatus(game, Status.IN_PROGRESS);
+		return game;
 	}
 }

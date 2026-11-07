@@ -36,6 +36,7 @@ const TEXTS: Record<string, string> = {
   'exception.party.is_full': 'La party está llena',
   'exception.party.not_enough_players': 'Hacen falta al menos 2 jugadores',
   'exception.game.not_in_progress': 'La partida no está en curso',
+  'exception.player-action.game_not_in_progress': 'La partida no está en curso',
   'exception.player-action.allowed_only_on_turn': 'No es tu turno',
   'exception.player-action.selected_card_not_found': 'Esa carta no está en tu mano',
   'exception.player-action.selected_card_is_not_combatant': 'Esa carta no se puede colocar en el tablero',

@@ -3,6 +3,7 @@ package com.dainws.games.crm.domain.core.exception;
 public class PlayerActionExceptionCode extends ExceptionCode {
 
 	public enum Code {
+		GAME_NOT_IN_PROGRESS("game_not_in_progress"),
 		ALLOWED_ONLY_ON_TURN("allowed_only_on_turn"),
 		SELECTED_CARD_NOT_FOUND("selected_card_not_found"),
 		SELECTED_CARD_IS_NOT_COMBATANT("selected_card_is_not_combatant"),
