@@ -58,39 +58,55 @@ public class PlayerUsecase {
 	}
 
 	private ActionResult putAction(ActionDto actionDto) {
-		if (actionDto.getSourceCardCode() == null || actionDto.getTargetPosition() == null) {
+		if (this.isMalformedPut(actionDto)) {
 			return ActionResult.failed(MALFORMED_REQUEST);
 		}
 
 		ActionContextTemplate contextTemplate = ActionMapper.mapPutActionDto(actionDto);
 		return this.actionFacade.playerPutCard(contextTemplate);
 	}
+
+	private boolean isMalformedPut(ActionDto actionDto) {
+		return actionDto.getSourceCardCode() == null || actionDto.getTargetPosition() == null;
+	}
 	
 	private ActionResult moveAction(ActionDto actionDto) {
-		if (actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null) {
+		if (this.isMalformedMove(actionDto)) {
 			return ActionResult.failed(MALFORMED_REQUEST);
 		}
 
 		ActionContextTemplate contextTemplate = ActionMapper.mapMoveActionDto(actionDto);
 		return this.actionFacade.playerMoveCard(contextTemplate);
 	}
+
+	private boolean isMalformedMove(ActionDto actionDto) {
+		return actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
+	}
 	
 	private ActionResult attackAction(ActionDto actionDto) {
-		if (actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null) {
+		if (this.isMalformedAttack(actionDto)) {
 			return ActionResult.failed(MALFORMED_REQUEST);
 		}
 
 		ActionContextTemplate contextTemplate = ActionMapper.mapAttackActionDto(actionDto);
 		return this.actionFacade.playerAttackCard(contextTemplate);
 	}
+
+	private boolean isMalformedAttack(ActionDto actionDto) {
+		return actionDto.getSourcePosition() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
+	}
 	
 	private ActionResult equipAction(ActionDto actionDto) {
-		if (actionDto.getSourceCardCode() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null) {
+		if (this.isMalformedEquip(actionDto)) {
 			return ActionResult.failed(MALFORMED_REQUEST);
 		}
 
 		ActionContextTemplate contextTemplate = ActionMapper.mapEquipActionDto(actionDto);
 		return this.actionFacade.playerEquipCard(contextTemplate);
+	}
+
+	private boolean isMalformedEquip(ActionDto actionDto) {
+		return actionDto.getSourceCardCode() == null || actionDto.getTargetPlayerCode() == null || actionDto.getTargetPosition() == null;
 	}
 
 	private ActionResult surrenderAction(ActionDto actionDto) {
