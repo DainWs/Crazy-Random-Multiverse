@@ -183,7 +183,7 @@ Started at: `faf6a51`
 
 Split from Phase 5 so that each session stays small. It needs the zones of eliminated players that Phase 5 keeps in `zones`. The store applies each event at once (`CON-12`); the animations play in order from the snapshot of each event, and the board is drawn from that snapshot once its animation ends (`UI-4`, `VIEW-12`). This needs a view-side animation queue that is not in `CODESTYLE.md`: propose it and get it confirmed before writing it.
 
-- [ ] Disable gameplay while animations are still playing (`UI-4`): `CardController.canAct` only covers the turn and the pending action
+- [x] Disable gameplay while animations are still playing (`UI-4`): `AnimationSystem` queues the animations and `CardController.canAct` waits for it
 - [ ] Attack animation and hit feedback (`VIEW-5`)
 - [ ] Animate armor and health changes (`VIEW-6`, `CON-21`)
 - [ ] Card death animation, then remove dead cards (`COMBAT-7`, `VIEW-7`)

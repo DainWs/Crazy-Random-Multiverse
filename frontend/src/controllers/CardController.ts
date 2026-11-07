@@ -1,6 +1,7 @@
 import type { GameCode } from "@/domain/GameConfiguration";
 import { gameApi } from "@/api";
 import { ApiException } from "@/api/models/ApiException";
+import AnimationSystem from "@/core/AnimationSystem";
 import StoreSystem from "@/core/StoreSystem";
 import type { ActionType } from "@/domain/Action";
 import Action from "@/domain/Action";
@@ -27,9 +28,9 @@ class CardController {
     return this.actionPending;
   }
 
-  /** Gameplay is open only on the player's turn and while no action waits for its answer (UI-4, CON-19). */
+  /** Gameplay is open only on the player's turn, while no action waits for its answer and no animation plays (UI-4, CON-19). */
   public canAct(): boolean {
-    return !this.actionPending && StoreSystem.canPlayerAct();
+    return !this.actionPending && !AnimationSystem.isPlaying() && StoreSystem.canPlayerAct();
   }
 
   public passTurn(): boolean {

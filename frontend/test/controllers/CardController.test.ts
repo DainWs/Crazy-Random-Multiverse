@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { gameApi } from '@/api';
 import { ApiException } from '@/api/models/ApiException';
+import AnimationSystem from '@/core/AnimationSystem';
 import CardController from '@/controllers/CardController';
 import Player from '@/domain/Player';
 import { ZonePosition } from '@/domain/Position';
@@ -407,6 +408,28 @@ describe('CardController', () => {
 
     it('rejects surrendering and sends nothing', () => {
       const result = controller.surrender();
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('reports that it cannot act', () => {
+      expect(controller.canAct()).toBe(false);
+    });
+  });
+
+  // UI-4
+  describe('while an animation plays', () => {
+    beforeEach(() => {
+      vi.spyOn(AnimationSystem, 'isPlaying').mockReturnValue(true);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('rejects passing the turn and sends nothing', () => {
+      const result = controller.passTurn();
 
       expect(result).toBe(false);
       expect(sendPlayerAction).not.toHaveBeenCalled();
