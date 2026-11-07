@@ -79,6 +79,16 @@ class Zone {
       && (target.isOccupied() || this.isRowTowardsLeaderFilled(target.position.row));
   }
 
+  /** The player attacks from their own zone to an occupied slot of another player's zone; protection is decided by the server (COMBAT-11, COMBAT-12). */
+  public canAttackCard(source: ZoneSlot, targetZone: Zone, target: ZoneSlot, player: Owner): boolean {
+    return this.isPlayerOwner(player.code)
+      && !targetZone.isPlayerOwner(player.code)
+      && this.hasSlot(source)
+      && source.isOccupied()
+      && targetZone.hasSlot(target)
+      && target.isOccupied();
+  }
+
   private hasSlot(slot: ZoneSlot): boolean {
     return this.slots.some((row) => row.includes(slot));
   }

@@ -1,14 +1,18 @@
 import type CardView from "@/game/cards/CardView";
-import CardActionPerspective from "@/game/perspectives/CardActionPerspective";
-import ZoneView from "@/game/zone/ZoneView";
+import type { GameScene } from "@/scenes/Game";
+import StoreSystem from "@/core/StoreSystem";
+import AttackTargetingPerspective from "@/game/perspectives/AttackTargetingPerspective";
+import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import * as Constants from "@/core/Constants";
 
-const onPointerDown = (_1: Phaser.Scene, _2: CardView, _3: Phaser.Input.Pointer): void => {
+let targeting: AttackTargetingPerspective | null = null;
+
+const onPointerDown = (_1: GameScene, _2: CardView, _3: Phaser.Input.Pointer): void => {
   // No action is performed on pointerdown to allow Phaser to decide
   // if the movement will result in a "drag" or a click.
 }
 
-const onPointerUp = (scene: Phaser.Scene, card: CardView, pointer: Phaser.Input.Pointer): void => {
+const onPointerUp = (scene: GameScene, card: CardView, pointer: Phaser.Input.Pointer): void => {
   if (!card.canBeClicked()) return;
 
   if (
@@ -19,12 +23,35 @@ const onPointerUp = (scene: Phaser.Scene, card: CardView, pointer: Phaser.Input.
   }
 }
 
-// TODO completely incomplete, tasks:
-// BUG: It should only work on cards that are located in a zone
-// BUG: When clicking and activating the perspective, it is disabled after a short time
-function onSimpleClickCard(scene: Phaser.Scene, card: CardView) {
-  const zones = scene.children.list.filter(child => child instanceof ZoneView) as ZoneView[];
-  new CardActionPerspective(scene, card, zones).enter();
+/** A click on a card of the board selects the attacker, and a second click on a card of another player attacks it (VIEW-4). */
+function onSimpleClickCard(scene: GameScene, card: CardView) {
+  const slot = card.parentContainer;
+  if (!(slot instanceof ZoneSlotView)) return;
+
+  if (targeting) {
+    attackFromSelected(scene, slot);
+  } else if (slot.zone.isPlayerOwner(StoreSystem.getPlayer())) {
+    selectAttacker(scene, slot);
+  }
+}
+
+function selectAttacker(scene: GameScene, slot: ZoneSlotView) {
+  targeting = new AttackTargetingPerspective(scene, slot, cancelTargeting);
+  targeting.enter();
+}
+
+function attackFromSelected(scene: GameScene, targetSlot: ZoneSlotView) {
+  const sourceSlot = targeting?.sourceSlot;
+  cancelTargeting();
+
+  if (sourceSlot) {
+    scene.cardController.attackCardOnZoneSlot(sourceSlot, targetSlot);
+  }
+}
+
+function cancelTargeting() {
+  targeting?.exit();
+  targeting = null;
 }
 
 const CardClickHandler = {

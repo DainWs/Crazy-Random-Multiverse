@@ -39,14 +39,14 @@ class CardController {
   }
 
   /** Sends the action and undoes its preview if the server rejects it. */
-  private async send(type: ActionType, action: Action, undoPreview: () => void) {
+  private async send(type: ActionType, action: Action, undoPreview?: () => void) {
     this.actionPending = true;
     try {
       const playerZone = StoreSystem.getPlayerZone();
       const rowCount = playerZone.slots.length;
       await gameApi.sendPlayerAction(type, action, rowCount);
     } catch (error) {
-      undoPreview();
+      undoPreview?.();
       const key = error instanceof ApiException ? error.key : UNEXPECTED_ERROR_KEY;
       this.onRejected(key);
     } finally {
@@ -113,6 +113,27 @@ class CardController {
     const targetPosition = toZoneSlot.zoneSlot.position;
     const source = new ActionEvent({ element: "ZoneSlot.Card", input: "Grab", position: sourcePosition, player, card: null });
     const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: targetPosition, player, card: null });
+    return new Action(gameCode, source, target);
+  }
+
+  /** Nothing changes on screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
+  public attackCardOnZoneSlot(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
+    if (this.actionPending || !fromZoneSlot.canAttack(toZoneSlot)) {
+      return false;
+    }
+
+    const action = this.createAttackAction(fromZoneSlot, toZoneSlot);
+    void this.send("ATTACK_ACTION", action);
+    return true;
+  }
+
+  private createAttackAction(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): Action {
+    const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
+    const player = StoreSystem.getPlayer();
+    const sourcePosition = fromZoneSlot.zoneSlot.position;
+    const targetPosition = toZoneSlot.zoneSlot.position;
+    const source = new ActionEvent({ element: "ZoneSlot.Card", input: "Grab", position: sourcePosition, player, card: null });
+    const target = new ActionEvent({ element: "ZoneSlot", input: "Drop", position: targetPosition, player: toZoneSlot.zone.owner, card: null });
     return new Action(gameCode, source, target);
   }
 

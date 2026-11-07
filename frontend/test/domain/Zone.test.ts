@@ -171,4 +171,40 @@ describe('Zone', () => {
       expect(zone.canMoveCard(zone.slots[1][2], zone.slots[1][1], owner)).toBe(false);
     });
   });
+
+  describe('canAttackCard', () => {
+    const rival = new Player('p-2', 'Two');
+    let rivalZone: Zone;
+
+    beforeEach(() => {
+      zone = createZone(1, 1);
+      rivalZone = new Zone(rival, 'ENEMY');
+      rivalZone.slots = [createWarriorRow(0, 1), createWarriorRow(1, 1), [new ZoneSlot(new ZonePosition(2, 0), 'LEADER')]];
+    });
+
+    // COMBAT-11, COMBAT-12
+    it('accepts an attack from an own card to a card of another player', () => {
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][0], owner)).toBe(true);
+    });
+
+    it('rejects an attack from the zone of another player', () => {
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][0], rival)).toBe(false);
+    });
+
+    it('rejects an attack on an own card', () => {
+      expect(zone.canAttackCard(zone.slots[0][0], zone, zone.slots[1][0], owner)).toBe(false);
+    });
+
+    it('rejects an attack on an empty slot', () => {
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, rivalZone.slots[0][2], owner)).toBe(false);
+    });
+
+    it('rejects an attack from an empty slot', () => {
+      expect(zone.canAttackCard(zone.slots[0][2], rivalZone, rivalZone.slots[0][0], owner)).toBe(false);
+    });
+
+    it('rejects an attack on a slot that is not in the target zone', () => {
+      expect(zone.canAttackCard(zone.slots[0][0], rivalZone, createZone(1, 1).slots[0][0], owner)).toBe(false);
+    });
+  });
 });

@@ -1,94 +1,151 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import * as Constants from '@/core/Constants';
+import ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type CardView from '@/game/cards/CardView';
+import type { GameScene } from '@/scenes/Game';
 
 const mockEnter = vi.fn();
-vi.mock('@/game/perspectives/CardActionPerspective', () => {
+const mockExit = vi.fn();
+let cancelTargeting: () => void;
+vi.mock('@/game/perspectives/AttackTargetingPerspective', () => {
   return {
-    default: class MockCardActionPerspective {
+    default: class MockAttackTargetingPerspective {
+      public readonly sourceSlot: unknown;
+
+      constructor(_scene: unknown, sourceSlot: unknown, onCancel: () => void) {
+        this.sourceSlot = sourceSlot;
+        cancelTargeting = onCancel;
+      }
+
       enter() {
         mockEnter();
+      }
+
+      exit() {
+        mockExit();
       }
     }
   };
 });
 
+vi.mock('@/core/StoreSystem', () => ({ default: { getPlayer: () => ({ code: 'p-1' }) } }));
+
 describe('CardClickHandler', () => {
+  const attackCardOnZoneSlot = vi.fn();
+  const scene = { cardController: { attackCardOnZoneSlot } } as unknown as GameScene;
+  const clickInTime = createMockPointer(Constants.DRAG_TIME_THRESHOLD - 10, Constants.DRAG_DISTANCE_THRESHOLD - 2);
+
   beforeEach(() => {
-    mockEnter.mockClear();
+    vi.clearAllMocks();
   });
 
-  const createMockCard = (canBeClicked = true): CardView => {
-    return {
-      canBeClicked: vi.fn(() => canBeClicked)
-    } as unknown as CardView;
-  };
+  afterEach(() => {
+    cancelTargeting?.();
+  });
 
-  const createMockPointer = (duration: number, distance: number): Phaser.Input.Pointer => {
+  function createMockPointer(duration: number, distance: number): Phaser.Input.Pointer {
     return {
       getDuration: vi.fn(() => duration),
       getDistance: vi.fn(() => distance)
     } as unknown as Phaser.Input.Pointer;
-  };
+  }
 
-  const createMockScene = (): Phaser.Scene => {
-    return {
-      children: {
-        list: []
-      }
-    } as unknown as Phaser.Scene;
-  };
+  function createSlot(ownedByPlayer: boolean): ZoneSlotView {
+    const slot = Object.create(ZoneSlotView.prototype) as ZoneSlotView;
+    slot.zone = { isPlayerOwner: () => ownedByPlayer } as unknown as ZoneSlotView['zone'];
+    return slot;
+  }
+
+  function createCard(parentContainer: unknown, canBeClicked = true): CardView {
+    return { canBeClicked: vi.fn(() => canBeClicked), parentContainer } as unknown as CardView;
+  }
 
   describe('onPointerDown', () => {
     it('is a no-op so Phaser can distinguish click vs drag', () => {
-      const scene = createMockScene();
-      const card = createMockCard();
-      const pointer = createMockPointer(0, 0);
+      const card = createCard(createSlot(true));
 
-      expect(() => CardClickHandler.onPointerDown(scene, card, pointer)).not.toThrow();
+      expect(() => CardClickHandler.onPointerDown(scene, card, clickInTime)).not.toThrow();
       expect(mockEnter).not.toHaveBeenCalled();
     });
   });
 
   describe('onPointerUp', () => {
     it('does nothing when card cannot be clicked', () => {
-      const scene = createMockScene();
-      const card = createMockCard(false);
-      const pointer = createMockPointer(
-        Constants.DRAG_TIME_THRESHOLD - 10,
-        Constants.DRAG_DISTANCE_THRESHOLD - 2
-      );
+      const card = createCard(createSlot(true), false);
 
-      CardClickHandler.onPointerUp(scene, card, pointer);
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
       expect(mockEnter).not.toHaveBeenCalled();
     });
 
-    it('triggers action perspective when click duration and distance are within drag thresholds', () => {
-      const scene = createMockScene();
-      const card = createMockCard(true);
-      const pointer = createMockPointer(50, 5); // Below 100ms and 10px
+    it('selects the attacker when a card of the player in the board is clicked', () => {
+      const card = createCard(createSlot(true));
 
-      CardClickHandler.onPointerUp(scene, card, pointer);
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
       expect(mockEnter).toHaveBeenCalledTimes(1);
     });
 
-    it('does not trigger if pointer duration reaches or exceeds threshold (held too long)', () => {
-      const scene = createMockScene();
-      const card = createMockCard(true);
+    it('does not select the attacker if pointer duration reaches the threshold (held too long)', () => {
+      const card = createCard(createSlot(true));
       const pointer = createMockPointer(Constants.DRAG_TIME_THRESHOLD, 5);
 
       CardClickHandler.onPointerUp(scene, card, pointer);
+
       expect(mockEnter).not.toHaveBeenCalled();
     });
 
-    it('does not trigger if pointer distance reaches or exceeds threshold (dragged too far)', () => {
-      const scene = createMockScene();
-      const card = createMockCard(true);
+    it('does not select the attacker if pointer distance reaches the threshold (dragged too far)', () => {
+      const card = createCard(createSlot(true));
       const pointer = createMockPointer(50, Constants.DRAG_DISTANCE_THRESHOLD);
 
       CardClickHandler.onPointerUp(scene, card, pointer);
+
       expect(mockEnter).not.toHaveBeenCalled();
+    });
+
+    it('does not select the attacker when the card is not in a slot', () => {
+      const card = createCard(null);
+
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
+      expect(mockEnter).not.toHaveBeenCalled();
+    });
+
+    it('does not select the attacker when the card belongs to another player', () => {
+      const card = createCard(createSlot(false));
+
+      CardClickHandler.onPointerUp(scene, card, clickInTime);
+
+      expect(mockEnter).not.toHaveBeenCalled();
+    });
+
+    it('attacks the clicked card from the selected attacker', () => {
+      const sourceSlot = createSlot(true);
+      const targetSlot = createSlot(false);
+      CardClickHandler.onPointerUp(scene, createCard(sourceSlot), clickInTime);
+
+      CardClickHandler.onPointerUp(scene, createCard(targetSlot), clickInTime);
+
+      expect(attackCardOnZoneSlot).toHaveBeenCalledWith(sourceSlot, targetSlot);
+    });
+
+    it('stops targeting after the attack', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(false)), clickInTime);
+
+      expect(mockExit).toHaveBeenCalledTimes(1);
+    });
+
+    it('selects an attacker again after the targeting is cancelled', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+      cancelTargeting();
+
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+
+      expect(mockEnter).toHaveBeenCalledTimes(2);
     });
   });
 });

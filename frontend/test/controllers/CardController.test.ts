@@ -26,6 +26,8 @@ vi.mock('@/core/StoreSystem', () => ({
 class FakeZoneSlot {
   public held: unknown;
   public accepts = true;
+  public attacks = true;
+  public zone: { owner: Player } = { owner: player };
   public readonly zoneSlot: { position: ZonePosition };
 
   public constructor(row: number, column: number, held: unknown = null) {
@@ -39,6 +41,10 @@ class FakeZoneSlot {
 
   public canReceiveFrom(): boolean {
     return this.accepts;
+  }
+
+  public canAttack(): boolean {
+    return this.attacks;
   }
 
   public getCombatant(): unknown {
@@ -372,6 +378,68 @@ describe('CardController', () => {
       await flushPromises();
 
       expect(onRejected).toHaveBeenCalledWith('exception.player-action.equip_target_not_owned');
+    });
+  });
+
+  describe('attackCardOnZoneSlot', () => {
+    let fromSlot: FakeZoneSlot;
+    let targetSlot: FakeZoneSlot;
+    const rival = new Player('p-2', 'Two');
+
+    beforeEach(() => {
+      fromSlot = new FakeZoneSlot(1, 0, cardView);
+      targetSlot = new FakeZoneSlot(0, 1, {});
+      targetSlot.zone = { owner: rival };
+    });
+
+    it('returns true and sends an ATTACK_ACTION with both positions and the owner of the target', () => {
+      const result = controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      const [type, action, rowCount] = sendPlayerAction.mock.calls[0];
+      expect(result).toBe(true);
+      expect([type, rowCount]).toEqual(['ATTACK_ACTION', ROW_COUNT]);
+      expect(action).toMatchObject({
+        game: GAME_CODE,
+        sourcePlayer: player,
+        sourcePosition: { row: 1, column: 0 },
+        targetPlayer: rival,
+        targetPosition: { row: 0, column: 1 }
+      });
+    });
+
+    it('keeps the cards where they are', () => {
+      controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      expect([fromSlot.held, targetSlot.held]).toEqual([cardView, {}]);
+    });
+
+    it('rejects the attack and sends nothing when the source cannot attack the target', () => {
+      fromSlot.attacks = false;
+
+      const result = controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    // CON-19
+    it('rejects a second attack while the first action is pending', () => {
+      controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      const result = controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      expect(result).toBe(false);
+      expect(sendPlayerAction).toHaveBeenCalledTimes(1);
+    });
+
+    // UI-6
+    it('reports the key of the rejection', async () => {
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.selected_target_is_protected'));
+      controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot));
+
+      await flushPromises();
+
+      expect(onRejected).toHaveBeenCalledWith('exception.player-action.selected_target_is_protected');
     });
   });
 });

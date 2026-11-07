@@ -212,7 +212,7 @@ No test class exists for `EquipAction`, and no test name covers `COMBAT-5`.
 | `VIEW-1` | Partial | The orientation works with the mock, with the leader at row index 2. Real rows need inverting |
 | `VIEW-2` | Partial | `ZoneLayout` and the camera handle several players. Untested with real data |
 | `VIEW-3`, `VIEW-5`, `VIEW-6`, `VIEW-7`, `VIEW-11`, `VIEW-12` | Missing | |
-| `VIEW-4` | Partial | Slots highlight while dragging. No attack targeting: `CardActionPerspective` is marked incomplete and buggy in its own comments |
+| `VIEW-4` | Done | Slots highlight while dragging. Attack targeting by click draws an arrow, green over a valid target and red elsewhere. `CardActionPerspective` and `CalmTargetingOverlay` are no longer used |
 | `VIEW-8` | Partial | `HandAnimator` animates cards entering the hand. No rival animation |
 | `VIEW-13` | Done | `ZoneViewFactory` |
 

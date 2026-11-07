@@ -36,3 +36,21 @@ export const REJECTION_MESSAGE_COLOR = '#ff6b6b';
 
 /** Depth of the message about a rejected action: above the cards. */
 export const REJECTION_MESSAGE_DEPTH = 20000;
+
+/** Color of the attack arrow while the pointer is over a target the attack can reach (UI-5, VIEW-4). */
+export const ATTACK_ARROW_VALID_COLOR = 0x2ecc71;
+
+/** Color of the attack arrow while the pointer is not over a target the attack can reach (UI-5, VIEW-4). */
+export const ATTACK_ARROW_INVALID_COLOR = 0xe74c3c;
+
+/** Thickness in pixels of the attack arrow line. */
+export const ATTACK_ARROW_LINE_WIDTH = 8;
+
+/** Length in pixels of each side of the attack arrow head. */
+export const ATTACK_ARROW_HEAD_LENGTH = 40;
+
+/** Angle in radians between the attack arrow line and each side of its head. */
+export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
+
+/** Depth of the attack arrow, above the cards and the hand. */
+export const ATTACK_ARROW_DEPTH = 20000;

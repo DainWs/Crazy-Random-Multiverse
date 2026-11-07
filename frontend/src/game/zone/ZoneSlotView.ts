@@ -85,6 +85,13 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     return this.zone.canMoveCard(source.zoneSlot, this.zoneSlot, player);
   }
 
+  /** Whether the card here can attack the card in `target` (COMBAT-11, COMBAT-12). */
+  public canAttack(target: ZoneSlotView): boolean {
+    const player = StoreSystem.getPlayer();
+
+    return this.zone.canAttackCard(this.zoneSlot, target.zone, target.zoneSlot, player);
+  }
+
   /** Shows a card here while the server answers, without changing the game state (ARCH-2). */
   public holdCard(combatantView: CombatantView) {
     this.cardView = combatantView;

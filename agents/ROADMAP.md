@@ -143,7 +143,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [ ] Refactor `CardController` to send backend commands
 - [x] Card placement (`PUT_ACTION`, `BOARD-5`): validate available slots, row 2 before row 1
 - [x] Card movement (`MOVE_ACTION`, `BOARD-7`): prevent invalid movement
-- [ ] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
+- [x] Attack (`ATTACK_ACTION`, `VIEW-4`): attacker selection, target selection, targeting UI (arrow or highlight while dragging)
 - [x] Equip (`EQUIP_ACTION`, `EQUIP-3`): only on the player's own cards
 - [ ] Surrender with confirmation (`SURRENDER_ACTION`, `ELIM-2`, `UI-15`)
 - [ ] Highlight valid targets and disable invalid ones (`UI-5`)
@@ -266,6 +266,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test
 - [ ] A person plays the lobby and the load with two browsers: create a party, join it with its code, start the game, see the progress of the downloads and then the wait for the other players (`UI-22`), force a failed download and retry only what failed (`UI-12`), and check that `/resources` arrives through the Vite proxy (`CON-29`). Not checked: the Vue screens have no tests and the application is not started from the agent environment
 - [ ] A person checks the board of a real game in a browser: the local zone at the bottom and each leader at the edge of the table (`VIEW-1`), the animation of the cards received in the hand (`VIEW-8`) and the number of cards in each rival hand (`HAND-3`). Not checked: Phaser views are not tested
+- [ ] A person attacks in a real browser (`ATTACK_ACTION`): click an own card of the board, move the pointer over the rivals (the arrow must be green over a card of another player and red elsewhere), click a rival card to attack and check that Escape or a click outside the cards cancels the selection. Not checked: Phaser views are not tested. The attack does not redraw the board yet: the frontend does not apply `PLAYER_ATTACK_CARD` (Phase 5)
 - [ ] A person reloads the page in the middle of a game and in the middle of the load, and checks that the state comes back with `GAME_SYNC` or `GAME_LOADING`, and that a game in progress downloads the `fixed` resources without `/ready` (`CON-23`, `LOAD-6`). Only tested with a simulated socket
 
 ## Post-MVP
