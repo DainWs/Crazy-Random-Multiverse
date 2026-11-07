@@ -12,6 +12,8 @@ import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
 const UNEXPECTED_ERROR_KEY = "exception.unexpected";
 
+type UndoPreviewCallback = () => void;
+
 class CardController {
   private actionPending = false;
   private readonly onRejected: (key: string) => void;
@@ -39,7 +41,7 @@ class CardController {
   }
 
   /** Sends the action and undoes its preview if the server rejects it. */
-  private async send(type: ActionType, action: Action, undoPreview: () => void = () => {}) {
+  private async send(type: ActionType, action: Action, undoPreview: UndoPreviewCallback = () => {}) {
     this.actionPending = true;
     try {
       const playerZone = StoreSystem.getPlayerZone();
@@ -88,7 +90,7 @@ class CardController {
   }
 
   /** Shows the moved card in the target slot and the card that was there, if any, in the source slot. Returns the function that undoes it. */
-  private previewMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): () => void {
+  private previewMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): UndoPreviewCallback {
     fromZoneSlot.releaseCard();
     const swappedView = toZoneSlot.releaseCard();
     toZoneSlot.holdCard(combatantView);
