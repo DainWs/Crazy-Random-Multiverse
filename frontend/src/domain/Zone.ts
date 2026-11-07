@@ -58,29 +58,33 @@ class Zone {
     return this.owner.code == playerIdentifier;
   }
 
-  /** A warrior goes to a row only while the row towards the leader is filled (BOARD-5); the rows are numbered from the center (VIEW-1). */
-  public canPlaceCard(position: ZonePosition, card: Card): boolean {
+  /** The player places cards in their own zone, and a warrior goes to a row only while the row towards the leader is filled (BOARD-5, EQUIP-3); the rows are numbered from the center (VIEW-1). */
+  public canPlaceCard(position: ZonePosition, card: Card, player: Owner): boolean {
     const slot = this.slots[position.row]?.[position.column];
+    const isOwnZone = this.isPlayerOwner(player.code);
     const slotAcceptsCard = slot !== undefined && slot.canPlaceCard(card);
     const isRowAllowed = !card.isCombatant() || this.isRowTowardsLeaderFilled(position.row);
 
-    return slotAcceptsCard && isRowAllowed;
+    return isOwnZone && slotAcceptsCard && isRowAllowed;
   }
 
-  /** A warrior moves to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
-  public canMoveCard(from: ZonePosition, to: ZonePosition): boolean {
-    const source = this.slots[from.row]?.[from.column];
-    const target = this.slots[to.row]?.[to.column];
-    const isSameSlot = from.row === to.row && from.column === to.column;
-    const isWarriorSlot = target !== undefined && target.allowedCombatant === 'WARRIOR';
-    const isReachable = target !== undefined && (target.isOccupied() || this.isRowTowardsLeaderFilled(to.row));
+  /** A warrior moves inside the zone of the player to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
+  public canMoveCard(source: ZoneSlot, target: ZoneSlot, player: Owner): boolean {
+    const isOwnZone = this.isPlayerOwner(player.code);
+    const areSlotsOfThisZone = this.hasSlot(source) && this.hasSlot(target);
+    const isWarriorSlot = target.allowedCombatant === 'WARRIOR';
+    const isReachable = target.isOccupied() || this.isRowTowardsLeaderFilled(target.position.row);
 
-    return !isSameSlot && this.isMovable(source) && isWarriorSlot && isReachable;
+    return isOwnZone && areSlotsOfThisZone && source !== target && this.isMovable(source) && isWarriorSlot && isReachable;
   }
 
-  private isMovable(slot: ZoneSlot | undefined): boolean {
-    const isOccupied = slot !== undefined && slot.isOccupied();
-    const isLeader = slot?.combatant?.isType('LEADER') === true;
+  private hasSlot(slot: ZoneSlot): boolean {
+    return this.slots.some((row) => row.includes(slot));
+  }
+
+  private isMovable(slot: ZoneSlot): boolean {
+    const isOccupied = slot.isOccupied();
+    const isLeader = slot.combatant?.isType('LEADER') === true;
 
     return isOccupied && !isLeader;
   }
