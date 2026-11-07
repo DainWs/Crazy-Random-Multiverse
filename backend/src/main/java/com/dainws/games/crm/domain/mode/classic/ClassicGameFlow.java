@@ -96,19 +96,8 @@ public class ClassicGameFlow implements GameFlow {
 
 	private void updatePlayer(Game game, Player player) {
 		if (this.shouldPlayerDie(game, player)) {
-			this.eliminatePlayer(game, player);
+			game.eliminate(player);
 		}
-	}
-
-	@Override
-	public void eliminatePlayer(Game game, Player player) {
-		game.getPlayerZone(player).removeAllCombatants();
-		player.getHand().removeAll();
-		player.die();
-
-		EventDetails details = new EventDetails(game);
-		details.setTargetPlayer(player);
-		game.publishEvent(EventCode.PLAYER_DIE, details);
 	}
 
 	private boolean shouldPlayerDie(Game game, Player player) {

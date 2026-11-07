@@ -64,7 +64,7 @@ class ClassicEventDispatcherTest {
 	}
 
 	@Test
-	void testGivenSurrender_whenDispatchSurrender_thenSurrenderedPlayerIsEliminated() {
+	void testGivenSurrender_whenDispatchSurrender_thenSurrenderedPlayerDies() {
 		RecordingGameFlow gameFlow = new RecordingGameFlow();
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
 		Player surrendered = game.getPlayerWithTurn();
@@ -75,7 +75,7 @@ class ClassicEventDispatcherTest {
 
 		dispatcher.dispatch(event);
 
-		assertThat(gameFlow.getEliminatedPlayers()).containsExactly(surrendered);
+		assertThat(surrendered.isAlive()).isFalse();
 	}
 
 	private Event createPlayerDieEvent(Game game) {

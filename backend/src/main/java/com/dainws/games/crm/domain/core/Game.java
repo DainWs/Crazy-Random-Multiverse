@@ -93,6 +93,16 @@ public class Game {
 		return this.turn.getPlayerWithTurn(this.players);
 	}
 
+	public void eliminate(Player player) {
+		this.getPlayerZone(player).removeAllCombatants();
+		player.getHand().removeAll();
+		player.die();
+
+		EventDetails details = new EventDetails(this);
+		details.setTargetPlayer(player);
+		this.publishEvent(EventCode.PLAYER_DIE, details);
+	}
+
 	public boolean canAct(Player player) {
 		return player.equals(this.getPlayerWithTurn());
 	}

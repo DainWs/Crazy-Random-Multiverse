@@ -87,7 +87,7 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	private void handlePlayerSurrender(Event event) {
 		Game game = this.getGameFromEvent(event);
 		Player surrendered = event.getDetails().getSourcePlayer();
-		this.gameFlow.eliminatePlayer(game, surrendered);
+		game.eliminate(surrendered);
 	}
 
 	private void handlePlayerAttackCard(Event event) {
