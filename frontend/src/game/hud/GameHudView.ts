@@ -1,3 +1,4 @@
+import type Player from "@/domain/Player";
 import type { Point2D } from "@/domain/Geometry";
 import type { GameScene } from "@/scenes/Game";
 import GameHudLayout from "@/game/hud/GameHudLayout";
@@ -10,7 +11,8 @@ type HudCallbacks = {
     onSurrender: () => void;
 };
 
-/** Shows the round and whose turn it is (UI-3), and the buttons to pass the turn and to surrender, which ask for confirmation (UI-15). */
+/** Shows the round and whose turn it is (UI-3), and the buttons to pass the turn and to surrender,
+ * which asks for confirmation (UI-15). */
 class GameHudView {
     private readonly scene: GameScene;
     private readonly layout: GameHudLayout;
@@ -24,12 +26,17 @@ class GameHudView {
         this.scene = scene;
         this.layout = new GameHudLayout(scene.scale);
 
-        const turnTextPosition = this.layout.turnTextPosition();
-        this.turnText = scene.add.text(turnTextPosition.x, turnTextPosition.y, "", this.textStyle());
-        const passTurnAnchor = this.layout.passTurnButtonAnchor();
-        this.passTurnButton = this.createButton(passTurnAnchor.x, passTurnAnchor.y, getText("ui.game.end_turn"), () => this.enabled && callbacks.onPassTurn());
-        const surrenderAnchor = this.layout.surrenderButtonAnchor(this.passTurnButton.height);
-        this.surrenderButton = this.createButton(surrenderAnchor.x, surrenderAnchor.y, getText("ui.game.surrender"), () => this.enabled && this.askToSurrender(callbacks.onSurrender));
+        this.turnText = this.createText(this.layout.turnTextPosition(), "");
+        this.passTurnButton = this.createButton(
+            this.layout.passTurnButtonAnchor(),
+            getText("ui.game.end_turn"),
+            () => this.whenEnabled(callbacks.onPassTurn)
+        );
+        this.surrenderButton = this.createButton(
+            this.layout.surrenderButtonAnchor(this.passTurnButton.height),
+            getText("ui.game.surrender"),
+            () => this.whenEnabled(() => this.askToSurrender(callbacks.onSurrender))
+        );
 
         for (const element of [this.turnText, this.passTurnButton, this.surrenderButton]) {
             element.setScrollFactor(0);
@@ -65,15 +72,34 @@ class GameHudView {
         const roundLabel = round === undefined ? "" : `${getText("ui.game.round")} ${round}`;
         const playerWithTurn = StoreSystem.getPlayerWithTurn();
         const isOwnTurn = playerWithTurn?.code === StoreSystem.getPlayer().code;
-        const turnLabel = !playerWithTurn ? "" : isOwnTurn ? getText("ui.game.your_turn") : `${getText("ui.game.turn_of")} ${playerWithTurn.name}`;
+        const turnLabel = this.turnLabel(playerWithTurn, isOwnTurn);
 
         this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(" · "));
         this.turnText.setColor(isOwnTurn ? Constants.HUD_OWN_TURN_COLOR : Constants.HUD_COLOR);
     }
 
-    private createButton(rightX: number, bottomY: number, label: string, onClick: () => void): Phaser.GameObjects.Text {
-        const style = { ...this.textStyle(), backgroundColor: Constants.HUD_BUTTON_BACKGROUND, padding: Constants.HUD_BUTTON_PADDING };
-        const button = this.scene.add.text(rightX, bottomY, label, style);
+    private turnLabel(playerWithTurn: Player | undefined, isOwnTurn: boolean): string {
+        if (!playerWithTurn) {
+            return "";
+        }
+
+        return isOwnTurn ? getText("ui.game.your_turn") : `${getText("ui.game.turn_of")} ${playerWithTurn.name}`;
+    }
+
+    private whenEnabled(onClick: () => void) {
+        if (this.enabled) {
+            onClick();
+        }
+    }
+
+    private createText(position: Point2D, text: string): Phaser.GameObjects.Text {
+        return this.scene.add.text(position.x, position.y, text, this.textStyle());
+    }
+
+    private createButton(anchor: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
+        const button = this.createText(anchor, label);
+        button.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND);
+        button.setPadding(Constants.HUD_BUTTON_PADDING);
         button.setOrigin(1, 1);
         button.setInteractive({ useHandCursor: true });
         button.on("pointerup", onClick);
@@ -86,22 +112,27 @@ class GameHudView {
         }
 
         const dialog = this.layout.confirmDialog();
-        const veil = this.scene.add.rectangle(0, 0, dialog.veil.width, dialog.veil.height, 0x000000, Constants.CONFIRM_VEIL_ALPHA).setOrigin(0, 0).setInteractive();
-        const panel = this.scene.add.rectangle(dialog.panel.x, dialog.panel.y, dialog.panel.width, dialog.panel.height, Constants.CONFIRM_DIALOG_BACKGROUND);
-        const question = this.scene.add.text(dialog.question.x, dialog.question.y, getText("ui.game.surrender_confirm"), this.textStyle()).setOrigin(0.5);
+        const { veil, panel } = dialog;
+        const veilShape = this.scene.add
+            .rectangle(0, 0, veil.width, veil.height, Constants.CONFIRM_VEIL_COLOR, Constants.CONFIRM_VEIL_ALPHA)
+            .setOrigin(0, 0)
+            .setInteractive();
+        const panelShape = this.scene.add
+            .rectangle(panel.x, panel.y, panel.width, panel.height, Constants.CONFIRM_DIALOG_BACKGROUND);
+        const question = this.createText(dialog.question, getText("ui.game.surrender_confirm")).setOrigin(0.5);
         const yes = this.createDialogButton(dialog.yes, getText("ui.game.confirm_yes"), () => {
             this.closeConfirmDialog();
             onConfirm();
         });
         const no = this.createDialogButton(dialog.no, getText("ui.game.confirm_no"), () => this.closeConfirmDialog());
 
-        this.confirmDialog = this.scene.add.container(0, 0, [veil, panel, question, yes, no]);
+        this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
         this.confirmDialog.setScrollFactor(0);
         this.confirmDialog.setDepth(Constants.HUD_DEPTH + 1);
     }
 
     private createDialogButton(position: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
-        const button = this.createButton(position.x, position.y, label, onClick);
+        const button = this.createButton(position, label, onClick);
         button.setOrigin(0.5);
         button.setScrollFactor(0);
         return button;

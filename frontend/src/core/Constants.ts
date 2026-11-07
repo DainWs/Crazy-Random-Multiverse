@@ -89,5 +89,8 @@ export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };
 /** Background color of the dialog that asks for confirmation. */
 export const CONFIRM_DIALOG_BACKGROUND = 0x1b2631;
 
+/** Color of the veil that covers the game behind the dialog that asks for confirmation. */
+export const CONFIRM_VEIL_COLOR = 0x000000;
+
 /** Alpha of the veil that covers the game behind the dialog that asks for confirmation. */
 export const CONFIRM_VEIL_ALPHA = 0.6;

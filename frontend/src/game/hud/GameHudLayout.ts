@@ -9,7 +9,7 @@ type ConfirmDialogLayout = {
     no: Point2D;
 };
 
-/** Pure layout of the game HUD for a screen size: the buttons hang from the bottom right corner (UI-3, UI-15). */
+/** Pure layout of the game HUD for a screen size (UI-3, UI-15). */
 class GameHudLayout {
     private readonly screen: Size2D;
 

@@ -10,13 +10,16 @@ describe('GameHudLayout', () => {
   });
 
   it('anchors the pass turn button at the bottom right corner, inside the margin', () => {
-    expect(layout.passTurnButtonAnchor()).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: 800 - Constants.HUD_MARGIN });
+    const expected = { x: 1000 - Constants.HUD_MARGIN, y: 800 - Constants.HUD_MARGIN };
+
+    expect(layout.passTurnButtonAnchor()).toEqual(expected);
   });
 
   it('anchors the surrender button above the pass turn button, with a gap', () => {
     const anchor = layout.surrenderButtonAnchor(30);
 
-    expect(anchor).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: 800 - Constants.HUD_MARGIN - 30 - Constants.HUD_BUTTON_GAP });
+    const expectedY = 800 - Constants.HUD_MARGIN - 30 - Constants.HUD_BUTTON_GAP;
+    expect(anchor).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: expectedY });
   });
 
   describe('confirmDialog', () => {

@@ -33,6 +33,8 @@ class FakeText {
   public setText(text: string | string[]) { this.text = Array.isArray(text) ? text.join('\n') : text; return this; }
   public setColor(color: string) { this.color = color; return this; }
   public setAlpha(alpha: number) { this.alpha = alpha; return this; }
+  public setBackgroundColor() { return this; }
+  public setPadding() { return this; }
   public setOrigin() { return this; }
   public setScrollFactor() { return this; }
   public setDepth() { return this; }
