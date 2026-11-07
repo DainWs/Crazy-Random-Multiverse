@@ -258,6 +258,7 @@ The keys of `CON-18`.
 | `exception.user.invalid_username` | `USER-4` |
 | `exception.user.in_game` | `USER-3` |
 | `exception.player-action.allowed_only_on_turn` | It is not the player's turn |
+| `exception.player-action.game_not_in_progress` | The game is not in progress: it is loading or it has ended (`TURN-7`) |
 | `exception.player-action.selected_card_not_found` | The card is not in the hand |
 | `exception.player-action.selected_card_is_not_combatant` | Only a combatant can be placed |
 | `exception.player-action.selected_card_is_not_equipment` | Only equipment can be equipped |
