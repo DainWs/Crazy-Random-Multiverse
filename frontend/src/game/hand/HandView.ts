@@ -51,11 +51,16 @@ class HandView extends Phaser.GameObjects.Container {
     this.setInteractive(this.layoutHelper.getInteractiveBounds(), Phaser.Geom.Rectangle.Contains);
     scene.add.existing(this);
     InteractiveObjectManager.registerGameObject(this.scene, this);
+    this.listenToPreRender();
+  }
 
+  // The scene events outlive a restart, so the listener goes with the hand
+  private listenToPreRender() {
     // Intentaremos sincronizarlo aquí para analizar la vibración
-    this.scene.events.on('prerender', () => {
-      this.updateBounds();
-    });
+    const sceneEvents = this.scene.events;
+    const onPreRender = () => this.updateBounds();
+    sceneEvents.on('prerender', onPreRender);
+    this.once(Phaser.GameObjects.Events.DESTROY, () => sceneEvents.off('prerender', onPreRender));
   }
 
   public updateBounds() {

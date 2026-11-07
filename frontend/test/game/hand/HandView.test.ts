@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import Phaser from 'phaser';
 import type CardView from '@/game/cards/CardView';
 import HandView from '@/game/hand/HandView';
 
@@ -25,6 +26,18 @@ type FakeCardView = {
 };
 
 describe('HandView', () => {
+  describe('listenToPreRender', () => {
+    it('stops updating its bounds once destroyed', () => {
+      const sceneEvents = new Phaser.Events.EventEmitter();
+      const hand = Object.assign(new Phaser.Events.EventEmitter(), { scene: { events: sceneEvents }, updateBounds: vi.fn() });
+      HandView.prototype['listenToPreRender'].call(hand);
+
+      hand.emit(Phaser.GameObjects.Events.DESTROY);
+
+      expect(sceneEvents.listenerCount('prerender')).toBe(0);
+    });
+  });
+
   describe('holds', () => {
     const hand = {};
     const createCardView = (overrides: Partial<FakeCardView>): CardView => {
