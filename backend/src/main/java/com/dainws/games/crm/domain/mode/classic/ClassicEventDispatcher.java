@@ -12,6 +12,7 @@ import com.dainws.games.crm.domain.core.GameFlow;
 import com.dainws.games.crm.domain.core.GameMode;
 import com.dainws.games.crm.domain.core.event.Event;
 import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.mode.GameModeEventDispatcher;
 import com.dainws.games.crm.domain.mode.GameModes;
 
@@ -77,15 +78,16 @@ public class ClassicEventDispatcher implements GameModeEventDispatcher {
 	private void handlePlayerDie(Event event) {
 		Game game = this.getGameFromEvent(event);
 		this.gameFlow.updateGame(game);
-	}
-
-	private void handlePlayerSurrender(Event event) {
-		Game game = this.getGameFromEvent(event);
-		this.gameFlow.updateGame(game);
 
 		if (game.getPlayerWithTurn().isDeath() && game.countAlivePlayers() > 1) {
 			this.gameFlow.onNextTurn(game);
 		}
+	}
+
+	private void handlePlayerSurrender(Event event) {
+		Game game = this.getGameFromEvent(event);
+		Player surrendered = event.getDetails().getSourcePlayer();
+		this.gameFlow.eliminatePlayer(game, surrendered);
 	}
 
 	private void handlePlayerAttackCard(Event event) {

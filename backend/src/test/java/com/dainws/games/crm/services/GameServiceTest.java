@@ -17,8 +17,12 @@ import com.dainws.games.crm.domain.UserPlayer;
 import com.dainws.games.crm.domain.builder.GameBuilder;
 import com.dainws.games.crm.domain.builder.PlayerBuilder;
 import com.dainws.games.crm.domain.core.Game;
+import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.GameStatusSetter;
+import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
+import com.dainws.games.crm.domain.core.event.EventDetails;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
 import com.dainws.games.crm.domain.mode.GameModes;
 import com.dainws.games.crm.persistence.memory.MemoryGameRepository;
@@ -36,7 +40,7 @@ class GameServiceTest {
 	void beforeEach() {
 		this.partyRepository = new MemoryPartyRepository();
 		this.gameRepository = new MemoryGameRepository();
-		this.gameService = new GameService(null, this.gameRepository, List.of());
+		this.gameService = new GameService(new GameLifeCycle(), this.gameRepository, List.of());
 		this.gameService.setPartyRepository(this.partyRepository);
 		this.user = new User("user-1", "Name", UserPlatform.WEB);
 	}
@@ -79,6 +83,32 @@ class GameServiceTest {
 		assertThatThrownBy(() -> this.gameService.loadCompleteFor(game.getCode(), outsider))
 				.isInstanceOfSatisfying(AccessDeniedException.class,
 						exception -> assertThat(exception.getCodeValue()).isEqualTo("exception.access_denied.wrong_game"));
+	}
+
+	// CON-22
+	@Test
+	void testGivenOneLivingPlayer_whenPlayerDie_thenGameEnds() {
+		Game game = this.createGameWithOneLivingPlayer();
+
+		this.gameService.updateEventGame(new Event(EventCode.PLAYER_DIE, new EventDetails(game)));
+
+		assertThat(game.hasEnded()).isTrue();
+	}
+
+	// CON-22
+	@Test
+	void testGivenOneLivingPlayer_whenPlayerSurrender_thenGameKeepsRunning() {
+		Game game = this.createGameWithOneLivingPlayer();
+
+		this.gameService.updateEventGame(new Event(EventCode.PLAYER_SURRENDER, new EventDetails(game)));
+
+		assertThat(game.hasEnded()).isFalse();
+	}
+
+	private Game createGameWithOneLivingPlayer() {
+		Game game = new GameBuilder().withNRandomPlayers(2).build();
+		game.getPlayers().get(0).die();
+		return game;
 	}
 
 	private Game createGameOfPartyWithStatus(Status status) {

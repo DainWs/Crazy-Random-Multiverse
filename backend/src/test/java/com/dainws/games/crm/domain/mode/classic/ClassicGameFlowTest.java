@@ -15,6 +15,9 @@ import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.GameTurnSetter;
 import com.dainws.games.crm.domain.core.Turn;
 import com.dainws.games.crm.domain.core.board.Coordinate;
+import com.dainws.games.crm.domain.core.board.Zone;
+import com.dainws.games.crm.domain.core.board.ZoneWithLeader;
+import com.dainws.games.crm.domain.core.card.Leader;
 import com.dainws.games.crm.domain.core.card.Warrior;
 import com.dainws.games.crm.domain.core.dealer.Dealer;
 import com.dainws.games.crm.domain.core.event.Event;
@@ -180,6 +183,70 @@ class ClassicGameFlowTest {
 		this.gameFlow.onNextTurn(this.game);
 
 		assertThat(recorder.getCanAttackAtTurnChange()).isTrue();
+	}
+
+	// CON-22
+	@Test
+	void testGivenPlayer_whenEliminatePlayer_thenPlayerDieIsPublishedForThatPlayer() {
+		this.gameFlow.eliminatePlayer(this.game, this.second);
+
+		assertThat(this.publishedCodes()).containsExactly(EventCode.PLAYER_DIE);
+		assertThat(this.eventMonitor.getPublishedEvents().get(0).getDetails().getTargetPlayer()).isEqualTo(this.second);
+	}
+
+	// ELIM-1
+	@Test
+	void testGivenPlayer_whenEliminatePlayer_thenPlayerIsDeadSpectator() {
+		this.gameFlow.eliminatePlayer(this.game, this.second);
+
+		assertThat(this.second.isAlive()).isFalse();
+		assertThat(this.second.isSpectator()).isTrue();
+	}
+
+	// ELIM-3
+	@Test
+	void testGivenPlayerWithCards_whenEliminatePlayer_thenTheirZoneIsEmpty() {
+		this.game.getPlayerZone(this.second).putCombatant(FIRST_COORDINATE, new CardBuilder().buildFullValidWarrior());
+
+		this.gameFlow.eliminatePlayer(this.game, this.second);
+
+		assertThat(this.game.getPlayerZone(this.second).hasCombatants()).isFalse();
+	}
+
+	// ELIM-3
+	@Test
+	void testGivenPlayerWithCardsInHand_whenEliminatePlayer_thenTheirHandIsEmpty() {
+		this.second.getHand().addCard(CardBuilder.buildEquipment());
+
+		this.gameFlow.eliminatePlayer(this.game, this.second);
+
+		assertThat(this.second.getHand().isEmpty()).isTrue();
+	}
+
+	// ELIM-3
+	@Test
+	void testGivenLeaderKilledWithWarriorsLeft_whenUpdateGame_thenTheWarriorsLeaveTheBoard() {
+		Game leaderGame = new GameBuilder() //
+				.withZoneFactory(ZoneWithLeader::new) //
+				.withPlayers(this.first, this.second) //
+				.build();
+		Zone zone = leaderGame.getPlayerZone(this.second);
+		Leader leader = CardBuilder.buildLeader();
+		zone.putCombatant(ZoneWithLeader.LEADER_COORDINATE, leader);
+		zone.putCombatant(new Coordinate(1, 0), new CardBuilder().buildFullValidWarrior());
+		this.killLeader(leader);
+
+		this.gameFlow.updateGame(leaderGame);
+
+		assertThat(zone.hasCombatants()).isFalse();
+		assertThat(this.second.isAlive()).isFalse();
+	}
+
+	private void killLeader(Leader leader) {
+		Leader attacker = CardBuilder.buildLeader();
+		while (leader.isAlive()) {
+			leader.receiveDamageFrom(attacker);
+		}
 	}
 
 	private List<EventCode> publishedCodes() {

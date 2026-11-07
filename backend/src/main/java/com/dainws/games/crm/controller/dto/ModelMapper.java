@@ -105,14 +105,9 @@ public class ModelMapper {
 			gameDto.setPlayerWithTurn(mapPlayerToDto(game.getPlayerWithTurn()));
 		}
 
-		Board board = game.getBoard();
 		List<ZoneDto> playerZones = new ArrayList<>();
 		for (Player player : game.getPlayers()) {
-			Zone playerZone = board.getZoneOf(player);
-
-			if (player.isAlive() && playerZone.isAlive()) {
-				playerZones.add(mapPlayerZoneToDto(game, player, viewer));
-			}
+			playerZones.add(mapPlayerZoneToDto(game, player, viewer));
 		}
 
 		gameDto.setZones(playerZones);

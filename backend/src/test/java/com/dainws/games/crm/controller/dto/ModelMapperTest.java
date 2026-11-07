@@ -93,6 +93,7 @@ class ModelMapperTest {
 	@Test
 	void testGivenGameNotInProgress_whenMapGame_thenThereIsNoPlayerWithTurn() {
 		Game game = new GameBuilder().withNRandomPlayers(2).build();
+		GameStatusSetter.setStatus(game, Status.LOADING);
 
 		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
 
@@ -118,6 +119,29 @@ class ModelMapperTest {
 		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
 
 		assertThat(gameDto.getPlayerWithTurn().getCode()).isEqualTo(game.getPlayerWithTurn().getCode());
+	}
+
+	// ELIM-5
+	@Test
+	void testGivenEliminatedPlayer_whenMapGame_thenTheirZoneStaysInZones() {
+		Game game = new GameBuilder().withNRandomPlayers(3).build();
+		game.getPlayers().get(1).die();
+
+		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
+
+		assertThat(gameDto.getZones()).hasSize(3);
+	}
+
+	// ELIM-5
+	@Test
+	void testGivenEliminatedPlayer_whenMapGame_thenTheirZoneKeepsItsPosition() {
+		Game game = new GameBuilder().withNRandomPlayers(3).build();
+		Player eliminated = game.getPlayers().get(1);
+		eliminated.die();
+
+		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(0));
+
+		assertThat(gameDto.getZones().get(1).getOwner().getCode()).isEqualTo(eliminated.getCode());
 	}
 
 	@Test
@@ -181,19 +205,6 @@ class ModelMapperTest {
 		PlayerDto playerDto = ModelMapper.mapPlayerToDto(player);
 
 		assertThat(playerDto.isSpectator()).isFalse();
-	}
-
-	@Test
-	void testGivenDeadPlayer_whenMapGame_thenGameHasNoZoneOfThatPlayer() {
-		Game game = new GameBuilder() //
-				.withZoneFactory(ZoneWithLeader::new) //
-				.withNRandomPlayers(3) //
-				.build();
-		game.getPlayers().get(0).die();
-
-		GameDto gameDto = ModelMapper.mapGameToDto(game, game.getPlayers().get(1));
-
-		assertThat(gameDto.getZones()).hasSize(2);
 	}
 
 	@Test

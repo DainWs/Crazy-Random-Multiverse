@@ -17,6 +17,7 @@ import com.dainws.games.crm.domain.core.GameCode;
 import com.dainws.games.crm.domain.core.GameLifeCycle;
 import com.dainws.games.crm.domain.core.GameLifeCycle.Status;
 import com.dainws.games.crm.domain.core.event.Event;
+import com.dainws.games.crm.domain.core.event.EventCode;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
 import com.dainws.games.crm.domain.core.player.Player;
 import com.dainws.games.crm.domain.core.player.PlayerCode;
@@ -73,8 +74,11 @@ public class GameService {
 	
 	@EventListener
 	public void updateEventGame(Event event) {
+		if (event.getCode() != EventCode.PLAYER_DIE) {
+			return;
+		}
+
 		Game game = event.getDetails().getGame();
-		
 		if (game.isRunning()) {
 			this.gameLifeCycle.updateGameProgress(game);			
 		}

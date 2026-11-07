@@ -84,6 +84,10 @@ public class Hand {
 		return searchedCards;
 	}
 
+	public void removeAll() {
+		this.cards.clear();
+	}
+
 	public boolean isEmpty() {
 		return this.cards.isEmpty();
 	}

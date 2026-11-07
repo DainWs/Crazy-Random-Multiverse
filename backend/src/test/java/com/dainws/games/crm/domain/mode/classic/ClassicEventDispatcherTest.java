@@ -16,13 +16,13 @@ class ClassicEventDispatcherTest {
 	private static final int PLAYERS = 4;
 
 	@Test
-	void testGivenPlayerWithTurnSurrenderedWithOpponentsAlive_whenDispatchSurrender_thenTurnIsPassed() {
+	void testGivenPlayerWithTurnDiedWithOpponentsAlive_whenDispatchPlayerDie_thenTurnIsPassed() {
 		RecordingGameFlow gameFlow = new RecordingGameFlow();
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
 		game.getPlayerWithTurn().die();
 
 		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
-		Event event = this.createSurrenderEvent(game);
+		Event event = this.createPlayerDieEvent(game);
 
 		dispatcher.dispatch(event);
 
@@ -30,13 +30,13 @@ class ClassicEventDispatcherTest {
 	}
 
 	@Test
-	void testGivenPlayerWithTurnSurrenderedWithOneOpponentLeft_whenDispatchSurrender_thenTurnIsNotPassed() {
+	void testGivenPlayerWithTurnDiedWithOneOpponentLeft_whenDispatchPlayerDie_thenTurnIsNotPassed() {
 		RecordingGameFlow gameFlow = new RecordingGameFlow();
 		Game game = new GameBuilder().withNRandomPlayers(2).build();
 		game.getPlayerWithTurn().die();
 
 		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
-		Event event = this.createSurrenderEvent(game);
+		Event event = this.createPlayerDieEvent(game);
 
 		dispatcher.dispatch(event);
 
@@ -44,7 +44,7 @@ class ClassicEventDispatcherTest {
 	}
 
 	@Test
-	void testGivenPlayerWithoutTurnIsDead_whenDispatchSurrender_thenTurnIsNotPassed() {
+	void testGivenPlayerWithoutTurnIsDead_whenDispatchPlayerDie_thenTurnIsNotPassed() {
 		RecordingGameFlow gameFlow = new RecordingGameFlow();
 		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
 		Player playerWithTurn = game.getPlayerWithTurn();
@@ -56,14 +56,29 @@ class ClassicEventDispatcherTest {
 				.die();
 
 		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
-		Event event = this.createSurrenderEvent(game);
+		Event event = this.createPlayerDieEvent(game);
 
 		dispatcher.dispatch(event);
 
 		assertThat(gameFlow.getNextTurnCount()).isZero();
 	}
 
-	private Event createSurrenderEvent(Game game) {
-		return new Event(EventCode.PLAYER_SURRENDER, new EventDetails(game));
+	@Test
+	void testGivenSurrender_whenDispatchSurrender_thenSurrenderedPlayerIsEliminated() {
+		RecordingGameFlow gameFlow = new RecordingGameFlow();
+		Game game = new GameBuilder().withNRandomPlayers(PLAYERS).build();
+		Player surrendered = game.getPlayerWithTurn();
+		EventDetails details = new EventDetails(game);
+		details.setSourcePlayer(surrendered);
+		Event event = new Event(EventCode.PLAYER_SURRENDER, details);
+		ClassicEventDispatcher dispatcher = new ClassicEventDispatcher(gameFlow);
+
+		dispatcher.dispatch(event);
+
+		assertThat(gameFlow.getEliminatedPlayers()).containsExactly(surrendered);
+	}
+
+	private Event createPlayerDieEvent(Game game) {
+		return new Event(EventCode.PLAYER_DIE, new EventDetails(game));
 	}
 }
