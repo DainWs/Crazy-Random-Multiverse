@@ -86,6 +86,78 @@ describe('StoreSystem', () => {
     });
   });
 
+  // WIN-3, WIN-4
+  describe('result', () => {
+    it('has no result while the game goes on', () => {
+      StoreSystem.applyGame(createSnapshot());
+
+      expect(StoreSystem.getResult()).toBeUndefined();
+    });
+
+    it('has a result without winner when the game ends', () => {
+      StoreSystem.applyGame(createSnapshot());
+
+      StoreSystem.endGame();
+
+      expect(StoreSystem.getResult()).toEqual({});
+    });
+
+    it('stores the winner', () => {
+      StoreSystem.applyGame(createSnapshot());
+      StoreSystem.endGame();
+
+      StoreSystem.setWinner({ code: 'p2', name: 'Player 2' } as GameSnapshot['player']);
+
+      expect(StoreSystem.getResult()?.winner?.code).toBe('p2');
+    });
+
+    it('keeps the result when the game is applied again', () => {
+      StoreSystem.applyGame(createSnapshot());
+      StoreSystem.endGame();
+
+      StoreSystem.applyGame(createSnapshot({ playerWithTurn: undefined }));
+
+      expect(StoreSystem.getResult()).toEqual({});
+    });
+
+    it('drops the result when the game is another one', () => {
+      StoreSystem.applyGame(createSnapshot());
+      StoreSystem.endGame();
+
+      StoreSystem.applyGame(createSnapshot({ gameConfiguration: { gameCode: 'game-2', playerCount: 4 } as GameSnapshot['gameConfiguration'] }));
+
+      expect(StoreSystem.getResult()).toBeUndefined();
+    });
+
+    it('stops the player from acting on their turn once the game ended', () => {
+      const alivePlayer = { code: 'p1', name: 'Player 1', isAlive: true, isSpectator: false } as GameSnapshot['player'];
+      StoreSystem.applyGame(createSnapshot({ player: alivePlayer, playerWithTurn: 'p1' }));
+      StoreSystem.endGame();
+
+      expect(StoreSystem.canPlayerAct()).toBe(false);
+    });
+
+    it('notifies GAME_ENDED when the game ends', () => {
+      StoreSystem.applyGame(createSnapshot());
+      const listener = vi.fn();
+      StoreSystem.onChange(listener);
+
+      StoreSystem.endGame();
+
+      expect(listener).toHaveBeenCalledWith('GAME_ENDED');
+    });
+
+    it('notifies GAME_ENDED when the winner is known', () => {
+      StoreSystem.applyGame(createSnapshot());
+      const listener = vi.fn();
+      StoreSystem.onChange(listener);
+
+      StoreSystem.setWinner({ code: 'p2', name: 'Player 2' } as GameSnapshot['player']);
+
+      expect(listener).toHaveBeenCalledWith('GAME_ENDED');
+    });
+  });
+
   describe('clearGame', () => {
     it('drops the game', () => {
       StoreSystem.applyGame(createSnapshot());

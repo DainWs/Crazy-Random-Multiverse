@@ -157,9 +157,9 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 - [x] Check elimination and absence against `ELIM-*`, `ABSENT-*` and `SPEC-3` and implement the differences: `ModelMapper` drops the zones of eliminated players from `zones` (`ELIM-5`); deleting a user in a locked party throws `exception.party.locked`, so the player is never eliminated and the cleanup run stops there (`ABSENT-3`); surrender publishes no `PLAYER_DIE` (`CON-22`)
 - [x] Cancel the loading when a player removed during it leaves fewer than 2 (`LOAD-4`, `CON-22`): publish `GAME_CANCELLED`, remove the game and unlock the party with a `party:info`. Nobody publishes `GAME_CANCELLED` today, and a player removed during the load must not block the start (`LOAD-3`)
-- [ ] Replace local game-over detection with the backend game-end event (`WIN-3`)
-- [ ] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
-- [ ] Disable interaction after game end (`WIN-4`)
+- [x] Replace local game-over detection with the backend game-end event (`WIN-3`)
+- [x] Determine winner from backend; victory and defeat over the board, with the winner's name and the countdown from a client constant, and automatic return to the party when it unlocks (`WIN-4`, `WIN-5`)
+- [x] Disable interaction after game end (`WIN-4`)
 - [x] Reject server-side any action when the game is not in progress (`TURN-7`; `PlayerTurnAction` only checks the turn today)
 - [ ] Clear targeting state after an action, turn change or invalid action
 
@@ -264,6 +264,8 @@ Not tied to a phase.
 
 Not a phase. What could not be verified from the agent environment, for a person to check.
 
+- [ ] A person plays a game to its end in a real browser (`WIN-4`, `WIN-5`): the result must cover the board with victory or defeat, the winner and a countdown, the cards must not react, and the client must go back to the party when it unlocks. Not checked: Phaser views are not tested
+- [ ] A person plays a game of three in which one player is deleted by the cleanup run (`ABSENT-3`, `LOAD-4`): the player must be eliminated, the turn must pass if it was theirs, and the party must drop them when it unlocks. A deletion during the load must cancel it when fewer than 2 remain. Not checked: it needs the real Socket.IO server and the scheduled cleanup
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)
 - [ ] A person tests a real browser connection with the session cookie
 - [ ] A person drops a card of the hand on the board in a real browser (`PUT_ACTION`). The card must stay in the slot while the server answers, the board must redraw with the event when it accepts it, and when it rejects it (for example out of turn) the card must go back to its place in the hand with the message. Not checked: Phaser views are not tested and the game is not started from the agent environment

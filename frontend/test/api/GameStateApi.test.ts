@@ -78,6 +78,29 @@ describe('GameStateApi', () => {
     });
   });
 
+  // WIN-3
+  describe('game end', () => {
+    it('ends the game with GAME_END', () => {
+      listener(createEvent(1, 'GAME_END'));
+
+      expect(StoreSystem.getResult()).toEqual({});
+    });
+
+    it('stores the winner of GAME_END_WITH_WINNER', () => {
+      listener(createEvent(1, 'GAME_END'));
+
+      listener(createEvent(2, 'GAME_END_WITH_WINNER', { targetPlayer: createPlayer('p2') }));
+
+      expect(StoreSystem.getResult()?.winner?.code).toBe('p2');
+    });
+
+    it('ends no game before GAME_END', () => {
+      listener(createEvent(1, 'PLAYER_DIE', { targetPlayer: createPlayer('p2') }));
+
+      expect(StoreSystem.getResult()).toBeUndefined();
+    });
+  });
+
   describe('reset', () => {
     // CON-12
     it('drops the events waiting', () => {

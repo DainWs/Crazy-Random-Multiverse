@@ -4,6 +4,7 @@ import type { GameEventCode } from '@/api/models/GameEventCode';
 import type { PlayerCode } from '@/domain/Player';
 import { toCard, toCardCode } from '@/api/dtos/CardDto';
 import { toGameSnapshot } from '@/api/dtos/GameDto';
+import { toPlayer } from '@/api/dtos/PlayerDto';
 import GameEventQueue from '@/api/GameEventQueue';
 import socketEventHandler from '@/api/SocketEventHandler';
 import StoreSystem from '@/core/StoreSystem';
@@ -27,6 +28,7 @@ function applyEvent(event: EventDto) {
   const localPlayerCode = StoreSystem.getUser().code;
   StoreSystem.applyGame(toGameSnapshot(event.details.game, localPlayerCode));
   applyHand(event, localPlayerCode);
+  applyResult(event);
 }
 
 /** Only the events of the local player change their hand: the others never carry a card they could see (CON-13, HAND-3). */
@@ -41,6 +43,17 @@ function applyHand(event: EventDto, localPlayerCode: PlayerCode) {
     StoreSystem.removeCardFromHand(toCardCode(sourceCard.catalogCode));
   } else if (event.code === 'PLAYER_DIE' && targetPlayer?.code === localPlayerCode) {
     StoreSystem.setPlayerHand([]);
+  }
+}
+
+/** The server decides when the game ends and who wins (WIN-3). */
+function applyResult(event: EventDto) {
+  const { targetPlayer } = event.details;
+
+  if (event.code === 'GAME_END') {
+    StoreSystem.endGame();
+  } else if (event.code === 'GAME_END_WITH_WINNER' && targetPlayer) {
+    StoreSystem.setWinner(toPlayer(targetPlayer));
   }
 }
 

@@ -108,7 +108,7 @@ const bindListeners = () => {
 
     currentParty.value = receivedParty;
     if (syncingState === 'IDLE') syncingState = 'IN_PARTY';
-    else followLiveState('IN_PARTY', ['IDLE']);
+    else followLiveState('IN_PARTY', receivedParty.isLocked ? ['IDLE'] : ['IDLE', 'GAME_IN_PROGRESS']);
   });
 
   userEventApi.onUserSynced(finishSync);

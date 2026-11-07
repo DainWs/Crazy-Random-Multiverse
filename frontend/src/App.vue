@@ -2,7 +2,6 @@
 import { onMounted, onUnmounted } from 'vue';
 import { AUTO, Scale } from 'phaser';
 import { Boot } from '@/scenes/Boot';
-import { GameOver } from '@/scenes/GameOver';
 import { GameLoad } from '@/scenes/GameLoad';
 import { GameScene } from '@/scenes/Game';
 import { MainMenu } from '@/scenes/MainMenu';
@@ -27,8 +26,7 @@ const config: Phaser.Types.Core.GameConfig = {
         Preloader,
         MainMenu,
         GameLoad,
-        GameScene,
-        GameOver
+        GameScene
     ],
     audio: {
         disableWebAudio: false

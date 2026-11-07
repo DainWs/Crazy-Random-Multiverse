@@ -31,6 +31,11 @@ describe('SessionSystem', () => {
     party.users = members;
     return party;
   };
+  const createLockedParty = (isLocked: boolean) => {
+    const party = createParty();
+    party.isLocked = isLocked;
+    return party;
+  };
   const gameEvent = { code: 'GAME_SYNC', details: {} } as never;
   const activeGame: ActiveGame = { gameCode: 'game-1', leaders: [] };
   const createSnapshot = () => ({ gameConfiguration: { gameCode: 'game-1' }, player: { code: 'usr-1' } }) as GameSnapshot;
@@ -325,6 +330,40 @@ describe('SessionSystem', () => {
       SessionSystem.abandonGame();
 
       expect(gameStateApi.reset).toHaveBeenCalledTimes(1);
+    });
+
+    // WIN-5
+    it('goes back to the party when party:info unlocks it during the game', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      partyListener(createLockedParty(false));
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+    });
+
+    // WIN-5
+    it('stays in the game when party:info arrives with the party locked', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      partyListener(createLockedParty(true));
+
+      expect(SessionSystem.userState.value).toBe('GAME_IN_PROGRESS');
+    });
+
+    // WIN-5, UI-17
+    it('drops the game state when party:info unlocks the party', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+      StoreSystem.applyGame(createSnapshot());
+
+      partyListener(createLockedParty(false));
+
+      expect(() => StoreSystem.getPlayer()).toThrowError('Game not initialized');
     });
 
     // UI-17

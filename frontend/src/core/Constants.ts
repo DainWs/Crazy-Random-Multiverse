@@ -74,6 +74,30 @@ export const HUD_TURN_SEPARATOR = ' · ';
 /** Alpha of a HUD button that cannot be used now (UI-4). */
 export const HUD_DISABLED_ALPHA = 0.4;
 
+/** Seconds the result stays on screen before the party unlocks: the default of `crm.game.result-duration` (WIN-4, WIN-5). */
+export const GAME_RESULT_COUNTDOWN_SECONDS = 15;
+
+/** Milliseconds between two ticks of the countdown of the result (WIN-4). */
+export const GAME_RESULT_TICK_MS = 1000;
+
+/** Font size of the title of the result (victory or defeat). */
+export const GAME_RESULT_TITLE_FONT_SIZE = '64px';
+
+/** Font size of the winner and the countdown of the result. */
+export const GAME_RESULT_DETAIL_FONT_SIZE = '28px';
+
+/** Vertical distance in pixels between two lines of the result. */
+export const GAME_RESULT_LINE_GAP = 48;
+
+/** Text color of the title of a victory. */
+export const GAME_RESULT_VICTORY_COLOR = '#2ecc71';
+
+/** Text color of the title of a defeat. */
+export const GAME_RESULT_DEFEAT_COLOR = '#e74c3c';
+
+/** Alpha of the veil that covers the board while the result is shown (WIN-4). */
+export const GAME_RESULT_VEIL_ALPHA = 0.7;
+
 /** Distance in pixels between two HUD buttons. */
 export const HUD_BUTTON_GAP = 16;
 
@@ -85,6 +109,9 @@ export const HUD_BUTTON_BACKGROUND = '#34495e';
 
 /** Depth of the game HUD: above the cards and below the messages about rejected actions. */
 export const HUD_DEPTH = 15000;
+
+/** Depth of the result of the game: above the HUD and its dialogs. */
+export const GAME_RESULT_DEPTH = HUD_DEPTH + 10;
 
 /** Width and height in pixels of the dialog that asks for confirmation (UI-15). */
 export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };

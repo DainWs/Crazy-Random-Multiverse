@@ -13,6 +13,7 @@ import { getText } from '@/core/Texts';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import CombatantView from '@/game/cards/CombatantView';
+import GameResultView from '@/game/result/GameResultView';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -25,13 +26,15 @@ class GameScene extends Scene {
     private cardTooltipView: GlobalCardTooltipView;
     private hudView: GameHudView;
     private rejectionText?: Phaser.GameObjects.Text;
+    private resultView?: GameResultView;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
     private readonly storeChangeHandlers: Record<GameChange, () => void> = {
         GAME_UPDATED: () => this.renderZones(),
         HAND_RESTORED: () => this.renderHand(),
-        HAND_CHANGED: () => this.handController.syncCards(StoreSystem.getPlayerHand())
+        HAND_CHANGED: () => this.handController.syncCards(StoreSystem.getPlayerHand()),
+        GAME_ENDED: () => this.showResult()
     };
 
     public constructor() {
@@ -64,6 +67,10 @@ class GameScene extends Scene {
             onSurrender: () => this.cardController.surrender()
         });
         this.renderAll();
+        this.resultView = undefined;
+        if (StoreSystem.getResult()) {
+            this.showResult();
+        }
 
         const stopListening = StoreSystem.onChange((change) => this.storeChangeHandlers[change]());
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
@@ -103,26 +110,20 @@ class GameScene extends Scene {
         }
     }
 
-    public changeScene() {
-        this.scene.start('GameOver');
-    }
-
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
         this.hudView.refresh(this.cardController.canAct());
+    }
 
-        const playerZone = StoreSystem.getPlayerZone();
-        if (!playerZone.isAlive()) {
-            this.scene.start('GameOver');
-            return;
-        }
+    /** Shows the result over the board, or updates it when the winner arrives (WIN-4). */
+    private showResult() {
+        const result = StoreSystem.getResult()!;
 
-        const player = StoreSystem.getPlayer();
-        const othersZones = StoreSystem.getZones().filter(zone => zone.owner !== player);
-        if (othersZones.length > 0 && othersZones.every(zone => !zone.isAlive())) {
-            this.scene.start('GameOver');
-            return;
+        if (this.resultView) {
+            this.resultView.showResult(result);
+        } else {
+            this.resultView = new GameResultView(this, result);
         }
     }
 

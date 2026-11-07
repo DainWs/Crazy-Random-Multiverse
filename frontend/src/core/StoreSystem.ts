@@ -16,6 +16,11 @@ type SessionCode = UserCode | PlayerCode;
 type PlayerHand = Card[];
 type PlayerZone = Zone;
 
+/** How the game ended: the winner is known with the event that names them (WIN-3). */
+type GameResult = {
+  winner?: Player;
+}
+
 type GameState = {
   gameConfiguration: GameConfiguration;
   battlefield: Battlefield;
@@ -26,13 +31,14 @@ type GameState = {
   player: Player;
   playerZone: PlayerZone;
   playerHand: PlayerHand;
+  result?: GameResult;
 }
 
-/** What a GameDto carries: the hand does not travel in every event (CON-11). */
-type GameSnapshot = Omit<GameState, 'playerHand'>;
+/** What a GameDto carries: the hand and the result do not travel in every event (CON-11, WIN-3). */
+type GameSnapshot = Omit<GameState, 'playerHand' | 'result'>;
 
-/** What changed in the game state: the views draw the zones again, restore the hand without animating it, or animate the cards that came or went. */
-type GameChange = 'GAME_UPDATED' | 'HAND_RESTORED' | 'HAND_CHANGED';
+/** What changed in the game state: the views draw the zones again, restore the hand without animating it, animate the cards that came or went, or show the result. */
+type GameChange = 'GAME_UPDATED' | 'HAND_RESTORED' | 'HAND_CHANGED' | 'GAME_ENDED';
 
 type Store = {
   user?: User;
@@ -51,11 +57,32 @@ function notifyChange(change: GameChange) {
   notifyListeners(changeListeners, 'game change listener', change);
 }
 
-/** Replaces the state with the one the server sent, and keeps the hand of the same game, which the snapshots do not replace. */
+/** Replaces the state with the one the server sent, and keeps the hand and the result of the same game, which the snapshots do not replace. */
 function applyGame(snapshot: GameSnapshot) {
-  const isSameGame = store.gameState?.gameConfiguration.gameCode === snapshot.gameConfiguration.gameCode;
-  store.gameState = { ...snapshot, playerHand: (isSameGame && store.gameState?.playerHand) || [] };
+  const previous = store.gameState;
+  const isSameGame = previous?.gameConfiguration.gameCode === snapshot.gameConfiguration.gameCode;
+  const playerHand = (isSameGame && previous?.playerHand) || [];
+  const result = isSameGame ? previous?.result : undefined;
+
+  store.gameState = { ...snapshot, playerHand, result };
   notifyChange('GAME_UPDATED');
+}
+
+/** The server decided the end of the game, so nobody acts any more (WIN-3, WIN-4). */
+function endGame() {
+  const gameState = store.gameState!;
+  gameState.result = gameState.result ?? {};
+  notifyChange('GAME_ENDED');
+}
+
+function setWinner(winner: Player) {
+  const gameState = store.gameState!;
+  gameState.result = { ...gameState.result, winner };
+  notifyChange('GAME_ENDED');
+}
+
+function getResult(): GameResult | undefined {
+  return store.gameState?.result;
 }
 
 function clearGame() {
@@ -112,10 +139,10 @@ function getPlayer(): Player {
   return store.gameState.player;
 }
 
-/** Whether the local player holds the turn and can still act (UI-4, ELIM-2). */
+/** Whether the local player holds the turn and can still act: not eliminated and before the game ends (UI-4, ELIM-2, WIN-4). */
 function canPlayerAct(): boolean {
   const player = getPlayer();
-  return player.isAlive && !player.isSpectator && store.gameState?.playerWithTurn === player.code;
+  return player.isAlive && !player.isSpectator && !store.gameState?.result && store.gameState?.playerWithTurn === player.code;
 }
 
 /** The player who holds the turn, unknown until the first `TURN_CHANGE` (CON-32). */
@@ -202,6 +229,9 @@ function getBattlefield(): Battlefield {
 const StoreSystem = {
   onChange,
   applyGame,
+  endGame,
+  setWinner,
+  getResult,
   clearGame,
   getSessionCode,
   isSessionCode,
@@ -223,5 +253,5 @@ const StoreSystem = {
   getBattlefield
 }
 
-export type { GameChange, GameSnapshot, GameState };
+export type { GameChange, GameResult, GameSnapshot, GameState };
 export default StoreSystem;
