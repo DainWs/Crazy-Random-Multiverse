@@ -17,7 +17,6 @@ class HandController {
     this.handView = new HandView(this.scene);
 
     this.scene.children.add(this.handView);
-    this.scene.events.on('grabCard', this.onGrabCard.bind(this));
     this.scene.input.on('gameout', () => this.handView.disableCardListeners(false));
     this.scene.input.on('gameover', () => this.handView.enableCardListeners());
   }
@@ -84,19 +83,6 @@ class HandController {
       this.scene.tweens.killTweensOf(view);
       view.destroy();
     }
-  }
-
-  // Useless?
-  public onGrabCard(event: InteractionEvent<Card>) {
-    const cardView = this.findCardViewOf(event.source);
-    if (cardView) {
-      event.onComplete(() => this.handView.removeCard(cardView));
-    }
-  }
-
-  private findCardViewOf(card: Card): CardView | undefined {
-    const cardViews = this.handView.getCards();
-    return cardViews.find(cardView => cardView.card.equals(card));
   }
 }
 
