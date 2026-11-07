@@ -133,19 +133,11 @@ A value cannot live in two places. Event names and exception codes shared betwee
 - Modules by responsibility, not by type.
 - No `import *` or `import package.*`. Explicit imports.
 
-### Imperative programming with intermediate variables
+### Intermediate variables for transformations
 
 > Good code is not code with fewer lines. It is code that another developer can understand quickly.
 
-Whenever possible, use intermediate variables instead of nesting calls or chaining complex operations inside the arguments of another call.
-
-When transforming, calculating or retrieving data:
-
-1. Store the result in a local variable with a descriptive name and an explicit type.
-2. Keep transformations separate from assignments and calls.
-3. Name the variable after the purpose of the resulting data.
-4. Avoid deeply nested expressions and excessively long chains.
-5. Simple Stream API (or array method) operations stay chained, but their final result is assigned to an intermediate variable before it is used.
+The result of a transformation (a Stream API pipeline, an array method chain, a calculation) is not written inside the arguments of another call. It is first assigned to a local variable named after the purpose of the resulting data, and that variable is passed.
 
 **Preferred:**
 
@@ -165,20 +157,6 @@ cardDto.setEquipment(
                 .map(ModelMapper::mapCardToDto)
                 .toList()
 );
-```
-
-Exception: a lookup whose only purpose is to be invoked right away does not need its own variable. In a dispatcher backed by a `Map<Key, Function>`, the handler is retrieved and applied in the same expression:
-
-```java
-return this.handlers.get(key)
-        .apply(param);
-```
-
-instead of:
-
-```java
-Function<Param, Result> handler = this.handlers.get(key);
-return handler.apply(param);
 ```
 
 Readability, maintainability and ease of debugging come before minimizing the number of lines.
