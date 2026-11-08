@@ -23,7 +23,7 @@ Phases 1, 2 and 2.5 of `ROADMAP.md` have no test phase: their tests were written
 
 ## T2.6 — Game resource loading
 
-Started at: `25b5c36`
+Started at: `25b5c36` · Finished at: `4ab48d3`
 
 Needs the tooling of T6.
 
@@ -32,10 +32,12 @@ Needs the tooling of T6.
 
 ## T3 — Authoritative game state and hand
 
+Started at: `4ab48d3`
+
 Needs the tooling of T6.
 
-- [ ] Reloading the page in the middle of a game shows the board again from `GAME_SYNC`, downloading the `fixed` resources without sending `/ready` (`CON-23`, `LOAD-6`)
-- [ ] Reloading the page in the middle of the load goes back to the loading screen from `GAME_LOADING` and still confirms `/ready` (`CON-23`, `LOAD-2`)
+- [x] Reloading the page in the middle of a game shows the board again from `GAME_SYNC`, downloading the `fixed` resources without sending `/ready` (`CON-23`, `LOAD-6`)
+- [x] Reloading the page in the middle of the load goes back to the loading screen from `GAME_LOADING` and still confirms `/ready` (`CON-23`, `LOAD-2`)
 
 ## T4 — Core gameplay
 
