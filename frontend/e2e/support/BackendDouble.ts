@@ -5,6 +5,7 @@ import type { EventDetailsDto, EventDto } from '@/api/dtos/EventDto';
 import type { ResourceDto, ResourceManifestDto } from '@/api/dtos/ResourceManifestDto';
 import type { GameEventCode } from '@/api/models/GameEventCode';
 import type { PreparedGame } from '@/support/preparedGame';
+import { expect } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 import { cardImageKey } from '@/domain/ResourceKeys';
 import { LOCAL_USER } from '@/support/preparedGame';
@@ -22,6 +23,8 @@ const SOCKET_EVENT = '42';
 const GAME_EVENT_CHANNEL = 'game:event';
 const USER_SYNCED_CHANNEL = 'user:synced';
 const GAME_SYNC_SEQUENCE = 10;
+const BOARD_DRAWN_TIMEOUT_MS = 15000;
+const LEADER_CARD_TYPE = 'LEADER';
 
 const NO_SESSION = { status: 400, json: { key: 'exception.user.not_found' } };
 const TEXTURES_URL_PREFIX = '/resources/e2e/';
@@ -53,6 +56,7 @@ class BackendDouble {
     public readonly actions: ActionDto[] = [];
     public readonly unexpectedRequests: string[] = [];
 
+    private readonly servedTextures = new Set<string>();
     private readonly page: Page;
     private socket?: WebSocketRoute;
     private prepared?: PreparedGame;
@@ -76,6 +80,14 @@ class BackendDouble {
     /** With a prepared game the client finds a session and enters the game in progress (CON-23, LOAD-6). */
     public prepare(prepared: PreparedGame): void {
         this.prepared = prepared;
+    }
+
+    /** Only the views of the cards request their art, and the leaders are downloaded earlier, so the rest mark a drawn board (UI-21). */
+    public async waitForBoardDrawn(): Promise<void> {
+        const cards = this.collectCards().filter((card) => card.type !== LEADER_CARD_TYPE);
+        const keys = cards.map(imageKeyOf);
+
+        await expect.poll(() => keys.filter((key) => !this.servedTextures.has(key)), { timeout: BOARD_DRAWN_TIMEOUT_MS }).toEqual([]);
     }
 
     public emitGameEvent(code: GameEventCode, details: EventDetailsDto): void {
@@ -105,13 +117,13 @@ class BackendDouble {
     private handleTexture(route: Route) {
         const key = new URL(route.request().url()).pathname.replace(TEXTURES_URL_PREFIX, '');
         const file = TEXTURE_FILE_BY_KEY_PREFIX[key.split('.')[0]] ?? ART_TEXTURE_FILE;
+        this.servedTextures.add(key);
 
         return route.fulfill({ path: fileURLToPath(new URL(`../fixtures/textures/${file}`, import.meta.url)) });
     }
 
     private createManifest(): ResourceManifestDto {
-        const cards = this.collectCards();
-        const dynamicKeys = cards.map((card) => cardImageKey(card.type, card.catalogCode.code, card.rarity));
+        const dynamicKeys = this.collectCards().map(imageKeyOf);
 
         return { fixed: FIXED_KEYS.map(createResource), dynamic: [...new Set(dynamicKeys)].map(createResource) };
     }
@@ -149,6 +161,10 @@ class BackendDouble {
     private emitEvent(event: EventDto) {
         this.socket!.send(`${SOCKET_EVENT}${JSON.stringify([GAME_EVENT_CHANNEL, event])}`);
     }
+}
+
+function imageKeyOf(card: CardDto): string {
+    return cardImageKey(card.type, card.catalogCode.code, card.rarity);
 }
 
 function createResource(key: string): ResourceDto {

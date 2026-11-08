@@ -4,6 +4,11 @@ import type { PlayerDto } from '@/api/dtos/PlayerDto';
 import type { UserDto } from '@/api/dtos/UserDto';
 import type { ZoneDto, ZoneSlotDto } from '@/api/dtos/ZoneDto';
 
+interface PositionDto {
+    row: number;
+    column: number;
+}
+
 interface PreparedGame {
     user: UserDto;
     game: GameDto;
@@ -106,5 +111,13 @@ function createPreparedGame(playerCount: number): PreparedGame {
     };
 }
 
+/** The state of a game after a change in one slot, as the server would send it in the next event (CON-10). */
+function withCombatant(game: GameDto, zone: number, position: PositionDto, combatant: CardDto): GameDto {
+    const changed = structuredClone(game);
+    changed.zones[zone].combatants[position.row][position.column].combatant = combatant;
+
+    return changed;
+}
+
 export type { PreparedGame };
-export { LOCAL_USER, createPreparedGame };
+export { LOCAL_USER, createPreparedGame, withCombatant };

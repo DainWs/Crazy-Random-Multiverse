@@ -71,12 +71,12 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 - [ ] Cover the sharpness of the cards and texts, so that it can leave "Pending checks"
 
 **Smoke test:**
-- [ ] Phaser starts with WebGL and reaches the main menu with no console errors other than the expected 400 of `/user` without a session
-- [ ] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`)
-- [ ] Dragging a warrior from the hand to a valid slot sends `PUT_ACTION` with the row of that slot (`CON-14`) and the board shows it, with `dragenter` and `drop` reaching the slot under the pointer
-- [ ] Clicking an own card and moving over a valid target draws the green arrow and shows the target in the side panel (`VIEW-4`, `UI-5`)
-- [ ] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`COMBAT-11`)
-- [ ] In a game of three players, hover, drag and drop and targets work on the rotated side zones (`VIEW-2`)
+- [x] Phaser starts with WebGL and reaches the main menu with no console errors other than the expected 400 of `/user` without a session
+- [x] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`)
+- [x] Dragging a warrior from the hand to a valid slot sends `PUT_ACTION` with the row of that slot (`CON-14`) and the board shows it, with `dragenter` and `drop` reaching the slot under the pointer
+- [x] Clicking an own card and moving over a valid target draws the green arrow and shows the target in the side panel (`VIEW-4`, `UI-5`)
+- [x] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`COMBAT-11`)
+- [x] In a game of three players, hover, drag and drop and targets work on the rotated side zones (`VIEW-2`). A card can only be dropped on the zone of its owner, which is never rotated, so the drop on a rotated zone is checked to send no action
 
 ## T13 — Remaining checks
 
