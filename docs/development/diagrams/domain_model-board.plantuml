@@ -42,9 +42,9 @@ note right of Zone
 end note
 
 note left of BaseZone
-	A **BaseZone** is composed of the 1st and 2nd rows,
-	where cards protecting the **Leader** in the 3rd row
-	will be placed. Only the **Leader** can be in the 3rd row
+	A **BaseZone** is composed of the front and back rows,
+	where cards protecting the **Leader** in the leader row
+	will be placed. Only the **Leader** can be in the leader row
 end note 
 
 note bottom of OthersZone
