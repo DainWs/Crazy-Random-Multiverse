@@ -8,6 +8,7 @@ export default defineConfig({
     }
   },
   test: {
+    include: ['test/**/*.test.ts'],
     globals: true,
     environment: 'jsdom',
     silent: 'passed-only',

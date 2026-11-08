@@ -18,7 +18,7 @@ export default [
     ]
   },
   {
-    files: ['src/**/*.ts', 'src/**/*.vue', 'test/**/*.ts'],
+    files: ['src/**/*.ts', 'src/**/*.vue', 'test/**/*.ts', 'e2e/**/*.ts', 'playwright.config.ts'],
     languageOptions: {
       parserOptions: {
         parser: tseslint.parser,

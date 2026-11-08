@@ -19,7 +19,9 @@
         "build:nolog": "vite build --config vite/config.prod.mjs",
         "lint": "eslint .",
         "test": "vitest",
-        "test:run": "vitest run"
+        "test:run": "vitest run",
+        "test:e2e": "playwright test",
+        "test:e2e:update": "playwright test --update-snapshots"
     },
     "dependencies": {
         "phaser": "^4.2.1",
@@ -28,6 +30,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@playwright/test": "1.65.0",
         "@types/node": "^22.20.4",
         "@vitejs/plugin-vue": "^5.2.2",
         "@vue/tsconfig": "^0.7.0",
