@@ -66,9 +66,9 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 - [x] Local double of the backend, prepared game state and test textures, failing on any request it does not expect
 
 **Visual regression:**
-- [ ] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`)
-- [ ] The board, the slots and the arrow keep their shape at zooms from 0.5 to 1.1 (`PHASER4-SPECS.md`)
-- [ ] Cover the sharpness of the cards and texts, so that it can leave "Pending checks"
+- [x] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`)
+- [x] The board, the slots and the arrow keep their shape at zooms from 0.5 to 1.1 (`PHASER4-SPECS.md`)
+- [x] Cover the sharpness of the cards and texts, so that it can leave "Pending checks"
 
 **Smoke test:**
 - [x] Phaser starts with WebGL and reaches the main menu with no console errors other than the expected 400 of `/user` without a session
@@ -130,7 +130,7 @@ Checks done by hand in a real browser, with two clients against a local backend,
 
 Not a phase. What could not be verified from the agent environment, for a person to check, and why it has no test.
 
-- [ ] A person judges the sharpness of the cards and texts on Phaser 4 in a real browser, at several zoom levels (`agents/PHASER4-SPECS.md`), and compares the start of a game with Phaser 3, where the HUD and the card panel are cut off at the initial zoom of 1.1. Not checked: it needs a person's eye, and the comparison needs the old version. A two-player game was played on Phaser 4 from the agent environment and covered the rest of the view
+- [x] A person judges the sharpness of the cards and texts on Phaser 4 in a real browser, at several zoom levels (`agents/PHASER4-SPECS.md`), and compares the start of a game with Phaser 3, where the HUD and the card panel are cut off at the initial zoom of 1.1. Not checked: it needs a person's eye, and the comparison needs the old version. A two-player game was played on Phaser 4 from the agent environment and covered the rest of the view
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092. No test: the rules of `CLAUDE.md` do not allow a real port, and `SocketIOConfigurationTest` covers the start and stop of the server
 - [ ] A person tests a real browser connection with the session cookie. No test: the doubles of T6 replace the server that sets the cookie, and `SocketFactory.test.ts` already covers `withCredentials`
 - [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`). No test: T6 checks the row that is sent, and what is left needs a real backend
