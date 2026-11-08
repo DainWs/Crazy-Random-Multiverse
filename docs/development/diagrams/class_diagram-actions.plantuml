@@ -1,9 +1,5 @@
-@startuml	
+@startuml
 title "Class diagram - Actions"
-
-interface EventTrigger {
- +setEventPublisher(EventPublisher)
-}
 
 interface ActionContext {
  +getGame(): Game
@@ -15,34 +11,46 @@ interface ActionContext {
  +getTargetPlayer(): Player
  +getTargetZone(): Zone
  +getTargetCoordinate(): Coordinate
- +getTargetCard();: Card
+ +getTargetCard(): Card
 }
 
-interface Action extends EventTrigger {
- +perform(ActionContext): void
+interface Action {
+ +perform(ActionContext): ActionResult
+}
+
+class ActionResult {
+ +isSuccessful(): boolean
+ +getExceptionCode(): ExceptionCode
+ +{static} successful(): ActionResult
+ +{static} failed(ExceptionCode): ActionResult
+ +{static} playerActionFailed(PlayerActionExceptionCode.Code): ActionResult
 }
 
 interface ActionContextFactory {
- +createContext(ActionContextTemplate): ActionContext
-}
-
-interface ActionExecutor {
- +execute(Action, ActionContextTemplate): void
+ +createContextFromTemplate(ActionContextTemplate): ActionContext
 }
 
 abstract class PlayerTurnAction {
- +<b>perform(ActionContext): final void</b>
- #{abstract} performPlayerAction(ActionContext)
+ +<b>perform(ActionContext): final ActionResult</b>
+ #{abstract} performPlayerAction(ActionContext): ActionResult
 }
 
-EventTrigger <|.. ActionExecutor
+abstract class UseCardAction
 
-ActionExecutor *--> ActionContextFactory
-ActionExecutor --> Action
+ActionContextFactory ..> ActionContextTemplate
+ActionContextFactory ..> ActionContext
+ActionContext <|.. MutableActionContext
+
 Action --> ActionContext
+Action --> ActionResult
 
-Action <|.. SurrenderAction
 Action <|.. PlayerTurnAction
-PlayerTurnAction <|-- PutCardAction
-PlayerTurnAction <|-- MoveCardAction
+PlayerTurnAction <|-- PutAction
+PlayerTurnAction <|-- MoveAction
+PlayerTurnAction <|-- AttackAction
+PlayerTurnAction <|-- EquipAction
+PlayerTurnAction <|-- PassTurnAction
+PlayerTurnAction <|-- SurrenderAction
+PlayerTurnAction <|-- UseCardAction
+UseCardAction <|-- UseSpellAction
 @enduml

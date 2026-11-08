@@ -2,7 +2,7 @@
 
 Mandatory conventions for the tests in `frontend/`. Complements `agents/CODESTYLE.md` (section 9) and `agents/FRONTEND-CODESTYLE.md`.
 
-The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted in section 14, and the golden rule of `agents/CODESTYLE.md` applies.
+The existing tests already mostly follow this guide. Where the existing code departs from it, the golden rule of `agents/CODESTYLE.md` applies.
 
 ---
 
@@ -28,7 +28,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 ## 3. Structure
 
 - `describe('UnitName', ...)` at the top, named exactly after the class, module or function under test.
-- A nested `describe` per method or per scenario group (`describe('connect', ...)`, `describe('with CardPutPattern', ...)`, `describe('after game initialization', ...)`).
+- A nested `describe` per method or per scenario group (`describe('connect', ...)`, `describe('hand', ...)`, `describe('after applying a game', ...)`).
 - `it('...')`, not `test`. The message is the name of the test and must be **as concise and descriptive as possible about what is actually being verified**.
   - Format: a verb in the present tense plus the result, plus the condition only when it changes the outcome. `<verb> <result> [when|for|on <condition>]`.
   - No "should", no "test that", no "it", no "correctly", no "properly". The enclosing `describe` already names the unit and the method, so the message does not repeat them.
@@ -43,10 +43,10 @@ The existing tests already mostly follow this guide. Where the existing code dep
 
 ## 4. Setup
 
-- Shared data is declared with `let` in the `describe` and assigned in `beforeEach`. Nothing is initialized at module level except pure factories (`const createActionEvent = (...) => ...`) and constants.
+- Shared data is declared with `let` in the `describe` and assigned in `beforeEach`. Nothing is initialized at module level except pure factories (`const createEvent = (...) => ...`) and constants.
 - `beforeEach` always starts by clearing mock state: `vi.clearAllMocks()` for `vi.fn()` and module mocks, `vi.restoreAllMocks()` when `vi.spyOn` was used (as in `PartyApi.test.ts`).
 - Prefer a **fresh object per test** over shared mutable state. `afterEach` is only needed to undo what `beforeEach` could not (fake timers, global stubs): `vi.useRealTimers()`, `vi.unstubAllGlobals()`.
-- **Module-level singletons** (`StoreSystem`, `EventSystem`) keep state between tests of the same file. Reset them explicitly in `beforeEach` through their own API (`StoreSystem.initializeGame(...)`) or isolate the module with `vi.resetModules()` plus a dynamic `import()`. A test must not depend on the order in which tests run.
+- **Module-level singletons** (`StoreSystem`, `EventSystem`) keep state between tests of the same file. Reset them explicitly in `beforeEach` through their own API (`StoreSystem.clearGame()`) or isolate the module with `vi.resetModules()` plus a dynamic `import()`. A test must not depend on the order in which tests run.
 - Deterministic data only. Time-dependent code uses `vi.useFakeTimers()`; never real `setTimeout` waits. Randomness is stubbed (`vi.spyOn(Math, 'random')`) when it influences the result.
 - Values the test asserts are written explicitly in the test, not computed with the same logic as the code under test.
 
@@ -61,7 +61,7 @@ Test what can be isolated from Phaser and the browser:
 | Layer | What is tested |
 |---|---|
 | `api/` | URL, method and body of each REST call; DTO ↔ domain mapping; socket binding, reconnection and event dispatch. |
-| `core/` | Resolvers and patterns (`ActionResolver`), store behavior, camera calculations and movement, interaction managers, tween parameters. |
+| `core/` | Load planning (`GameLoadPlanner`), store behavior, camera calculations and movement, interaction managers, tween parameters. |
 | `game/` | Pure layout and geometry (`HandLayoutCalculator`, `ZoneLayout`, `CardStackLayoutHelper`), text and color utilities. |
 | `domain/` | Behavior of domain classes when they have logic. |
 
@@ -107,7 +107,7 @@ it.each([
 - *Act*: execute the code under test.
 - *Assert*: check the result.
 
-The three steps are separated by a blank line and go in that order. They are not commented. When the act and the assertion are the same expression (`expect(() => ...).toThrow()`, `expect(resolver.apply(event)).toBe(true)`), only the arrange is separated.
+The three steps are separated by a blank line and go in that order. They are not commented. When the act and the assertion are the same expression (`expect(() => ...).toThrow()`, `expect(isFinalRejection(error)).toBe(true)`), only the arrange is separated.
 
 ```ts
 it('sends POST request to the leave endpoint', async () => {
@@ -124,7 +124,7 @@ it('sends POST request to the leave endpoint', async () => {
 
 ## 8. Assertions
 
-- **One behavior per test.** Several `expect` calls are allowed only when they describe the same behavior (for example the method and the body of one request, or `apply` returning `true` and the resolver staying incomplete). Independent results go in separate tests.
+- **One behavior per test.** Several `expect` calls are allowed only when they describe the same behavior (for example the method and the body of one request). Independent results go in separate tests.
 - Use the most specific matcher: `toBe` for primitives and references, `toEqual` for structures, `toBeCloseTo` for floating point, `toThrowError('message')` or `toThrow(ErrorClass)` for errors, `toHaveLength` for arrays.
 - `expect.objectContaining` / `expect.any(Function)` are for shapes the test does not control. Do not use them to avoid writing the value that matters.
 - Promises are awaited: `await expect(promise).rejects.toThrow(...)`. A test never returns before its async work finishes.
@@ -139,8 +139,8 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 
 ### Order of preference
 
-1. **The real object**, when it is pure and cheap (`HandLayoutCalculator`, `ActionResolver` with `CardPutPattern`).
-2. **A minimal fake object** with only the members the code under test uses, built inline or by a small factory, and cast once with `as unknown as T` (`mockSocket`, `mockScene`, `createActionEvent`).
+1. **The real object**, when it is pure and cheap (`HandLayoutCalculator`, `planLoad` of `GameLoadPlanner`).
+2. **A minimal fake object** with only the members the code under test uses, built inline or by a small factory, and cast once with `as unknown as T` (`mockSocket`, `mockScene`, `createEvent`).
 3. **`vi.fn()` stubs** on those fake objects, to control return values and to observe calls at the boundary.
 4. **`vi.spyOn`** for browser and global APIs (`globalThis.fetch`, `localStorage`, `Math.random`). Always restored with `vi.restoreAllMocks()`.
 5. **`vi.mock('@/path')`** for module-level collaborators that cannot be injected, such as static systems (`CardAnimator`, `CardInteractionDispatcher`, `LocalStorageApi`). The mock factory returns only the exports that the test needs.
@@ -193,16 +193,3 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 - [ ] Module-level state is reset in `beforeEach`
 - [ ] Mocks are cleared or restored in `beforeEach`; timers and global stubs are restored in `afterEach`
 - [ ] No `.only`, `.skip`, `console.log` or unnecessary `any`
-
----
-
-## 14. Known departures in the existing tests
-
-They are listed so they are not copied. The golden rule of `agents/CODESTYLE.md` says when they are fixed.
-
-- `test/core/StoreSystem.test.ts` → `before game initialization`: the test builds its own object and throws by hand, so it verifies nothing about `StoreSystem`. Replace it with a real check using `vi.resetModules()` and a dynamic import.
-- `StoreSystem` is a module singleton and its tests share state; reset it in `beforeEach` as in section 4.
-- Many tests use `as any` to build fakes (`SocketService.test.ts`, `StoreSystem.test.ts`); prefer `as unknown as T` or a typed factory in new tests.
-- `test/core/interactions/DragAndDrop.test.ts` and other interaction tests build a large `mockScene` inline. When a second file needs the same fake, extract it to a shared helper (section 9).
-- Some tests contain several unrelated assertions in one `it` (for example `calculateSpaceBetweenCards` for 0 and -1 in one test). Split or parameterize them.
-- `ActionResolver` tests build events with a hand-written `getTrigger` override; if more tests need it, move the factory to a shared helper.

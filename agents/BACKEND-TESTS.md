@@ -11,7 +11,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 - JUnit 5, with `@Test` on every case and `@BeforeEach` to initialize the common data and the object under test.
 - Parameterized tests with `@ParameterizedTest` when the same behavior is tested with several inputs (section 6).
 - Assertions from `org.junit.jupiter.api.Assertions`: `assertEquals`, `assertTrue`, `assertFalse`, `assertThrows`, etc. They are imported statically.
-- AssertJ (`assertThat`) comes with `spring-boot-starter-test` and is used in a few places; it is tolerated where it already exists (for example for collections), but new code uses JUnit.
+- AssertJ (`assertThat`) comes with `spring-boot-starter-test` and is used in many existing tests; it is tolerated where it already exists, but new code uses JUnit.
 - Spring Test (`@SpringBootTest`) only in integration tests.
 - No new test frameworks or libraries are added without asking first.
 
@@ -228,6 +228,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 ## 14. Integration tests
 
+- Today no integration test runs: `GameBehaviorIntegrationTest`, the only one, is abstract and has no subclass.
 - They use local doubles, never real services (see `CLAUDE.md`).
 - Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`.
 - Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`) is imported with `@Import`.
@@ -237,7 +238,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 
 ### Endpoint tests
 
-There are no controller tests today. When they are added, they use `@SpringBootTest` with `@AutoConfigureMockMvc` and `@WithMockUser` (the backend uses Spring Security). The route goes in an `API_ENDPOINT` constant, the endpoint call is extracted into a private helper method returning `ResultActions`, and each `andExpect(...)` counts as one assertion.
+Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.standaloneSetup(controller)` with `setControllerAdvice(new RestExceptionAdvice())`, on the real controller with in-memory repositories or fakes. They start no Spring context, so they are unit tests and run with `mvn test`, and they do not cover the security filters or the real session. The route goes in a constant (`ACTION_URL`), and each `andExpect(...)` counts as one assertion.
 
 ---
 
@@ -253,5 +254,5 @@ There are no controller tests today. When they are added, they use `@SpringBootT
 
 They are listed so they are not copied. The golden rule of `agents/CODESTYLE.md` says when they are fixed.
 
-- `GameBehaviorIntegrationTest` and the `*BehaviorIntegrationTest` classes inherit from abstract bases; they are kept.
+- `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run (`ROADMAP.md`, Pending tasks).
 - `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.

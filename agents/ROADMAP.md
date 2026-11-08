@@ -14,6 +14,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Commands | REST `POST /game/{gameCode}/action` |
 | Game state authority | Backend. The frontend never mutates state before server confirmation |
 | Rejected requests | The HTTP response says it: 2xx or 400 with an `exception.*` key (`CON-18`). There is no socket channel for errors (`CON-20`) |
+| Event order | Sending events to the clients stays on a thread pool, so they can arrive out of order. The client orders them by `sequence` (`CON-12`) |
 
 ## Phase 1 — Backend contract (blockers)
 
@@ -283,6 +284,7 @@ Not tied to a phase.
 - [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
 - [ ] Replace any use of `exception.game.not_in_progress` with `exception.player-action.game_not_in_progress`, the only key of `TURN-7` in the contract. `PassTurnAction` returned the old one on 2026-11-05; the code was not checked when the key was removed from the contract
+- [ ] Decide what to do with `GameBehaviorIntegrationTest`: the only `*IntegrationTest`, abstract and with no subclass, so `mvn verify -P integration-tests` runs nothing. `GameEventWatcher`, `GameEventDebuger`, `PartyPopulator`, `UserPopulator` and `PersistenceTestConfiguration` are only referenced among themselves
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
 - [x] State in `PARTY-5` that the party screen shows its code to be copied, and that its format is up to the server

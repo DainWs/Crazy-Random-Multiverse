@@ -1,35 +1,46 @@
 @startuml
-title "Class diagram - Dealer [In progress]"
+title "Class diagram - Dealer"
 
 class Dealer {
- -deckRepository: DeckRepository
- +setDealStrategy(dealStrategy): void
- +dealCards(): List<Card>
- +dealCards(dealStrategy): List<Card>
+ -deck: Deck
+ -dealStrategyFactory: DealStrategyFactory
+ +Dealer(Deck)
+ +dealCardsToAlivePlayers(Game): void
+ +dealCardsToPlayer(Game, Player): void
+ +dealCardsToPlayer(Game, Player, DealStrategy): void
+ +setDealStrategyFactory(DealStrategyFactory): void
 }
 
-interface DeckRepository {
- +getDeck(DeckFilter): Deck
- +getSpellDeck(): Deck
- +getEquipmentDeck(): Deck
- +getLeaderDeck(): Deck
- +getCommonWarriorDeck(): Deck
- +getUncommonWarriorDeck(): Deck
- +getRareWarriorDeck(): Deck
- +getEpicWarriorDeck(): Deck
- +getLegendaryWarriorDeck(): Deck
- +getMythicWarriorDeck(): Deck
+interface Deck {
+ +drawWarrior(WarriorRarity): Optional<Warrior>
+ +drawEquipment(): Optional<Equipment>
+ +drawLeader(): Optional<Leader>
+ +drawSpell(): Optional<Spell>
 }
 
 interface DealStrategy {
  +drawFrom(Deck): List<Card>
 }
 
-Dealer *--> DeckRepository
-Dealer o--> DealStrategy
-Dealer ..> Deck
+interface DealStrategyFactory {
+ +createStrategy(int): DealStrategy
+}
+
+Dealer *--> Deck
+Dealer o--> DealStrategyFactory
+Dealer ..> DealStrategy
+DealStrategyFactory ..> DealStrategy
 DealStrategy --> Deck
 
+Deck <|.. MemoryCardRepository
+
 DealStrategy <|.. LeaderStrategy
+DealStrategy <|.. WarriorStrategy
+DealStrategy <|.. EquipmentStrategy
+DealStrategy <|.. SpellStrategy
+DealStrategy <|.. ComposedStrategy
+
+DealStrategyFactory <|.. RandomDealStrategyFactory
+DealStrategyFactory <|.. ClassicDealStrategyFactory
 
 @enduml

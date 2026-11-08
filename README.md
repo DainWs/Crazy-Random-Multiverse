@@ -39,7 +39,7 @@ Sorry, this is not implemented yet 😥
 
 ## Requirements
 
-You can find the requirements [here](docs/Requirements.md)
+You can find the functional specification [here](agents/SPECS.md), and the original requirements, kept as background, [here](docs/Requirements.md)
 
 ## Features
 
@@ -51,9 +51,6 @@ current and future features that will make the project more ease to reuse:
  	- [ ] XML File persistence implementation (Cards, Games, Parties and Users)
  	- [ ] JSON File persistence implementation (Cards, Games, Parties and Users)
  	- [ ] DB persistence implementation (Cards, Games, Parties and Users)
-
- - Languages
- 	- [X] Custom language implementations.
 
  - Coding
  	- [X] Users custom implementations with **java**.

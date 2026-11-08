@@ -33,6 +33,6 @@ actor User
 :PlayerWithTurn: --> (Attack card)
 :PlayerWithTurn: --> (Equip card)
 :PlayerWithTurn: --> (Surrender)
-:PlayerWithTurn: --> (Use spell)
+:PlayerWithTurn: --> (Use spell [Post-MVP])
 :PlayerWithTurn: --> (Pass turn)
 @enduml 

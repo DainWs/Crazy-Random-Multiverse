@@ -32,7 +32,7 @@ Practical corollary on DRY: two pieces of code that look alike today but change 
 - **Code, names, logs and comments in English.**
 - Existing exception messages in Spanish are tolerated; new ones are written in English.
 - Documentation in `docs/` is written in English. Existing `TODO`s in Spanish are tolerated.
-- Text the player sees does not live in the code: it is identified by key (`exception.*`, card `name` and `description`) and translated on the client (see `docs/Languages.md`).
+- Text the player sees does not live in the code: it is identified by key (`exception.*`, card `name` and `description`) and translated on the client (`frontend/src/core/Texts.ts`, `UI-2`).
 
 ---
 
