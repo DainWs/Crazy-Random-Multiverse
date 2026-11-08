@@ -15,13 +15,17 @@ Monorepo with two applications:
 
 **Always** read these files before writing code:
 
-- `agents/SPECS.md` — functional specification and index of `agents/specs/`, with one file per area. Source of truth for behavior. Read the files of the area you touch.
-- `agents/VIEW-SPECS.md` — appearance of the interface.
-- `agents/PHASER4-SPECS.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look.
+- `agents/SPECS.md` — functional specification and index of `agents/specs/`. Source of truth for behavior.
+- `agents/specs/*` — the specification, with one file per area.
 - `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.
-- `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
-- `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. They are not suggestions.
-- `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. They are not suggestions.
+
+Read these only when the task needs them:
+
+- `agents/VIEW-SPECS.md` — appearance of the interface. When the task changes how the interface looks, animates or sounds.
+- `agents/PHASER4-SPECS.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look. When working on Phaser views or when something in the view looks or behaves wrong.
+- `agents/CODESTYLE.md` — general conventions and architecture. When writing code in either application. They are not suggestions.
+- `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. When writing backend code. They are not suggestions.
+- `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. When writing frontend code. They are not suggestions.
 
 If anything you are about to do contradicts those documents, stop and ask. Existing code that does not comply is not refactored on your own initiative: respect the patterns of the module you are touching.
 
