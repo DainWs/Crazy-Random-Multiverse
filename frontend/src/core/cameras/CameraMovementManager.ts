@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 
 
 const ZOOM_STEP = 0.15;

@@ -1,5 +1,6 @@
 import type CameraSystem from "@/core/CameraSystem";
 import type { Point2D } from "@/domain/Geometry";
+import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import HandLayoutCalculator, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
 

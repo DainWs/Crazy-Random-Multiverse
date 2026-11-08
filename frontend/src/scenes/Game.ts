@@ -9,7 +9,7 @@ import AnimationSystem from '@/core/AnimationSystem';
 import StoreSystem from '@/core/StoreSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
-import { Scene } from 'phaser';
+import Phaser, { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
 import CameraSystem from '@/core/CameraSystem';

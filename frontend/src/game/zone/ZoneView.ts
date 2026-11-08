@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameScene } from "@/scenes/Game";
 import Zone from "@/domain/Zone";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";

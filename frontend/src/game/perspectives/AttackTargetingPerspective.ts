@@ -1,6 +1,7 @@
 import type Perspective from "@/game/perspectives/Perspective";
 import type ZoneSlotView from "@/game/zone/ZoneSlotView";
 import type { GameScene } from "@/scenes/Game";
+import Phaser from "phaser";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import CardView from "@/game/cards/CardView";
 import * as Constants from "@/core/Constants";

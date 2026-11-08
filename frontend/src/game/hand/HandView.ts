@@ -1,6 +1,7 @@
 import type { GameScene } from "@/scenes/Game";
 import type CardView from "@/game/cards/CardView";
 import type { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
+import Phaser from "phaser";
 import { CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";

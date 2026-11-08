@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import Battlefield from '@/domain/Battlefield';
 import BattlefieldViewStrategy from '@/game/battlefield/BattlefieldViewStrategy';
 import { dispatchBattlefieldViewStrategy } from '@/game/battlefield/BattlefieldViewStrategyDispatcher';

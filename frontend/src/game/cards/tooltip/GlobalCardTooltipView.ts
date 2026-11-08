@@ -2,6 +2,7 @@ import type { GameScene } from "@/scenes/Game";
 import type Card from "@/domain/Card";
 import type CardView from "@/game/cards/CardView";
 import type { CardTooltip } from "@/game/cards/tooltip";
+import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 

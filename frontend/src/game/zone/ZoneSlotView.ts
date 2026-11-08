@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
