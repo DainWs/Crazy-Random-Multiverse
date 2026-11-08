@@ -182,6 +182,10 @@ General rules in `agents/CODESTYLE.md`, section 9.
 - It is only allowed for classes from external libraries that cannot easily be instantiated or faked, and `@MockBean` in integration. Ask for confirmation before using it for the first time.
 - `verify()` is forbidden in new code: the test checks the result, not the calls.
 
+### Endpoint tests
+
+Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.standaloneSetup(controller)` with `setControllerAdvice(new RestExceptionAdvice())`, on the real controller with in-memory repositories or fakes. They start no Spring context, so they are unit tests and run with `mvn test`, and they do not cover the security filters or the real session. The route goes in a constant (`ACTION_URL`), and each `andExpect(...)` counts as one assertion.
+
 ---
 
 ## 10. Assertions
@@ -235,10 +239,6 @@ General rules in `agents/CODESTYLE.md`, section 9.
 - Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
 - The event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
 - Test methods may declare `throws Exception` when the scenario requires it.
-
-### Endpoint tests
-
-Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.standaloneSetup(controller)` with `setControllerAdvice(new RestExceptionAdvice())`, on the real controller with in-memory repositories or fakes. They start no Spring context, so they are unit tests and run with `mvn test`, and they do not cover the security filters or the real session. The route goes in a constant (`ACTION_URL`), and each `andExpect(...)` counts as one assertion.
 
 ---
 

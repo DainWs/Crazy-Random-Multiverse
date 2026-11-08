@@ -29,6 +29,8 @@ Read these only when the task needs them:
 - `agents/CODESTYLE.md` — general conventions and architecture. When writing code in either application. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. When writing backend code. They are not suggestions.
 - `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. When writing frontend code. They are not suggestions.
+- `agents/BACKEND-TESTS.md` — mandatory conventions for the backend tests. When writing backend tests. They are not suggestions.
+- `agents/FRONTEND-TESTS.md` — mandatory conventions for the frontend tests. When writing frontend tests. They are not suggestions.
 
 If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the guides, the golden rule of `agents/CODESTYLE.md` applies instead.
 

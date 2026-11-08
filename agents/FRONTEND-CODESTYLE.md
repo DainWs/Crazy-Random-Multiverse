@@ -126,7 +126,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 
 Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is not debated by hand.
 
-- 4-space indentation, single quotes, semicolons, no trailing commas, `printWidth` 160, `arrowParens: always`.
+- 4-space indentation, single quotes, semicolons, no trailing commas, `printWidth` 130, `arrowParens: always`.
 - Every `if`, `for` and `while` declares its scope with `{}`, even when the body is one statement (`if (x) y();` is not written).
 - Inside a function body, statements are grouped by the object they build: the local variables it needs (`const veilColor = ...`), its creation and its configuration (`veilShape.setOrigin(0, 0);`) go together. A single blank line separates each group from the next, and also separates the shared setup at the start (`const { veil, panel } = dialog;`) from the first group. There are no blank lines inside a group, and never more than one in a row.
 - A Phaser `GameObject` is created into a variable and configured in separate statements on it (`veilShape.setOrigin(0, 0);` then `veilShape.setInteractive();`), not chained after `this.scene.add.*`.

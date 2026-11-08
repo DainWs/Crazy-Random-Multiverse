@@ -125,7 +125,7 @@ Types of the details:
 | `attackAvailable` | boolean | The card can attack now: it belongs to the player who receives the event, it is their turn, and the card has not used its attacks this turn, is not in placement cooldown and is not a protected leader (`PROT-4`) |
 | `targetable` | boolean | The card is not protected and belongs to another player |
 
-`damage`, `armor` and `health` are always sent, also with a value of 0, and `maxHealth` on combatants. The damage and armor types are sent too, because they apply to the equipment attached later (`EQUIP-1`).
+- **CON-33** `damage`, `armor` and `health` are always sent, also with a value of 0, and `maxHealth` on combatants. The damage and armor types are sent too, because they apply to the equipment attached later (`EQUIP-1`).
 
 - **CON-27** `damage`, `armor`, `health` and `maxHealth` are effective values, with the equipment included. `equipment` only lists what the card holds.
 - **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`. For a spectator, `attackAvailable` and `targetable` are always `false`.
