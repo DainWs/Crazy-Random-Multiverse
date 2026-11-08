@@ -203,8 +203,8 @@ Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on i
 - [x] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
 - [x] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
 - [x] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
-- [ ] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default
-- [ ] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
+- [x] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default: `pixelArt` still enables it, so the configuration stays as it was. The visual check is in "Pending checks"
+- [x] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
 
 ## Phase 7 — Base assets and stability
 
@@ -295,6 +295,8 @@ Not tied to a phase.
 
 Not a phase. What could not be verified from the agent environment, for a person to check.
 
+- [ ] A person judges the sharpness of the cards and texts on Phaser 4 in a real browser, at several zoom levels (`agents/PHASER4-SPECS.md`), and compares the start of a game with Phaser 3, where the HUD and the card panel are cut off at the initial zoom of 1.1. Not checked: it needs a person's eye, and the comparison needs the old version. A two-player game was played on Phaser 4 from the agent environment and covered the rest of the view
+- [ ] A person plays a game of 3 or more players on Phaser 4 in a real browser and checks the rotated side zones: hover, drag and drop and targets (`VIEW-2`). Not checked: the game played from the agent environment had two players, so only the top and bottom zones
 - [ ] A person plays a game to its end in a real browser (`WIN-4`, `WIN-5`): the result must cover the board with victory or defeat, the winner and a countdown, the cards must not react, and the client must go back to the party when it unlocks. Not checked: Phaser views are not tested
 - [ ] A person plays a game of three in which one player is deleted by the cleanup run (`ABSENT-3`, `LOAD-4`): the player must be eliminated, the turn must pass if it was theirs, and the party must drop them when it unlocks. A deletion during the load must cancel it when fewer than 2 remain. Not checked: it needs the real Socket.IO server and the scheduled cleanup
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092 (it cannot be done from the agent environment)

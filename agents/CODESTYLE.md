@@ -3,7 +3,7 @@
 General mandatory conventions for `backend/` and `frontend/`. Language-specific rules live in:
 
 - `agents/BACKEND-CODESTYLE.md` — Backend (Java 17, Spring Boot, Socket.IO).
-- `agents/FRONTEND-CODESTYLE.md` — Frontend (TypeScript, Vue 3, Phaser 3, Vite).
+- `agents/FRONTEND-CODESTYLE.md` — Frontend (TypeScript, Vue 3, Phaser 4, Vite).
 
 **Golden rule: do not break existing patterns.** The repository already contains design decisions (Template, Strategy, Factory, Facade in the domain; static systems in the frontend). New code follows the rules in this guide; existing code is not refactored just because it does not comply. If a rule clashes with a pattern already established in the module you are touching, the module's pattern wins and you flag it.
 

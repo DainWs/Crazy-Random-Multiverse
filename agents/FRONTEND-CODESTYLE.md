@@ -1,6 +1,6 @@
 # Frontend Code Style Guide
 
-Mandatory conventions for `frontend/` (TypeScript, Vue 3, Phaser 3, Vite 6, Socket.IO client, Vitest). Complements `agents/CODESTYLE.md`.
+Mandatory conventions for `frontend/` (TypeScript, Vue 3, Phaser 4, Vite 6, Socket.IO client, Vitest). Complements `agents/CODESTYLE.md`.
 
 The frontend is a **view of the server state**: Vue mounts the application and the menus; Phaser draws and animates the game. The backend is the authority: the frontend sends commands and renders the confirmed events.
 

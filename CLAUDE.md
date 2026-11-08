@@ -9,7 +9,7 @@ The game is a strategic showdown in which each player receives a random leader c
 Monorepo with two applications:
 
 - `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`).
-- `frontend/` — TypeScript, Vue 3, Phaser 3, Vite. View of the server state. Tests: `npm run test:run`; lint: `npm run lint`.
+- `frontend/` — TypeScript, Vue 3, Phaser 4, Vite. View of the server state. Tests: `npm run test:run`; lint: `npm run lint`.
 
 ## Reference documentation
 
@@ -17,6 +17,7 @@ Monorepo with two applications:
 
 - `agents/SPECS.md` — functional specification and index of `agents/specs/`, with one file per area. Source of truth for behavior. Read the files of the area you touch.
 - `agents/VIEW-SPECS.md` — appearance of the interface.
+- `agents/PHASER4-SPECS.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look.
 - `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.
 - `agents/CODESTYLE.md` — general conventions and architecture. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. They are not suggestions.
