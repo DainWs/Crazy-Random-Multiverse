@@ -16,11 +16,14 @@ Monorepo with two applications:
 **Always** read these files before writing code:
 
 - `agents/SPECS.md` — functional specification and index of `agents/specs/`. Source of truth for behavior.
-- `agents/specs/*` — the specification, with one file per area.
+- `agents/specs/CONTRACT.md` — the backend ↔ frontend contract.
+- The files holding the rules cited by the bullets of the phase, and the files of the rules those rules cite directly. For a bullet that cites no rule, the file of its area. `agents/SPECS.md` has the index of prefixes.
 - `agents/ROADMAP.md` — phased work plan and table of already-closed decisions.
 
 Read these only when the task needs them:
 
+- `agents/ROADMAP-ARCHIVE.md` — the closed phases of the roadmap. When the history of a closed phase is needed.
+- `agents/ROADMAP-TEST.md` — the equivalent of the roadmap for tests: cross-cutting tests, visual regression and pending checks. When working on a test phase or recording something that could not be verified.
 - `agents/VIEW-SPECS.md` — appearance of the interface. When the task changes how the interface looks, animates or sounds.
 - `agents/PHASER4-SPECS.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look. When working on Phaser views or when something in the view looks or behaves wrong.
 - `agents/CODESTYLE.md` — general conventions and architecture. When writing code in either application. They are not suggestions.
@@ -29,7 +32,7 @@ Read these only when the task needs them:
 
 If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the guides, the golden rule of `agents/CODESTYLE.md` applies instead.
 
-The PlantUML diagrams in `docs/development/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when explicitly asked to.
+The PlantUML diagrams in `docs/development/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when user allow to do it.
 
 The backend ↔ frontend contract is in `agents/specs/CONTRACT.md`. Do not invent what it does not define: ask.
 
@@ -60,17 +63,17 @@ Your job is to **write the code and its tests**. Execution against real systems 
 
 Work on **one roadmap phase per session**. Do not start the next one.
 
-1. Read the indicated phase in `agents/ROADMAP.md`.
+1. Read the indicated phase in `agents/ROADMAP.md`, or in `agents/ROADMAP-TEST.md` for a test phase.
 2. Propose a short plan and wait for confirmation before writing code.
-3. Before the first change, record in the phase the commit it starts from (the current `HEAD`): `Started at: <short hash>`. In the same edit, close the previous phase with `Finished at: <short hash>`, which is that same `HEAD` (the last commit of the previous phase).
+3. Before the first change, record in the phase the commit it starts from (the current `HEAD`): `Started at: <short hash>`. In the same edit, close the previous phase with `Finished at: <short hash>`, which is that same `HEAD` (the last commit of the previous phase). `agents/ROADMAP.md` and `agents/ROADMAP-TEST.md` form a single sequence: the previous phase is the last one started in either file. A closed phase of `agents/ROADMAP.md` moves to `agents/ROADMAP-ARCHIVE.md` in that same edit.
 4. Implement bullet by bullet.
 5. Write the tests in the same commit as the code they test.
-6. Record progress in `agents/ROADMAP.md` by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
+6. Record progress in the roadmap of the phase by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
 7. When the phase is finished, summarize what was done. Do not record `Finished at` yet: it is written when the next phase starts.
 
 When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
 
-Whenever something could not be verified (a check that needs a person, a real browser, a running server or anything outside the agent environment), record it as a `- [ ]` bullet in the "Pending checks" section of `agents/ROADMAP.md`, saying what to check and why it could not be done.
+Whenever something could not be verified (a check that needs a person, a real browser, a running server or anything outside the agent environment), record it as a `- [ ]` bullet in the "Pending checks" section of `agents/ROADMAP-TEST.md`, saying what to check and why it could not be done.
 
 ## Commits
 
