@@ -111,6 +111,14 @@ function createPreparedGame(playerCount: number): PreparedGame {
     };
 }
 
+/** A game that is loading: only the leaders are placed, and there is no round or turn yet (SETUP-2, CON-22). */
+function createLoadingGame(playerCount: number): PreparedGame {
+    const { user, game } = createPreparedGame(playerCount);
+    const zones = game.zones.map((zone) => ({ ...zone, combatants: [zone.combatants[0], createEmptyRow(), createEmptyRow()] }));
+
+    return { user, game: { code: game.code, zones }, hand: [] };
+}
+
 /** The state of a game after a change in one slot, as the server would send it in the next event (CON-10). */
 function withCombatant(game: GameDto, zone: number, position: PositionDto, combatant: CardDto): GameDto {
     const changed = structuredClone(game);
@@ -120,4 +128,4 @@ function withCombatant(game: GameDto, zone: number, position: PositionDto, comba
 }
 
 export type { PreparedGame };
-export { LOCAL_USER, createPreparedGame, withCombatant };
+export { LOCAL_USER, createLoadingGame, createPreparedGame, withCombatant };

@@ -23,6 +23,8 @@ Phases 1, 2 and 2.5 of `ROADMAP.md` have no test phase: their tests were written
 
 ## T2.6 — Game resource loading
 
+Started at: `25b5c36`
+
 Needs the tooling of T6.
 
 - [ ] The loading screen shows the progress of the downloads and then the wait for the other players, and `/ready` is only sent after the downloads (`UI-22`, `LOAD-2`)
@@ -56,7 +58,7 @@ Needs the tooling of T6.
 
 ## T6 — Visual regression and smoke test
 
-Started at: `e92fea0`
+Started at: `e92fea0` · Finished at: `25b5c36`
 
 Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 

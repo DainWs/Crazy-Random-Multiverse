@@ -13,6 +13,7 @@ import { LOCAL_USER } from '@/support/preparedGame';
 const SOCKET_URL = /\/socket\.io\//;
 const ACTION_URL = /\/game\/[^/]+\/action$/;
 const MANIFEST_URL = /\/game\/[^/]+\/resources$/;
+const READY_URL = /\/game\/[^/]+\/ready$/;
 const TEXTURE_URL = '**/resources/e2e/*';
 const BACKEND_PATH = /^\/(game|party|register|user|resources|socket\.io)(\/|$)/;
 
@@ -55,11 +56,17 @@ const FIXED_KEYS = [
 class BackendDouble {
     public readonly actions: ActionDto[] = [];
     public readonly unexpectedRequests: string[] = [];
+    public readonly textureRequests: string[] = [];
+    public readyCalls = 0;
 
     private readonly servedTextures = new Set<string>();
+    private readonly heldTextures = new Set<string>();
+    private readonly failingTextures = new Set<string>();
+    private readonly heldRoutes: Route[] = [];
     private readonly page: Page;
     private socket?: WebSocketRoute;
     private prepared?: PreparedGame;
+    private connectionEventCode: GameEventCode = 'GAME_SYNC';
     private sequence = GAME_SYNC_SEQUENCE;
 
     public constructor(page: Page) {
@@ -72,6 +79,7 @@ class BackendDouble {
         await this.page.route('**/user', (route) => this.handleFindUser(route));
         await this.page.route('**/register', (route) => route.fulfill({ json: LOCAL_USER }));
         await this.page.route(MANIFEST_URL, (route) => route.fulfill({ json: this.createManifest() }));
+        await this.page.route(READY_URL, (route) => this.handleReady(route));
         await this.page.route(ACTION_URL, (route) => this.handleAction(route));
         await this.page.route(TEXTURE_URL, (route) => this.handleTexture(route));
         await this.page.routeWebSocket(SOCKET_URL, (socket) => this.handleSocket(socket));
@@ -80,6 +88,35 @@ class BackendDouble {
     /** With a prepared game the client finds a session and enters the game in progress (CON-23, LOAD-6). */
     public prepare(prepared: PreparedGame): void {
         this.prepared = prepared;
+    }
+
+    /** The client finds a session and a game that is still loading (CON-23). */
+    public prepareLoading(prepared: PreparedGame): void {
+        this.prepared = prepared;
+        this.connectionEventCode = 'GAME_LOADING';
+    }
+
+    /** The download of this texture stays unanswered until `releaseTextures`. */
+    public holdTexture(key: string): void {
+        this.heldTextures.add(key);
+    }
+
+    public async releaseTextures(): Promise<void> {
+        this.heldTextures.clear();
+        await Promise.all(this.heldRoutes.splice(0).map((route) => this.fulfillTexture(route)));
+    }
+
+    /** The next download of this texture fails, and the ones after it work. */
+    public failTextureOnce(key: string): void {
+        this.failingTextures.add(key);
+    }
+
+    /** A reload drops the requests in flight, and the new page has to draw everything again. */
+    public async reloadPage(): Promise<void> {
+        this.heldRoutes.length = 0;
+        this.servedTextures.clear();
+
+        await this.page.reload();
     }
 
     /** Only the views of the cards request their art, and the leaders are downloaded earlier, so the rest mark a drawn board (UI-21). */
@@ -114,8 +151,29 @@ class BackendDouble {
         return route.fulfill({ status: 200 });
     }
 
+    private handleReady(route: Route) {
+        this.readyCalls += 1;
+        return route.fulfill({ status: 200 });
+    }
+
     private handleTexture(route: Route) {
-        const key = new URL(route.request().url()).pathname.replace(TEXTURES_URL_PREFIX, '');
+        const key = textureKeyOf(route);
+        this.textureRequests.push(key);
+
+        if (this.failingTextures.delete(key)) {
+            return route.fulfill({ status: 404 });
+        }
+
+        if (this.heldTextures.has(key)) {
+            this.heldRoutes.push(route);
+            return undefined;
+        }
+
+        return this.fulfillTexture(route);
+    }
+
+    private fulfillTexture(route: Route) {
+        const key = textureKeyOf(route);
         const file = TEXTURE_FILE_BY_KEY_PREFIX[key.split('.')[0]] ?? ART_TEXTURE_FILE;
         this.servedTextures.add(key);
 
@@ -152,7 +210,8 @@ class BackendDouble {
     private sendConnectionState() {
         if (this.prepared) {
             const { game, hand } = this.prepared;
-            this.emitEvent({ code: 'GAME_SYNC', sequence: GAME_SYNC_SEQUENCE, details: { game, hand } });
+            const details = this.connectionEventCode === 'GAME_SYNC' ? { game, hand } : { game };
+            this.emitEvent({ code: this.connectionEventCode, sequence: GAME_SYNC_SEQUENCE, details });
         }
 
         this.socket!.send(`${SOCKET_EVENT}${JSON.stringify([USER_SYNCED_CHANNEL])}`);
@@ -161,6 +220,10 @@ class BackendDouble {
     private emitEvent(event: EventDto) {
         this.socket!.send(`${SOCKET_EVENT}${JSON.stringify([GAME_EVENT_CHANNEL, event])}`);
     }
+}
+
+function textureKeyOf(route: Route): string {
+    return new URL(route.request().url()).pathname.replace(TEXTURES_URL_PREFIX, '');
 }
 
 function imageKeyOf(card: CardDto): string {
