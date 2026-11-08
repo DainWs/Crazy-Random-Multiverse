@@ -202,7 +202,7 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 Playwright tests of what Vitest cannot reach: a real `Phaser.Game` with WebGL, the appearance of the view and the interaction on the canvas.
 
 - They live in `frontend/e2e/` with the `.spec.ts` suffix. Run with `npm run test:e2e`, and `npm run test:e2e:update` to regenerate the reference images. `npm run test:run` does not run them.
-- `test.describe` and `test` take the place of `describe` and `it`. Names follow section 3.
+- `test.describe` and `test` take the place of `describe` and `it`. Names follow section 3. `test` and `expect` come from `@/support/test`, whose automatic fixture installs the double. The `@/` alias also resolves `e2e/`.
 - Playwright starts Vite on a local port. Everything else is a double at the network boundary: `page.route` for REST and the resources, and `page.routeWebSocket` for the socket. A request the double does not expect fails the test.
 - Nothing that exists only for the tests goes in `src/`. The canvas has no DOM, so a position on it is a named constant for the fixed viewport, and the result is asserted on what reaches the double or on a screenshot.
 - The render settings live only in `playwright.config.ts`, no test depends on the operating system, the reference images are stored per platform, and the version of `@playwright/test` is exact.

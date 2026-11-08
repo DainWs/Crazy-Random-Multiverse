@@ -23,7 +23,7 @@
         "noFallthroughCasesInSwitch": true,
         "strictPropertyInitialization": false,
         "paths": {
-            "@/*": ["./src/*", "./test/*"]
+            "@/*": ["./src/*", "./test/*", "./e2e/*"]
         },
         "types": ["vitest"]
     },

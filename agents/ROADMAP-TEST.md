@@ -63,7 +63,7 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 **Tooling:**
 - [x] Update `FRONTEND-TESTS.md` and `FRONTEND-CODESTYLE.md`, which forbid a real `Phaser.Game` and testing the appearance, and allow in `CLAUDE.md` that `npm run test:e2e` starts Vite
 - [x] Add `@playwright/test` with an exact version, its configuration and the `test:e2e` and `test:e2e:update` scripts, and check that Phaser starts with WebGL in a headless browser
-- [ ] Local double of the backend, prepared game state and test textures, failing on any request it does not expect
+- [x] Local double of the backend, prepared game state and test textures, failing on any request it does not expect
 
 **Visual regression:**
 - [ ] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`)
