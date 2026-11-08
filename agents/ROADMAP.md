@@ -22,21 +22,6 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Accepted risk: load without limit | A player can block the start of the game (`LOAD-3`) |
 | Accepted risk: wrong hand | The hand can stay wrong until the next `GAME_SYNC` (`CON-12`) |
 
-## Phase 6 — Phaser 4 migration
-
-Started at: `d2aac50`
-
-Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on it. It changes no behavior: every `VIEW-*` and `UI-*` rule keeps holding.
-
-- [x] Update `phaser` to the latest 4.x in `frontend/package.json`, and remove `phaser3spectorjs` if Phaser 4 does not need it
-- [x] Replace the removed APIs in use: `setTintFill` and `tintFill` (`setTint` with `setTintMode`), `Geom.Point` (`Vector2`), `Math.PI2` (`Math.TAU`), `Phaser.Struct.Set` and `Phaser.Struct.Map` (native `Set` and `Map`), `TextureManager.generate`, `Mesh` and `Plane`
-- [x] Review every use of `Math.TAU`, which changes its value without an error: it was `PI / 2` and is now `PI * 2` (`Math.PI_OVER_2` is the old value)
-- [x] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
-- [x] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
-- [x] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
-- [x] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default: `pixelArt` still enables it, so the configuration stays as it was. The visual check is in "Pending checks" of `ROADMAP-TEST.md`
-- [x] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
-
 ## Phase 7 — Base assets and stability
 
 Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.

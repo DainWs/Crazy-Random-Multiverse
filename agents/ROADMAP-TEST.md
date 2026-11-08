@@ -56,10 +56,12 @@ Needs the tooling of T6.
 
 ## T6 — Visual regression and smoke test
 
+Started at: `e92fea0`
+
 Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 
 **Tooling:**
-- [ ] Update `FRONTEND-TESTS.md` and `FRONTEND-CODESTYLE.md`, which forbid a real `Phaser.Game` and testing the appearance, and allow in `CLAUDE.md` that `npm run test:e2e` starts Vite
+- [x] Update `FRONTEND-TESTS.md` and `FRONTEND-CODESTYLE.md`, which forbid a real `Phaser.Game` and testing the appearance, and allow in `CLAUDE.md` that `npm run test:e2e` starts Vite
 - [ ] Add `@playwright/test` with an exact version, its configuration and the `test:e2e` and `test:e2e:update` scripts, and check that Phaser starts with WebGL in a headless browser
 - [ ] Local double of the backend, prepared game state and test textures, failing on any request it does not expect
 
@@ -138,4 +140,4 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person looks at the animation of the cards received in the hand (`VIEW-8`). No test: same reason as the combat feedback, and `HandController.test.ts` covers when it starts
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test. Not a test to write: without its name there is nothing to cover
 - [ ] A person renders `class_diagram-actions`, `-card`, `-dealer` and `-effect` and `activity-player_actions` and `usecases` in `docs/development/diagrams/` and checks that they draw. Not checked: they were rewritten against the code, and no PlantUML renderer is available in the agent environment
-- [ ] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. Not checked: the workflow only runs on GitHub
+- [x] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. Not checked: the workflow only runs on GitHub

@@ -9,7 +9,7 @@ The game is a strategic showdown in which each player receives a random leader c
 Monorepo with two applications:
 
 - `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`; none is executable today, see `agents/BACKEND-TESTS.md`, section 14).
-- `frontend/` — TypeScript, Vue 3, Phaser 4, Vite. View of the server state. Tests: `npm run test:run`; lint: `npm run lint`.
+- `frontend/` — TypeScript, Vue 3, Phaser 4, Vite. View of the server state. Tests: `npm run test:run`; browser tests: `npm run test:e2e`; lint: `npm run lint`.
 
 ## Reference documentation
 
@@ -50,7 +50,7 @@ It is forbidden to run, in any context including tests:
 - Connections to deployed game servers or webhooks.
 - Any outbound network access other than installing declared dependencies.
 
-Starting the backend or the frontend locally to see a change is only done by a person, unless explicitly requested.
+Starting the backend or the frontend locally to see a change is only done by a person, unless explicitly requested. The one exception is `npm run test:e2e`, which starts Vite on a local port for the browser tests.
 
 Your job is to **write the code and its tests**. Execution against real systems is done by a person.
 
@@ -58,6 +58,7 @@ Your job is to **write the code and its tests**. Execution against real systems 
 
 - Unit tests do not use the network, real ports, or disk outside `tmp`.
 - Integration tests use local doubles (in-memory repositories, test populators, simulated `fetch` and socket). Never a real service.
+- Browser tests only reach the local Vite server. REST and the socket are local doubles at the network boundary.
 - Fakes before mocks.
 - Test style guides: `agents/BACKEND-TESTS.md` and `agents/FRONTEND-TESTS.md`.
 

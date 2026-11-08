@@ -12,7 +12,8 @@ The existing tests already mostly follow this guide. Where the existing code dep
 - `vitest.setup.ts` replaces `HTMLCanvasElement.getContext` with a fake 2D context so Phaser code can be imported. Extend that fake instead of mocking the canvas in each test.
 - Even though globals are enabled, always import explicitly: `import { beforeEach, describe, expect, it, vi } from 'vitest';`.
 - Test files are type-checked by `tsconfig.test.json` and linted by ESLint like any other file.
-- No new test libraries (Testing Library, Playwright, Sinon…) are added without asking first.
+- No new test libraries (Testing Library, Sinon…) are added without asking first.
+- Everything in this guide is about the Vitest tests, except section 14, which is about the browser tests.
 
 ---
 
@@ -193,3 +194,17 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 - [ ] Module-level state is reset in `beforeEach`
 - [ ] Mocks are cleared or restored in `beforeEach`; timers and global stubs are restored in `afterEach`
 - [ ] No `.only`, `.skip`, `console.log` or unnecessary `any`
+
+---
+
+## 14. Browser tests
+
+Playwright tests of what Vitest cannot reach: a real `Phaser.Game` with WebGL, the appearance of the view and the interaction on the canvas.
+
+- They live in `frontend/e2e/` with the `.spec.ts` suffix. Run with `npm run test:e2e`, and `npm run test:e2e:update` to regenerate the reference images. `npm run test:run` does not run them.
+- `test.describe` and `test` take the place of `describe` and `it`. Names follow section 3.
+- Playwright starts Vite on a local port. Everything else is a double at the network boundary: `page.route` for REST and the resources, and `page.routeWebSocket` for the socket. A request the double does not expect fails the test.
+- Nothing that exists only for the tests goes in `src/`. The canvas has no DOM, so a position on it is a named constant for the fixed viewport, and the result is asserted on what reaches the double or on a screenshot.
+- The render settings live only in `playwright.config.ts`, no test depends on the operating system, the reference images are stored per platform, and the version of `@playwright/test` is exact.
+- A reference image is committed only after a person approves it. Each area of the screen has its own limit of different pixels, measured from the noise of several runs.
+- A person installs the browser with `npx playwright install chromium`, because the download is not a declared dependency.

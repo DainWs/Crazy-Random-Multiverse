@@ -177,3 +177,18 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [x] Remove the equipment of a card when it dies (`EQUIP-8`, `VIEW-18`): no animation of its own, it fades with its card and the next board has none
 - [x] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
 - [x] Show protected cards and exposed leader state (`PROT-6`): no mark of their own, only the highlight of valid targets (`VIEW-17`)
+
+## Phase 6 — Phaser 4 migration
+
+Started at: `d2aac50` · Finished at: `e92fea0`
+
+Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on it. It changes no behavior: every `VIEW-*` and `UI-*` rule keeps holding.
+
+- [x] Update `phaser` to the latest 4.x in `frontend/package.json`, and remove `phaser3spectorjs` if Phaser 4 does not need it
+- [x] Replace the removed APIs in use: `setTintFill` and `tintFill` (`setTint` with `setTintMode`), `Geom.Point` (`Vector2`), `Math.PI2` (`Math.TAU`), `Phaser.Struct.Set` and `Phaser.Struct.Map` (native `Set` and `Map`), `TextureManager.generate`, `Mesh` and `Plane`
+- [x] Review every use of `Math.TAU`, which changes its value without an error: it was `PI / 2` and is now `PI * 2` (`Math.PI_OVER_2` is the old value)
+- [x] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
+- [x] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
+- [x] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
+- [x] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default: `pixelArt` still enables it, so the configuration stays as it was. The visual check is in "Pending checks" of `ROADMAP-TEST.md`
+- [x] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`

@@ -144,7 +144,7 @@ Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is n
 
 - Vitest with `jsdom`, `globals: true` and `vitest.setup.ts` (canvas mock for Phaser). Run with `npm run test:run`.
 - Tests live in `frontend/test/` with the same structure as `src/` and the `.test.ts` suffix.
-- What can be isolated is tested: `api/` (with `fetch` and the socket simulated), DTO ↔ domain mapping, `core/` (resolvers, camera, interactions), layout calculations and utilities. **Appearance is not tested and no real `Phaser.Game` is created.**
+- What can be isolated is tested: `api/` (with `fetch` and the socket simulated), DTO ↔ domain mapping, `core/` (resolvers, camera, interactions), layout calculations and utilities. **In Vitest, appearance is not tested and no real `Phaser.Game` is created.** The browser tests of `FRONTEND-TESTS.md`, section 14, cover both.
 - Simulate `fetch` with `vi.spyOn(globalThis, 'fetch')`. Restore with `vi.restoreAllMocks()` in `beforeEach`.
 - For Phaser, minimal fake objects with the shape the code under test uses, not chained mocks of the whole module.
 - Structure: one `describe` per unit, `it` with an English sentence that states behavior and result; Arrange / Act / Assert separated by a blank line.
