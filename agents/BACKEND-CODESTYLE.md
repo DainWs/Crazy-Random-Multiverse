@@ -70,7 +70,7 @@ Nested classes are not used: a class, record, enum or interface that another cla
 - Main dependencies arrive through the constructor, up to 3 parameters (section 9). Those that do not fit or are optional are injected with a public setter annotated with `@Autowired` (`WebPlayerController.setUserSession`).
 - Collaborators that tests may replace are exposed with a public setter (`GameService.setGameFactory`).
 - `@Autowired` is not tolerated unless it is on a setter or in a `@Configuration`.
-- `@Value` goes on a field, never on a parameter of a `@Bean` method, a constructor or a setter: it adds too much noise to the signature. In a `@Configuration` the field has no access modifier (package-private) so that tests can set it; elsewhere it is private. The expression is always written inline, `@Value("${crm.some.property}")`, never held in a constant. Classes that read a property keep a plain setter for tests.
+- `@Value` goes on a field or on a setter if the value is needed to change in tests, however never use it as a parameter; it adds too much noise to the signature. In a `@Configuration` the field has no access modifier (package-private) so that tests can set it; elsewhere it is private. The expression is always written inline, `@Value("${crm.some.property}")`, never held in a constant. Classes that read a property keep a plain setter for tests.
 
 ```java
 @RestController
@@ -126,11 +126,17 @@ public class WebPlayerController implements PlayerController {
 ### Messages
 
 - In English.
-- With SLF4J `{}` placeholders, never concatenating: `this.logger.trace("Creating game for party {}", party.getCode())`.
-- When logging an exception, it is passed as the last argument so the stack trace is printed, and it must be a `warn` or `error`; in those cases, `{}` is not used to parameterize the message.
-- `trace` for the internal game flow (the level of `com.dainws.games.crm` is `TRACE` in development), `debug` for adapter detail, `info` for state transitions (game started/finished), `warn` and `error` as appropriate.
+- With SLF4J, always use `{}` placeholders, never concatenating.
+- When logging an exception, it is passed as the last argument so the stack trace is printed.
 - Log entries for a game include the `GameCode`; those for a player, the `PlayerCode`.
 - A player's hand contents are not logged at any level above `trace`.
+
+**When to use**
+- `error`: When logging an critical/bug exception.
+- `warn`: When logging an non-bug exception.
+- `info`: for state transitions (game started/finished).
+- `debug`: for adapter detail.
+- `trace`: for the internal game flow (the level of `com.dainws.games.crm` is `TRACE` in development).
 
 ---
 
@@ -184,7 +190,7 @@ this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
 - Closed sets are enums. Maps indexed by enum use `EnumMap`.
 - Exception codes are declared in the `*ExceptionCode` classes (`PlayerActionExceptionCode`, `EffectExceptionCode`) and wrapped in `ExceptionCode`.
 - Game settings (default mode, maximum players, zone sizes) live in configuration or in the game mode, not inside the turn logic.
-- `application.properties` keys read from code are declared in a constant or in a `@ConfigurationProperties` class (see `additional-spring-configuration-metadata.json`).
+- `application.properties` keys read from code are declared in a field or in a `@ConfigurationProperties` class (see `additional-spring-configuration-metadata.json`).
 
 ---
 
@@ -233,7 +239,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - Catch the specific first; `catch (Exception e)` only as a last net in the input adapters (events, sockets), logging with the stack trace.
 - Custom game exceptions carry `serialVersionUID` and a constructor that accepts the `ExceptionCode`.
 - `RestExceptionAdvice` turns the application exceptions (`UsecaseException`, `GameRuntimeException`, `NotAllowedException`) and the unreadable requests into the 400 of `CON-18`. A rejected action is not an exception: the controller reads its `ActionResult`.
-- A code that cannot be parsed from a request (Base64, UUID, card code) throws `MalformedRequestException`, translated from the library's exception where the code is parsed.
+- A code that cannot be parsed from a request (Base64, UUID, card code) throws an `InvalidCodeException`, translated from the library's exception where the code is parsed.
 
 ---
 
@@ -373,7 +379,6 @@ Several players act on the same game at the same time.
 
 - `Optional` is only a return type: never a field, a parameter or a collection element. A method never returns `null` where an `Optional` or an empty collection fits.
 - `@Override` is always written.
-- New code does not use `Cloneable` / `clone()`; it uses a copy constructor or a `copy()` method. The existing `clone()` of `User` is not refactored on your own initiative.
 
 ---
 
