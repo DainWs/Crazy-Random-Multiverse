@@ -1,3 +1,6 @@
+import type { SocketEventHandler } from '@/api/SocketEventHandler';
+import type { SocketReconnectHandler } from '@/api/SocketReconnectHandler';
+import type { SocketFactory } from '@/api/models/SocketFactory';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SocketService } from '@/api/SocketService';
 import { Socket } from 'socket.io-client';
@@ -30,9 +33,9 @@ describe('SocketService', () => {
     mockSocketFactory = vi.fn(() => mockSocket);
 
     service = new SocketService({
-      reconnectHandler: mockReconnectHandler as any,
-      eventHandler: mockEventHandler as any,
-      socketFactory: mockSocketFactory as any,
+      reconnectHandler: mockReconnectHandler as unknown as SocketReconnectHandler,
+      eventHandler: mockEventHandler as unknown as SocketEventHandler,
+      socketFactory: mockSocketFactory as unknown as SocketFactory,
     });
   });
 

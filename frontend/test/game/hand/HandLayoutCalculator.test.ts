@@ -3,10 +3,13 @@ import HandLayoutCalculator, { DEFAULT_SPACE_BETWEEN_CARDS } from '@/game/hand/H
 
 describe('HandLayoutCalculator', () => {
   describe('calculateSpaceBetweenCards', () => {
-    it('returns 0 when card length is 0 or negative', () => {
+    it.each([
+      { cards: 0, expected: 0 },
+      { cards: -1, expected: 0 }
+    ])('returns $expected spacing for $cards cards', ({ cards, expected }) => {
       const calculator = new HandLayoutCalculator();
-      expect(calculator.calculateSpaceBetweenCards(0)).toBe(0);
-      expect(calculator.calculateSpaceBetweenCards(-1)).toBe(0);
+
+      expect(calculator.calculateSpaceBetweenCards(cards)).toBe(expected);
     });
 
     it('returns max spacing for 1 card', () => {
