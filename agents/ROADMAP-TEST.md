@@ -41,7 +41,7 @@ Needs the tooling of T6.
 
 ## T4 — Core gameplay
 
-Started at: `e6be12f`
+Started at: `e6be12f` · Finished at: `4fe6e29`
 
 Needs the tooling of T6.
 
@@ -51,7 +51,9 @@ Needs the tooling of T6.
 
 ## T5 — Elimination and game end
 
-- [ ] Backend integration test of three players with a fixed clock: when the cleanup run deletes the player with the turn, the player is eliminated, the turn passes and the party drops them when it unlocks (`ABSENT-3`). Each step has its unit test, but not the chain
+Started at: `4fe6e29`
+
+- [x] Backend integration test of three players with a fixed clock: when the cleanup run deletes the player with the turn, the player is eliminated, the turn passes and the party drops them when it unlocks (`ABSENT-3`). Each step has its unit test, but not the chain
 
 ## T5.5 — Combat feedback
 
@@ -147,3 +149,4 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test. Not a test to write: without its name there is nothing to cover
 - [ ] A person renders `class_diagram-actions`, `-card`, `-dealer` and `-effect` and `activity-player_actions` and `usecases` in `docs/development/diagrams/` and checks that they draw. Not checked: they were rewritten against the code, and no PlantUML renderer is available in the agent environment
 - [x] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. Not checked: the workflow only runs on GitHub
+- [ ] A person pushes a commit and checks that the backend job of `.github/workflows/maven.yml` runs `DisconnectedPlayerIntegrationTest`. Not checked: the workflow only runs on GitHub, and it now runs with `-P integration-tests`

@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: backend/pom.xml
 
       - name: Maven tests
-        run: mvn clean verify
+        run: mvn clean verify -P integration-tests
 
   frontend:
     runs-on: ubuntu-latest

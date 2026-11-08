@@ -8,7 +8,7 @@ The game is a strategic showdown in which each player receives a random leader c
 
 Monorepo with two applications:
 
-- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`; none is executable today, see `agents/BACKEND-TESTS.md`, section 14).
+- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`, see `agents/BACKEND-TESTS.md`, section 14).
 - `frontend/` — TypeScript, Vue 3, Phaser 4, Vite. View of the server state. Tests: `npm run test:run`; browser tests: `npm run test:e2e`; lint: `npm run lint`.
 
 ## Reference documentation

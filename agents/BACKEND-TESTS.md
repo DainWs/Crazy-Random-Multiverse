@@ -232,9 +232,9 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 
 ## 14. Integration tests
 
-- Today no integration test runs: `GameBehaviorIntegrationTest`, the only one, is abstract and has no subclass.
+- `DisconnectedPlayerIntegrationTest` is the one that runs. It wires the real services by hand with in-memory repositories, because a Spring context would open the Socket.IO port. `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run.
 - They use local doubles, never real services (see `CLAUDE.md`).
-- Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`.
+- Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`, which is what CI runs.
 - Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`) is imported with `@Import`.
 - Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
 - The event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
