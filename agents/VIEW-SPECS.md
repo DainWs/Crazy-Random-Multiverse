@@ -13,7 +13,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 ## Combat
 
-- **VIEW-4** While choosing a target, an arrow or highlight is shown while dragging.
+- **VIEW-4** A card attacks with clicks. Clicking an own card that can attack selects it, and an arrow goes from it to the pointer, green over a valid target and red elsewhere. Clicking a valid target attacks. Any other click, Escape or a change of the game state cancels the selection. While a card is being dragged, the slot under it is highlighted if the card can go there.
 - **VIEW-5** A hit shows feedback, such as a shake or a red flash.
 - **VIEW-6** Changes in armor and health are animated: the values count down to the new ones, and a floating text over the target shows the armor and health it lost (`CON-21`).
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.

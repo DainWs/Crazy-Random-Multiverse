@@ -247,7 +247,6 @@ The keys of `CON-18`.
 | `exception.party.user_is_not_party_owner` | Only the owner can do this |
 | `exception.party.user_already_in_party` | The user already belongs to a party |
 | `exception.request.malformed` | The body or the path of the request cannot be read, or an action lacks a required field (`CON-16`) |
-| `exception.game.not_in_progress` | `TURN-7` |
 | `exception.party.locked` | The party is locked (`LOAD-1`, `PARTY-3`, `PARTY-5`, `PARTY-6`, `PARTY-9`) |
 | `exception.party.is_full` | The party has reached its capacity |
 | `exception.party.cannot_kick_owner` | `PARTY-6` |
