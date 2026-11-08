@@ -218,7 +218,7 @@ No test class exists for `EquipAction`, and no test name covers `COMBAT-5`.
 
 ## Exists but is not used
 
-Scaffolding with no caller in production. Whether it stays is for Phase 8 or **[Post-MVP]**.
+Scaffolding with no caller in production. Whether it stays is for Phase 9 or **[Post-MVP]**.
 
 - **Backend, spells and effects:** `UseCardAction`, `UseSpellAction`, `PlayerActionFacade.playerUseSpell` (passes a null action), `Effect*`, `Skill`.
 - **Backend, others:** `CompositeGameFlow`, `RandomDealStrategyFactory` (replaced by the classic one), `PartyEventService`, `GameService.getActiveGame`, `Zone.getVisibleCombatants`, `onPrevTurn`.

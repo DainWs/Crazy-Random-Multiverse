@@ -4,7 +4,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 **MVP goal:** a complete game loop: deal -> placement -> combat -> victory/defeat.
 
-**MVP scope:** Phases 1 to 12 (including 2.5 and 2.6). Phase 13 and the Post-MVP section are out of it.
+**MVP scope:** Phases 1 to 13 (including 2.5 and 2.6). Phase 14 and the Post-MVP section are out of it.
 
 ## Closed decisions
 
@@ -67,7 +67,7 @@ Started at: `2137753` · Finished at: `c0ba577`
 - [x] Adopt the new exception rule (`BACKEND-CODESTYLE.md`, section 8): `Action` and the modes return a result with the `ExceptionCode` instead of throwing, and check the rules through queries on the models. Needed for `CON-18`
 - [x] Answer rejected actions with a 400 and their key (`CON-18`), after adopting the exception rule. Then remove `ExceptionPublisher` and the `error` channel (`CON-20`), including `sendExceptionCode` in the clients, and update `BACKEND-CODESTYLE.md` (sections 1 and 14) and `BACKEND-TESTS.md`
 - [x] Answer every other expected error with a 400 and its key (`CON-18`): parties, users, denied accesses, elements not found and malformed requests have no handler today
-- [x] Align the contract with `specs/CONTRACT.md` (the new error keys that need a rule not built yet arrive with that rule in Phases 3, 4, 5 and 11): `equipment` as a list in `CardDto`; `round` in `GameDto`; `handSize` in `PlayerDto`; no `health` or `maxHealth` in `ZoneDto`; `combatant` absent in an empty slot (`CON-14`); the `attackAvailable` and `targetable` flags (`PROT-4`, `CON-15`); remove `GAME_RESTART`; add `GAME_CANCELLED` and the details of `PLAYER_ATTACK_CARD` (`CON-21`); add the new error keys and rename those marked as renamed; no `code` in the body of `PUT /party`; `maxUsers` in the bodies of `POST` and `PUT /party`; a last `party:info` to a kicked user (`PARTY-12`); `catalogCode` instead of `code` in `CardDto` (`CON-26`); effective statistics in `CardDto` (`CON-27`); `locked` in `PartyDto`
+- [x] Align the contract with `specs/CONTRACT.md` (the new error keys that need a rule not built yet arrive with that rule in Phases 3, 4, 5 and 12): `equipment` as a list in `CardDto`; `round` in `GameDto`; `handSize` in `PlayerDto`; no `health` or `maxHealth` in `ZoneDto`; `combatant` absent in an empty slot (`CON-14`); the `attackAvailable` and `targetable` flags (`PROT-4`, `CON-15`); remove `GAME_RESTART`; add `GAME_CANCELLED` and the details of `PLAYER_ATTACK_CARD` (`CON-21`); add the new error keys and rename those marked as renamed; no `code` in the body of `PUT /party`; `maxUsers` in the bodies of `POST` and `PUT /party`; a last `party:info` to a kicked user (`PARTY-12`); `catalogCode` instead of `code` in `CardDto` (`CON-26`); effective statistics in `CardDto` (`CON-27`); `locked` in `PartyDto`
 - [x] Replace `crm.communication.socket-io.origin` with one explicit origin for REST and the socket, with credentials (`CON-5`)
 - [x] Publish each event to the clients before the game reacts to it, and `ROUND_CHANGE` before `TURN_CHANGE` (`CON-22`)
 - [x] Separate a public user id from the session id (`NFR-3`, `CON-24`): the user id is the HTTP session id and the parties share it with their members. `owner` and `users` in `PartyDto` become `UserDto`, and `PlayerDto.code` takes the public id
@@ -87,7 +87,7 @@ Started at: `2137753` · Finished at: `c0ba577`
 
 Started at: `4506182` · Finished at: `c4f0e15`
 
-Just enough to create a real game from the interface, which Phase 3 needs. The rest of the lobby is in Phase 11.
+Just enough to create a real game from the interface, which Phase 3 needs. The rest of the lobby is in Phase 12.
 
 - [x] Move the party and the user state from `StoreSystem` to `SessionSystem` as read-only `shallowRef`s, and update its tests. Separate refactoring commit (`FRONTEND-CODESTYLE.md`, section 2)
 - [x] Choose the screen from the user state in `App.vue`, waiting for `user:synced`, and start the loading and game scenes only when the state enters them; `Preloader` no longer jumps to `GameLoad` (`UI-17`, `CON-23`)
@@ -120,7 +120,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 
 - [x] Publish the start of a round in the order of `CON-22`: `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, then `TURN_CHANGE`, and the first round and turn like any other. `zones` starts with the starting player (`GameDto`)
 - [x] Check the game flow against `specs/GAME-FLOW.md` and implement the differences: the leaders placed when the game is created, without `PLAYER_RECEIVE_CARD` (`SETUP-2`; today a player seated before a random starting player never gets one), the whole turn order drawn at random (`SETUP-3`; today only the starting player is), what a round is, rounds numbered from 1 (`GameDto.round`), dealing to everyone at the start of the round, equipment in the spell slots, unlimited deck, missing categories and a deck without leaders (`DECK-4`)
-- [x] Reject the attack of a protected leader with `exception.player-action.selected_source_leader_is_protected` (`PROT-4`): `attackAvailable` already excludes it, but `AttackAction` accepts it. `hasLeaderInBoard` in the frontend is unrelated and has no callers, so it goes with the cleanup of Phase 8
+- [x] Reject the attack of a protected leader with `exception.player-action.selected_source_leader_is_protected` (`PROT-4`): `attackAvailable` already excludes it, but `AttackAction` accepts it. `hasLeaderInBoard` in the frontend is unrelated and has no callers, so it goes with the cleanup of Phase 9
 - [x] A newly placed card must not attack on the turn it is placed (`BOARD-8`), although it can move and be equipped (`BOARD-6`, `EQUIP-3`): `Combatant.canAttack()` ignores it, so `attackAvailable` is `true` right after placement
 - [x] Check the state of the turn against `CON-32` and implement the differences: `playerWithTurn` only changes with `TURN_CHANGE` and is not sent before the first one (`GameDto`), and attacks and cooldowns are reset before `TURN_CHANGE` is published
 - [x] Feed `StoreSystem` with the real game state from `GAME_LOADING` on, independently of the scenes, and clear it when the user no longer has a game (`ARCH-2`, `LOAD-6`, `UI-17`)
@@ -135,7 +135,7 @@ This phase synchronizes the state and renders it without animating it, except fo
 - [x] Remove played cards from the hand when their event arrives, and empty it with the `PLAYER_DIE` of the local player (`HAND-2`, `CON-13`, `ELIM-3`)
 - [x] Number the copies of a card in the hand (`HAND-4`)
 - [x] Animate the cards received in the local hand (`VIEW-8`)
-- [x] Keep opponent hands private: the server sends `targetCard` only to the player who receives it (`CON-13`), and rival hands show how many cards they hold (`HAND-3`, `UI-7`). Card backs arrive in Phase 9
+- [x] Keep opponent hands private: the server sends `targetCard` only to the player who receives it (`CON-13`), and rival hands show how many cards they hold (`HAND-3`, `UI-7`). Card backs arrive in Phase 10
 - [x] On the server, when the result time ends, remove the finished game, with its event sequence, and unlock the party (`WIN-5`, `CON-9`). Without it a party plays only one game until the server restarts. A party that becomes empty removes its game and cancels that wait (`PARTY-8`). The result screens are in Phase 5
 - [x] Fix `CombatantRender`, which reads `card.equipment?.health.value` although a statistic with value 0 is not sent (`CON-8`): rendering an equipped card such as Policía throws
 - [x] Fix `HandView.clearCards`, which removes from the array it iterates and leaves about half of the cards in the hand (`CON-11`)
@@ -191,12 +191,25 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [x] Leader death animation and board update (`ELIM-3`, `VIEW-7`)
 - [x] Show protected cards and exposed leader state (`PROT-6`): no mark of their own, only the highlight of valid targets (`VIEW-17`)
 
-## Phase 6 — Base assets and stability
+## Phase 6 — Phaser 4 migration
+
+Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on it. It changes no behavior: every `VIEW-*` and `UI-*` rule keeps holding.
+
+- [ ] Update `phaser` to the latest 4.x in `frontend/package.json`, and remove `phaser3spectorjs` if Phaser 4 does not need it
+- [ ] Replace the removed APIs in use: `setTintFill` and `tintFill` (`setTint` with `setTintMode`), `Geom.Point` (`Vector2`), `Math.PI2` (`Math.TAU`), `Phaser.Struct.Set` and `Phaser.Struct.Map` (native `Set` and `Map`), `TextureManager.generate`, `Mesh` and `Plane`
+- [ ] Review every use of `Math.TAU`, which changes its value without an error: it was `PI / 2` and is now `PI * 2` (`Math.PI_OVER_2` is the old value)
+- [ ] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
+- [ ] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
+- [ ] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
+- [ ] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default
+- [ ] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
+
+## Phase 7 — Base assets and stability
 
 - [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
 - [ ] Camera stability: zoom/pan must not break card interaction
 
-## Phase 7 — Rounds, players and connection
+## Phase 8 — Rounds, players and connection
 
 - [ ] Display the current round (`UI-3`)
 - [ ] Highlight the current player; distinguish the local player's cards
@@ -207,7 +220,7 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [ ] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`). Nothing publishes `GAME_CANCELLED` today
 - [ ] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
 
-## Phase 8 — Architecture cleanup
+## Phase 9 — Architecture cleanup
 
 - [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4)
@@ -218,7 +231,7 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [ ] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`)
 - [ ] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
 
-## Phase 9 — Board and cards
+## Phase 10 — Board and cards
 
 - [ ] Test layouts for 2 to 10 players (`VIEW-2`)
 - [ ] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
@@ -230,14 +243,14 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [ ] Decide how a hand that does not fit is shown and close `VIEW-16`: `HAND-1` sets no limit and `HandView` sizes its bounds for 10 cards. Probably the cards overlap
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 
-## Phase 10 — UX
+## Phase 11 — UX
 
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow
 - [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
 
-## Phase 11 — Menu, lobby, user
+## Phase 12 — Menu, lobby, user
 
 - [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, the default name (`USER-2`), deleting the user when the session expires (`USER-7`), `exception.party.user_not_in_party` (`PARTY-6`), name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity, the join button disabled for a full party, and a rejected join shown as a message that reloads the list (`UI-1`, `UI-14`)
@@ -247,14 +260,14 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)
 
-## Phase 12 — Testing
+## Phase 13 — Testing
 
 Unit and per-feature tests are written with their code (see Workflow). This phase covers only cross-cutting tests.
 
 - [ ] E2E game-flow tests
 - [ ] Reconnection, spectator mode and game completion tests
 
-## Phase 13 — AI
+## Phase 14 — AI
 
 The AI is rethought around an LLM, starting from nothing. The current implementation is removed in Phase 2.
 

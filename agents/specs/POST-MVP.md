@@ -30,4 +30,4 @@ Still to be specified for `VAR-3`: who uploads a deck, the format of the zip, it
 
 ## AI
 
-See `ROADMAP.md`, Phase 13.
+See `ROADMAP.md`, Phase 14.

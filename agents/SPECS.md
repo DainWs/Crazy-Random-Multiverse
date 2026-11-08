@@ -42,7 +42,7 @@ A strategic showdown. Each player receives a random leader card, shown publicly.
 - **SCOPE-2** The base content is at least one Leader, three Warrior types (Common, Uncommon, Rare) and basic equipment.
 - **SCOPE-3** The only game mode is Classic. The party still shows a mode selector.
 - **SCOPE-4** Out of the MVP, besides every rule marked **[Post-MVP]**: spells, abilities, teams, the AI, complex equipment effects, infinite stats, true damage, combat log, translations other than Spanish, spectators from outside the game, premium animations, cursor animations and sounds.
-- **SCOPE-5** The AI is rethought around an LLM in its own phase (`ROADMAP.md`, Phase 13). Nothing about it is specified yet.
+- **SCOPE-5** The AI is rethought around an LLM in its own phase (`ROADMAP.md`, Phase 14). Nothing about it is specified yet.
 
 ## Non-functional requirements
 
