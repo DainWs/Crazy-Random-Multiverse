@@ -38,6 +38,9 @@ class Preloader extends Scene {
 
         //  The scene to show follows the user state, which AppController watches from now on (UI-17).
         this.game.events.emit(PRELOADED_EVENT);
+
+        //  The next scene is started from outside this one, so nothing else stops it and its bar would be drawn under the game.
+        this.scene.stop();
     }
 }
 
