@@ -127,7 +127,7 @@ A value cannot live in two places. Event names and exception codes shared betwee
 - A function does one thing. If its name needs an `and`, they are two functions.
 - Target: fewer than 30 lines. It is a signal, not a hard limit; exceeding it must be justified.
 - Maximum 2 levels of nesting per method or function, and a conditional is never nested in another conditional (`if () { if () { } }`). The two levels are only a loop with a conditional (or another loop) inside, or the other way around: `if () { for }`, `for { if }`. Deeper code is split into methods.
-- Avoid whenever possible the early `return;` (a `return` with no value that cuts a method short), `break` and `continue`: they break the flow. Structure the code with a condition or a local variable instead.
+- Avoid whenever possible the early `return;` (a `return` with no value that cuts a method short), `break` and `continue`: they break the flow. Structure the code with a condition or a local variable instead. The exception is a guard: a `return;` at the start of a method or function that discards a case.
 - Maximum 3 positional parameters. Beyond that, they are grouped into a value object. (For backend constructors the maximum is also 3: see `BACKEND-CODESTYLE.md`.)
 - Boolean parameters are forbidden in public signatures: turn it into two functions or an enum. A boolean at the call site forces you to open the definition to know what it means.
 - Modules by responsibility, not by type.
@@ -178,7 +178,6 @@ Readability, maintainability and ease of debugging come before minimizing the nu
 
 - Logging through SLF4J in the backend. **Never `System.out`.**
 - Structured logging. **Never write directly to the console** (`System.out`, `console.log`).
-- The start and end of each step are logged, with measured duration.
 - Levels (SLF4J): `trace` for the internal game flow, `debug` for adapter detail, `info` for state transitions, `warn` for recoverable situations, `error` for a step failure.
 - Log entries for a game include its `GameCode`; those for a player, their `PlayerCode`.
 - **Logging sessions, tokens or the contents of `.env.local.*` is forbidden.** A player's hand (private information) is not logged at any level above `trace`.
