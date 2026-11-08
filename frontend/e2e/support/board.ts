@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import type BackendDouble from '@/support/BackendDouble';
+import type { PreparedGame } from '@/support/preparedGame';
 import { expect } from '@playwright/test';
 import { createPreparedGame } from '@/support/preparedGame';
 
@@ -19,6 +20,7 @@ const INITIAL_ZOOM = 1.1;
 const WHEEL_DOWN_DELTA = 100;
 const STILL_FRAME_TIMEOUT_MS = 10000;
 const DRAG_STEPS = 12;
+const ARROW_RED_MIN_VALUE = 180;
 
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
 const OWN_WARRIOR: Point = { x: 888, y: 715 };
@@ -31,12 +33,17 @@ const EMPTY_TABLE: Point = { x: 1250, y: 450 };
 const SIDE_RIVAL_WARRIOR: Point = { x: 705, y: 348 };
 const EMPTY_SIDE_RIVAL_SLOT: Point = { x: 787, y: 412 };
 
+const TABLE_AREA: Area = { x: 370, y: 40, width: 1180, height: 970 };
 const TOOLTIP_AREA: Area = { x: 1440, y: 0, width: 480, height: 1080 };
 const EXPANDED_HAND_AREA: Area = { x: 0, y: 780, width: 570, height: 225 };
 const OWN_SLOT_AREA: Area = { x: 930, y: 665, width: 60, height: 100 };
 
-async function openBoard(page: Page, backend: BackendDouble, playerCount: number = 2): Promise<void> {
-    backend.prepare(createPreparedGame(playerCount));
+function openBoard(page: Page, backend: BackendDouble, playerCount: number = 2): Promise<void> {
+    return openGame(page, backend, createPreparedGame(playerCount));
+}
+
+async function openGame(page: Page, backend: BackendDouble, prepared: PreparedGame): Promise<void> {
+    backend.prepare(prepared);
 
     await page.goto('/');
     await expect(page.locator('#game-container')).toBeVisible();
@@ -89,24 +96,36 @@ function frameOf(page: Page, clip: Area): Promise<Buffer> {
     return page.screenshot({ clip });
 }
 
-/** The arrow is straight, so its middle is halfway between the attacker and the pointer. */
 async function isArrowGreenBetween(page: Page, from: Point, to: Point): Promise<boolean> {
+    const [red, green, blue] = await readArrowMiddle(page, from, to);
+
+    return green > red && green > blue;
+}
+
+/** The table is dark and reddish, so only the strong red of the arrow passes. */
+async function isArrowRedBetween(page: Page, from: Point, to: Point): Promise<boolean> {
+    const [red, green] = await readArrowMiddle(page, from, to);
+
+    return red > ARROW_RED_MIN_VALUE && green < red / 2;
+}
+
+/** The arrow is straight, so its middle is halfway between the attacker and the pointer. */
+async function readArrowMiddle(page: Page, from: Point, to: Point): Promise<number[]> {
     const clip = { x: Math.round((from.x + to.x) / 2), y: Math.round((from.y + to.y) / 2), width: 1, height: 1 };
     const pixel = await page.screenshot({ clip });
 
-    return page.evaluate(isPixelGreen, pixel.toString('base64'));
+    return page.evaluate(readPixel, pixel.toString('base64'));
 }
 
-async function isPixelGreen(base64: string): Promise<boolean> {
+async function readPixel(base64: string): Promise<number[]> {
     const image = new Image();
     image.src = `data:image/png;base64,${base64}`;
     await image.decode();
 
     const context = new OffscreenCanvas(1, 1).getContext('2d')!;
     context.drawImage(image, 0, 0);
-    const [red, green, blue] = context.getImageData(0, 0, 1, 1).data;
 
-    return green > red && green > blue;
+    return Array.from(context.getImageData(0, 0, 1, 1).data);
 }
 
 function atZoom(point: Point, zoom: number): Point {
@@ -130,13 +149,16 @@ export {
     OWN_WARRIOR,
     RIVAL_WARRIOR,
     SIDE_RIVAL_WARRIOR,
+    TABLE_AREA,
     TOOLTIP_AREA,
     atZoom,
     dragTo,
     frameOf,
     hover,
     isArrowGreenBetween,
+    isArrowRedBetween,
     openBoard,
+    openGame,
     waitForStillFrame,
     zoomOut
 };

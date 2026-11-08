@@ -63,6 +63,8 @@ class BackendDouble {
     private readonly heldTextures = new Set<string>();
     private readonly failingTextures = new Set<string>();
     private readonly heldRoutes: Route[] = [];
+    private readonly heldActionRoutes: Route[] = [];
+    private holdingActions = false;
     private readonly page: Page;
     private socket?: WebSocketRoute;
     private prepared?: PreparedGame;
@@ -111,6 +113,16 @@ class BackendDouble {
         this.failingTextures.add(key);
     }
 
+    /** The actions stay unanswered until `rejectHeldActions`. */
+    public holdActions(): void {
+        this.holdingActions = true;
+    }
+
+    public async rejectHeldActions(key: string): Promise<void> {
+        this.holdingActions = false;
+        await Promise.all(this.heldActionRoutes.splice(0).map((route) => route.fulfill({ status: 400, json: { key } })));
+    }
+
     /** A reload drops the requests in flight, and the new page has to draw everything again. */
     public async reloadPage(): Promise<void> {
         this.heldRoutes.length = 0;
@@ -148,6 +160,11 @@ class BackendDouble {
 
     private handleAction(route: Route) {
         this.actions.push(route.request().postDataJSON() as ActionDto);
+        if (this.holdingActions) {
+            this.heldActionRoutes.push(route);
+            return undefined;
+        }
+
         return route.fulfill({ status: 200 });
     }
 

@@ -128,4 +128,4 @@ function withCombatant(game: GameDto, zone: number, position: PositionDto, comba
 }
 
 export type { PreparedGame };
-export { LOCAL_USER, createLoadingGame, createPreparedGame, withCombatant };
+export { LOCAL_USER, createLoadingGame, createPreparedGame, createWarrior, withCombatant };

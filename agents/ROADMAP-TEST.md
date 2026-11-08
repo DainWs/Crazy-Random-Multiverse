@@ -32,7 +32,7 @@ Needs the tooling of T6.
 
 ## T3 — Authoritative game state and hand
 
-Started at: `4ab48d3`
+Started at: `4ab48d3` · Finished at: `e6be12f`
 
 Needs the tooling of T6.
 
@@ -41,10 +41,12 @@ Needs the tooling of T6.
 
 ## T4 — Core gameplay
 
+Started at: `e6be12f`
+
 Needs the tooling of T6.
 
 - [ ] Dragging a warrior onto an occupied slot of its zone shows both cards swapped while the server answers, and both go back to their slots with the message when it rejects the move (`BOARD-7`, `UI-6`)
-- [ ] While an attack is being aimed the arrow is red outside a valid target, and Escape or a click outside the cards cancels the selection (`VIEW-4`)
+- [x] While an attack is being aimed the arrow is red outside a valid target, and Escape or a click outside the cards cancels the selection (`VIEW-4`)
 - [ ] Reference image approved by a person while an attack is being aimed: the attacker marked in red, the cards it can attack in green, and a card with its attack used or a protected card not marked (`UI-5`). The marks disappear when the attack is made or cancelled
 
 ## T5 — Elimination and game end
