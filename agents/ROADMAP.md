@@ -197,12 +197,12 @@ Started at: `d2aac50`
 
 Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on it. It changes no behavior: every `VIEW-*` and `UI-*` rule keeps holding.
 
-- [ ] Update `phaser` to the latest 4.x in `frontend/package.json`, and remove `phaser3spectorjs` if Phaser 4 does not need it
-- [ ] Replace the removed APIs in use: `setTintFill` and `tintFill` (`setTint` with `setTintMode`), `Geom.Point` (`Vector2`), `Math.PI2` (`Math.TAU`), `Phaser.Struct.Set` and `Phaser.Struct.Map` (native `Set` and `Map`), `TextureManager.generate`, `Mesh` and `Plane`
-- [ ] Review every use of `Math.TAU`, which changes its value without an error: it was `PI / 2` and is now `PI * 2` (`Math.PI_OVER_2` is the old value)
-- [ ] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
-- [ ] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
-- [ ] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
+- [x] Update `phaser` to the latest 4.x in `frontend/package.json`, and remove `phaser3spectorjs` if Phaser 4 does not need it
+- [x] Replace the removed APIs in use: `setTintFill` and `tintFill` (`setTint` with `setTintMode`), `Geom.Point` (`Vector2`), `Math.PI2` (`Math.TAU`), `Phaser.Struct.Set` and `Phaser.Struct.Map` (native `Set` and `Map`), `TextureManager.generate`, `Mesh` and `Plane`
+- [x] Review every use of `Math.TAU`, which changes its value without an error: it was `PI / 2` and is now `PI * 2` (`Math.PI_OVER_2` is the old value)
+- [x] Replace masks and FX with filters: `BitmapMask` with the `Mask` filter, and `preFX` and `postFX` with `filters.internal` and `filters.external`
+- [x] Call `render()` after drawing on a `DynamicTexture` or `RenderTexture`, which no longer draw at once
+- [x] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
 - [ ] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default
 - [ ] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
 
