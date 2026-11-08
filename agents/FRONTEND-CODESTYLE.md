@@ -116,7 +116,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 
 - Network errors are handled in `api/`: they are translated into a result or typed exception and shown through an `Overlay`/scene, never as an `alert`.
 - An action rejected by the backend (a 400 response with an `exception.*` key, `CON-18`) reverts any visual preview and shows the translated key.
-- `fetch` always checks `response.ok` in new code; existing functions that do not are fixed when their module is touched, not before.
+- `fetch` always checks `response.ok` in new code; existing functions that do not follow the golden rule of `agents/CODESTYLE.md`.
 - `console.*` only in `api/` to trace communication, guarded by `isDevelopment` in new code. Never log the hand or tokens.
 - New code leaves no debugging `console.log`.
 

@@ -27,7 +27,7 @@ Read these only when the task needs them:
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. When writing backend code. They are not suggestions.
 - `agents/FRONTEND-CODESTYLE.md` — mandatory conventions for the frontend. When writing frontend code. They are not suggestions.
 
-If anything you are about to do contradicts those documents, stop and ask. Existing code that does not comply is not refactored on your own initiative: respect the patterns of the module you are touching.
+If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the guides, the golden rule of `agents/CODESTYLE.md` applies instead.
 
 The PlantUML diagrams in `docs/development/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when explicitly asked to.
 

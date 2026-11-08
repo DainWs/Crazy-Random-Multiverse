@@ -2,7 +2,7 @@
 
 Mandatory conventions for the tests in `backend/`. Complements `agents/CODESTYLE.md` (section 9) and `agents/BACKEND-CODESTYLE.md`.
 
-The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted; it is not rewritten on your own initiative.
+The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted, and the golden rule of `agents/CODESTYLE.md` applies.
 
 ---
 
@@ -249,9 +249,9 @@ There are no controller tests today. When they are added, they use `@SpringBootT
 
 ---
 
-## 16. Things in the existing code to fix when touched
+## 16. Known departures in the existing code
 
-They are not fixed on your own initiative; they are listed so they are not copied.
+They are listed so they are not copied. The golden rule of `agents/CODESTYLE.md` says when they are fixed.
 
 - `GameBehaviorIntegrationTest` and the `*BehaviorIntegrationTest` classes inherit from abstract bases; they are kept.
 - `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.

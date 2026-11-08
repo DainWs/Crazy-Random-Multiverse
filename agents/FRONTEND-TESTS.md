@@ -2,7 +2,7 @@
 
 Mandatory conventions for the tests in `frontend/`. Complements `agents/CODESTYLE.md` (section 9) and `agents/FRONTEND-CODESTYLE.md`.
 
-The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted in section 14; it is not rewritten on your own initiative.
+The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted in section 14, and the golden rule of `agents/CODESTYLE.md` applies.
 
 ---
 
@@ -196,13 +196,13 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 
 ---
 
-## 14. Things in the existing tests to fix when touched
+## 14. Known departures in the existing tests
 
-They are not fixed on your own initiative; they are listed so they are not copied.
+They are listed so they are not copied. The golden rule of `agents/CODESTYLE.md` says when they are fixed.
 
 - `test/core/StoreSystem.test.ts` → `before game initialization`: the test builds its own object and throws by hand, so it verifies nothing about `StoreSystem`. Replace it with a real check using `vi.resetModules()` and a dynamic import.
 - `StoreSystem` is a module singleton and its tests share state; reset it in `beforeEach` as in section 4.
 - Many tests use `as any` to build fakes (`SocketService.test.ts`, `StoreSystem.test.ts`); prefer `as unknown as T` or a typed factory in new tests.
 - `test/core/interactions/DragAndDrop.test.ts` and other interaction tests build a large `mockScene` inline. When a second file needs the same fake, extract it to a shared helper (section 9).
-- Some tests contain several unrelated assertions in one `it` (for example `calculateSpaceBetweenCards` for 0 and -1 in one test). Split or parameterize them when the file is modified.
+- Some tests contain several unrelated assertions in one `it` (for example `calculateSpaceBetweenCards` for 0 and -1 in one test). Split or parameterize them.
 - `ActionResolver` tests build events with a hand-written `getTrigger` override; if more tests need it, move the factory to a shared helper.
