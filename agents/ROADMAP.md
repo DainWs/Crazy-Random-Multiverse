@@ -179,7 +179,7 @@ Started at: `754e61d` · Finished at: `faf6a51`
 
 ## Phase 5.5 — Combat feedback
 
-Started at: `faf6a51`
+Started at: `faf6a51` · Finished at: `d2aac50`
 
 Split from Phase 5 so that each session stays small. It needs the zones of eliminated players that Phase 5 keeps in `zones`. The store applies each event at once (`CON-12`); the animations play in order from the snapshot of each event, and the board is drawn from that snapshot once its animation ends (`UI-4`, `VIEW-12`). This needs a view-side animation queue that is not in `CODESTYLE.md`: propose it and get it confirmed before writing it.
 
@@ -192,6 +192,8 @@ Split from Phase 5 so that each session stays small. It needs the zones of elimi
 - [x] Show protected cards and exposed leader state (`PROT-6`): no mark of their own, only the highlight of valid targets (`VIEW-17`)
 
 ## Phase 6 — Phaser 4 migration
+
+Started at: `d2aac50`
 
 Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on it. It changes no behavior: every `VIEW-*` and `UI-*` rule keeps holding.
 
