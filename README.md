@@ -2,7 +2,7 @@
 
 ## Welcome to CRM game
 
-Developers, you can't contribute to this project, but you can still fork it, and implements your own logic/style!!
+Developers, you can't contribute to this project, but you can still fork it, and implements your own logic/style!! Forks are only allowed for noncommercial purposes, see the [licence](LICENCE.md).
 
 This is exciting, isn't it? 😆 
 
