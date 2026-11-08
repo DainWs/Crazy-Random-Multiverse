@@ -51,15 +51,17 @@ Needs the tooling of T6.
 
 ## T5 — Elimination and game end
 
-Started at: `4fe6e29`
+Started at: `4fe6e29` · Finished at: `894fd92`
 
 - [x] Backend integration test of three players with a fixed clock: when the cleanup run deletes the player with the turn, the player is eliminated, the turn passes and the party drops them when it unlocks (`ABSENT-3`). Each step has its unit test, but not the chain
 
 ## T5.5 — Combat feedback
 
+Started at: `894fd92`
+
 Needs the tooling of T6.
 
-- [ ] When the attack that kills the last rival leader and the end of the game arrive one right after the other, the result appears only after the last animation (`UI-4`, `VIEW-12`)
+- [x] When the attack that kills the last rival leader and the end of the game arrive one right after the other, the result appears only after the last animation (`UI-4`, `VIEW-12`)
 
 
 ## T6 — Visual regression and smoke test
