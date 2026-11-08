@@ -28,6 +28,11 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 
 - [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
 - [ ] Camera stability: zoom/pan must not break card interaction
+- [ ] Stop the copies of a card from sharing one instance (`DECK-2`, `HAND-4`, `COMBAT-7`): `Hand.grab` returns the last copy but `cards.remove` drops the first, because `Card.equals` compares by code. The second copy played is the same object on the board, so damage reaches both and, when one dies, the other stays with 0 health, showing none and still targetable. `EquipAction` also uses `grab`
+- [ ] Keep the HUD inside the screen at any camera zoom (`UI-3`): `GameHudLayout` uses screen positions and `setScrollFactor(0)` does not undo the zoom, so at 1.1 with 2 players the turn text and both buttons are cut off
+- [ ] Add the Spanish names and descriptions of the cards to the client (`UI-2`): `core/Texts.ts` has none, so every card shows its key, such as `card.warrior.3.name`
+- [ ] Provide the card images the manifest lists: `/resources/cards/leader/1.png` and warriors such as `/resources/cards/warrior/common/0.png` answer 404. Decide whether a redraw counts as showing the card again (`UI-21`): a failed image is requested on every redraw, 51 times in one short game
+- [ ] When the rest of the phase is finished, play the game in a browser and look for bugs and for things that can be improved (animations, positions, etc.). For example, whether the hand should be adapted so that its cards are not so large, which is only an example and not necessarily true. Record each finding as a bullet in the phase it fits best
 
 ## Phase 8 — Rounds, players and connection
 
@@ -62,6 +67,17 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 - [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
 - [ ] Decide how a hand that does not fit is shown and close `VIEW-16`: `HAND-1` sets no limit and `HandView` sizes its bounds for 10 cards. Probably the cards overlap
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
+- [ ] Reposition the board, the hand and the HUD when the window changes size: `App.vue` uses `Scale.RESIZE` and nothing reacts to it, so at 1100×620 the own leader, rows and buttons are out of view, and at 1920 wide the board is off-center. Only desktop windows: the responsive layouts of `VIEW-10` stay Post-MVP
+- [ ] Fix the hand staying expanded after the pointer leaves it (`VIEW-14`). Seen twice with simulated mouse events in a game of two, but it folded in a game of three, and the cause was not found, so confirm it with a real mouse first ("Pending checks" of `ROADMAP-TEST.md`)
+- [ ] Fix the slot of the incoming cards in `HandView.addCards` (`VIEW-8`): the position uses `i` instead of the index in the hand, and `newIndex` drifts because the cards are pushed inside the loop. Target and depth are wrong until `updateCards` runs at the end of the animation. Probably why, in 2 of 3 sessions of a game of three, only one of the 2 first cards was shown until the hand was hovered
+- [ ] Make the expansion of the hand animate: `HandView.updateBounds` sets its `y` on every `prerender`, which overrides the tween of `HandAnimator`. Read from the code, not seen on screen
+- [ ] Reduce the size of the cards of the hand: expanded they measure about 200×300 at 1600×900, a third of the screen height, and two cards take about 410 px. With 5 cards the expanded hand covers the left column of the own zone. They stay larger than the cards of the board, whose smaller size is what lets the whole board fit
+- [ ] Center the hand on the screen according to the cards it holds: its bounds are sized for 10 cards and anchored to the left
+- [ ] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
+- [ ] Lower the contrast of the grid of the table, which competes with the cards
+- [ ] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards and the `Mano:` label
+- [ ] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
+- [ ] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
 
 ## Phase 11 — UX
 
@@ -69,6 +85,10 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow
 - [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
+- [ ] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
+- [ ] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection
+- [ ] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board
+- [ ] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
 
 ## Phase 12 — Menu, lobby, user
 
@@ -79,6 +99,8 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 - [ ] Username editing from the main menu, persisted with `PUT /user`, with a rejected name shown below the field (`USER-3`, `UI-13`)
 - [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)
+- [ ] Name the party after its owner (`PARTY-11`): `ModelMapper` sends `Party of <name>`
+- [ ] Style the main menu and the party screen, which use the default controls of the browser, and show the members in a stable order with the owner first: today the owner can be last
 
 ## Phase 13 — Testing
 
