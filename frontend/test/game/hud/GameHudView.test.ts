@@ -135,6 +135,15 @@ describe('GameHudView', () => {
 
       expect(turnText().text).toBe('Ronda 2');
     });
+
+    it('shows only whose turn it is before the first round', () => {
+      store.round = undefined;
+      store.playerWithTurn = { code: 'p2', name: 'Two' };
+
+      hud.refresh(false);
+
+      expect(turnText().text).toBe('Turno de Two');
+    });
   });
 
   // UI-3

@@ -24,7 +24,9 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 8 — Rounds, players and connection
 
-- [ ] Display the current round (`UI-3`)
+Started at: eefedd9
+
+- [x] Display the current round (`UI-3`)
 - [ ] Highlight the current player; distinguish the local player's cards
 - [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
 - [ ] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
