@@ -192,3 +192,17 @@ Moves the frontend from Phaser 3 to Phaser 4 before more view work is built on i
 - [x] Review what depends on the renderer internals: custom pipelines, `Shader` objects, direct `gl` calls and direct access to `Camera#matrix`
 - [x] Check the sharpness of the cards and texts with `roundPixels`, which is now `false` by default: `pixelArt` still enables it, so the configuration stays as it was. The visual check is in "Pending checks" of `ROADMAP-TEST.md`
 - [x] Update the Phaser version named in `CLAUDE.md`, `CODESTYLE.md` and `FRONTEND-CODESTYLE.md`
+
+## Phase 7 — Base assets and stability
+
+Started at: `f10329f` · Finished at: `47be378`
+
+Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
+
+- [x] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
+- [x] Camera stability: zoom/pan must not break card interaction
+- [x] Stop the copies of a card from sharing one instance (`DECK-2`, `HAND-4`, `COMBAT-7`): `Hand.grab` returns the last copy but `cards.remove` drops the first, because `Card.equals` compares by code. The second copy played is the same object on the board, so damage reaches both and, when one dies, the other stays with 0 health, showing none and still targetable. `EquipAction` also uses `grab`
+- [x] Keep the HUD inside the screen at any camera zoom (`UI-3`): `GameHudLayout` uses screen positions and `setScrollFactor(0)` does not undo the zoom, so at 1.1 with 2 players the turn text and both buttons are cut off
+- [x] Add the Spanish names and descriptions of the cards to the client (`UI-2`): `core/Texts.ts` has none, so every card shows its key, such as `card.warrior.3.name`
+- [x] Provide the card images the manifest lists: `/resources/cards/leader/1.png` and warriors such as `/resources/cards/warrior/common/0.png` answer 404. Decide whether a redraw counts as showing the card again (`UI-21`): a failed image is requested on every redraw, 51 times in one short game
+- [x] When the rest of the phase is finished, play the game in a browser and look for bugs and for things that can be improved (animations, positions, etc.). For example, whether the hand should be adapted so that its cards are not so large, which is only an example and not necessarily true. Record each finding as a bullet in the phase it fits best
