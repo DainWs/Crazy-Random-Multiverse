@@ -9,11 +9,25 @@ import StoreSystem from '@/core/StoreSystem';
 const currentParty = shallowRef<Party | undefined>();
 const currentUserState = shallowRef<UserState>('IDLE');
 const currentActiveGame = shallowRef<ActiveGame | undefined>();
+const currentNotice = shallowRef<Notice | undefined>();
 
 /** Read-only views for Vue components; computed does not wrap the value in a proxy. */
 const party = computed(() => currentParty.value);
 const userState = computed(() => currentUserState.value);
 const activeGame = computed(() => currentActiveGame.value);
+const notice = computed(() => currentNotice.value);
+
+/** A message for the user about something that happened outside their screen, such as a cancelled loading (UI-10, LOAD-4).
+ * It is not game state and no reconnection clears it. */
+type Notice = { key: string };
+
+const showNotice = (key: string) => {
+  currentNotice.value = { key };
+}
+
+const dismissNotice = () => {
+  currentNotice.value = undefined;
+}
 
 const GAME_USER_STATES: readonly UserState[] = ['GAME_LOADING', 'GAME_IN_PROGRESS'];
 
@@ -80,8 +94,10 @@ const finishSync = () => {
 }
 
 /** After the sync, the state follows the events that reach the user (UI-17). */
-const followLiveState = (state: UserState, from: readonly UserState[]) => {
-  if (syncingState === null && from.includes(currentUserState.value)) setUserState(state);
+const followLiveState = (state: UserState, from: readonly UserState[]): boolean => {
+  const applies = syncingState === null && from.includes(currentUserState.value);
+  if (applies) setUserState(state);
+  return applies;
 }
 
 const isMember = (candidate: Party) => {
@@ -137,7 +153,11 @@ const bindListeners = () => {
   });
 
   gameEventApi.onGameApiEvent('GAME_START', () => followLiveState('GAME_IN_PROGRESS', ['GAME_LOADING']));
-  gameEventApi.onGameApiEvent('GAME_CANCELLED', () => followLiveState('IN_PARTY', ['GAME_LOADING']));
+  gameEventApi.onGameApiEvent('GAME_CANCELLED', () => {
+    if (followLiveState('IN_PARTY', ['GAME_LOADING'])) {
+      showNotice('ui.notice.game_cancelled');
+    }
+  });
 
   userEventApi.onPartyInfo((receivedParty) => {
     if (syncingState === null && !isMember(receivedParty)) {
@@ -178,6 +198,9 @@ const SessionSystem = {
   activeGame,
   isSynced: isUserSynced,
   connectionNoticeKey,
+  notice,
+  showNotice,
+  dismissNotice,
   screen,
   enterParty,
   leaveParty,

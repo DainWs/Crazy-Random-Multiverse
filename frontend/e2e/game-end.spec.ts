@@ -133,5 +133,6 @@ test.describe('spectator who was eliminated', () => {
         await page.mouse.click(CONFIRM_YES.x, CONFIRM_YES.y);
 
         await expect(page.getByRole('button', { name: 'Crear party' })).toBeVisible();
+        expect(backend.leaveCalls).toBe(1);
     });
 });

@@ -70,6 +70,49 @@ describe('SessionSystem', () => {
     });
   });
 
+  // LOAD-4
+  describe('cancelled loading', () => {
+    beforeEach(async () => {
+      await SessionSystem.start();
+      statusListener('connecting');
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      syncedListener();
+    });
+
+    it('goes back to the party and explains it', () => {
+      gameListeners.get('GAME_CANCELLED')!(gameEvent);
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+      expect(SessionSystem.notice.value).toEqual({ key: 'ui.notice.game_cancelled' });
+    });
+
+    it('can be dismissed', () => {
+      gameListeners.get('GAME_CANCELLED')!(gameEvent);
+
+      SessionSystem.dismissNotice();
+
+      expect(SessionSystem.notice.value).toBeUndefined();
+    });
+
+    it('keeps the notice through a reconnection', () => {
+      gameListeners.get('GAME_CANCELLED')!(gameEvent);
+
+      statusListener('reconnecting');
+
+      expect(SessionSystem.notice.value).toEqual({ key: 'ui.notice.game_cancelled' });
+    });
+
+    it('does not explain a cancellation when the user has no game loading', () => {
+      SessionSystem.dismissNotice();
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      gameListeners.get('GAME_CANCELLED')!(gameEvent);
+
+      expect(SessionSystem.notice.value).toBeUndefined();
+    });
+  });
+
   // UI-9
   describe('connection notice', () => {
     beforeEach(async () => {

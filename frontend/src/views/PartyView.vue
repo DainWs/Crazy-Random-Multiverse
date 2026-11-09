@@ -6,6 +6,7 @@ import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 
 const party = SessionSystem.party;
+const notice = SessionSystem.notice;
 const user = StoreSystem.getUser();
 const errorKey = ref<string | undefined>();
 const isCodeCopied = ref(false);
@@ -20,10 +21,12 @@ const copyCode = async () => {
 };
 
 const leave = async () => {
+    SessionSystem.dismissNotice();
     if (party.value) errorKey.value = await partyController.leaveParty(party.value);
 };
 
 const start = async () => {
+    SessionSystem.dismissNotice();
     if (party.value) errorKey.value = await partyController.startGame(party.value);
 };
 </script>
@@ -49,6 +52,10 @@ const start = async () => {
         <button v-if="partyController.isOwner(party, user)" type="button" :disabled="!canStart" @click="start">
             {{ getText('ui.party.start') }}
         </button>
+        <p v-if="notice" class="notice" role="alert">
+            {{ getText(notice.key) }}
+            <button type="button" @click="SessionSystem.dismissNotice()">{{ getText('ui.notice.dismiss') }}</button>
+        </p>
         <p v-if="errorKey" class="error" role="alert">{{ getText(errorKey) }}</p>
     </main>
 </template>

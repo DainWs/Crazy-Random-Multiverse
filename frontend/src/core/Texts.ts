@@ -16,6 +16,8 @@ const TEXTS: Record<string, string> = {
   'ui.party.start': 'Iniciar partida',
   'ui.connection.connecting': 'Conectando...',
   'ui.connection.reconnecting': 'Sin conexión. Reconectando...',
+  'ui.notice.dismiss': 'Entendido',
+  'ui.notice.game_cancelled': 'La partida se ha cancelado porque ya no hay jugadores suficientes',
   'ui.game_load.loading': 'Cargando la partida...',
   'ui.game_load.waiting': 'Esperando a los demás jugadores...',
   'ui.game_load.failed': 'No se ha podido cargar la partida',

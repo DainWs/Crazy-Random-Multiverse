@@ -88,3 +88,18 @@ test.describe('game load', () => {
         expect(backend.textureRequests.slice(requestsBeforeRetry)).toEqual([REQUIRED_TEXTURE]);
     });
 });
+
+// LOAD-4, LOAD-5
+test.describe('cancelled game load', () => {
+    test('goes back to the party, explains it and sends no ready', async ({ page, backend }) => {
+        const prepared = createLoadingGame(2);
+        backend.prepareLoading(prepared);
+        await openLoadWaitingForTexture(page, backend);
+
+        backend.emitGameEvent('GAME_CANCELLED', { game: prepared.game });
+        await backend.releaseTextures();
+
+        await expect(page.getByRole('alert')).toContainText('La partida se ha cancelado');
+        expect(backend.readyCalls).toBe(0);
+    });
+});

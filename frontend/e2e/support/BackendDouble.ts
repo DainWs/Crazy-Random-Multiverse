@@ -2,6 +2,8 @@ import type { Page, Route, WebSocketRoute } from '@playwright/test';
 import type { ActionDto } from '@/api/dtos/ActionDto';
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { EventDetailsDto, EventDto } from '@/api/dtos/EventDto';
+import type { PartyDto } from '@/api/dtos/PartyDto';
+import type { UserDto } from '@/api/dtos/UserDto';
 import type { ResourceDto, ResourceManifestDto } from '@/api/dtos/ResourceManifestDto';
 import type { GameEventCode } from '@/api/models/GameEventCode';
 import type { PreparedGame } from '@/support/preparedGame';
@@ -13,6 +15,7 @@ import { LOCAL_USER } from '@/support/preparedGame';
 const SOCKET_URL = /\/socket\.io\//;
 const ACTION_URL = /\/game\/[^/]+\/action$/;
 const MANIFEST_URL = /\/game\/[^/]+\/resources$/;
+const LEAVE_URL = /\/party\/[^/]+\/leave$/;
 const READY_URL = /\/game\/[^/]+\/ready$/;
 const TEXTURE_URL = '**/resources/e2e/*';
 const BACKEND_PATH = /^\/(game|party|register|user|resources|socket\.io)(\/|$)/;
@@ -22,6 +25,7 @@ const SOCKET_CONNECT = '40';
 const SOCKET_CONNECTED = `40${JSON.stringify({ sid: 'e2e-socket' })}`;
 const SOCKET_EVENT = '42';
 const GAME_EVENT_CHANNEL = 'game:event';
+const PARTY_INFO_CHANNEL = 'party:info';
 const USER_SYNCED_CHANNEL = 'user:synced';
 const GAME_SYNC_SEQUENCE = 10;
 const BOARD_DRAWN_TIMEOUT_MS = 15000;
@@ -58,6 +62,7 @@ class BackendDouble {
     public readonly unexpectedRequests: string[] = [];
     public readonly textureRequests: string[] = [];
     public readyCalls = 0;
+    public leaveCalls = 0;
 
     private readonly servedTextures = new Set<string>();
     private readonly heldTextures = new Set<string>();
@@ -82,6 +87,7 @@ class BackendDouble {
         await this.page.route('**/register', (route) => route.fulfill({ json: LOCAL_USER }));
         await this.page.route(MANIFEST_URL, (route) => route.fulfill({ json: this.createManifest() }));
         await this.page.route(READY_URL, (route) => this.handleReady(route));
+        await this.page.route(LEAVE_URL, (route) => this.handleLeave(route));
         await this.page.route(ACTION_URL, (route) => this.handleAction(route));
         await this.page.route(TEXTURE_URL, (route) => this.handleTexture(route));
         await this.page.routeWebSocket(SOCKET_URL, (socket) => this.handleSocket(socket));
@@ -173,6 +179,11 @@ class BackendDouble {
         return route.fulfill({ status: 200 });
     }
 
+    private handleLeave(route: Route) {
+        this.leaveCalls += 1;
+        return route.fulfill({ status: 200 });
+    }
+
     private handleReady(route: Route) {
         this.readyCalls += 1;
         return route.fulfill({ status: 200 });
@@ -231,12 +242,30 @@ class BackendDouble {
 
     private sendConnectionState() {
         if (this.prepared) {
+            this.emitPartyInfo(this.prepared.user);
+
             const { game, hand } = this.prepared;
             const details = this.connectionEventCode === 'GAME_SYNC' ? { game, hand } : { game };
             this.emitEvent({ code: this.connectionEventCode, sequence: GAME_SYNC_SEQUENCE, details });
         }
 
         this.socket!.send(`${SOCKET_EVENT}${JSON.stringify([USER_SYNCED_CHANNEL])}`);
+    }
+
+    /** The party of the user, locked because it has a game (PARTY-3). */
+    private emitPartyInfo(user: UserDto) {
+        const party: PartyDto = {
+            code: 'party-1',
+            name: 'Party',
+            gameMode: 'CLASSIC',
+            userCount: 1,
+            maxUsers: 4,
+            owner: user,
+            users: [user],
+            locked: true
+        };
+
+        this.socket!.send(`${SOCKET_EVENT}${JSON.stringify([PARTY_INFO_CHANNEL, party])}`);
     }
 
     private emitEvent(event: EventDto) {
