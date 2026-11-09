@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { clampScrollToBounds } from '@/core/cameras/CameraCalculations';
+import type { Bounds2D } from '@/core/cameras/CameraCalculations';
 
 
 const ZOOM_STEP = 0.15;
@@ -39,7 +41,7 @@ function calculateNewZoom(currentZoom: number, deltaY: number, config: ZoomConfi
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
-function initialize(scene: Phaser.Scene, camera: Camera) {
+function initialize(scene: Phaser.Scene, camera: Camera, getBounds: () => Bounds2D | undefined) {
   // Zoom out (scroll down = deltaY > 0) or zoom in (scroll up = deltaY < 0)
   scene.input.on('wheel', (
     pointer: Phaser.Input.Pointer,
@@ -50,7 +52,7 @@ function initialize(scene: Phaser.Scene, camera: Camera) {
   ) => onWheel(scene, camera, pointer, deltaY));
 
   // Drag to pan with middle or right button
-  scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => onPointerMove(camera, pointer));
+  scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => onPointerMove(scene, camera, pointer, getBounds()));
 
   // Disable context menu for right click
   scene.input.mouse?.disableContextMenu();
@@ -70,12 +72,22 @@ function onZoomComplete(camera: Camera, newZoom: number) {
   camera.emit(Phaser.Cameras.Scene2D.Events.ZOOM_COMPLETE, camera, newZoom);
 }
 
-function onPointerMove(camera: Camera, pointer: Phaser.Input.Pointer) {
+function onPointerMove(scene: Phaser.Scene, camera: Camera, pointer: Phaser.Input.Pointer, bounds: Bounds2D | undefined) {
   if (!pointer.isDown) return;
   if (pointer.middleButtonDown() || pointer.rightButtonDown()) {
     camera.scrollX -= (pointer.x - pointer.prevPosition.x) / camera.zoom;
     camera.scrollY -= (pointer.y - pointer.prevPosition.y) / camera.zoom;
+    keepInsideBounds(scene, camera, bounds);
   }
+}
+
+/** Zooming scales around the center of the screen, so only a pan can take it out of the board. */
+function keepInsideBounds(scene: Phaser.Scene, camera: Camera, bounds: Bounds2D | undefined) {
+  if (!bounds) return;
+
+  const { width, height } = scene.scale;
+  const scroll = clampScrollToBounds({ scrollX: camera.scrollX, scrollY: camera.scrollY, zoom: camera.zoom, screenWidth: width, screenHeight: height }, bounds);
+  camera.setScroll(scroll.x, scroll.y);
 }
 
 const CameraMovementManager = {

@@ -3,22 +3,26 @@ import { GameScene } from "@/scenes/Game";
 import CameraMovementManager from "@/core/cameras/CameraMovementManager";
 import StoreSystem from "@/core/StoreSystem";
 import { calculateCameraCorners, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
-import type { CameraViewport } from "@/core/cameras/CameraCalculations";
+import type { Bounds2D, CameraViewport } from "@/core/cameras/CameraCalculations";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
 class CameraSystem {
     private gameScene: GameScene;
     private camera: Camera;
+    private boardBounds?: Bounds2D;
 
     public initialize(gameScene: GameScene) {
         this.gameScene = gameScene;
         this.camera = gameScene.cameras.main;
-        CameraMovementManager.initialize(gameScene, this.camera);
+        CameraMovementManager.initialize(gameScene, this.camera, () => this.boardBounds);
     }
 
-    public setupBattlefieldCamera(centerX: number, centerY: number) {
+    /** `boardOrigin` is where the battlefield container sits, around which the board is drawn. */
+    public setupBattlefieldCamera(centerX: number, centerY: number, boardOrigin: Point2D) {
         const battlefield = StoreSystem.getBattlefield();
+        const { tl, br } = battlefield.getCorners();
+        this.boardBounds = { left: boardOrigin.x + tl.x, top: boardOrigin.y + tl.y, right: boardOrigin.x + br.x, bottom: boardOrigin.y + br.y };
         const maxPlayersPerSide = battlefield.getMaxPlayersPerSide();
         const cameraConfiguration = resolveCameraConfiguration(maxPlayersPerSide);
 

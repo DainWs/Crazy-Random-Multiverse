@@ -29,7 +29,7 @@ Started at: `f10329f`
 Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 
 - [x] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
-- [ ] Camera stability: zoom/pan must not break card interaction
+- [x] Camera stability: zoom/pan must not break card interaction
 - [ ] Stop the copies of a card from sharing one instance (`DECK-2`, `HAND-4`, `COMBAT-7`): `Hand.grab` returns the last copy but `cards.remove` drops the first, because `Card.equals` compares by code. The second copy played is the same object on the board, so damage reaches both and, when one dies, the other stays with 0 health, showing none and still targetable. `EquipAction` also uses `grab`
 - [ ] Keep the HUD inside the screen at any camera zoom (`UI-3`): `GameHudLayout` uses screen positions and `setScrollFactor(0)` does not undo the zoom, so at 1.1 with 2 players the turn text and both buttons are cut off
 - [x] Add the Spanish names and descriptions of the cards to the client (`UI-2`): `core/Texts.ts` has none, so every card shows its key, such as `card.warrior.3.name`

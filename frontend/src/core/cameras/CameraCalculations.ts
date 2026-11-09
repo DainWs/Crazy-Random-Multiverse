@@ -5,6 +5,13 @@ import { Corners2D, Point2D } from "@/domain/Geometry";
  * Used by CameraSystem to compute HUD positions and camera corners.
  */
 
+interface Bounds2D {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
 interface CameraViewport {
   scrollX: number;
   scrollY: number;
@@ -21,6 +28,16 @@ function calculateHUDPosition(viewport: CameraViewport, screenX: number, screenY
     x: viewport.scrollX + (screenX - centerX) / viewport.zoom + centerX,
     y: viewport.scrollY + (screenY - centerY) / viewport.zoom + centerY
   };
+}
+
+/** Moves the scroll the least needed so that the center of the screen stays inside the bounds (VIEW-19). */
+function clampScrollToBounds(viewport: CameraViewport, bounds: Bounds2D): Point2D {
+  const halfWidth = viewport.screenWidth / 2;
+  const halfHeight = viewport.screenHeight / 2;
+  const centerX = Math.min(Math.max(viewport.scrollX + halfWidth, bounds.left), bounds.right);
+  const centerY = Math.min(Math.max(viewport.scrollY + halfHeight, bounds.top), bounds.bottom);
+
+  return { x: centerX - halfWidth, y: centerY - halfHeight };
 }
 
 function calculateCameraCorners(viewport: CameraViewport): Corners2D {
@@ -55,5 +72,5 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
   return CAMERA_CONFIGURATIONS.get(maxPlayersPerSide) || DEFAULT_CAMERA_CONFIGURATION;
 }
 
-export type { CameraViewport, CameraConfiguration };
-export { calculateHUDPosition, calculateCameraCorners, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export type { Bounds2D, CameraViewport, CameraConfiguration };
+export { calculateHUDPosition, calculateCameraCorners, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };

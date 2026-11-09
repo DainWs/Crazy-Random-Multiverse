@@ -56,7 +56,7 @@ class GameScene extends Scene {
         this.cardTooltipView = new GlobalCardTooltipView(this);
 
         this.cameraSystem.initialize(this);
-        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2);
+        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2, this.battlefieldContainer);
 
         this.handController.init();
     }

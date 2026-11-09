@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   calculateHUDPosition,
   calculateCameraCorners,
+  clampScrollToBounds,
   resolveCameraConfiguration,
   DEFAULT_CAMERA_CONFIGURATION
 } from '@/core/cameras/CameraCalculations';
@@ -40,6 +41,56 @@ describe('CameraCalculations', () => {
       const viewport: CameraViewport = { ...defaultViewport, zoom: 0.5 };
       const result = calculateHUDPosition(viewport, 960, 540);
       expect(result).toEqual({ x: 960, y: 540 });
+    });
+  });
+
+  // VIEW-19
+  describe('clampScrollToBounds', () => {
+    const bounds = { left: -500, top: -300, right: 500, bottom: 300 };
+    // The center of the screen is (scrollX + 960, scrollY + 540)
+    const centeredOn = (x: number, y: number): CameraViewport => ({ ...defaultViewport, scrollX: x - 960, scrollY: y - 540 });
+
+    it('keeps the scroll when the center is inside the bounds', () => {
+      const result = clampScrollToBounds(centeredOn(100, -50), bounds);
+
+      expect(result).toEqual({ x: 100 - 960, y: -50 - 540 });
+    });
+
+    it('keeps the scroll when the center is on the edge', () => {
+      const result = clampScrollToBounds(centeredOn(500, 300), bounds);
+
+      expect(result).toEqual({ x: 500 - 960, y: 300 - 540 });
+    });
+
+    it('moves the center back to the right edge when it goes past it', () => {
+      const result = clampScrollToBounds(centeredOn(900, 0), bounds);
+
+      expect(result.x).toBe(500 - 960);
+    });
+
+    it('moves the center back to the left edge when it goes past it', () => {
+      const result = clampScrollToBounds(centeredOn(-900, 0), bounds);
+
+      expect(result.x).toBe(-500 - 960);
+    });
+
+    it('moves the center back to the top and bottom edges', () => {
+      const top = clampScrollToBounds(centeredOn(0, -900), bounds);
+      const bottom = clampScrollToBounds(centeredOn(0, 900), bounds);
+
+      expect([top.y, bottom.y]).toEqual([-300 - 540, 300 - 540]);
+    });
+
+    it('clamps each axis on its own', () => {
+      const result = clampScrollToBounds(centeredOn(900, 100), bounds);
+
+      expect(result.y).toBe(100 - 540);
+    });
+
+    it('does not depend on the zoom', () => {
+      const result = clampScrollToBounds({ ...centeredOn(900, 0), zoom: 0.5 }, bounds);
+
+      expect(result.x).toBe(500 - 960);
     });
   });
 
