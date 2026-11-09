@@ -3,6 +3,7 @@ import type { GameEventListener, Listener, StatusChangeListener } from '@/api/mo
 import type { ActiveGame } from '@/domain/ActiveGame';
 import type { GameSnapshot } from '@/core/StoreSystem';
 import { gameEventApi, gameStateApi, socketService, userApi, userEventApi } from '@/api';
+import { ServerUnreachableError } from '@/api/models/ApiException';
 import Party from '@/domain/Party';
 import User from '@/domain/User';
 import SessionSystem from '@/core/SessionSystem';
@@ -10,8 +11,8 @@ import StoreSystem from '@/core/StoreSystem';
 
 vi.mock('@/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api')>()),
-  userApi: { findAccount: vi.fn(), register: vi.fn() },
-  socketService: { connect: vi.fn(), onStatusChange: vi.fn() },
+  userApi: { findAccount: vi.fn(), register: vi.fn(), onSessionExpired: vi.fn() },
+  socketService: { connect: vi.fn(), disconnect: vi.fn(), onStatusChange: vi.fn(), onError: vi.fn() },
   gameEventApi: { onGameApiEvent: vi.fn(), onGameLoading: vi.fn(), onGameSync: vi.fn() },
   gameStateApi: { bind: vi.fn(), reset: vi.fn() },
   userEventApi: { onPartyInfo: vi.fn(), onUserSynced: vi.fn() }
@@ -24,6 +25,8 @@ describe('SessionSystem', () => {
   let gameSyncListener: Listener<ActiveGame>;
   let partyListener: (party: Party) => void;
   let syncedListener: () => void;
+  let sessionExpiredListener: () => void;
+  let socketErrorListener: () => void;
 
   const registeredUser = new User('usr-1', 'One');
   const createParty = (members: User[] = [registeredUser]) => {
@@ -64,9 +67,112 @@ describe('SessionSystem', () => {
       partyListener = listener;
       return () => undefined;
     });
+    vi.mocked(userApi.onSessionExpired).mockImplementation((listener) => {
+      sessionExpiredListener = listener as () => void;
+      return () => undefined;
+    });
+    vi.mocked(socketService.onError).mockImplementation((listener) => {
+      socketErrorListener = listener as () => void;
+      return () => undefined;
+    });
     vi.mocked(userEventApi.onUserSynced).mockImplementation((listener) => {
       syncedListener = listener as () => void;
       return () => undefined;
+    });
+  });
+
+  // USER-8, UI-10
+  describe('expired session', () => {
+    const newUser = new User('usr-2', 'Two');
+
+    beforeEach(async () => {
+      await SessionSystem.start();
+      statusListener('connecting');
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+      syncedListener();
+      vi.mocked(userApi.register).mockResolvedValue(newUser);
+    });
+
+    it('goes to the main menu as a new user, and says why', async () => {
+      await sessionExpiredListener();
+
+      expect(StoreSystem.getUser()).toBe(newUser);
+      expect(SessionSystem.userState.value).toBe('IDLE');
+      expect(SessionSystem.party.value).toBeUndefined();
+      expect(SessionSystem.notice.value).toEqual({ key: 'exception.user.not_found' });
+    });
+
+    it('connects the socket again with the new session', async () => {
+      vi.mocked(socketService.connect).mockClear();
+
+      await sessionExpiredListener();
+
+      expect(socketService.disconnect).toHaveBeenCalledTimes(1);
+      expect(socketService.connect).toHaveBeenCalledTimes(1);
+    });
+
+    it('says the server is unreachable when it cannot register the new user', async () => {
+      vi.mocked(userApi.register).mockRejectedValueOnce(new ServerUnreachableError());
+
+      await sessionExpiredListener();
+
+      expect(SessionSystem.notice.value).toEqual({ key: 'exception.server_unreachable' });
+    });
+
+    it('treats a refused connection with no session as an expired session', async () => {
+      vi.mocked(userApi.findAccount).mockResolvedValueOnce(undefined);
+
+      await socketErrorListener();
+
+      expect(StoreSystem.getUser()).toBe(newUser);
+    });
+
+    it('does nothing about a refused connection when the session still exists', async () => {
+      vi.mocked(userApi.findAccount).mockResolvedValueOnce(registeredUser);
+
+      await socketErrorListener();
+
+      expect(userApi.register).not.toHaveBeenCalled();
+    });
+
+    it('does nothing about a refused connection while the server is down', async () => {
+      vi.mocked(userApi.findAccount).mockRejectedValueOnce(new ServerUnreachableError());
+
+      await socketErrorListener();
+
+      expect(userApi.register).not.toHaveBeenCalled();
+    });
+  });
+
+  // UI-10
+  describe('game not found', () => {
+    beforeEach(async () => {
+      await SessionSystem.start();
+      SessionSystem.dismissNotice();
+      statusListener('connecting');
+    });
+
+    it('goes to the main menu and says why when the user has no party', () => {
+      gameLoadingListener(activeGame);
+      syncedListener();
+
+      SessionSystem.abandonGame('exception.game.not_found');
+
+      expect(SessionSystem.userState.value).toBe('IDLE');
+      expect(SessionSystem.notice.value).toEqual({ key: 'exception.game.not_found' });
+    });
+
+    it('goes back to the party without a notice when the user has one', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      syncedListener();
+
+      SessionSystem.abandonGame('exception.game.not_found');
+
+      expect(SessionSystem.userState.value).toBe('IN_PARTY');
+      expect(SessionSystem.notice.value).toBeUndefined();
     });
   });
 
@@ -201,6 +307,17 @@ describe('SessionSystem', () => {
       await SessionSystem.start();
 
       expect(gameStateApi.bind).toHaveBeenCalledTimes(1);
+    });
+
+    // UI-24
+    it('shows the main menu with a notice to reload when the server is unreachable', async () => {
+      vi.mocked(userApi.findAccount).mockRejectedValueOnce(new ServerUnreachableError());
+
+      await SessionSystem.start();
+
+      expect(SessionSystem.screen.value).toBe('MAIN_MENU');
+      expect(SessionSystem.notice.value).toEqual({ key: 'ui.notice.server_unreachable_at_startup' });
+      expect(socketService.connect).not.toHaveBeenCalled();
     });
 
     it('does not connect the socket when the user cannot be loaded', async () => {

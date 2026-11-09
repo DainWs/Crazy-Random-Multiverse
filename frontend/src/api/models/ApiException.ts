@@ -9,6 +9,7 @@ const EXCEPTION_KEYS = {
   GAME_NOT_FOUND: 'exception.game.not_found',
   WRONG_GAME: 'exception.access_denied.wrong_game',
   SERVER_UNREACHABLE: 'exception.server_unreachable',
+  UNEXPECTED: 'exception.unexpected',
 } as const;
 
 class ApiException extends Error {

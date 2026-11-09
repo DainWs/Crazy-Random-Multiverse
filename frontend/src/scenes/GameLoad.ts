@@ -134,7 +134,7 @@ class GameLoadScene extends Scene {
 
     private onFailure(error: unknown) {
         if (isFinalRejection(error)) {
-            SessionSystem.abandonGame();
+            SessionSystem.abandonGame((error as ApiException).key);
         } else {
             this.showFailure(this.failureMessage(error));
         }

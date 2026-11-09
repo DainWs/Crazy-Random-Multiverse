@@ -69,6 +69,7 @@ const TEXTS: Record<string, string> = {
   'exception.zone.coordinate.requires_leader': 'Ese hueco es solo para el líder',
   'exception.zone.row.previous_need_to_be_filled': 'Primero hay que llenar la fila anterior',
   'exception.request.malformed': 'La petición no es válida',
+  'exception.game.not_found': 'La partida ya no existe',
   'exception.access_denied.wrong_game': 'No participas en esta partida',
   'exception.access_denied.identity_mismatch': 'Esa acción no es tuya'
 };

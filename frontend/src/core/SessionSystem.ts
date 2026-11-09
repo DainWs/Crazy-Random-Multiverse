@@ -1,9 +1,11 @@
+import type User from '@/domain/User';
 import type { Screen, UserState } from '@/domain/User';
 import type { ActiveGame } from '@/domain/ActiveGame';
 import type { ConnectionStatus } from '@/api/models/ConnectionStatus';
 import type Party from '@/domain/Party';
 import { computed, shallowRef } from 'vue';
 import { gameEventApi, gameStateApi, socketService, userApi, userEventApi } from '@/api';
+import { ApiException, EXCEPTION_KEYS, ServerUnreachableError } from '@/api/models/ApiException';
 import StoreSystem from '@/core/StoreSystem';
 
 const currentParty = shallowRef<Party | undefined>();
@@ -37,6 +39,9 @@ const SCREEN_BY_USER_STATE: Record<UserState, Screen> = {
   GAME_LOADING: 'GAME',
   GAME_IN_PROGRESS: 'GAME'
 };
+
+let recoveringSession = false;
+let checkingSession = false;
 
 const isSynced = shallowRef(false);
 const isUserSynced = computed(() => isSynced.value);
@@ -111,14 +116,59 @@ const enterParty = (confirmed: Party) => {
   followLiveState('IN_PARTY', ['IDLE']);
 }
 
-/** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). */
-const abandonGame = () => {
+/** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). Without a
+ * party they are told why (UI-10). */
+const abandonGame = (reasonKey?: string) => {
   let state: UserState = 'IDLE';
   if (currentParty.value) {
     state = 'IN_PARTY';
+  } else if (reasonKey) {
+    showNotice(reasonKey);
   }
 
   followLiveState(state, ['GAME_LOADING', 'GAME_IN_PROGRESS']);
+};
+
+/** The server no longer knows the session: the user starts again as a new one and is told (USER-8, UI-10, USER-5). */
+const sessionExpired = async (): Promise<void> => {
+  if (recoveringSession) {
+    return;
+  }
+
+  recoveringSession = true;
+  currentParty.value = undefined;
+  currentActiveGame.value = undefined;
+  setUserState('IDLE');
+  showNotice(EXCEPTION_KEYS.USER_NOT_FOUND);
+
+  try {
+    StoreSystem.setUser(await userApi.register());
+    bindOnce();
+    socketService.disconnect();
+    socketService.connect();
+  } catch (error) {
+    showNotice(error instanceof ApiException ? error.key : EXCEPTION_KEYS.UNEXPECTED);
+  } finally {
+    recoveringSession = false;
+  }
+};
+
+/** A refused connection can mean an expired session or a server that is down; only the first needs anything (UI-10). */
+const checkSession = async (): Promise<void> => {
+  if (recoveringSession || checkingSession) {
+    return;
+  }
+
+  checkingSession = true;
+  try {
+    if (!(await userApi.findAccount())) {
+      await sessionExpired();
+    }
+  } catch {
+    // The server is down or failed: the client keeps retrying the connection (UI-9)
+  } finally {
+    checkingSession = false;
+  }
 };
 
 /** The user left the game as a spectator, which also took them out of the party (SPEC-3). */
@@ -134,7 +184,13 @@ const leaveParty = () => {
   followLiveState('IDLE', ['IN_PARTY']);
 }
 
+let listenersBound = false;
+
 const bindListeners = () => {
+  listenersBound = true;
+  userApi.onSessionExpired(sessionExpired);
+  socketService.onError(checkSession);
+
   // The server sends the state before the connect ack, so the sync must start before the socket reports connected.
   socketService.onStatusChange((status) => {
     currentConnection.value = status;
@@ -180,12 +236,35 @@ const bindListeners = () => {
   userEventApi.onUserSynced(finishSync);
 }
 
-const start = async (): Promise<void> => {
-  let account = await userApi.findAccount();
-  if (!account) account = await userApi.register();
+/** Binds the events of the socket and of the game state, once however the session starts (CON-10). */
+const bindOnce = () => {
+  if (!listenersBound) {
+    bindListeners();
+    gameStateApi.bind();
+  }
+}
 
-  const user = account;
-  StoreSystem.setUser(user);
+/** Without a server there is no user and no socket: the main menu is shown with a notice to reload the page (UI-24). */
+const startOffline = () => {
+  showNotice('ui.notice.server_unreachable_at_startup');
+  setUserState('IDLE');
+  isSynced.value = true;
+}
+
+const start = async (): Promise<void> => {
+  let account: User | undefined;
+  try {
+    account = await userApi.findAccount();
+    if (!account) account = await userApi.register();
+  } catch (error) {
+    if (!(error instanceof ServerUnreachableError)) throw error;
+
+    userApi.onSessionExpired(sessionExpired);
+    startOffline();
+    return;
+  }
+
+  StoreSystem.setUser(account);
 
   bindListeners();
   gameStateApi.bind();

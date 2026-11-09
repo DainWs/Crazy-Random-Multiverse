@@ -70,6 +70,7 @@ class BackendDouble {
     private readonly heldRoutes: Route[] = [];
     private readonly heldActionRoutes: Route[] = [];
     private holdingActions = false;
+    private unreachable = false;
     private readonly page: Page;
     private socket?: WebSocketRoute;
     private prepared?: PreparedGame;
@@ -134,6 +135,11 @@ class BackendDouble {
         void this.socket!.close();
     }
 
+    /** The requests get no response, as if the server were down (UI-24). */
+    public makeUnreachable(): void {
+        this.unreachable = true;
+    }
+
     /** A reload drops the requests in flight, and the new page has to draw everything again. */
     public async reloadPage(): Promise<void> {
         this.heldRoutes.length = 0;
@@ -166,6 +172,10 @@ class BackendDouble {
     }
 
     private handleFindUser(route: Route) {
+        if (this.unreachable) {
+            return route.abort();
+        }
+
         return this.prepared ? route.fulfill({ json: this.prepared.user }) : route.fulfill(NO_SESSION);
     }
 

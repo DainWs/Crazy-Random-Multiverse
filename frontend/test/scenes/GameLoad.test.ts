@@ -1,6 +1,8 @@
 import 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 import { GameLoad } from '@/scenes/GameLoad';
+import { ApiException } from '@/api/models/ApiException';
+import SessionSystem from '@/core/SessionSystem';
 
 vi.mock('@/core/ResourceSystem', () => ({
     default: { registerDynamic: vi.fn() },
@@ -17,6 +19,17 @@ type LoadingScene = {
 };
 
 describe('GameLoad', () => {
+    // UI-10, UI-12
+    it('abandons the game with the reason when the server says it does not exist', () => {
+        const abandonGame = vi.spyOn(SessionSystem, 'abandonGame').mockImplementation(() => undefined);
+        const scene = { showFailure: vi.fn() };
+
+        (GameLoad.prototype as unknown as { onFailure(error: unknown): void }).onFailure.call(scene, new ApiException('exception.game.not_found'));
+
+        expect(abandonGame).toHaveBeenCalledWith('exception.game.not_found');
+        expect(scene.showFailure).not.toHaveBeenCalled();
+    });
+
     // LOAD-5
     it('does not confirm /ready when the game is cancelled during the download', async () => {
         const scene: LoadingScene = {

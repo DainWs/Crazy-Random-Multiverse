@@ -97,3 +97,15 @@ test.describe('lost connection', () => {
         await expect(notice).toBeHidden();
     });
 });
+
+// UI-24
+test.describe('server unreachable at startup', () => {
+    test('shows the main menu with a notice to reload the page', async ({ page, backend }) => {
+        backend.makeUnreachable();
+
+        await page.goto('/');
+
+        await expect(page.getByRole('button', { name: 'Crear party' })).toBeVisible();
+        await expect(page.getByRole('alert')).toContainText('Recarga la página');
+    });
+});
