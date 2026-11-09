@@ -24,6 +24,8 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 7 — Base assets and stability
 
+Started at: `f10329f`
+
 Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 
 - [ ] Base card set (`CARD-5`, `CARD-7`): leaders, warriors and equipment, with textures, which may be provisional in the MVP and are hosted by the backend (`CON-29`). Decide what to do with the test art left in `frontend/public/assets` (Phase 2.6). `MemoryCardRepositoryPopulator` has their statistics but no names or descriptions, which are only in `CARD-5`. A leader's `CardDto` carries no `description`. The client holds the Spanish texts of the keys
