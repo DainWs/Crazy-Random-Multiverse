@@ -206,3 +206,15 @@ export const TURN_GLOW_STEP = 8;
 
 /** Alpha of each outline of the glow; they add up towards the card (VIEW-20). */
 export const TURN_GLOW_LAYER_ALPHA = 0.22;
+
+/** Color of the veil over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_VEIL_COLOR = 0x000000;
+
+/** Alpha of the veil over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_VEIL_ALPHA = 0.7;
+
+/** Font size in board-space units of the label "Eliminado" over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_LABEL_FONT_SIZE = '72px';
+
+/** Color of the label over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_LABEL_COLOR = '#e74c3c';

@@ -136,6 +136,15 @@ describe('GameHudView', () => {
       expect(turnText().text).toBe('Ronda 2');
     });
 
+    // CON-32
+    it('still shows the player with the turn when they have been eliminated', () => {
+      store.playerWithTurn = { code: 'p3', name: 'Dead', isAlive: false } as { code: string; name: string };
+
+      hud.refresh(false);
+
+      expect(turnText().text).toBe('Ronda 2 · Turno de Dead');
+    });
+
     it('shows only whose turn it is before the first round', () => {
       store.round = undefined;
       store.playerWithTurn = { code: 'p2', name: 'Two' };

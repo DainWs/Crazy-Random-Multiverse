@@ -19,6 +19,7 @@ const TEXTS: Record<string, string> = {
   'ui.game_load.failed': 'No se ha podido cargar la partida',
   'ui.game_load.retry': 'Reintentar',
   'ui.game.hand_size': 'Mano:',
+  'ui.game.eliminated': 'Eliminado',
   'ui.game.round': 'Ronda',
   'ui.game.your_turn': 'Tu turno',
   'ui.game.turn_of': 'Turno de',

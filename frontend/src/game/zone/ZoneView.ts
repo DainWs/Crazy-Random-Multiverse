@@ -7,7 +7,7 @@ import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
 import type { Corners3D } from "@/domain/Geometry";
-import { TURN_GLOW_LAYERS, TURN_GLOW_STEP } from "@/core/Constants";
+import { ELIMINATED_LABEL_COLOR, ELIMINATED_LABEL_FONT_SIZE, TURN_GLOW_LAYERS, TURN_GLOW_STEP } from "@/core/Constants";
 import type { ZonePosition } from "@/domain/Position";
 
 interface ZoneViewOptions {
@@ -78,13 +78,32 @@ class ZoneView extends Phaser.GameObjects.Container {
       this.add(zoneSlotView);
     }
 
-    if (this.zone.team === 'ENEMY') {
+    if (this.zone.team === 'ENEMY' && this.zone.owner.isAlive) {
       this.add(this.createHandSizeLabel());
+    }
+
+    if (!this.zone.owner.isAlive) {
+      this.showEliminated();
     }
 
     if (this.options.hasTurn) {
       this.showTurnGlow();
     }
+  }
+
+  /** The label stays upright in every zone, so it is readable on the rotated ones (VIEW-11). */
+  private showEliminated() {
+    for (const slotView of this.slots.flat()) {
+      slotView.showEliminatedVeil();
+    }
+
+    const label = this.scene.add.text(0, 0, getText('ui.game.eliminated'), {
+      fontSize: ELIMINATED_LABEL_FONT_SIZE,
+      color: ELIMINATED_LABEL_COLOR
+    });
+    label.setOrigin(0.5, 0.5);
+    label.setScale(ProjectionSystem.toPoint3D(this.options.position).scale);
+    this.add(label);
   }
 
   /** The turn can name a player whose leader already died until the turn changes (CON-32): then there is nothing to light. */

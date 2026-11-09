@@ -28,7 +28,7 @@ Started at: eefedd9
 
 - [x] Display the current round (`UI-3`)
 - [x] Highlight the current player (`VIEW-20`)
-- [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
+- [x] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
 - [ ] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
 - [ ] Connecting, disconnected, reconnecting and failure states, on every screen and with no retry limit (`UI-9`)
 - [ ] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-11`, `USER-8`)

@@ -37,3 +37,21 @@ describe('ZoneView turn glow', () => {
     expect(glow).not.toHaveBeenCalled();
   });
 });
+
+describe('ZoneView eliminated mark', () => {
+  // VIEW-11
+  it('covers every slot with a veil and labels the zone as eliminated', () => {
+    const slotViews = [{ showEliminatedVeil: vi.fn() }, { showEliminatedVeil: vi.fn() }];
+    const label = { setOrigin: vi.fn(), setScale: vi.fn(), text: '' };
+    const zoneView = {
+      slots: [slotViews],
+      options: { position: { x: 0, y: 0 } },
+      scene: { add: { text: (_x: number, _y: number, text: string) => Object.assign(label, { text }) } },
+      add: vi.fn()
+    };
+
+    (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
+
+    expect([slotViews.map((view) => view.showEliminatedVeil.mock.calls.length), label.text]).toEqual([[1, 1], 'Eliminado']);
+  });
+});

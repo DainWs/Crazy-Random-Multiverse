@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import type { GameDto } from '@/api/dtos/GameDto';
 import type BackendDouble from '@/support/BackendDouble';
 import type { PreparedGame } from '@/support/preparedGame';
-import { frameOf, openGame } from '@/support/board';
+import { TABLE_AREA, frameOf, openGame, waitForStillFrame } from '@/support/board';
 import { createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -93,5 +93,23 @@ test.describe('last attack of a game', () => {
         emitLastAttack(backend, prepared.game);
 
         await expect.poll(async () => (await frameOf(page, BACKGROUND_PIXEL)).equals(background), { timeout: RESULT_TIMEOUT_MS }).toBe(false);
+    });
+});
+
+// ELIM-5, VIEW-11
+test.describe('elimination of a rival in a game of three', () => {
+    const prepared = createPreparedGame(3);
+
+    test('keeps the game going and covers the zone of the eliminated rival', async ({ page, backend }) => {
+        await openGame(page, backend, prepared);
+        const before = await frameOf(page, TABLE_AREA);
+        const eliminated = structuredClone(prepared.game);
+        eliminated.zones[RIVAL_ZONE].owner.isAlive = false;
+        eliminated.zones[RIVAL_ZONE].owner.handSize = 0;
+
+        backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[RIVAL_ZONE].owner });
+        await waitForStillFrame(page, before);
+
+        expect(await frameOf(page, TABLE_AREA)).not.toEqual(before);
     });
 });

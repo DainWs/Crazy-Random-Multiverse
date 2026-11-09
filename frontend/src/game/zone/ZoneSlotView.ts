@@ -177,6 +177,13 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.addAt(glowGraphics, 0);
   }
 
+  /** Covers the slot with a dark veil, for the zone of an eliminated player (VIEW-11). */
+  public showEliminatedVeil() {
+    const veilGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderVeil(veilGraphics, this.corners);
+    this.add(veilGraphics);
+  }
+
   public setBackgroundColor(color: number, borderColor?: number): void {
     ZoneSlotViewRenderer.renderBackground(this.backgroundGraphics, this.corners, color, borderColor);
   }

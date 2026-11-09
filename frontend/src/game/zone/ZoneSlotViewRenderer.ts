@@ -1,6 +1,6 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
+import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -30,6 +30,19 @@ class ZoneSlotViewRenderer {
     graphics.closePath();
     graphics.fillPath();
     graphics.strokePath();
+  }
+
+  /** Darkens the slot of an eliminated player's zone (VIEW-11). */
+  public static renderVeil(graphics: Graphics, corners: Corners3D) {
+    graphics.clear();
+    graphics.fillStyle(ELIMINATED_VEIL_COLOR, ELIMINATED_VEIL_ALPHA);
+    graphics.beginPath();
+    graphics.moveTo(corners.tl.x, corners.tl.y);
+    graphics.lineTo(corners.tr.x, corners.tr.y);
+    graphics.lineTo(corners.br.x, corners.br.y);
+    graphics.lineTo(corners.bl.x, corners.bl.y);
+    graphics.closePath();
+    graphics.fillPath();
   }
 
   /** Strokes the outlines one over another, the widest first, so the glow gets stronger towards the card (VIEW-20). */
