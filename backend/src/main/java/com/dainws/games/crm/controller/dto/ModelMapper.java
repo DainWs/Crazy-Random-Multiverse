@@ -188,9 +188,10 @@ public class ModelMapper {
 		cardCodeDto.setType(card.getCode().type());
 		cardDto.setCatalogCode(cardCodeDto);
 		
-		// TODO pendiente de hacer traduccion
 		cardDto.setNameKey("card.%s.name".formatted(card.getCode()));
-		cardDto.setDescriptionKey("card.%s.description".formatted(card.getCode()));
+		if (!card.isType(CardType.LEADER)) {
+			cardDto.setDescriptionKey("card.%s.description".formatted(card.getCode()));
+		}
 		cardDto.setType(card.getType());
 
 		if (card.isType(CardType.EQUIPMENT)) {

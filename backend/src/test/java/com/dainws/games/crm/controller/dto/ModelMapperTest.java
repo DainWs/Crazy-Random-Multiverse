@@ -334,6 +334,24 @@ class ModelMapperTest {
 	}
 
 	@Test
+	void testGivenLeader_whenMapCard_thenDtoHasNoDescription() {
+		Leader leader = CardBuilder.buildLeader();
+
+		CardDto cardDto = ModelMapper.mapCardToDto(leader);
+
+		assertThat(cardDto.getDescriptionKey()).isNull();
+	}
+
+	@Test
+	void testGivenWarrior_whenMapCard_thenDtoHasTheDescriptionKey() {
+		Warrior warrior = CardBuilder.buildCommonWarrior();
+
+		CardDto cardDto = ModelMapper.mapCardToDto(warrior);
+
+		assertThat(cardDto.getDescriptionKey()).isEqualTo("card.%s.description".formatted(warrior.getCode()));
+	}
+
+	@Test
 	void testGivenEquippedWarrior_whenMapCard_thenDtoContainsEquipment() {
 		Warrior warrior = CardBuilder.buildCommonWarrior();
 		warrior.equip(CardBuilder.buildEquipment());
