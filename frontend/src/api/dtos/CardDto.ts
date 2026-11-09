@@ -11,7 +11,7 @@ interface CardCodeDto {
 interface CardDto {
   catalogCode: CardCodeDto;
   name: string;
-  description: string;
+  description?: string;
   type: CardType;
   rarity?: CardRarity;
 
@@ -72,7 +72,7 @@ const toCard = (dto: CardDto): Card => {
   const cardOptions: CardOptions = {
     code: toCardCode(dto.catalogCode),
     name: dto.name,
-    description: dto.description,
+    description: dto.description ?? '',
     type: dto.type,
     rarity: dto.rarity
   }

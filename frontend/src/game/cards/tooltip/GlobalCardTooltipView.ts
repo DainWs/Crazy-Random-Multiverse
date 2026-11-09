@@ -5,6 +5,7 @@ import type { CardTooltip } from "@/game/cards/tooltip";
 import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
+import { getText } from "@/core/Texts";
 
 const SCALE_FACTOR = 1.6;
 const WIDTH = CARD_WIDTH * SCALE_FACTOR;
@@ -177,8 +178,8 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private buildDescription({ card }: CardView) {
-    this.nameText.setText(card.name);
-    this.descriptionText.setText(card.description || '');
+    this.nameText.setText(getText(card.name));
+    this.descriptionText.setText(card.description ? getText(card.description) : '');
     this.descriptionText.setWordWrapWidth(this.currentWidth - PADDING * 4);
 
     this.alignDescriptionText(card);
@@ -203,7 +204,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private renderEquipment(equipmentCard: Card, startYPosition: number): number {
     let currentYPosition = startYPosition;
-    currentYPosition = this.renderEquipmentName(equipmentCard.name, currentYPosition);
+    currentYPosition = this.renderEquipmentName(getText(equipmentCard.name), currentYPosition);
 
     // TODO change to english labels and support for future multiple equipments
     if (equipmentCard.damage) currentYPosition = this.renderEquipmentStat('Daño', equipmentCard.damage.value, currentYPosition);

@@ -17,12 +17,10 @@ public class CardDto {
 	@JsonProperty("catalogCode")
 	private CardCodeDto catalogCode;
 
-	// TODO deberia traducirse name y description no?
 	@NotBlank
 	@JsonProperty("name")
 	private String nameKey;
 
-	@NotBlank
 	@JsonProperty("description")
 	private String descriptionKey;
 

@@ -5,11 +5,12 @@ import { CardStatisticView } from "@/game/cards/components/CardStatisticView";
 import { showDebugBoxes } from "@/env";
 import CombatantView from "@/game/cards/CombatantView";
 import { CombatantCard } from "@/domain/Card";
+import { getText } from "@/core/Texts";
 
 const render = (scene: Phaser.Scene, view: CombatantView, width: number, height: number) => {
   const card = view.combatant;
   return [
-    ...defineCardName(scene, width, height, card.name),
+    ...defineCardName(scene, width, height, getText(card.name)),
     ...defineDamageStat(scene, width, height, card),
     ...defineHealthStat(scene, width, height, card),
     ...defineArmorStat(scene, width, height, card)
