@@ -57,13 +57,8 @@ public class Hand {
 	}
 
 	public Card getCard(CardCode code) throws NotFoundException {
-		Optional<Card> optionalCard = Optional.empty();
-
-		for (Card card : this.cards) {
-			if (card.getCode().equals(code)) {
-				optionalCard = Optional.of(card);
-			}
-		}
+		// The first copy, the one that List.remove drops when the copies are equal
+		Optional<Card> optionalCard = this.cards.stream().filter(card -> card.getCode().equals(code)).findFirst();
 
 		if (optionalCard.isEmpty()) {
 			throw NotFoundException.cardNotFound();
