@@ -206,3 +206,17 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 - [x] Add the Spanish names and descriptions of the cards to the client (`UI-2`): `core/Texts.ts` has none, so every card shows its key, such as `card.warrior.3.name`
 - [x] Provide the card images the manifest lists: `/resources/cards/leader/1.png` and warriors such as `/resources/cards/warrior/common/0.png` answer 404. Decide whether a redraw counts as showing the card again (`UI-21`): a failed image is requested on every redraw, 51 times in one short game
 - [x] When the rest of the phase is finished, play the game in a browser and look for bugs and for things that can be improved (animations, positions, etc.). For example, whether the hand should be adapted so that its cards are not so large, which is only an example and not necessarily true. Record each finding as a bullet in the phase it fits best
+
+## Phase 8 — Rounds, players and connection
+
+Started at: `eefedd9` · Finished at: `0cab669`
+
+- [x] Display the current round (`UI-3`)
+- [x] Highlight the current player (`VIEW-20`)
+- [x] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
+- [x] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
+- [x] Connecting, disconnected, reconnecting and failure states, on every screen and with no retry limit (`UI-9`)
+- [x] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-24`, `USER-8`)
+- [x] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`; done in Phase 5)
+- [x] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
+- [x] Let a spectator leave a locked party with `POST /party/{partyCode}/leave` and stop sending them the events of the game (`SPEC-3`): `Party.remove` rejected it with `exception.party.locked`

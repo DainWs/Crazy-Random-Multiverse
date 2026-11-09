@@ -22,20 +22,6 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Accepted risk: load without limit | A player can block the start of the game (`LOAD-3`) |
 | Accepted risk: wrong hand | The hand can stay wrong until the next `GAME_SYNC` (`CON-12`) |
 
-## Phase 8 — Rounds, players and connection
-
-Started at: eefedd9
-
-- [x] Display the current round (`UI-3`)
-- [x] Highlight the current player (`VIEW-20`)
-- [x] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
-- [x] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
-- [x] Connecting, disconnected, reconnecting and failure states, on every screen and with no retry limit (`UI-9`)
-- [x] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-24`, `USER-8`)
-- [x] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`; done in Phase 5)
-- [x] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
-- [x] Let a spectator leave a locked party with `POST /party/{partyCode}/leave` and stop sending them the events of the game (`SPEC-3`): `Party.remove` rejected it with `exception.party.locked`
-
 ## Phase 9 — Architecture cleanup
 
 - [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
