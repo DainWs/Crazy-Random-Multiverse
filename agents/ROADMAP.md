@@ -34,6 +34,7 @@ Started at: eefedd9
 - [x] Handle game-not-found, expired/invalid session, backend unavailable, failed initial sync (`UI-10`, `UI-24`, `USER-8`)
 - [x] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`; done in Phase 5)
 - [x] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
+- [x] Let a spectator leave a locked party with `POST /party/{partyCode}/leave` and stop sending them the events of the game (`SPEC-3`): `Party.remove` rejected it with `exception.party.locked`
 
 ## Phase 9 — Architecture cleanup
 

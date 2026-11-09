@@ -75,6 +75,10 @@ public class CommunicationClient implements UserClient {
 	}
 
 	private boolean canSendTo(Player player) {
+		if (player.hasLeft()) {
+			return false;
+		}
+
 		if (player instanceof UserPlayer userPlayer) {
 			return userPlayer.isPlayingOn(UserPlatform.WEB);
 		}

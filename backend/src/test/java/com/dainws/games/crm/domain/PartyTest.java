@@ -58,6 +58,28 @@ class PartyTest {
 		assertThat(this.party.getUser(this.newcomer.getCode())).isSameAs(this.newcomer);
 	}
 
+	// SPEC-3
+	@Test
+	void testGivenLockedParty_whenRemoveSpectator_thenMemberIsRemoved() throws NotAllowedException {
+		this.party.add(this.newcomer);
+		this.party.setCurrentGame(new GameCode());
+
+		this.party.removeSpectator(this.newcomer.getCode());
+
+		assertThat(this.party.has(this.newcomer)).isFalse();
+	}
+
+	// SPEC-3, PARTY-7
+	@Test
+	void testGivenLockedParty_whenOwnerRemovedAsSpectator_thenTheOtherMemberIsOwner() throws NotAllowedException {
+		this.party.add(this.newcomer);
+		this.party.setCurrentGame(new GameCode());
+
+		this.party.removeSpectator(this.owner.getCode());
+
+		assertThat(this.party.isOwner(this.newcomer)).isTrue();
+	}
+
 	// ABSENT-3
 	@Test
 	void testGivenLockedParty_whenRemoveWhenUnlocked_thenMemberStaysUntilUnlocked() throws NotAllowedException {

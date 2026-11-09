@@ -10,9 +10,13 @@ import com.dainws.games.crm.domain.Party;
 import com.dainws.games.crm.domain.PartyCode;
 import com.dainws.games.crm.domain.User;
 import com.dainws.games.crm.domain.UserClient;
+import com.dainws.games.crm.domain.core.Game;
 import com.dainws.games.crm.domain.core.exception.GameException;
 import com.dainws.games.crm.domain.core.exception.GameRuntimeException;
 import com.dainws.games.crm.domain.core.exception.NotAllowedException;
+import com.dainws.games.crm.domain.core.player.Player;
+import com.dainws.games.crm.domain.core.player.PlayerCode;
+import com.dainws.games.crm.domain.repositories.GameRepository;
 import com.dainws.games.crm.domain.repositories.PartyRepository;
 import com.dainws.games.crm.services.exception.PartyException;
 
@@ -22,6 +26,7 @@ public class PartyService {
 	private UserClient userClient;
 	private PartyEventService partyEventService;
 	private PartyRepository repository;
+	private GameRepository gameRepository;
 
 	public PartyService(PartyRepository repository) {
 		this.repository = repository;
@@ -73,7 +78,13 @@ public class PartyService {
 	public void leaveParty(PartyCode partyCode, User user) throws PartyException {
 		try {
 			Party party = this.repository.find(partyCode);
-			party.remove(user);
+			Optional<Player> spectator = this.findSpectatorOf(party, user);
+			if (spectator.isPresent()) {
+				spectator.get().leave();
+				party.removeSpectator(user.getCode());
+			} else {
+				party.remove(user);
+			}
 
 			if (party.isEmpty()) {
 				this.deleteParty(party);
@@ -85,6 +96,20 @@ public class PartyService {
 		} catch (GameRuntimeException e) {
 			throw new PartyException(e.getCode(), e);
 		}
+	}
+
+	private Optional<Player> findSpectatorOf(Party party, User user) {
+		if (!party.isLocked() || !this.gameRepository.exists(party.getCurrentGame())) {
+			return Optional.empty();
+		}
+
+		Game game = this.gameRepository.find(party.getCurrentGame());
+		Player player = game.getPlayer(PlayerCode.from(user.getCode().text()));
+		if (player == null || player.isNotSpectator()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(player);
 	}
 
 	private void deleteParty(Party party) {
@@ -110,6 +135,11 @@ public class PartyService {
 	@Autowired
 	public void setPartyEventService(PartyEventService partyEventService) {
 		this.partyEventService = partyEventService;
+	}
+
+	@Autowired
+	public void setGameRepository(GameRepository gameRepository) {
+		this.gameRepository = gameRepository;
 	}
 
 	@Autowired

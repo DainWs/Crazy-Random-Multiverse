@@ -9,6 +9,7 @@ public abstract class Player {
 	private Hand hand;
 	private boolean isAlive;
 	private boolean isSpectator;
+	private boolean hasLeft;
 
 	protected Player(PlayerCode code, String name) {
 		this.playerCode = code;
@@ -16,6 +17,7 @@ public abstract class Player {
 		this.hand = new Hand();
 		this.isAlive = true;
 		this.isSpectator = false;
+		this.hasLeft = false;
 	}
 
 	public void die() {
@@ -41,6 +43,19 @@ public abstract class Player {
 
 	public boolean isNotSpectator() {
 		return !this.isSpectator;
+	}
+
+	/** A spectator who left the game no longer receives its events. */
+	public void leave() {
+		if (this.isNotSpectator()) {
+			throw new IllegalStateException("Only a spectator can leave the game");
+		}
+
+		this.hasLeft = true;
+	}
+
+	public boolean hasLeft() {
+		return this.hasLeft;
 	}
 
 	public PlayerCode getPlayerCode() {

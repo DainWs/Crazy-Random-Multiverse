@@ -79,6 +79,11 @@ public class Party {
 		this.removeMember(userCode);
 	}
 
+	/** A spectator can leave while the party is locked. */
+	public void removeSpectator(UserCode userCode) {
+		this.removeMember(userCode);
+	}
+
 	public void removeWhenUnlocked(UserCode userCode) {
 		if (this.isLocked()) {
 			this.pendingRemoval.add(userCode);

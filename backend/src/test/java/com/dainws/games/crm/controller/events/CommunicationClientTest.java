@@ -81,6 +81,18 @@ class CommunicationClientTest {
 		assertThat(second.getSentChannels()).containsExactly(GAME_EVENT_CHANNEL);
 	}
 
+	// SPEC-3
+	@Test
+	void testGivenSpectatorWhoLeft_whenSendEvent_thenNothingIsSent() {
+		RecordingSocketIOClient client = this.bindSocket();
+		this.player.die();
+		this.player.leave();
+
+		this.communicationClient.sendEvent(this.player, this.eventDto);
+
+		assertThat(client.getSentChannels()).isEmpty();
+	}
+
 	@Test
 	void testGivenUserWithTwoSockets_whenSendPartyInfo_thenBothReceiveIt() {
 		RecordingSocketIOClient first = this.bindSocket();
