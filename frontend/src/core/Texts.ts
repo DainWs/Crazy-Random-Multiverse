@@ -31,30 +31,6 @@ const TEXTS: Record<string, string> = {
   'ui.game.defeat': 'Derrota',
   'ui.game.winner': 'Ganador:',
   'ui.game.returning': 'Volviendo a la party en',
-  'card.leader.0.name': '0',
-  'card.leader.1.name': '1',
-  'card.warrior.0.name': 'Hugo',
-  'card.warrior.0.description': 'Un Humano',
-  'card.warrior.1.name': 'Perro',
-  'card.warrior.1.description': 'Un animal fiero y fiel',
-  'card.warrior.2.name': 'Policía',
-  'card.warrior.2.description': 'Un Humano que se encarga de mantener el orden',
-  'card.warrior.3.name': 'Jose',
-  'card.warrior.3.description': 'Un Humano',
-  'card.warrior.4.name': 'Zombie',
-  'card.warrior.4.description': 'Un muerto viviente',
-  'card.warrior.5.name': 'Alien',
-  'card.warrior.5.description': 'Un extraterrestre que ha venido a visitarnos desde otro planeta.',
-  'card.warrior.6.name': 'Argoth',
-  'card.warrior.6.description': 'Argoth es un guerrero imponente, conocido en todo el reino por su estatura colosal y su armadura forjada en el fuego de las montañas sagradas. Su armadura negra reluce con inscripciones antiguas, cargadas de poder ancestral. En su pecho lleva grabado el símbolo de un trueno, un recordatorio de su vínculo con las fuerzas de la naturaleza.',
-  'card.warrior.7.name': 'Odin',
-  'card.warrior.7.description': 'Un dios de la mitología nórdica',
-  'card.equipment.0.name': 'Pistolón',
-  'card.equipment.0.description': 'Arma a distancia',
-  'card.equipment.1.name': 'Espada',
-  'card.equipment.1.description': 'Arma a cuerpo a cuerpo',
-  'card.equipment.2.name': 'Armadura de hierro',
-  'card.equipment.2.description': 'Armadura de calidad media',
   'exception.unexpected': 'Ha ocurrido un error inesperado',
   'exception.user.not_found': 'Tu sesión ha caducado',
   'exception.party.not_found': 'No existe ninguna party con ese código',
@@ -88,6 +64,34 @@ const TEXTS: Record<string, string> = {
   'exception.access_denied.identity_mismatch': 'Esa acción no es tuya'
 };
 
-const getText = (key: string): string => TEXTS[key] ?? key;
+// TODO mover al manifiesto dentro del zip
+const CARD_TEXTS: Record<string, string> = {
+  'card.leader.0.name': '0',
+  'card.leader.1.name': '1',
+  'card.warrior.0.name': 'Hugo',
+  'card.warrior.0.description': 'Un Humano',
+  'card.warrior.1.name': 'Perro',
+  'card.warrior.1.description': 'Un animal fiero y fiel',
+  'card.warrior.2.name': 'Policía',
+  'card.warrior.2.description': 'Un Humano que se encarga de mantener el orden',
+  'card.warrior.3.name': 'Jose',
+  'card.warrior.3.description': 'Un Humano',
+  'card.warrior.4.name': 'Zombie',
+  'card.warrior.4.description': 'Un muerto viviente',
+  'card.warrior.5.name': 'Alien',
+  'card.warrior.5.description': 'Un extraterrestre que ha venido a visitarnos desde otro planeta.',
+  'card.warrior.6.name': 'Argoth',
+  'card.warrior.6.description': 'Argoth es un guerrero imponente, conocido en todo el reino por su estatura colosal y su armadura forjada en el fuego de las montañas sagradas. Su armadura negra reluce con inscripciones antiguas, cargadas de poder ancestral. En su pecho lleva grabado el símbolo de un trueno, un recordatorio de su vínculo con las fuerzas de la naturaleza.',
+  'card.warrior.7.name': 'Odin',
+  'card.warrior.7.description': 'Un dios de la mitología nórdica',
+  'card.equipment.0.name': 'Pistolón',
+  'card.equipment.0.description': 'Arma a distancia',
+  'card.equipment.1.name': 'Espada',
+  'card.equipment.1.description': 'Arma a cuerpo a cuerpo',
+  'card.equipment.2.name': 'Armadura de hierro',
+  'card.equipment.2.description': 'Armadura de calidad media'
+};
+
+const getText = (key: string): string => TEXTS[key] ?? CARD_TEXTS[key] ?? key;
 
 export { getText };
