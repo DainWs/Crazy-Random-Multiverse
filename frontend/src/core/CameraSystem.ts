@@ -2,7 +2,8 @@ import { Corners2D, Point2D } from "@/domain/Geometry";
 import { GameScene } from "@/scenes/Game";
 import CameraMovementManager from "@/core/cameras/CameraMovementManager";
 import StoreSystem from "@/core/StoreSystem";
-import { calculateCameraCorners, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
+import ProjectionSystem from "@/core/ProjectionSystem";
+import { calculateBoundsOfPoints, calculateCameraCorners, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
 import type { Bounds2D, CameraViewport } from "@/core/cameras/CameraCalculations";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
@@ -21,8 +22,9 @@ class CameraSystem {
     /** `boardOrigin` is where the battlefield container sits, around which the board is drawn. */
     public setupBattlefieldCamera(centerX: number, centerY: number, boardOrigin: Point2D) {
         const battlefield = StoreSystem.getBattlefield();
-        const { tl, br } = battlefield.getCorners();
-        this.boardBounds = { left: boardOrigin.x + tl.x, top: boardOrigin.y + tl.y, right: boardOrigin.x + br.x, bottom: boardOrigin.y + br.y };
+        // The table is drawn projected in perspective, so its corners are the projected ones
+        const { tl, tr, bl, br } = ProjectionSystem.toCorners3D(battlefield.getCorners());
+        this.boardBounds = calculateBoundsOfPoints([tl, tr, bl, br], boardOrigin);
         const maxPlayersPerSide = battlefield.getMaxPlayersPerSide();
         const cameraConfiguration = resolveCameraConfiguration(maxPlayersPerSide);
 

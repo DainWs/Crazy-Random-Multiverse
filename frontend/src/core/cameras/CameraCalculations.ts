@@ -30,6 +30,14 @@ function calculateHUDPosition(viewport: CameraViewport, screenX: number, screenY
   };
 }
 
+/** The smallest rectangle that holds the points, moved to where the board is drawn. */
+function calculateBoundsOfPoints(points: Point2D[], origin: Point2D): Bounds2D {
+  const xs = points.map((point) => origin.x + point.x);
+  const ys = points.map((point) => origin.y + point.y);
+
+  return { left: Math.min(...xs), top: Math.min(...ys), right: Math.max(...xs), bottom: Math.max(...ys) };
+}
+
 /** Moves the scroll the least needed so that the center of the screen stays inside the bounds (VIEW-19). */
 function clampScrollToBounds(viewport: CameraViewport, bounds: Bounds2D): Point2D {
   const halfWidth = viewport.screenWidth / 2;
@@ -93,4 +101,4 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
 }
 
 export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
-export { calculateHUDPosition, calculateCameraCorners, calculateScreenFixedTransform, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export { calculateHUDPosition, calculateCameraCorners, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };

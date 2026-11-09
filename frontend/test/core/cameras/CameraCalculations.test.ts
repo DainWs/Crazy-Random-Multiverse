@@ -4,6 +4,7 @@ import {
   calculateCameraCorners,
   clampScrollToBounds,
   calculateScreenFixedTransform,
+  calculateBoundsOfPoints,
   resolveCameraConfiguration,
   DEFAULT_CAMERA_CONFIGURATION
 } from '@/core/cameras/CameraCalculations';
@@ -59,6 +60,19 @@ describe('CameraCalculations', () => {
       const { x, y, scale } = calculateScreenFixedTransform(1920, 1080, 0.65);
 
       expect([x + 960 * scale, y + 540 * scale].map((value) => Math.round(value))).toEqual([960, 540]);
+    });
+  });
+
+  // VIEW-19
+  describe('calculateBoundsOfPoints', () => {
+    const points = [{ x: -300, y: -200 }, { x: 300, y: -200 }, { x: -500, y: 400 }, { x: 500, y: 400 }];
+
+    it('holds all the points', () => {
+      expect(calculateBoundsOfPoints(points, { x: 0, y: 0 })).toEqual({ left: -500, top: -200, right: 500, bottom: 400 });
+    });
+
+    it('moves to where the board is drawn', () => {
+      expect(calculateBoundsOfPoints(points, { x: 1000, y: 100 })).toEqual({ left: 500, top: -100, right: 1500, bottom: 500 });
     });
   });
 
