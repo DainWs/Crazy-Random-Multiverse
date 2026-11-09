@@ -38,6 +38,8 @@ const TEXTS: Record<string, string> = {
   'ui.game.defeat': 'Derrota',
   'ui.game.winner': 'Ganador:',
   'ui.game.returning': 'Volviendo a la party en',
+  'exception.server_unreachable': 'No se ha podido contactar con el servidor',
+  'ui.notice.server_unreachable_at_startup': 'No se ha podido contactar con el servidor. Recarga la página para volver a intentarlo.',
   'exception.unexpected': 'Ha ocurrido un error inesperado',
   'exception.user.not_found': 'Tu sesión ha caducado',
   'exception.party.not_found': 'No existe ninguna party con ese código',

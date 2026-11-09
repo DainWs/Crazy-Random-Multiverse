@@ -1,6 +1,17 @@
-/** Every REST call of the client goes through here, so a failure of the network is handled in one place. */
+import { ServerUnreachableError } from '@/api/models/ApiException';
+
+/** Every REST call of the client goes through here. A `fetch` that gets no response fails with a `TypeError`,
+ * which is told apart from a response with an error status (UI-24). */
 const request = async (...args: Parameters<typeof fetch>): Promise<Response> => {
-  return await fetch(...args);
+  try {
+    return await fetch(...args);
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new ServerUnreachableError();
+    }
+
+    throw error;
+  }
 };
 
 export { request };

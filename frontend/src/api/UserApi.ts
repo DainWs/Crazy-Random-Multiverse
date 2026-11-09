@@ -2,7 +2,7 @@ import { CreatePartyRequest, PartyDto, toMinimalParty, toParty } from "@/api/dto
 import { UserDto, toUser } from "@/api/dtos/UserDto";
 import { toBase64UrlSafe } from "@/api/models/Codification";
 import { request } from "@/api/models/Request";
-import { ApiException, EXCEPTION_KEYS, checkResponse, readRejection } from "@/api/models/ApiException";
+import { ApiException, EXCEPTION_KEYS, checkResponse, onSessionExpired, readRejection } from "@/api/models/ApiException";
 import { PartyCode } from "@/domain/Party";
 import User from "@/domain/User";
 import { DEFAULT_PARTY_MAX_USERS } from "@/core/Constants";
@@ -70,5 +70,5 @@ const getPartyList = async () => {
     .map(toMinimalParty);
 };
 
-export { register, findAccount, updateAccount }
+export { register, findAccount, updateAccount, onSessionExpired }
 export { createParty, joinParty, getPartyList }

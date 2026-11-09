@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ApiException, checkResponse, readRejection } from '@/api/models/ApiException';
+import { ApiException, checkResponse, onSessionExpired, readRejection } from '@/api/models/ApiException';
+import { vi } from 'vitest';
 
 describe('checkResponse', () => {
   // CON-18
@@ -48,5 +49,30 @@ describe('readRejection', () => {
     const response = { ok: false, status: 500 } as Response;
 
     await expect(readRejection(response)).rejects.toThrow('Unexpected response status 500');
+  });
+});
+
+describe('onSessionExpired', () => {
+  const rejected = (key: string) => ({ ok: false, status: 400, json: async () => ({ key }) }) as Response;
+
+  // USER-8
+  it('notifies when the server says the session does not exist', async () => {
+    const listener = vi.fn();
+    const stop = onSessionExpired(listener);
+
+    await checkResponse(rejected('exception.user.not_found')).catch(() => undefined);
+    stop();
+
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not notify for any other rejection', async () => {
+    const listener = vi.fn();
+    const stop = onSessionExpired(listener);
+
+    await checkResponse(rejected('exception.party.is_full')).catch(() => undefined);
+    stop();
+
+    expect(listener).not.toHaveBeenCalled();
   });
 });
