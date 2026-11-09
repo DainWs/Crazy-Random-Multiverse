@@ -18,11 +18,11 @@ describe('getText', () => {
     expect(getText('card.leader.1.name')).toBe('1');
   });
 
-  it('has no description for a leader', () => {
-    expect(getText('card.leader.0.description')).toBe('card.leader.0.description');
-  });
-
   it('returns the key itself when it has no text', () => {
     expect(getText('exception.unknown.key')).toBe('exception.unknown.key');
+  });
+
+  it('returns an empty text for an empty key', () => {
+    expect(getText('')).toBe('');
   });
 });

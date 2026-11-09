@@ -179,7 +179,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private buildDescription({ card }: CardView) {
     this.nameText.setText(getText(card.name));
-    this.descriptionText.setText(card.description ? getText(card.description) : '');
+    this.descriptionText.setText(getText(card.description));
     this.descriptionText.setWordWrapWidth(this.currentWidth - PADDING * 4);
 
     this.alignDescriptionText(card);
