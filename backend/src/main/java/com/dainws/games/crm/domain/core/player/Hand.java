@@ -30,11 +30,13 @@ public class Hand {
 	}
 
 	public boolean contains(CardCode code) {
-		return this.cards.stream().anyMatch(card -> card.getCode().equals(code));
+		return this.cards.stream() //
+			.anyMatch(card -> card.getCode().equals(code));
 	}
 
 	public boolean contains(CardType type) {
-		return this.cards.stream().anyMatch(card -> card.isType(type));
+		return this.cards.stream() //
+			.anyMatch(card -> card.isType(type));
 	}
 
 	public void remove(Card card) {
@@ -58,7 +60,9 @@ public class Hand {
 
 	public Card getCard(CardCode code) throws NotFoundException {
 		// The first copy, the one that List.remove drops when the copies are equal
-		Optional<Card> optionalCard = this.cards.stream().filter(card -> card.getCode().equals(code)).findFirst();
+		Optional<Card> optionalCard = this.cards.stream() //
+			.filter(card -> card.getCode().equals(code)) //
+			.findFirst();
 
 		if (optionalCard.isEmpty()) {
 			throw NotFoundException.cardNotFound();
