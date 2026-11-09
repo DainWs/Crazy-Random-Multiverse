@@ -5,6 +5,8 @@ const ZOOM_STEP = 0.15;
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.5;
 const ZOOM_DURATION = 50;
+// Phaser drag states: 3 = the pointer meets the drag criteria, 4 = dragging, 5 = released
+const DRAG_STARTED_STATE = 3;
 
 /**
  * Pure zoom calculation functions, independent of Phaser runtime.
@@ -22,6 +24,10 @@ const DEFAULT_ZOOM_CONFIG: ZoomConfig = {
   max: MAX_ZOOM
 };
 
+function isDragging(dragState: number): boolean {
+  return dragState >= DRAG_STARTED_STATE;
+}
+
 function calculateNewZoom(currentZoom: number, deltaY: number, config: ZoomConfig = DEFAULT_ZOOM_CONFIG): number | null {
   const zoomChange = deltaY > 0 ? -config.step : config.step;
   const newZoom = currentZoom + zoomChange;
@@ -36,12 +42,12 @@ type Camera = Phaser.Cameras.Scene2D.Camera;
 function initialize(scene: Phaser.Scene, camera: Camera) {
   // Zoom out (scroll down = deltaY > 0) or zoom in (scroll up = deltaY < 0)
   scene.input.on('wheel', (
-    _pointer: Phaser.Input.Pointer,
+    pointer: Phaser.Input.Pointer,
     _gameObjects: Phaser.GameObjects.GameObject[],
     _deltaX: number,
     deltaY: number,
     _deltaZ: number
-  ) => onWheel(camera, deltaY));
+  ) => onWheel(scene, camera, pointer, deltaY));
 
   // Drag to pan with middle or right button
   scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => onPointerMove(camera, pointer));
@@ -50,7 +56,9 @@ function initialize(scene: Phaser.Scene, camera: Camera) {
   scene.input.mouse?.disableContextMenu();
 }
 
-function onWheel(camera: Camera, deltaY: number) {
+function onWheel(scene: Phaser.Scene, camera: Camera, pointer: Phaser.Input.Pointer, deltaY: number) {
+  if (isDragging(scene.input.getDragState(pointer))) return;
+
   const newZoom = calculateNewZoom(camera.zoom, deltaY);
   if (newZoom !== null) {
     camera.zoomTo(newZoom, ZOOM_DURATION);
@@ -80,5 +88,5 @@ const CameraMovementManager = {
 }
 
 export type { ZoomConfig };
-export { calculateNewZoom, DEFAULT_ZOOM_CONFIG };
+export { calculateNewZoom, isDragging, DEFAULT_ZOOM_CONFIG };
 export default CameraMovementManager;

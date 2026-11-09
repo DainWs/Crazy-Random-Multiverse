@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { calculateNewZoom, DEFAULT_ZOOM_CONFIG } from '@/core/cameras/CameraMovementManager';
+import { calculateNewZoom, isDragging, DEFAULT_ZOOM_CONFIG } from '@/core/cameras/CameraMovementManager';
 
 describe('CameraMovementManager', () => {
+  // VIEW-19
+  describe('isDragging', () => {
+    it.each([0, 1, 2])('is false in the drag state %i, before the drag starts', (dragState) => {
+      expect(isDragging(dragState)).toBe(false);
+    });
+
+    it.each([3, 4, 5])('is true in the drag state %i', (dragState) => {
+      expect(isDragging(dragState)).toBe(true);
+    });
+  });
+
   describe('calculateNewZoom', () => {
     it('zooms in (increases zoom) when deltaY is negative (scroll up)', () => {
       const result = calculateNewZoom(1.0, -1, DEFAULT_ZOOM_CONFIG);

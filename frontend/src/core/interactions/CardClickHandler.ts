@@ -13,6 +13,7 @@ const onPointerDown = (_1: GameScene, _2: CardView, _3: Phaser.Input.Pointer): v
 }
 
 const onPointerUp = (scene: GameScene, card: CardView, pointer: Phaser.Input.Pointer): void => {
+  if (pointer.button !== Constants.PRIMARY_BUTTON) return;
   if (!card.canBeClicked()) return;
 
   if (

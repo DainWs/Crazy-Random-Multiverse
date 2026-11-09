@@ -17,7 +17,9 @@ class AttackTargetingPerspective implements Perspective {
     private arrow: Phaser.GameObjects.Graphics | null = null;
 
     private readonly handlePointerMove = (pointer: Phaser.Input.Pointer) => this.drawArrow(pointer);
-    private readonly handlePointerDown = (_pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {
+    private readonly handlePointerDown = (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {
+        if (pointer.button !== Constants.PRIMARY_BUTTON) return;
+
         if (!currentlyOver.some((object) => object instanceof CardView)) {
             this.onCancel();
         }

@@ -46,8 +46,9 @@ describe('CardClickHandler', () => {
     cancelTargeting?.();
   });
 
-  function createMockPointer(duration: number, distance: number): Phaser.Input.Pointer {
+  function createMockPointer(duration: number, distance: number, button: number = Constants.PRIMARY_BUTTON): Phaser.Input.Pointer {
     return {
+      button,
       getDuration: vi.fn(() => duration),
       getDistance: vi.fn(() => distance)
     } as unknown as Phaser.Input.Pointer;
@@ -113,6 +114,15 @@ describe('CardClickHandler', () => {
       CardClickHandler.onPointerUp(scene, card, clickInTime);
 
       expect(mockEnter).toHaveBeenCalledTimes(1);
+    });
+
+    // VIEW-19
+    it.each([1, 2])('does not select the attacker with the button %i, which pans the camera', (button) => {
+      const card = createCard(createSlot(true));
+
+      CardClickHandler.onPointerUp(scene, card, createMockPointer(Constants.DRAG_TIME_THRESHOLD - 10, 2, button));
+
+      expect(mockEnter).not.toHaveBeenCalled();
     });
 
     // UI-5
