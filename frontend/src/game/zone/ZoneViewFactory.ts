@@ -1,3 +1,4 @@
+import type { PlayerCode } from "@/domain/Player";
 import Battlefield, { BattlefieldSide } from "@/domain/Battlefield";
 import { Rotation } from "@/domain/Geometry";
 import ZoneView from "@/game/zone/ZoneView";
@@ -16,28 +17,29 @@ const FRIENDLY_SIDE = BattlefieldSide.BOTTOM;
 const FRIENDLY_ROTATION = ROTATION_MAP.get(FRIENDLY_SIDE)!;
 const ENEMY_SIDE_ITERATOR = [BattlefieldSide.TOP, BattlefieldSide.LEFT, BattlefieldSide.RIGHT];
 
-function createAllZoneViews(scene: GameScene, battlefield: Battlefield) {
+function createAllZoneViews(scene: GameScene, battlefield: Battlefield, playerWithTurn?: PlayerCode) {
   const mainPlayerIndex = Math.floor(battlefield.getMaxPlayersPerSide() / 2);
   const layout = new ZoneLayout(battlefield, ENEMY_SIDE_ITERATOR);
 
   return [
-    createMyZoneView(scene, battlefield, layout, mainPlayerIndex),
-    ...createFriendlyZoneViews(scene, battlefield, layout, mainPlayerIndex),
-    ...createEnemyZoneViews(scene, battlefield, layout)
+    createMyZoneView(scene, battlefield, layout, mainPlayerIndex, playerWithTurn),
+    ...createFriendlyZoneViews(scene, battlefield, layout, mainPlayerIndex, playerWithTurn),
+    ...createEnemyZoneViews(scene, battlefield, layout, playerWithTurn)
   ];
 }
 
-function createMyZoneView(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, mainPlayerIndex: number) {
+function createMyZoneView(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, mainPlayerIndex: number, playerWithTurn?: PlayerCode) {
   const zoneView = new ZoneView(scene, battlefield.myZone,  {
     position: layout.getPlayerZonePosition(FRIENDLY_SIDE, mainPlayerIndex, mainPlayerIndex),
     rotation: FRIENDLY_ROTATION,
-    slotSize: SLOT_SIZE
+    slotSize: SLOT_SIZE,
+    hasTurn: battlefield.myZone.owner.code === playerWithTurn
   });
 
   return zoneView;
 }
 
-function createFriendlyZoneViews(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, mainPlayerIndex: number) {
+function createFriendlyZoneViews(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, mainPlayerIndex: number, playerWithTurn?: PlayerCode) {
   const friendlyZoneViews: ZoneView[] = [];
 
   for (let index = 0; index < battlefield.friendlyZones.length; index++) {
@@ -45,7 +47,8 @@ function createFriendlyZoneViews(scene: GameScene, battlefield: Battlefield, lay
     const zoneView = new ZoneView(scene, friendlyZone,  {
       position: layout.getNextBottomZonePosition(index, mainPlayerIndex),
       rotation: FRIENDLY_ROTATION,
-      slotSize: SLOT_SIZE
+      slotSize: SLOT_SIZE,
+      hasTurn: friendlyZone.owner.code === playerWithTurn
     });
     friendlyZoneViews.push(zoneView);
   }
@@ -53,7 +56,7 @@ function createFriendlyZoneViews(scene: GameScene, battlefield: Battlefield, lay
   return friendlyZoneViews;
 }
 
-function createEnemyZoneViews(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout) {
+function createEnemyZoneViews(scene: GameScene, battlefield: Battlefield, layout: ZoneLayout, playerWithTurn?: PlayerCode) {
   const enemyZoneViews: ZoneView[] = [];
 
   for (let index = 0; index < battlefield.enemyZones.length; index++) {
@@ -63,7 +66,8 @@ function createEnemyZoneViews(scene: GameScene, battlefield: Battlefield, layout
     const zoneView = new ZoneView(scene, enemyZone,  {
       position: layout.getNextEnemyZonePosition(index),
       rotation: ROTATION_MAP.get(side)!,
-      slotSize: SLOT_SIZE
+      slotSize: SLOT_SIZE,
+      hasTurn: enemyZone.owner.code === playerWithTurn
     });
     enemyZoneViews.push(zoneView);
   }

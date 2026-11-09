@@ -1,5 +1,6 @@
 import type { GameChange, GameChangeEvent } from '@/core/StoreSystem';
 import type Battlefield from '@/domain/Battlefield';
+import type { PlayerCode } from '@/domain/Player';
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
@@ -98,7 +99,7 @@ class GameScene extends Scene {
             AnimationSystem.enqueue(() => playCombat(this, combat));
         }
 
-        AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield));
+        AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield, snapshot.playerWithTurn));
     }
 
 
@@ -107,7 +108,10 @@ class GameScene extends Scene {
         AnimationSystem.enqueue(async () => this.showResult());
     }
 
-    private renderZones(battlefield: Battlefield = StoreSystem.getBattlefield()) {
+    private renderZones(
+        battlefield: Battlefield = StoreSystem.getBattlefield(),
+        playerWithTurn: PlayerCode | undefined = StoreSystem.getPlayerWithTurn()?.code
+    ) {
         CardClickHandler.cancelTargeting();
         this.zones = [];
         this.battlefieldContainer.removeAll(true);
@@ -115,7 +119,7 @@ class GameScene extends Scene {
         const battlefieldView = new BattlefieldView(this, battlefield);
         this.battlefieldContainer.add(battlefieldView);
 
-        const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield);
+        const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield, playerWithTurn);
         ResourceSystem.trackBoard(zoneViews.flatMap((zoneView) => this.combatantsOf(zoneView)).map((combatant) => combatant.getImage()));
         for (const zoneView of zoneViews) {
             this.zones.push(zoneView);

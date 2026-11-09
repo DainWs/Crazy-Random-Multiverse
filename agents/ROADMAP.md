@@ -27,7 +27,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 Started at: eefedd9
 
 - [x] Display the current round (`UI-3`)
-- [ ] Highlight the current player; distinguish the local player's cards
+- [x] Highlight the current player (`VIEW-20`)
 - [ ] Show the empty zones of eliminated players; handle elimination (`ELIM-5`, `VIEW-11`)
 - [ ] Spectator mode with all interaction disabled except a button to leave, which asks for confirmation (`UI-15`); a spectator who has left stops receiving the events of the game (`SPEC-1`, `SPEC-2`, `SPEC-3`, `UI-8`)
 - [ ] Connecting, disconnected, reconnecting and failure states, on every screen and with no retry limit (`UI-9`)
@@ -71,6 +71,7 @@ Started at: eefedd9
 
 ## Phase 11 — UX
 
+- [ ] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule)
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD` is 100 ms and Phaser starts a drag when the pointer is held that long even without moving, and `CardClickHandler` only counts a click under that time, so a click of 100 ms or more neither selects the attacker nor aims, it grabs the card. Seen by a person playing, not measured; the click and the drag should differ by distance or by a longer time
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)

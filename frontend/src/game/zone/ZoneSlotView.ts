@@ -170,6 +170,13 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     });
   }
 
+  /** Draws the glow of the player with the turn behind the card of this slot (VIEW-20). */
+  public showTurnGlow(outlines: Corners3D[]) {
+    const glowGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderGlow(glowGraphics, outlines);
+    this.addAt(glowGraphics, 0);
+  }
+
   public setBackgroundColor(color: number, borderColor?: number): void {
     ZoneSlotViewRenderer.renderBackground(this.backgroundGraphics, this.corners, color, borderColor);
   }

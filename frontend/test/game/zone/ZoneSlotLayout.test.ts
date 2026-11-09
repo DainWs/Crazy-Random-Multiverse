@@ -37,6 +37,27 @@ describe('ZoneSlotLayout', () => {
     });
   });
 
+  describe('expandCorners', () => {
+    const corner = (x: number, y: number) => ({ x, y, z: 0, scale: 1 });
+    const corners = { tl: corner(-30, -40), tr: corner(30, -40), bl: corner(-30, 40), br: corner(30, 40) };
+
+    it('moves every corner away from the center by the margin', () => {
+      const layout = new ZoneSlotLayout(defaultOptions);
+
+      const expanded = layout.expandCorners(corners, 10);
+
+      expect(Math.hypot(expanded.tl.x, expanded.tl.y)).toBeCloseTo(60);
+    });
+
+    it('keeps the direction of each corner', () => {
+      const layout = new ZoneSlotLayout(defaultOptions);
+
+      const expanded = layout.expandCorners(corners, 10);
+
+      expect([Math.sign(expanded.tl.x), Math.sign(expanded.tl.y)]).toEqual([-1, -1]);
+    });
+  });
+
   describe('calculateBoardPositionBehindSlot', () => {
     // 3 rows of 150 high with 10 between them: the last row is centered at y = 160
     it('places the point below the last row of an unrotated zone', () => {

@@ -100,6 +100,18 @@ class ZoneSlotLayout {
     };
   }
 
+  /** The corners of a slot moved `margin` away from its center, which is the origin of their space. */
+  public expandCorners(corners: Corners3D, margin: number): Corners3D {
+    const expand = (corner: Point3D): Point3D => {
+      const distance = Math.hypot(corner.x, corner.y);
+      const factor = distance === 0 ? 1 : 1 + margin / distance;
+
+      return { ...corner, x: corner.x * factor, y: corner.y * factor };
+    };
+
+    return { tl: expand(corners.tl), tr: expand(corners.tr), bl: expand(corners.bl), br: expand(corners.br) };
+  }
+
   public rotateBoardOffset(offset: Point2D): Point2D {
     const rad = (this.options.rotation * Math.PI) / 180;
     const cos = Math.cos(rad);

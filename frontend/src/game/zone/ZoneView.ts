@@ -6,6 +6,8 @@ import ZoneSlotLayout from "@/game/zone/ZoneSlotLayout";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
+import type { Corners3D } from "@/domain/Geometry";
+import { TURN_GLOW_LAYERS, TURN_GLOW_STEP } from "@/core/Constants";
 import type { ZonePosition } from "@/domain/Position";
 
 interface ZoneViewOptions {
@@ -17,6 +19,8 @@ interface ZoneViewOptions {
   slotSize: Size2D;
   /** Space between slots in board-space units */
   spaceBetweenSlots?: number;
+  /** Whether the owner of the zone has the turn, which makes their leader glow (VIEW-20) */
+  hasTurn?: boolean;
 }
 
 /** Distance in board-space between the leader slot and the label of the hand size, past it towards the edge of the table. */
@@ -27,7 +31,8 @@ const HAND_SIZE_LABEL_COLOR = '#ffffff';
 type AllZoneViewOptions = Required<ZoneViewOptions>;
 type DefaultZoneViewOptions = Omit<AllZoneViewOptions, 'position' | 'rotation' | 'slotSize'>;
 const defaultOptions: DefaultZoneViewOptions = {
-  spaceBetweenSlots: 20
+  spaceBetweenSlots: 20,
+  hasTurn: false
 };
 
 class ZoneView extends Phaser.GameObjects.Container {
@@ -75,6 +80,26 @@ class ZoneView extends Phaser.GameObjects.Container {
 
     if (this.zone.team === 'ENEMY') {
       this.add(this.createHandSizeLabel());
+    }
+
+    if (this.options.hasTurn) {
+      this.showTurnGlow();
+    }
+  }
+
+  /** The turn can name a player whose leader already died until the turn changes (CON-32): then there is nothing to light. */
+  private showTurnGlow() {
+    const leaderSlot = this.zone.slots.flat().find((zoneSlot) => zoneSlot.allowedCombatant === 'LEADER');
+    const leaderSlotView = leaderSlot && this.getSlotAt(leaderSlot.position);
+
+    if (leaderSlot?.combatant && leaderSlotView) {
+      const outlines: Corners3D[] = [];
+
+      for (let layer = TURN_GLOW_LAYERS; layer >= 1; layer--) {
+        outlines.push(this.slotLayout.expandCorners(leaderSlotView.corners, layer * TURN_GLOW_STEP));
+      }
+
+      leaderSlotView.showTurnGlow(outlines);
     }
   }
 

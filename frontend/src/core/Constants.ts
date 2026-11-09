@@ -194,3 +194,15 @@ export const LEADER_DEATH_SCALE = 0.3;
 
 /** Times a dead leader shakes back and forth before it fades out (VIEW-7). */
 export const LEADER_DEATH_SHAKE_REPEATS = 8;
+
+/** Color of the glow around the leader of the player with the turn (VIEW-20). */
+export const TURN_GLOW_COLOR = 0xf1c40f;
+
+/** Number of outlines that make up the glow around the leader of the player with the turn (VIEW-20). */
+export const TURN_GLOW_LAYERS = 5;
+
+/** Distance in board-space units between two outlines of the glow, and width of the outermost one (VIEW-20). */
+export const TURN_GLOW_STEP = 8;
+
+/** Alpha of each outline of the glow; they add up towards the card (VIEW-20). */
+export const TURN_GLOW_LAYER_ALPHA = 0.22;

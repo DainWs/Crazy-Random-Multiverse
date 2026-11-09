@@ -1,5 +1,6 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import { TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -29,6 +30,22 @@ class ZoneSlotViewRenderer {
     graphics.closePath();
     graphics.fillPath();
     graphics.strokePath();
+  }
+
+  /** Strokes the outlines one over another, the widest first, so the glow gets stronger towards the card (VIEW-20). */
+  public static renderGlow(graphics: Graphics, outlines: Corners3D[]) {
+    graphics.clear();
+    graphics.lineStyle(TURN_GLOW_STEP, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA);
+
+    for (const corners of outlines) {
+      graphics.beginPath();
+      graphics.moveTo(corners.tl.x, corners.tl.y);
+      graphics.lineTo(corners.tr.x, corners.tr.y);
+      graphics.lineTo(corners.br.x, corners.br.y);
+      graphics.lineTo(corners.bl.x, corners.bl.y);
+      graphics.closePath();
+      graphics.strokePath();
+    }
   }
 
   private static renderMark(mark: Image, zoneSlotView: ZoneSlotView) {

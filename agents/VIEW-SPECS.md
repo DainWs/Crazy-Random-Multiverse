@@ -11,6 +11,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-12** When the board is first shown after `GAME_START`, the leaders play an animation of being placed in their slots, one after the other in the order of `zones`, each with its `put` audio once sounds exist (`VIEW-9`). The animation of the first cards received (`VIEW-8`) waits for it to end. It is only visual: the leaders are already placed (`SETUP-2`), and events are applied to the state as the queue of `CON-12` delivers them. It does not play when entering a game in progress (`LOAD-6`).
 - **VIEW-13** The rivals are distributed over the top, left and right sides in a loop, following the order of `zones` without starting from the local player, so each client sees a different table and the turn does not go around it. To be reviewed when testing the layouts (`ROADMAP.md`, Phase 10).
 
+- **VIEW-20** The leader of the player with the turn has a glow, besides the text of the HUD (`UI-3`). It follows the turn of the board being shown, not the latest one received (`CON-12`). If that leader is already dead (`CON-32`), nothing glows.
 - **VIEW-19** The wheel zooms the board, and dragging with the right or middle button pans it. Panning never acts on the cards or on the choice of a target (`VIEW-4`), only the primary button does. The wheel does nothing while a card is being dragged. The pan keeps the center of the screen inside the board, so the board never leaves the screen.
 
 ## Combat
