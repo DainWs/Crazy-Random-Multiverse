@@ -34,7 +34,7 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 - [x] Keep the HUD inside the screen at any camera zoom (`UI-3`): `GameHudLayout` uses screen positions and `setScrollFactor(0)` does not undo the zoom, so at 1.1 with 2 players the turn text and both buttons are cut off
 - [x] Add the Spanish names and descriptions of the cards to the client (`UI-2`): `core/Texts.ts` has none, so every card shows its key, such as `card.warrior.3.name`
 - [x] Provide the card images the manifest lists: `/resources/cards/leader/1.png` and warriors such as `/resources/cards/warrior/common/0.png` answer 404. Decide whether a redraw counts as showing the card again (`UI-21`): a failed image is requested on every redraw, 51 times in one short game
-- [ ] When the rest of the phase is finished, play the game in a browser and look for bugs and for things that can be improved (animations, positions, etc.). For example, whether the hand should be adapted so that its cards are not so large, which is only an example and not necessarily true. Record each finding as a bullet in the phase it fits best
+- [x] When the rest of the phase is finished, play the game in a browser and look for bugs and for things that can be improved (animations, positions, etc.). For example, whether the hand should be adapted so that its cards are not so large, which is only an example and not necessarily true. Record each finding as a bullet in the phase it fits best
 
 ## Phase 8 — Rounds, players and connection
 
