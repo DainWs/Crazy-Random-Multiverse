@@ -5,6 +5,7 @@ import type { GameScene } from '@/scenes/Game';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import HandController from '@/controllers/HandController';
 import cardFactory from '@/domain/cardFactory';
+import ResourceSystem from '@/core/ResourceSystem';
 
 vi.mock('@/controllers/CardViewFactory', () => ({
   default: { createCardView: vi.fn() }
@@ -49,6 +50,26 @@ describe('HandController', () => {
   });
 
   describe('syncCards', () => {
+    // UI-21
+    it('retries the image of a card that arrived', () => {
+      const retry = vi.spyOn(ResourceSystem, 'retry');
+      const card = cardFactory.createWarriorCard({ code: '2' });
+
+      controller.syncCards([card]);
+
+      expect(retry).toHaveBeenCalledWith(card.getImage());
+    });
+
+    it('does not retry the image of a card that was already in the hand', () => {
+      const retry = vi.spyOn(ResourceSystem, 'retry');
+      const card = cardFactory.createWarriorCard({ code: '1' });
+      showCards(card);
+
+      controller.syncCards([card]);
+
+      expect(retry).not.toHaveBeenCalled();
+    });
+
     // VIEW-8
     it('animates only the cards that arrived', () => {
       const [first, second] = [cardFactory.createWarriorCard({ code: '1' }), cardFactory.createWarriorCard({ code: '2' })];

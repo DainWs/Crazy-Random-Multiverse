@@ -7,6 +7,7 @@ import HandController from '@/controllers/HandController';
 import GameHudView from '@/game/hud/GameHudView';
 import AnimationSystem from '@/core/AnimationSystem';
 import StoreSystem from '@/core/StoreSystem';
+import ResourceSystem from '@/core/ResourceSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import Phaser, { Scene } from 'phaser';
@@ -115,11 +116,16 @@ class GameScene extends Scene {
         this.battlefieldContainer.add(battlefieldView);
 
         const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield);
+        ResourceSystem.trackBoard(zoneViews.flatMap((zoneView) => this.combatantsOf(zoneView)).map((combatant) => combatant.getImage()));
         for (const zoneView of zoneViews) {
             this.zones.push(zoneView);
             this.battlefieldContainer.add(zoneView);
             this.showCombatants(zoneView);
         }
+    }
+
+    private combatantsOf(zoneView: ZoneView) {
+        return zoneView.getSlots().flat().flatMap((slotView) => slotView.zoneSlot.combatant ?? []);
     }
 
     private showCombatants(zoneView: ZoneView) {

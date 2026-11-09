@@ -95,17 +95,29 @@ describe('ResourceSystem', () => {
       expect(load.image).toHaveBeenCalledTimes(1);
     });
 
-    it('tries again after a failed download', async () => {
+    // UI-21
+    it('does not request a failed image again', async () => {
       const failed = ResourceSystem.loadImage(scene, 'warrior.rare.4');
       failFile('warrior.rare.4');
       await failed;
 
-      const retry = ResourceSystem.loadImage(scene, 'warrior.rare.4');
+      const again = await ResourceSystem.loadImage(scene, 'warrior.rare.4');
+
+      expect([again, load.image.mock.calls.length]).toEqual([false, 1]);
+    });
+
+    it('requests a failed image again after retry', async () => {
+      const failed = ResourceSystem.loadImage(scene, 'warrior.rare.4');
+      failFile('warrior.rare.4');
+      await failed;
+      ResourceSystem.retry('warrior.rare.4');
+
+      const again = ResourceSystem.loadImage(scene, 'warrior.rare.4');
 
       expect(load.image).toHaveBeenCalledTimes(2);
 
       completeFile('warrior.rare.4');
-      await retry;
+      await again;
     });
 
     it('stops listening to the loader once the download ends', async () => {
@@ -116,6 +128,56 @@ describe('ResourceSystem', () => {
       expect(load.listenerCount('loaderror')).toBe(0);
       expect(load.listenerCount('filecomplete-image-warrior.rare.4')).toBe(0);
       expect(events.listenerCount('shutdown')).toBe(0);
+    });
+  });
+
+  // UI-21
+  describe('trackBoard', () => {
+    const failOnce = async () => {
+      const failed = ResourceSystem.loadImage(scene, 'warrior.rare.4');
+      failFile('warrior.rare.4');
+      await failed;
+    };
+
+    it('does not retry a failed image while the board has the same copies', async () => {
+      ResourceSystem.trackBoard(['warrior.rare.4']);
+      await failOnce();
+
+      ResourceSystem.trackBoard(['warrior.rare.4']);
+
+      expect(await ResourceSystem.loadImage(scene, 'warrior.rare.4')).toBe(false);
+    });
+
+    it('retries a failed image when the board gets one more copy', async () => {
+      ResourceSystem.trackBoard(['warrior.rare.4']);
+      await failOnce();
+
+      ResourceSystem.trackBoard(['warrior.rare.4', 'warrior.rare.4']);
+      const again = ResourceSystem.loadImage(scene, 'warrior.rare.4');
+
+      expect(load.image).toHaveBeenCalledTimes(2);
+      completeFile('warrior.rare.4');
+      await again;
+    });
+
+    it('retries a failed image when it appears on an empty board', async () => {
+      await failOnce();
+
+      ResourceSystem.trackBoard(['warrior.rare.4']);
+      const again = ResourceSystem.loadImage(scene, 'warrior.rare.4');
+
+      expect(load.image).toHaveBeenCalledTimes(2);
+      completeFile('warrior.rare.4');
+      await again;
+    });
+
+    it('does not retry a failed image when another card enters', async () => {
+      ResourceSystem.trackBoard(['warrior.rare.4']);
+      await failOnce();
+
+      ResourceSystem.trackBoard(['warrior.rare.4', 'warrior.rare.5']);
+
+      expect(await ResourceSystem.loadImage(scene, 'warrior.rare.4')).toBe(false);
     });
   });
 

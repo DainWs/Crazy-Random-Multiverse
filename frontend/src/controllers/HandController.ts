@@ -3,6 +3,7 @@ import type CardView from "@/game/cards/CardView";
 import type Card from "@/domain/Card";
 import CardViewFactory from "@/controllers/CardViewFactory";
 import HandView from "@/game/hand/HandView";
+import ResourceSystem from "@/core/ResourceSystem";
 
 class HandController {
   private readonly scene: GameScene;
@@ -26,6 +27,7 @@ class HandController {
   }
 
   public addCards(...cards: Card[]) {
+    cards.forEach((card) => ResourceSystem.retry(card.getImage()));
     const cardsToAdd = this.createCardViews(cards);
     this.handView.addCards(...cardsToAdd);
   }
