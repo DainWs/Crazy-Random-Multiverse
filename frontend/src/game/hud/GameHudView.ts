@@ -15,17 +15,20 @@ type HudCallbacks = {
  * which asks for confirmation (UI-15). */
 class GameHudView {
     private readonly scene: GameScene;
-    private readonly layout: GameHudLayout;
+    private layout: GameHudLayout;
     private readonly callbacks: HudCallbacks;
     private readonly turnText: Phaser.GameObjects.Text;
     private readonly passTurnButton: Phaser.GameObjects.Text;
     private readonly surrenderButton: Phaser.GameObjects.Text;
     private confirmDialog: Phaser.GameObjects.Container | null = null;
+    private stopListening: () => void = () => undefined;
     private enabled = false;
+    private zoom: number;
 
     public constructor(scene: GameScene, callbacks: HudCallbacks) {
         this.scene = scene;
-        this.layout = new GameHudLayout(scene.scale);
+        this.zoom = this.cameraZoom();
+        this.layout = new GameHudLayout(scene.scale, this.zoom);
         this.callbacks = callbacks;
 
         this.turnText = this.createText(this.layout.turnTextPosition(), '');
@@ -46,6 +49,49 @@ class GameHudView {
             element.setScrollFactor(0);
             element.setDepth(Constants.HUD_DEPTH);
         }
+        this.applyZoom();
+        this.listenToPreRender();
+    }
+
+    private cameraZoom(): number {
+        return this.scene.cameraSystem.getCamera().zoom;
+    }
+
+    // The scene events outlive a restart, so the listener goes with the HUD
+    private listenToPreRender() {
+        const sceneEvents = this.scene.events;
+        const onPreRender = () => this.followZoom();
+        sceneEvents.on('prerender', onPreRender);
+        this.stopListening = () => sceneEvents.off('prerender', onPreRender);
+    }
+
+    private followZoom() {
+        const zoom = this.cameraZoom();
+        if (zoom === this.zoom) {
+            return;
+        }
+
+        this.zoom = zoom;
+        this.layout = new GameHudLayout(this.scene.scale, zoom);
+        this.applyZoom();
+    }
+
+    /** The HUD stays at the same place and size on the screen at any zoom (UI-3). */
+    private applyZoom() {
+        const scale = this.layout.scale();
+        const turnPosition = this.layout.turnTextPosition();
+        const passTurnPosition = this.layout.passTurnButtonAnchor();
+        const surrenderPosition = this.layout.surrenderButtonAnchor(this.passTurnButton.height);
+
+        this.turnText.setScale(scale).setPosition(turnPosition.x, turnPosition.y);
+        this.passTurnButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
+        this.surrenderButton.setScale(scale).setPosition(surrenderPosition.x, surrenderPosition.y);
+        this.applyDialogZoom();
+    }
+
+    private applyDialogZoom() {
+        const { x, y, scale } = this.layout.dialogTransform();
+        this.confirmDialog?.setPosition(x, y).setScale(scale);
     }
 
     /** Draws the turn indicator and enables the buttons only when the player can act (UI-4). */
@@ -66,6 +112,7 @@ class GameHudView {
     }
 
     public destroy() {
+        this.stopListening();
         this.closeConfirmDialog();
         this.turnText.destroy();
         this.passTurnButton.destroy();
@@ -139,6 +186,7 @@ class GameHudView {
         this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
         this.confirmDialog.setScrollFactor(0);
         this.confirmDialog.setDepth(Constants.HUD_DEPTH + 1);
+        this.applyDialogZoom();
     }
 
     private confirmSurrender() {

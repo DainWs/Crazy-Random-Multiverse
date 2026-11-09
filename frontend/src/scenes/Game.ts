@@ -18,6 +18,7 @@ import CombatantView from '@/game/cards/CombatantView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
+import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -151,11 +152,13 @@ class GameScene extends Scene {
     public showRejection(key: string) {
         this.rejectionText?.destroy();
 
-        const centerX = this.scale.width / 2;
+        const { x, y, scale } = calculateScreenFixedTransform(this.scale.width, this.scale.height, this.cameraSystem.getCamera().zoom);
+        const centerX = x + (this.scale.width / 2) * scale;
         const message = getText(key);
         const style = { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: Constants.REJECTION_MESSAGE_COLOR };
-        const rejectionText = this.add.text(centerX, Constants.REJECTION_MESSAGE_TOP_OFFSET, message, style);
+        const rejectionText = this.add.text(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale, message, style);
         rejectionText.setOrigin(0.5, 0.5);
+        rejectionText.setScale(scale);
         rejectionText.setScrollFactor(0);
         rejectionText.setDepth(Constants.REJECTION_MESSAGE_DEPTH);
 

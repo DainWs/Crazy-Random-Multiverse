@@ -40,6 +40,26 @@ function clampScrollToBounds(viewport: CameraViewport, bounds: Bounds2D): Point2
   return { x: centerX - halfWidth, y: centerY - halfHeight };
 }
 
+interface ScreenFixedTransform {
+  x: number;
+  y: number;
+  scale: number;
+}
+
+/**
+ * An object with scroll factor 0 is not moved by the camera but is still scaled by its zoom around the center
+ * of the screen. Placing it at `x + screenX * scale` with that scale makes it show at screenX, at its own size.
+ */
+function calculateScreenFixedTransform(screenWidth: number, screenHeight: number, zoom: number): ScreenFixedTransform {
+  const scale = 1 / zoom;
+
+  return { 
+    x: (screenWidth / 2) * (1 - scale), 
+    y: (screenHeight / 2) * (1 - scale), 
+    scale
+  };
+}
+
 function calculateCameraCorners(viewport: CameraViewport): Corners2D {
   const width = viewport.screenWidth / viewport.zoom;
   const height = viewport.screenHeight / viewport.zoom;
@@ -72,5 +92,5 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
   return CAMERA_CONFIGURATIONS.get(maxPlayersPerSide) || DEFAULT_CAMERA_CONFIGURATION;
 }
 
-export type { Bounds2D, CameraViewport, CameraConfiguration };
-export { calculateHUDPosition, calculateCameraCorners, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
+export { calculateHUDPosition, calculateCameraCorners, calculateScreenFixedTransform, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };

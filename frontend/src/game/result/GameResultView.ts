@@ -7,6 +7,7 @@ import { summarizeResult } from '@/game/result/GameResultSummary';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import * as Constants from '@/core/Constants';
+import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 /** Shows over the board whether the local player won or lost, who won and the seconds left until the party (WIN-4). */
 class GameResultView {
@@ -18,6 +19,7 @@ class GameResultView {
     private readonly countdown: Phaser.GameObjects.Text;
     private readonly tick: Phaser.Time.TimerEvent;
     private remainingSeconds = Constants.GAME_RESULT_COUNTDOWN_SECONDS;
+    private readonly stopListening: () => void;
 
     public constructor(scene: GameScene, result: GameResult) {
         this.scene = scene;
@@ -39,6 +41,10 @@ class GameResultView {
         this.container.setDepth(Constants.GAME_RESULT_DEPTH);
 
         this.showResult(result);
+        this.applyZoom();
+        const sceneEvents = scene.events;
+        sceneEvents.on('prerender', this.applyZoom, this);
+        this.stopListening = () => sceneEvents.off('prerender', this.applyZoom, this);
 
         this.tick = scene.time.addEvent({ delay: Constants.GAME_RESULT_TICK_MS, loop: true, callback: this.onTick.bind(this) });
     }
@@ -61,7 +67,15 @@ class GameResultView {
         return getText(summary.isVictory ? 'ui.game.victory' : 'ui.game.defeat');
     }
 
+    /** The result covers the whole screen at any zoom of the camera, which scales it even with scroll factor 0. */
+    private applyZoom() {
+        const { width, height } = this.scene.scale;
+        const { x, y, scale } = calculateScreenFixedTransform(width, height, this.scene.cameraSystem.getCamera().zoom);
+        this.container.setPosition(x, y).setScale(scale);
+    }
+
     public destroy() {
+        this.stopListening();
         this.tick.remove();
         this.container.destroy();
     }

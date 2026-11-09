@@ -3,6 +3,7 @@ import {
   calculateHUDPosition,
   calculateCameraCorners,
   clampScrollToBounds,
+  calculateScreenFixedTransform,
   resolveCameraConfiguration,
   DEFAULT_CAMERA_CONFIGURATION
 } from '@/core/cameras/CameraCalculations';
@@ -41,6 +42,23 @@ describe('CameraCalculations', () => {
       const viewport: CameraViewport = { ...defaultViewport, zoom: 0.5 };
       const result = calculateHUDPosition(viewport, 960, 540);
       expect(result).toEqual({ x: 960, y: 540 });
+    });
+  });
+
+  // UI-3
+  describe('calculateScreenFixedTransform', () => {
+    it('does not move or scale anything at zoom 1', () => {
+      expect(calculateScreenFixedTransform(1920, 1080, 1)).toEqual({ x: 0, y: 0, scale: 1 });
+    });
+
+    it('scales against the zoom', () => {
+      expect(calculateScreenFixedTransform(1920, 1080, 0.5).scale).toBe(2);
+    });
+
+    it('keeps the center of the screen where it is', () => {
+      const { x, y, scale } = calculateScreenFixedTransform(1920, 1080, 0.65);
+
+      expect([x + 960 * scale, y + 540 * scale].map((value) => Math.round(value))).toEqual([960, 540]);
     });
   });
 

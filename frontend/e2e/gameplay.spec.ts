@@ -22,7 +22,7 @@ const RIVAL_FRONT_SLOT = { row: 2, column: 0 };
 const RIVAL_FRONT_WARRIOR = { x: 1017, y: 255 };
 
 const BACK_ROW = { clip: { x: 850, y: 655, width: 220, height: 125 }, maxDiffPixels: 0 };
-const REJECTION_MESSAGE_AREA = { x: 660, y: 0, width: 600, height: 40 };
+const REJECTION_MESSAGE_AREA = { x: 660, y: 40, width: 600, height: 40 };
 const NOT_YOUR_TURN_KEY = 'exception.player-action.allowed_only_on_turn';
 
 /** The second warrior has other statistics, because two equal cards would look the same after swapping. */

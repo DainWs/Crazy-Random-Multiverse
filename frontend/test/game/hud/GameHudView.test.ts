@@ -36,8 +36,11 @@ class FakeText {
   public setBackgroundColor() { return this; }
   public setPadding() { return this; }
   public setOrigin() { return this; }
+  public scale = 1;
   public setScrollFactor() { return this; }
   public setDepth() { return this; }
+  public setScale(scale: number) { this.scale = scale; return this; }
+  public setPosition(x: number, y: number) { this.x = x; this.y = y; return this; }
   public setInteractive() { return this; }
   public on(event: string, listener: () => void) { this.listeners.set(event, listener); return this; }
   public destroy() { this.destroyed = true; }
@@ -54,6 +57,11 @@ class FakeContainer {
   public constructor(public children: unknown[]) {}
   public setScrollFactor() { return this; }
   public setDepth() { return this; }
+  public scale = 1;
+  public x = 0;
+  public y = 0;
+  public setScale(scale: number) { this.scale = scale; return this; }
+  public setPosition(x: number, y: number) { this.x = x; this.y = y; return this; }
   public destroy() { this.destroyed = true; }
 }
 
@@ -63,6 +71,8 @@ describe('GameHudView', () => {
   let onPassTurn: Mock<() => void>;
   let onSurrender: Mock<() => void>;
   let hud: GameHudView;
+  let zoom: number;
+  let prerender: (() => void) | undefined;
 
   const turnText = () => texts[0];
   const passTurnButton = () => texts[1];
@@ -76,8 +86,15 @@ describe('GameHudView', () => {
     store.playerWithTurn = undefined;
     onPassTurn = vi.fn<() => void>();
     onSurrender = vi.fn<() => void>();
+    zoom = 1;
+    prerender = undefined;
     const scene = {
       scale: { width: 1000, height: 800 },
+      cameraSystem: { getCamera: () => ({ zoom }) },
+      events: {
+        on: (_event: string, listener: () => void) => { prerender = listener; },
+        off: () => { prerender = undefined; }
+      },
       add: {
         text: (x: number, y: number, text: string) => {
           const fake = new FakeText(x, y, text);
@@ -117,6 +134,50 @@ describe('GameHudView', () => {
       hud.refresh(false);
 
       expect(turnText().text).toBe('Ronda 2');
+    });
+  });
+
+  // UI-3
+  describe('zoom', () => {
+    it('scales the HUD against the zoom of the camera', () => {
+      zoom = 2;
+
+      prerender?.();
+
+      expect([turnText().scale, passTurnButton().scale, surrenderButton().scale]).toEqual([0.5, 0.5, 0.5]);
+    });
+
+    it('moves the turn text so that it keeps its place on the screen', () => {
+      zoom = 2;
+
+      prerender?.();
+
+      // center + (24 - center) / 2
+      expect([turnText().x, turnText().y]).toEqual([250 + 12, 200 + 12]);
+    });
+
+    it('keeps the HUD as it is while the zoom does not change', () => {
+      const before = [turnText().x, turnText().y, turnText().scale];
+
+      prerender?.();
+
+      expect([turnText().x, turnText().y, turnText().scale]).toEqual(before);
+    });
+
+    it('draws the dialog against the zoom of the camera', () => {
+      hud.refresh(true);
+      surrenderButton().click();
+      zoom = 2;
+
+      prerender?.();
+
+      expect([containers[0].scale, containers[0].x, containers[0].y]).toEqual([0.5, 250, 200]);
+    });
+
+    it('stops following the zoom when it is destroyed', () => {
+      hud.destroy();
+
+      expect(prerender).toBeUndefined();
     });
   });
 
