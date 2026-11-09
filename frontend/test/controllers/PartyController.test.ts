@@ -74,6 +74,31 @@ describe('PartyController', () => {
     });
   });
 
+  describe('leaveGame', () => {
+    // SPEC-3
+    it('leaves the game after the server accepts', async () => {
+      vi.spyOn(SessionSystem, 'leaveGame').mockImplementation(() => undefined);
+      vi.spyOn(SessionSystem, 'party', 'get').mockReturnValue({ value: party } as typeof SessionSystem.party);
+      vi.mocked(partyMemberApi.leaveParty).mockResolvedValueOnce(undefined);
+
+      await partyController.leaveGame();
+
+      expect(partyMemberApi.leaveParty).toHaveBeenCalledWith('party-1');
+      expect(SessionSystem.leaveGame).toHaveBeenCalledTimes(1);
+    });
+
+    it('stays in the game when the server rejects', async () => {
+      vi.spyOn(SessionSystem, 'leaveGame').mockImplementation(() => undefined);
+      vi.spyOn(SessionSystem, 'party', 'get').mockReturnValue({ value: party } as typeof SessionSystem.party);
+      vi.mocked(partyMemberApi.leaveParty).mockRejectedValueOnce(new ApiException('exception.party.not_found'));
+
+      const errorKey = await partyController.leaveGame();
+
+      expect(errorKey).toBe('exception.party.not_found');
+      expect(SessionSystem.leaveGame).not.toHaveBeenCalled();
+    });
+  });
+
   describe('leaveParty', () => {
     // PARTY-6
     it('leaves the session party after the server accepts', async () => {

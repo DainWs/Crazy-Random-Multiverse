@@ -4,14 +4,16 @@ import type { GameScene } from '@/scenes/Game';
 
 const store = vi.hoisted(() => ({
   round: 2 as number | undefined,
-  playerWithTurn: undefined as { code: string; name: string } | undefined
+  playerWithTurn: undefined as { code: string; name: string } | undefined,
+  spectator: false
 }));
 
 vi.mock('@/core/StoreSystem', () => ({
   default: {
     getRound: () => store.round,
     getPlayer: () => ({ code: 'p1', name: 'One' }),
-    getPlayerWithTurn: () => store.playerWithTurn
+    getPlayerWithTurn: () => store.playerWithTurn,
+    isPlayerSpectator: () => store.spectator
   }
 }));
 
@@ -20,6 +22,7 @@ class FakeText {
   public text = '';
   public color = '';
   public alpha = 1;
+  public visible = true;
   public height = 30;
   public y: number;
   public destroyed = false;
@@ -33,6 +36,7 @@ class FakeText {
   public setText(text: string | string[]) { this.text = Array.isArray(text) ? text.join('\n') : text; return this; }
   public setColor(color: string) { this.color = color; return this; }
   public setAlpha(alpha: number) { this.alpha = alpha; return this; }
+  public setVisible(visible: boolean) { this.visible = visible; return this; }
   public setBackgroundColor() { return this; }
   public setPadding() { return this; }
   public setOrigin() { return this; }
@@ -70,6 +74,7 @@ describe('GameHudView', () => {
   let containers: FakeContainer[];
   let onPassTurn: Mock<() => void>;
   let onSurrender: Mock<() => void>;
+  let onLeave: Mock<() => void>;
   let hud: GameHudView;
   let zoom: number;
   let prerender: (() => void) | undefined;
@@ -77,6 +82,7 @@ describe('GameHudView', () => {
   const turnText = () => texts[0];
   const passTurnButton = () => texts[1];
   const surrenderButton = () => texts[2];
+  const leaveButton = () => texts[3];
   const dialogButton = (label: string) => texts.find((text) => text.text === label)!;
 
   beforeEach(() => {
@@ -84,8 +90,10 @@ describe('GameHudView', () => {
     containers = [];
     store.round = 2;
     store.playerWithTurn = undefined;
+    store.spectator = false;
     onPassTurn = vi.fn<() => void>();
     onSurrender = vi.fn<() => void>();
+    onLeave = vi.fn<() => void>();
     zoom = 1;
     prerender = undefined;
     const scene = {
@@ -109,7 +117,7 @@ describe('GameHudView', () => {
         }
       }
     } as unknown as GameScene;
-    hud = new GameHudView(scene, { onPassTurn, onSurrender });
+    hud = new GameHudView(scene, { onPassTurn, onSurrender, onLeave });
   });
 
   // UI-3
@@ -260,5 +268,50 @@ describe('GameHudView', () => {
 
       expect(containers[0].destroyed).toBe(true);
     });
+  });
+
+  // UI-8, UI-15, SPEC-3
+  describe('spectator', () => {
+    beforeEach(() => {
+      store.spectator = true;
+      hud.refresh(false);
+    });
+
+    it('hides the buttons to pass the turn and to surrender', () => {
+      expect([passTurnButton().visible, surrenderButton().visible]).toEqual([false, false]);
+    });
+
+    it('shows the button to leave', () => {
+      expect(leaveButton().visible).toBe(true);
+    });
+
+    it('asks for confirmation instead of leaving at once', () => {
+      leaveButton().click();
+
+      expect([containers.length, onLeave.mock.calls.length]).toEqual([1, 0]);
+    });
+
+    it('leaves when the player confirms', () => {
+      leaveButton().click();
+
+      dialogButton('Sí').click();
+
+      expect(onLeave).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the dialog open while the player cannot act', () => {
+      leaveButton().click();
+
+      hud.refresh(false);
+
+      expect(containers[0].destroyed).toBe(false);
+    });
+  });
+
+  // UI-8
+  it('shows only the buttons of a player while they have not been eliminated', () => {
+    hud.refresh(true);
+
+    expect([passTurnButton().visible, surrenderButton().visible, leaveButton().visible]).toEqual([true, true, false]);
   });
 });

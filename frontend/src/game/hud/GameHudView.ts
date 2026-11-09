@@ -9,10 +9,11 @@ import * as Constants from '@/core/Constants';
 type HudCallbacks = {
     onPassTurn: () => void;
     onSurrender: () => void;
+    onLeave: () => void;
 };
 
-/** Shows the round and whose turn it is (UI-3), and the buttons to pass the turn and to surrender,
- * which asks for confirmation (UI-15). */
+/** Shows the round and whose turn it is (UI-3), and the buttons to pass the turn and to surrender. A spectator gets
+ * a button to leave instead (UI-8). Surrendering and leaving ask for confirmation (UI-15). */
 class GameHudView {
     private readonly scene: GameScene;
     private layout: GameHudLayout;
@@ -20,9 +21,11 @@ class GameHudView {
     private readonly turnText: Phaser.GameObjects.Text;
     private readonly passTurnButton: Phaser.GameObjects.Text;
     private readonly surrenderButton: Phaser.GameObjects.Text;
+    private readonly leaveButton: Phaser.GameObjects.Text;
     private confirmDialog: Phaser.GameObjects.Container | null = null;
     private stopListening: () => void = () => undefined;
     private enabled = false;
+    private spectator = false;
     private zoom: number;
 
     public constructor(scene: GameScene, callbacks: HudCallbacks) {
@@ -42,13 +45,22 @@ class GameHudView {
         this.surrenderButton = this.createButton(
             this.layout.surrenderButtonAnchor(this.passTurnButton.height),
             getText('ui.game.surrender'),
-            () => this.whenEnabled(() => this.askToSurrender())
+            () => this.whenEnabled(this.askToSurrender.bind(this))
         );
+
+        this.leaveButton = this.createButton(
+            this.layout.passTurnButtonAnchor(),
+            getText('ui.game.leave'),
+            this.askToLeave.bind(this)
+        );
+        this.leaveButton.setVisible(false);
 
         for (const element of [this.turnText, this.passTurnButton, this.surrenderButton]) {
             element.setScrollFactor(0);
             element.setDepth(Constants.HUD_DEPTH);
         }
+        this.leaveButton.setScrollFactor(0);
+        this.leaveButton.setDepth(Constants.LEAVE_BUTTON_DEPTH);
         this.applyZoom();
         this.listenToPreRender();
     }
@@ -86,6 +98,7 @@ class GameHudView {
         this.turnText.setScale(scale).setPosition(turnPosition.x, turnPosition.y);
         this.passTurnButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
         this.surrenderButton.setScale(scale).setPosition(surrenderPosition.x, surrenderPosition.y);
+        this.leaveButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
         this.applyDialogZoom();
     }
 
@@ -94,9 +107,11 @@ class GameHudView {
         this.confirmDialog?.setPosition(x, y).setScale(scale);
     }
 
-    /** Draws the turn indicator and enables the buttons only when the player can act (UI-4). */
+    /** Draws the turn indicator and enables the buttons only when the player can act (UI-4). A spectator only gets
+     * the button to leave (UI-8). */
     public refresh(canAct: boolean) {
         this.refreshTurnText();
+        this.refreshRole();
 
         if (canAct === this.enabled) {
             return;
@@ -106,7 +121,7 @@ class GameHudView {
         for (const button of [this.passTurnButton, this.surrenderButton]) {
             button.setAlpha(canAct ? 1 : Constants.HUD_DISABLED_ALPHA);
         }
-        if (!canAct) {
+        if (!canAct && !this.spectator) {
             this.closeConfirmDialog();
         }
     }
@@ -117,6 +132,20 @@ class GameHudView {
         this.turnText.destroy();
         this.passTurnButton.destroy();
         this.surrenderButton.destroy();
+        this.leaveButton.destroy();
+    }
+
+    private refreshRole() {
+        const spectator = StoreSystem.isPlayerSpectator();
+        if (spectator === this.spectator) {
+            return;
+        }
+
+        this.spectator = spectator;
+        this.closeConfirmDialog();
+        this.passTurnButton.setVisible(!spectator);
+        this.surrenderButton.setVisible(!spectator);
+        this.leaveButton.setVisible(spectator);
     }
 
     private refreshTurnText() {
@@ -160,6 +189,14 @@ class GameHudView {
     }
 
     private askToSurrender() {
+        this.askToConfirm('ui.game.surrender_confirm', this.callbacks.onSurrender);
+    }
+
+    private askToLeave() {
+        this.askToConfirm('ui.game.leave_confirm', this.callbacks.onLeave);
+    }
+
+    private askToConfirm(textKey: string, onYes: () => void) {
         if (this.confirmDialog) {
             return;
         }
@@ -176,22 +213,22 @@ class GameHudView {
         const panelColor = Constants.CONFIRM_DIALOG_BACKGROUND;
         const panelShape = this.scene.add.rectangle(panel.x, panel.y, panel.width, panel.height, panelColor);
 
-        const question = this.createText(dialog.question, getText('ui.game.surrender_confirm'));
+        const question = this.createText(dialog.question, getText(textKey));
         question.setOrigin(0.5);
 
-        const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), this.confirmSurrender.bind(this));
+        const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), () => this.confirm(onYes));
 
         const no = this.createDialogButton(dialog.no, getText('ui.game.confirm_no'), () => this.closeConfirmDialog());
 
         this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
         this.confirmDialog.setScrollFactor(0);
-        this.confirmDialog.setDepth(Constants.HUD_DEPTH + 1);
+        this.confirmDialog.setDepth(Constants.CONFIRM_DIALOG_DEPTH);
         this.applyDialogZoom();
     }
 
-    private confirmSurrender() {
+    private confirm(onYes: () => void) {
         this.closeConfirmDialog();
-        this.callbacks.onSurrender();
+        onYes();
     }
 
     private createDialogButton(position: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {

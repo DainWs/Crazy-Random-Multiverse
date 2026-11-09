@@ -310,6 +310,28 @@ describe('SessionSystem', () => {
       expect(SessionSystem.userState.value).toBe('IDLE');
     });
 
+    // SPEC-3
+    it('goes to the main menu and forgets the party when the spectator leaves the game', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      gameListeners.get('GAME_START')!(gameEvent);
+
+      SessionSystem.leaveGame();
+
+      expect([SessionSystem.userState.value, SessionSystem.party.value]).toEqual(['IDLE', undefined]);
+    });
+
+    // SPEC-3, UI-17
+    it('drops the game state when the spectator leaves the game', () => {
+      partyListener(createParty());
+      gameLoadingListener(activeGame);
+      StoreSystem.applyGame(createSnapshot());
+
+      SessionSystem.leaveGame();
+
+      expect(() => StoreSystem.getPlayer()).toThrowError('Game not initialized');
+    });
+
     // UI-17
     it('drops the game state when the game is abandoned', () => {
       partyListener(createParty());

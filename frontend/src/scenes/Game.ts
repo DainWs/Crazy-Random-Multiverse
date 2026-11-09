@@ -5,6 +5,7 @@ import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import HandController from '@/controllers/HandController';
+import PartyController from '@/controllers/PartyController';
 import GameHudView from '@/game/hud/GameHudView';
 import AnimationSystem from '@/core/AnimationSystem';
 import StoreSystem from '@/core/StoreSystem';
@@ -71,7 +72,8 @@ class GameScene extends Scene {
 
         this.hudView = new GameHudView(this, {
             onPassTurn: () => this.cardController.passTurn(),
-            onSurrender: () => this.cardController.surrender()
+            onSurrender: () => this.cardController.surrender(),
+            onLeave: () => this.leaveGame()
         });
         this.renderAll();
         this.resultView = undefined;
@@ -155,6 +157,14 @@ class GameScene extends Scene {
             this.resultView.showResult(result);
         } else {
             this.resultView = new GameResultView(this, result);
+        }
+    }
+
+    /** A spectator leaves the game and the party (SPEC-3). */
+    private async leaveGame() {
+        const errorKey = await PartyController.leaveGame();
+        if (errorKey) {
+            this.showRejection(errorKey);
         }
     }
 

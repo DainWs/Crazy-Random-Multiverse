@@ -263,6 +263,20 @@ describe('StoreSystem', () => {
       expect(StoreSystem.canPlayerAct()).toBe(false);
     });
 
+    // UI-8
+    it('treats an eliminated player as a spectator', () => {
+      applyTurn({ player: { ...alivePlayer, isAlive: false } as GameSnapshot['player'] });
+
+      expect(StoreSystem.isPlayerSpectator()).toBe(true);
+    });
+
+    // UI-8
+    it('treats a player who has not been eliminated as a player', () => {
+      applyTurn({ player: alivePlayer as GameSnapshot['player'] });
+
+      expect(StoreSystem.isPlayerSpectator()).toBe(false);
+    });
+
     it('returns the player who holds the turn', () => {
       applyTurn({ playerWithTurn: 'p2' });
 

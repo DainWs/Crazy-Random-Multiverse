@@ -82,6 +82,13 @@ const abandonGame = () => {
   followLiveState(state, ['GAME_LOADING', 'GAME_IN_PROGRESS']);
 };
 
+/** The user left the game as a spectator, which also took them out of the party (SPEC-3). */
+const leaveGame = () => {
+  currentParty.value = undefined;
+  currentActiveGame.value = undefined;
+  followLiveState('IDLE', ['GAME_LOADING', 'GAME_IN_PROGRESS']);
+}
+
 /** The user is no longer in a party: they left it, or the server says they were kicked (PARTY-12). */
 const leaveParty = () => {
   currentParty.value = undefined;
@@ -149,6 +156,7 @@ const SessionSystem = {
   screen,
   enterParty,
   leaveParty,
+  leaveGame,
   abandonGame,
   start
 }

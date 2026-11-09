@@ -218,3 +218,9 @@ export const ELIMINATED_LABEL_FONT_SIZE = '72px';
 
 /** Color of the label over the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_LABEL_COLOR = '#e74c3c';
+
+/** Depth of the button to leave the game: above the result, so a spectator can still leave while it is shown (UI-8). */
+export const LEAVE_BUTTON_DEPTH = GAME_RESULT_DEPTH + 1;
+
+/** Depth of the dialog that asks for confirmation: above every other element of the game (UI-15). */
+export const CONFIRM_DIALOG_DEPTH = GAME_RESULT_DEPTH + 2;

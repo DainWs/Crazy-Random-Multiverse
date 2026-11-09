@@ -32,6 +32,17 @@ const leaveParty = (party: Party): Promise<string | undefined> =>
     SessionSystem.leaveParty();
   });
 
+/** A spectator leaves the game and the party with it (SPEC-3). */
+const leaveGame = (): Promise<string | undefined> =>
+  attempt(async () => {
+    const currentParty = SessionSystem.party.value;
+    if (currentParty) {
+      await partyMemberApi.leaveParty(currentParty.code);
+    }
+
+    SessionSystem.leaveGame();
+  });
+
 const startGame = (party: Party): Promise<string | undefined> => attempt(() => partyOwnerApi.startPartyGame(party.code));
 
 const isOwner = (party: Party, user: User): boolean => party.owner?.code === user.code;
@@ -40,6 +51,6 @@ const isOwner = (party: Party, user: User): boolean => party.owner?.code === use
 const canStartGame = (party: Party, user: User): boolean =>
   isOwner(party, user) && !party.isLocked && party.userCount >= MIN_PARTY_USERS_TO_START;
 
-const partyController = { createParty, joinParty, leaveParty, startGame, isOwner, canStartGame };
+const partyController = { createParty, joinParty, leaveParty, leaveGame, startGame, isOwner, canStartGame };
 
 export default partyController;

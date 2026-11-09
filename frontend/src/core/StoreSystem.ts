@@ -147,10 +147,15 @@ function getPlayer(): Player {
   return store.gameState.player;
 }
 
-/** Whether the local player holds the turn and can still act: not eliminated and before the game ends (UI-4, ELIM-2, WIN-4). */
-function canPlayerAct(): boolean {
+/** Whether the interface treats the local player as a spectator: eliminated, or watching without having played (UI-8, SPEC-1). */
+function isPlayerSpectator(): boolean {
   const player = getPlayer();
-  return player.isAlive && !player.isSpectator && !store.gameState?.result && store.gameState?.playerWithTurn === player.code;
+  return !player.isAlive || player.isSpectator;
+}
+
+/** Whether the local player holds the turn and can still act: not a spectator and before the game ends (UI-4, ELIM-2, WIN-4). */
+function canPlayerAct(): boolean {
+  return !isPlayerSpectator() && !store.gameState?.result && store.gameState?.playerWithTurn === getPlayer().code;
 }
 
 /** The player who holds the turn, unknown until the first `TURN_CHANGE` (CON-32). */
@@ -247,6 +252,7 @@ const StoreSystem = {
   setUser,
   getGameConfiguration,
   getRound,
+  isPlayerSpectator,
   getPlayer,
   canPlayerAct,
   getPlayerWithTurn,

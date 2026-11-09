@@ -113,3 +113,25 @@ test.describe('elimination of a rival in a game of three', () => {
         expect(await frameOf(page, TABLE_AREA)).not.toEqual(before);
     });
 });
+
+// UI-8, UI-15, SPEC-3
+test.describe('spectator who was eliminated', () => {
+    const LEAVE_BUTTON = { x: 1850, y: 1035 };
+    const CONFIRM_YES = { x: 830, y: 590 };
+    const prepared = createPreparedGame(3);
+
+    test('leaves the game after confirming and returns to the main menu', async ({ page, backend }) => {
+        await openGame(page, backend, prepared);
+        const eliminated = structuredClone(prepared.game);
+        eliminated.zones[OWN_ZONE].owner.isAlive = false;
+        eliminated.zones[OWN_ZONE].owner.isSpectator = true;
+        backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[OWN_ZONE].owner });
+        await waitForStillFrame(page);
+
+        await page.mouse.click(LEAVE_BUTTON.x, LEAVE_BUTTON.y);
+        await waitForStillFrame(page);
+        await page.mouse.click(CONFIRM_YES.x, CONFIRM_YES.y);
+
+        await expect(page.getByRole('button', { name: 'Crear party' })).toBeVisible();
+    });
+});

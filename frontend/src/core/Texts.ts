@@ -26,6 +26,8 @@ const TEXTS: Record<string, string> = {
   'ui.game.end_turn': 'Terminar turno',
   'ui.game.surrender': 'Rendirse',
   'ui.game.surrender_confirm': '¿Seguro que quieres rendirte?',
+  'ui.game.leave': 'Salir',
+  'ui.game.leave_confirm': '¿Seguro que quieres salir de la partida?',
   'ui.game.confirm_yes': 'Sí',
   'ui.game.confirm_no': 'No',
   'ui.game.victory': 'Victoria',
