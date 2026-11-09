@@ -123,6 +123,11 @@ class BackendDouble {
         await Promise.all(this.heldActionRoutes.splice(0).map((route) => route.fulfill({ status: 400, json: { key } })));
     }
 
+    /** The connection drops as if the network had been cut; the client connects again on its own (UI-9). */
+    public dropSocket(): void {
+        void this.socket!.close();
+    }
+
     /** A reload drops the requests in flight, and the new page has to draw everything again. */
     public async reloadPage(): Promise<void> {
         this.heldRoutes.length = 0;

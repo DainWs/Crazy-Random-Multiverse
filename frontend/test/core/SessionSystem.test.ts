@@ -70,6 +70,56 @@ describe('SessionSystem', () => {
     });
   });
 
+  // UI-9
+  describe('connection notice', () => {
+    beforeEach(async () => {
+      await SessionSystem.start();
+    });
+
+    it('covers the screens while the socket connects', () => {
+      statusListener('connecting');
+
+      expect(SessionSystem.connectionNoticeKey.value).toBe('ui.connection.connecting');
+    });
+
+    it('covers the screens while the socket is connected but the state is not synced', () => {
+      statusListener('connecting');
+      statusListener('connected');
+
+      expect(SessionSystem.connectionNoticeKey.value).toBe('ui.connection.connecting');
+    });
+
+    it('says it is reconnecting after the connection is lost', () => {
+      statusListener('reconnecting');
+
+      expect(SessionSystem.connectionNoticeKey.value).toBe('ui.connection.reconnecting');
+    });
+
+    it('says it is reconnecting while the client retries after a failure', () => {
+      statusListener('error');
+
+      expect(SessionSystem.connectionNoticeKey.value).toBe('ui.connection.reconnecting');
+    });
+
+    it('disappears when the connection is back and the state is synced', () => {
+      statusListener('connecting');
+      statusListener('connected');
+      syncedListener();
+
+      expect(SessionSystem.connectionNoticeKey.value).toBeUndefined();
+    });
+
+    it('comes back when the connection is lost after the sync', () => {
+      statusListener('connecting');
+      statusListener('connected');
+      syncedListener();
+
+      statusListener('reconnecting');
+
+      expect(SessionSystem.connectionNoticeKey.value).toBe('ui.connection.reconnecting');
+    });
+  });
+
   describe('start', () => {
     // USER-6
     it('stores the existing user', async () => {

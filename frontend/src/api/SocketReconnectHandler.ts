@@ -14,14 +14,13 @@ type SocketReconnectHandler = {
 
 const bindReconnectHandlers = (socket: Socket, callbacks: LifecycleCallbacks) => {
   socket.on('connect', createOnConnect(socket, callbacks));
-  socket.on('disconnect', createOnDisconnect(callbacks));
+  socket.on('disconnect', createOnDisconnect(socket, callbacks));
   socket.on('connect_error', createOnError(callbacks));
 
   const manager = socket.io;
   manager.on('reconnect_attempt', createOnReconnectAttempt(callbacks));
   manager.on('reconnect', createOnReconnect(callbacks));
   manager.on('reconnect_error', createOnReconnectError(callbacks));
-  manager.on('reconnect_failed', createOnReconnectFailed(callbacks));
 }
 
 function createOnConnect(socket: Socket, callbacks: LifecycleCallbacks) {
@@ -31,13 +30,13 @@ function createOnConnect(socket: Socket, callbacks: LifecycleCallbacks) {
   }
 }
 
-function createOnDisconnect(callbacks: LifecycleCallbacks) {
+/** The client does not retry on its own after the server closes the socket, so it connects again (UI-9). */
+function createOnDisconnect(socket: Socket, callbacks: LifecycleCallbacks) {
   return (reason: string) => {
     console.warn('[SocketService] Disconnected:', reason);
+    callbacks.setStatus('reconnecting');
     if (reason === 'io server disconnect') {
-      callbacks.setStatus('disconnected');
-    } else {
-      callbacks.setStatus('reconnecting');
+      socket.connect();
     }
   }
 }
@@ -71,13 +70,6 @@ function createOnReconnectError(callbacks: LifecycleCallbacks) {
   return (error: Error) => {
     console.warn('[SocketService] Reconnect error:', error.message);
     callbacks.setStatus('reconnecting');
-  }
-}
-
-function createOnReconnectFailed(callbacks: LifecycleCallbacks) {
-  return () => {
-    console.error('[SocketService] Reconnection failed: maximum attempts reached.');
-    callbacks.setStatus('reconnect_failed');
   }
 }
 

@@ -81,3 +81,19 @@ test.describe('page reload', () => {
         });
     });
 });
+
+// UI-9
+test.describe('lost connection', () => {
+    test.beforeEach(async ({ page, backend }) => {
+        await openBoard(page, backend);
+    });
+
+    test('covers the game while the client reconnects and uncovers it when the state is back', async ({ page, backend }) => {
+        const notice = page.getByRole('alert');
+
+        backend.dropSocket();
+
+        await expect(notice).toHaveText('Sin conexión. Reconectando...');
+        await expect(notice).toBeHidden();
+    });
+});

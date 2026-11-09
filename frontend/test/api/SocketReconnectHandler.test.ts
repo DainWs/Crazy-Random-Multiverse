@@ -12,6 +12,8 @@ describe('SocketReconnectHandler', () => {
     const socket = {
       id: 'socket-id',
 
+      connect: vi.fn(),
+
       on: vi.fn((event: string, handler: Function) => {
         socketHandlers.set(event, handler);
       }),
@@ -60,11 +62,10 @@ describe('SocketReconnectHandler', () => {
 
       socketReconnectHandler.bind(socket, callbacks);
 
-      expect(socket.io.on).toHaveBeenCalledTimes(4);
+      expect(socket.io.on).toHaveBeenCalledTimes(3);
       expect(socket.io.on).toHaveBeenCalledWith('reconnect_attempt', expect.any(Function));
       expect(socket.io.on).toHaveBeenCalledWith('reconnect', expect.any(Function));
       expect(socket.io.on).toHaveBeenCalledWith('reconnect_error', expect.any(Function));
-      expect(socket.io.on).toHaveBeenCalledWith('reconnect_failed', expect.any(Function));
     });
   });
 
@@ -81,14 +82,26 @@ describe('SocketReconnectHandler', () => {
   });
 
   describe('disconnect', () => {
-    it('sets disconnected status for server disconnects', () => {
+    // UI-9
+    it('connects again when the server closes the socket', () => {
       const { socket, socketHandlers } = createSocket();
       const callbacks = createCallbacks();
       socketReconnectHandler.bind(socket, callbacks);
 
       socketHandlers.get('disconnect')!('io server disconnect');
 
-      expect(callbacks.setStatus).toHaveBeenCalledWith('disconnected');
+      expect(socket.connect).toHaveBeenCalledTimes(1);
+      expect(callbacks.setStatus).toHaveBeenCalledWith('reconnecting');
+    });
+
+    it('leaves the reconnection to the client for the other disconnects', () => {
+      const { socket, socketHandlers } = createSocket();
+      const callbacks = createCallbacks();
+      socketReconnectHandler.bind(socket, callbacks);
+
+      socketHandlers.get('disconnect')!('transport close');
+
+      expect(socket.connect).not.toHaveBeenCalled();
     });
 
     it('sets reconnecting status for other disconnects', () => {
@@ -173,15 +186,4 @@ describe('SocketReconnectHandler', () => {
     });
   });
 
-  describe('reconnect_failed', () => {
-    it('sets reconnect_failed status', () => {
-      const { socket, managerHandlers } = createSocket();
-      const callbacks = createCallbacks();
-      socketReconnectHandler.bind(socket, callbacks);
-
-      managerHandlers.get('reconnect_failed')!();
-
-      expect(callbacks.setStatus).toHaveBeenCalledWith('reconnect_failed');
-    });
-  });
 });

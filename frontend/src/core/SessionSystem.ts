@@ -1,5 +1,6 @@
 import type { Screen, UserState } from '@/domain/User';
 import type { ActiveGame } from '@/domain/ActiveGame';
+import type { ConnectionStatus } from '@/api/models/ConnectionStatus';
 import type Party from '@/domain/Party';
 import { computed, shallowRef } from 'vue';
 import { gameEventApi, gameStateApi, socketService, userApi, userEventApi } from '@/api';
@@ -25,6 +26,28 @@ const SCREEN_BY_USER_STATE: Record<UserState, Screen> = {
 
 const isSynced = shallowRef(false);
 const isUserSynced = computed(() => isSynced.value);
+
+/** The state of the socket, unknown until it is bound at startup. */
+const currentConnection = shallowRef<ConnectionStatus | undefined>();
+
+const CONNECTION_NOTICE_KEY_BY_STATUS: Record<ConnectionStatus, string> = {
+  connecting: 'ui.connection.connecting',
+  connected: 'ui.connection.connecting',
+  reconnecting: 'ui.connection.reconnecting',
+  disconnected: 'ui.connection.reconnecting',
+  error: 'ui.connection.reconnecting'
+};
+
+/** The text of the notice that covers every screen while the socket is not usable, or undefined when it is (UI-9). A connected
+ * socket still needs the sync to finish (CON-23). */
+const connectionNoticeKey = computed(() => {
+  const status = currentConnection.value;
+  if (status === undefined || (status === 'connected' && isSynced.value)) {
+    return undefined;
+  }
+
+  return CONNECTION_NOTICE_KEY_BY_STATUS[status];
+});
 
 /** The screen to show, or undefined while waiting for user:synced (UI-17). */
 const screen = computed(() => (isSynced.value ? SCREEN_BY_USER_STATE[currentUserState.value] : undefined));
@@ -98,6 +121,7 @@ const leaveParty = () => {
 const bindListeners = () => {
   // The server sends the state before the connect ack, so the sync must start before the socket reports connected.
   socketService.onStatusChange((status) => {
+    currentConnection.value = status;
     if (status === 'connecting' || status === 'reconnecting') beginSync();
   });
 
@@ -153,6 +177,7 @@ const SessionSystem = {
   userState,
   activeGame,
   isSynced: isUserSynced,
+  connectionNoticeKey,
   screen,
   enterParty,
   leaveParty,

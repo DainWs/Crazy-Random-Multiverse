@@ -10,6 +10,7 @@ import useAppController from '@/AppController';
 import SessionSystem from '@/core/SessionSystem';
 import MainMenuView from '@/views/MainMenuView.vue';
 import PartyView from '@/views/PartyView.vue';
+import ConnectionNotice from '@/views/ConnectionNotice.vue';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -45,6 +46,7 @@ defineExpose({ scene, game });
 </script>
 
 <template>
+    <ConnectionNotice />
     <MainMenuView v-if="screen === 'MAIN_MENU'" />
     <PartyView v-else-if="screen === 'PARTY'" />
     <div id="game-container" :class="{ 'is-hidden': screen !== 'GAME' }"></div>

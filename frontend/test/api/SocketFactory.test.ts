@@ -10,4 +10,11 @@ describe('SocketFactory', () => {
 
     expect(io).toHaveBeenCalledWith('http://localhost:9092', expect.objectContaining({ withCredentials: true }));
   });
+
+  // UI-9
+  it('retries the connection with no limit', () => {
+    createIOSocket({ url: 'http://localhost:9092' });
+
+    expect(io).toHaveBeenCalledWith('http://localhost:9092', expect.objectContaining({ reconnectionAttempts: Infinity }));
+  });
 });

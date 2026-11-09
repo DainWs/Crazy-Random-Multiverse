@@ -3,7 +3,6 @@ type ConnectionStatus =
   | 'connecting'
   | 'connected'
   | 'reconnecting'
-  | 'reconnect_failed'
   | 'error';
 
 export type { ConnectionStatus };

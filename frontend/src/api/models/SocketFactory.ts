@@ -17,7 +17,7 @@ type SocketFactory = (options?: Partial<SocketConnectionOptions>) => Socket;
 const DEFAULT_OPTIONS: SocketConnectionOptions = {
   path: (import.meta as any).env?.VITE_SOCKET_URL ?? '/socket.io',
   reconnection: true,
-  reconnectionAttempts: 10,
+  reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
   timeout: 10000,
