@@ -8,7 +8,7 @@ export const DRAG_DISTANCE_THRESHOLD = 10;
  * Maximum time in milliseconds that the mouse must be pressed for Phaser 
  * to consider the action as a drag start instead of a click.
  */
-export const DRAG_TIME_THRESHOLD = 100;
+export const DRAG_TIME_THRESHOLD = 250;
 
 /** The only mouse button that acts on cards. The others pan the camera (VIEW-19). */
 export const PRIMARY_BUTTON = 0;

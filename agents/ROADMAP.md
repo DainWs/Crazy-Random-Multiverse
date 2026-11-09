@@ -84,7 +84,7 @@ Requires T2.6 to T6 of `ROADMAP-TEST.md` to be finished.
 ## Phase 11 — UX
 
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
-- [ ] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD` is 100 ms and Phaser starts a drag when the pointer is held that long even without moving, and `CardClickHandler` only counts a click under that time, so a click of 100 ms or more neither selects the attacker nor aims, it grabs the card. Seen by a person playing, not measured; the click and the drag should differ by distance or by a longer time
+- [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD` is 100 ms and Phaser starts a drag when the pointer is held that long even without moving, and `CardClickHandler` only counts a click under that time, so a click of 100 ms or more neither selects the attacker nor aims, it grabs the card. Seen by a person playing, not measured; the click and the drag should differ by distance or by a longer time
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow
 - [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
