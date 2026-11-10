@@ -74,7 +74,7 @@ Types of the details:
 
 ## Hand
 
-- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players also receive the type and rarity of the card, without knowing which card it is.
+- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players know the type and, for a warrior, the rarity of each card in a hand, without knowing which card it is: `PlayerDto.handBacks` is a `CardBackDto[]` (`{ type, rarity }`) in the order of the hand, and the back received is the last one. `fixed` has a back for each type and warrior rarity (`CON-30`).
 
 ## Data
 
@@ -95,7 +95,6 @@ Types of the details:
 | `name` | text | The name of the user when the game was created. It does not change during the game |
 | `isAlive` | boolean | |
 | `isSpectator` | boolean | |
-| `handSize` | number | Public, see `HAND-3` |
 
 ### `ZoneDto`
 
@@ -203,7 +202,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 
 ## Game resources
 
-- **CON-28** `GET /game/{gameCode}/resources` returns the `ResourceManifestDto` of the game: the location of the resources the client needs to show it. `fixed` is downloaded before the game is shown (`LOAD-2`, `LOAD-6`) and `dynamic` when it is needed (`UI-21`). Any player of the game can request it at any moment of the game, also when eliminated. The errors are `exception.game.not_found` and `exception.access_denied.wrong_game`.
+- **CON-28** `GET /game/{gameCode}/resources` returns the `ResourceManifestDto` of the game: the location of the resources the client needs to show it. `fixed` is downloaded before the game is shown (`LOAD-2`, `LOAD-6`) and `dynamic` when it is needed (`UI-21`). Any player of the game can request it at any moment of the game, also when eliminated, but not after leaving it as a spectator (`SPEC-3`). The errors are `exception.game.not_found` and `exception.access_denied.wrong_game`.
 - **CON-29** The backend hosts the files under `/resources`, and each `url` is relative to the server, so the client reaches it the same way as the REST API, which requires both under one origin for the client. The client treats a `url` as opaque and finds a resource only by its `key`. The files need no session. A missing file is answered with a 404 without a key, as an exception to `CON-18`, because the client only reads the result of the download.
 - **CON-30** The keys are the following. `<rarity>` is the lowercase `rarity`, and `<code>` is the one in `catalogCode` (`CON-26`).
 
@@ -214,9 +213,9 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | `fixed` | Slot marks | `slot.warrior`, `slot.leader` |
 | `fixed` | Provisional image (`UI-21`) | `card.unknown` |
 | `dynamic` | Card images | `warrior.<rarity>.<code>`, `leader.<code>`, `equipment.<code>` |
-| `dynamic` | Combatant audios | `<image key>.put`, `<image key>.die`, `<image key>.attack.<n>`, with `n` from 1 to 3 |
+| `dynamic` | Combatant audios | `<image key>.<action>` for an action with one variant, and `<image key>.<action>.<n>` for one with several, with `n` from 1 to its number of variants (`VIEW-21`). `<action>` is `put`, `die` or `attack` |
 
-- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`).
+- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`). Until `VIEW-22` is resolved, every combatant lists 1 variant of `put` and `die` and 3 of `attack`.
 
 ## REST API
 

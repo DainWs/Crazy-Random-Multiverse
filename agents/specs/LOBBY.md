@@ -24,7 +24,7 @@
 - **PARTY-9** The owner can start the game whenever the party has at least 2 members and is not locked (`exception.party.locked`). No confirmation from the other members is needed.
 - **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name. The lock of `LOAD-1` is the exception and sends none, because every member is in the game.
 - **PARTY-11** The name of a party is the current name of its owner. It changes when the owner changes (`PARTY-7`) or renames themselves.
-- **PARTY-12** A kicked user receives a last `party:info` in which they no longer appear in `users`, and the client goes back to the main menu with a brief message saying that they were kicked. If they are disconnected, they do not receive it, and they find out when a socket is bound again (`CON-23`) or through the error of their next request. A kicked user can join again like any other user.
+- **PARTY-12** A kicked user receives a last `party:info` in which they no longer appear in `users`, and the client goes back to the main menu with a brief message saying that they were kicked. If they are disconnected, they do not receive it, and they find out when a socket is bound again (`CON-23`), which takes them to the main menu without the message, or through the error of their next request. A kicked user can join again like any other user.
 
 ### Scenarios
 

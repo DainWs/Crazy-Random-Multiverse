@@ -40,7 +40,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 - [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [ ] Review/fix existing table grid-line TODO
 - [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
-- [ ] Display opponent card backs (`VIEW-3`), adding the file, which does not exist yet, and its key to `fixed` (`CON-30`), and animate the card a rival receives (`VIEW-8`)
+- [ ] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone
 - [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 - [ ] Reposition the board, the hand and the HUD when the window changes size: `App.vue` uses `Scale.RESIZE` and nothing reacts to it, so at 1100×620 the own leader, rows and buttons are out of view, and at 1920 wide the board is off-center. Only desktop windows: the responsive layouts of `VIEW-10` stay Post-MVP
@@ -51,7 +51,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 - [ ] Center the hand on the screen according to the cards it holds: its bounds are sized for 10 cards and anchored to the left
 - [ ] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
 - [ ] Lower the contrast of the grid of the table, which competes with the cards
-- [ ] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards and the `Mano:` label
+- [ ] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
 - [ ] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
 - [ ] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
 
@@ -108,6 +108,7 @@ Not tied to a phase.
 - [x] Decide what to do with `GameBehaviorIntegrationTest`: kept as it is, abstract and with no subclass. The test of T5 of `ROADMAP-TEST.md` does not use it, because it needs the real services. `GameEventWatcher`, `GameEventDebuger`, `PartyPopulator`, `UserPopulator` and `PersistenceTestConfiguration` are only referenced among themselves
 - [ ] Send `damage`, `armor` and `health` of `CardDto` also with a value of 0, and `maxHealth` on combatants, and make them required in the frontend types (`CON-33`)
 - [ ] Stop waiting for a missing event after 10 seconds and go on with the next one, discarding it if it arrives later, with the time in a client constant (`CON-12`)
+- [ ] Reject `GET /game/{gameCode}/resources` with `exception.access_denied.wrong_game` for a spectator who left the game (`CON-28`, `SPEC-3`): `LoadUsecase.getManifest` only checks that the user is a player of it, and `Player.hasLeft` is ignored
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
 - [x] State in `PARTY-5` that the party screen shows its code to be copied, and that its format is up to the server
@@ -127,7 +128,7 @@ Not tied to a phase.
 - Names and descriptions for the leaders (`CARD-5`)
 - Balance of the base content: higher rarities do not stand out (Alien, Epic, has 5 damage and 15 health, worse than Perro, Uncommon, with 10 and 10; Policía reaches 20 damage with Pistolón), and Argoth and Odin are not dealt, because the schedule has no slots for their rarities
 - Equipment on enemy cards
-- Rivals see the type and rarity of a dealt card, without knowing which card it is (`CON-13`)
+- Rival hands shown as backs, one for each type and warrior rarity, through `PlayerDto.handBacks` and their keys in `fixed`, with the back a rival receives animated (`CON-13`, `VIEW-3`, `VIEW-8`)
 - Spectators from outside the game
 - English translation
 - Discussion: defensive programming between actions and the domain. Some rules are validated twice (for example `MoveAction.checkContext` and `Zone.putCombatant`); decide where each rule lives
@@ -137,7 +138,7 @@ Not tied to a phase.
 - Premium animations (particles, special effects)
 - Effects that grow with the rarity of a card, like the audio variants: a glowing card border, and a screen that dims with a heartbeat when it attacks. `CalmTargetingOverlay` and `CardActionPerspective` are kept for this and are not used by the click attack of Phase 4 (`FX-*` in `specs/VISUAL-EFFECTS.md`)
 - Cursor animations
-- Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`)
+- Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`), with more variants for rarer cards once `VIEW-22` is resolved (`VIEW-21`)
 - Advanced trolling cards, green/red indicators, center-table behavior
 - Settings screen, audio settings, accessibility (reduced motion, color-blind indicators), responsive and touch layouts
 - Order of the state sent when a socket is bound (`CON-23`): with Engine.IO v4, `netty-socketio` 2.0.12 runs the connect listeners on the handshake, so `SocketIOConnectionManager` sends the state before the namespace connect ack. The client works around it by starting the sync on `connecting`/`reconnecting` (`SessionSystem`), which blanks the screen for the whole reconnection. The library has no hook after the ack; the options are a client request for the state (a new event, changing `CON-23`) or a delayed send

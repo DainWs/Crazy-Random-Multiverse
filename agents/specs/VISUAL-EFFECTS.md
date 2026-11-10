@@ -2,7 +2,7 @@
 
 Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the attack arrow (`VIEW-4`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
 
-- **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants: the rarer the card, the more and the stronger the effects it plays.
+- **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
 - **FX-2** **[Post-MVP]** An effect belongs to one of three groups, so each one can be turned off or reduced on its own (`FX-13`):
   - *Card effects*: they stay on the card while it is on the board (`FX-7`).
   - *Action effects*: they play once when an action happens (`FX-4`, `FX-8`).
@@ -12,7 +12,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 ## Heartbeat
 
 - **FX-4** **[Post-MVP]** Heartbeat: the screen dims with a slow pulse, darker towards the edges, while something important is going on. It is a pulse of the dimming, not of the cards.
-- **FX-5** **[Post-MVP]** The heartbeat plays when a card of a rarity that has this effect attacks. It starts with the `PLAYER_ATTACK_CARD` event, not with the click of the player, and ends when the attack animation (`VIEW-5`) ends.
+- **FX-5** **[Post-MVP]** The heartbeat plays when a card of a rarity that has this effect attacks. It starts with the `PLAYER_ATTACK_CARD` event, not with the click of the player, and ends when the animations of the attack (`VIEW-5`, `VIEW-6`) end.
 - **FX-6** **[OPEN]** Whether the heartbeat is also used while choosing a target (the old targeting overlay), for the attacker only or for everyone, and from which rarity it applies.
 
 ## Card border glow

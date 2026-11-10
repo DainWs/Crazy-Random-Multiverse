@@ -58,5 +58,5 @@
 
 - **HAND-1** A hand has no card limit.
 - **HAND-2** A played card leaves the hand only after the server confirms the action, when its event is applied (`CON-12`, `CON-13`).
-- **HAND-3** The cards in a hand are private. How many cards each player holds is public.
+- **HAND-3** The cards in a hand are private, and in the MVP so is how many cards a player holds. **[Post-MVP]** The other players see a back for each card, which shows its type and, for a warrior, its rarity (`CON-13`).
 - **HAND-4** The client numbers the copies of a card in its hand by how many it holds, renumbering them when one leaves. That number is internal: it is not shown and never reaches the server (`CON-26`).

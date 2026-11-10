@@ -18,7 +18,7 @@ Still to be specified: friendly fire, valid targets among allies and their expos
 - **SPELL-4** Using a card and casting a spell are exposed in the public API.
 - **SPELL-5** A spell can leave no leader alive, and then the game ends in a tie.
 
-Still to be specified: abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule and `COMBAT-5`.
+Still to be specified: abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule, `COMBAT-5`, its audio variants (`VIEW-21`) and its back (`CON-13`).
 
 ## Variants
 

@@ -10,11 +10,11 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 ## Game
 
-- **UI-3** The interface shows whose turn it is and the current round.
+- **UI-3** The interface shows whose turn it is and the current round, from the board being shown, not from the latest state received (`CON-12`, `VIEW-20`).
 - **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations are still playing (`CON-12`), for a spectator and after the game ends. Waiting for the animations keeps what is shown in step with the state: the board of each event is drawn when the animations of the earlier events end, from the state that event carries.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
 - **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key. If it accepts it, the card stays where it was dropped until its event is applied (`HAND-2`).
-- **UI-7** Rival hands show only how many cards they hold.
+- **UI-7** Rival hands are not shown (`HAND-3`). **[Post-MVP]** They are shown as backs (`VIEW-3`).
 - **UI-8** A spectator or eliminated player sees the board with all interaction disabled, except a button to leave (`SPEC-3`).
 - **UI-15** Surrendering asks for confirmation (`ELIM-2`), and so do leaving the party (`PARTY-6`), kicking a member (`UI-23`) and leaving the game as a spectator (`SPEC-3`).
 
