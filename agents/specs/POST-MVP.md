@@ -18,7 +18,7 @@ Still to be specified: friendly fire, valid targets among allies and their expos
 - **SPELL-4** Using a card and casting a spell are exposed in the public API.
 - **SPELL-5** A spell can leave no leader alive, and then the game ends in a tie.
 
-Still to be specified: how a spell is marked as automatic (`SPELL-2`), since the description travels as a translation key (`CARD-7`) and its text cannot carry the mark; abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule, `COMBAT-5`, its audio variants (`VIEW-21`) and its back (`CON-13`).
+Still to be specified: how a spell is marked as automatic (`SPELL-2`), since the description travels as a translation key (`CARD-7`) and its text cannot carry the mark; abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule, `COMBAT-5`, its audio variants (`VIEW-21`), its effects (`FX-1`, `FX-7`, `FX-16`) and its back (`CON-13`).
 
 ## Variants
 

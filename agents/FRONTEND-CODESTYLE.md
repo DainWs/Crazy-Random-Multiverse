@@ -12,7 +12,7 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 |---|---|
 | `api/` | Single point of contact with the backend: REST (`*Api.ts`, using `fetch`), Socket.IO (`SocketService`, `SocketEventHandler`, `SocketReconnectHandler`). |
 | `controllers/` | Connect interaction and actions (`CardController`, `HandController`). They send commands to the backend; they do not mutate the authoritative state. |
-| `core/` | Static cross-cutting systems: `StoreSystem`, `EventSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `interactions/`, `visual_effects/`. |
+| `core/` | Static cross-cutting systems: `StoreSystem`, `SessionSystem`, `EventSystem`, `AnimationSystem`, `ResourceSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `events/`, `interactions/`, `visual_effects/`. |
 | `domain/` | Frontend model (`Card`, `Zone`, `Player`, `Party`, `Battlefield`, `Action`…). No Phaser, no Vue, no `api`. |
 | `game/` | Phaser views: `battlefield`, `cards`, `hand`, `hud`, `zone`, `perspectives`. They only draw and animate. |
 | `scenes/` | Phaser scenes. They orchestrate, they contain no rules. |
@@ -40,7 +40,7 @@ domain → (nothing)
 
 - The game state lives in `StoreSystem`, only in memory, because `GAME_SYNC` restores it (`CON-11`). It is the single source of truth on the client; views read from it.
 - The authoritative state only changes when an event arrives from the backend (`CON-17`). **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
-- Flow of an action: interaction → `CardController` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` updates the `StoreSystem` → views update.
+- Flow of an action: interaction → `CardController` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` → `GameStateApi`, whose `GameEventQueue` applies the events in `sequence` order (`CON-12`) → `StoreSystem` → views update, after the animations of the earlier events (`AnimationSystem`, `UI-4`).
 - Internal UI events (`EventSystem`) are independent of network events. UI event names are declared in the `Event` union in `EventSystem.ts`; loose strings and `rawEmit` are not used in new code.
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
 - Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
@@ -96,7 +96,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 - Interaction, camera, card dimension and animation timing constants: `src/core/Constants.ts` or the module constant of their folder (`CardDimensions.ts`). Each constant with meaning carries a one-sentence TSDoc comment with its unit (px, ms).
 - Texture, audio and scene keys: constants, not repeated loose strings.
 - Colors in `game/utils/ColorUtils.ts` or constants, not inline hexadecimals.
-- Environment configuration (server URL, debug flags): `src/env.ts` / `import.meta.env`. `isDevelopment` and `showDebugBoxes` control what only exists in development.
+- Environment configuration (server URL, debug flags): `src/env.ts` / `import.meta.env`. `isDevelopment` controls what only exists in development. `showDebugBoxes` is debugging left in place that Phase 9 of `ROADMAP.md` removes: new code does not use it.
 - `.env.local.*` stays out of the repository.
 
 ---
@@ -107,7 +107,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 - Listeners (`EventSystem.on`, `scene.events.on`, `input.on`) are unsubscribed in `destroy`/`shutdown`. Every `on` without its `off` is a bug.
 - Tweens are created in `core/visual_effects` or in the view's animation module; they are not mixed with rules logic.
 - `update` does not allocate new objects nor create closures per frame.
-- The player's hand is pinned to the screen with `setScrollFactor(0)`; placed cards go back to `1`.
+- `setScrollFactor(0)` keeps the HUD, the dialogs and the result in place when the camera pans, but does not undo the zoom, so their layout compensates it (`GameHudLayout`). The player's hand does not use it: `HandView` follows the camera on every `prerender` and is scaled by `1 / zoom` (`PHASER4-SPECS.md`). A card that leaves the hand gets a scroll factor of `1`.
 - All interaction goes through `core/interactions` (`CardInputManager`, `DragAndDrop`, `CardClickHandler`); a view does not register mouse handlers on its own.
 
 ---

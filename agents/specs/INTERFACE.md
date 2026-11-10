@@ -13,7 +13,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 - **UI-3** The interface shows whose turn it is and the current round, from the board being shown, not from the latest state received (`CON-12`, `VIEW-20`).
 - **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations are still playing (`CON-12`), for a spectator and after the game ends. Waiting for the animations keeps what is shown in step with the state: the board of each event is drawn when the animations of the earlier events end, from the state that event carries.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
-- **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key. If it accepts it, the card stays where it was dropped until its event is applied (`HAND-2`).
+- **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key. If it accepts it, the card stays where it was dropped until its event is applied (`HAND-2`). A 500 (`CON-18`) and a request without response (`UI-24`) are shown the same way, with `exception.unexpected` or the client's `exception.server_unreachable`, and the card goes back too. The action may still have been applied: then its events place the card again (`CON-17`).
 - **UI-7** Rival hands are not shown (`HAND-3`). **[Post-MVP]** They are shown as backs (`VIEW-3`).
 - **UI-8** A spectator or eliminated player sees the board with all interaction disabled, except a button to leave (`SPEC-3`).
 - **UI-15** Surrendering asks for confirmation (`ELIM-2`), and so do leaving the party (`PARTY-6`), kicking a member (`UI-23`) and leaving the game as a spectator (`SPEC-3`).
@@ -31,7 +31,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 - **UI-13** The name is edited from the main menu. The interface does not offer it inside a party, although the server accepts it (`USER-3`). A rejected name is shown as a message below the field, based on its key, as in `UI-18`, and the previous name is kept. There is no settings screen in the MVP.
 - **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`). Each party shows its name and its members out of the capacity, and a full one shows the join button disabled (`PARTY-5`). A rejected join is shown as a brief message based on its key, as in `UI-18`, and the list is loaded again, because it was out of date.
-- **UI-18** The main menu creates a party with one action, using the default capacity and the Classic mode (`PARTY-2`, `PARTY-3`), and joins one with a field for the party code. A rejection (`exception.party.*`) is shown as a message below the field, based on its key.
+- **UI-18** The main menu creates a party with one action, using the default capacity and the Classic mode (`PARTY-2`, `PARTY-3`), and joins one with a field for the party code. Any failure is shown as a message below the field, based on its key: a rejection (`CON-18`), such as `exception.party.not_found`, or `exception.request.malformed` for a code that cannot be read, `exception.unexpected` for a 500, and the message of `UI-24` without a response. `exception.user.not_found` also follows `USER-8`.
 
 ## Party
 

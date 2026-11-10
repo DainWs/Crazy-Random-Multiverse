@@ -33,7 +33,8 @@ Examples:
 - `testGivenContext_whenPerform_thenPutCardInCoordinate()`
 - `testGivenPlayerWithoutTurn_whenPerform_thenActionIsNotPerformed()`
 - `testGivenCommonWarrior_whenIsRarityUncommon_thenReturnFalse()`
-- `testGivenFullBoard_whenPut_thenThrowGameException()`
+- `testGivenPlayerWithoutTurn_whenPerform_thenCodeIsAllowedOnlyOnTurn()`
+- `testGivenFirstRowNotFilled_whenPutCombatantInSecondRow_thenThrowsIllegalState()`
 
 ---
 
@@ -125,7 +126,7 @@ The three steps are separated by a blank line and go in that order. Each step is
 
 ```java
 @Test
-void testGivenContext_whenPerform_thenPutCardInCoordinate() throws GameException {
+void testGivenContext_whenPerform_thenPutCardInCoordinate() {
 	PlayerTurnAction turnAction = this.createPlayerTurnAction();
 	CustomActionContext actionContext = this.createActionContext();
 
@@ -193,8 +194,8 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 - **One behavior per test.** If a scenario has several independent results, it is split into several tests, each with its own *Given-When-Then* name.
 - `assertAll()` is allowed only to check several facets of the same result (the fields of a mapped DTO, the components of a value object). It is not used to mix behaviors.
 - `assertEquals(expected, actual)`, with the expected value explicit.
-- For game exceptions, `assertThrows(PlayerActionException.class, () -> ...)`, with the concrete class and, if the code matters, checking the `ExceptionCode` in another test.
-- An `assertTrue(action.perform(context))` counts as one assertion.
+- A rejected action is checked on its result, `assertFalse(action.perform(context).isSuccessful())`, and its `ExceptionCode` in another test. A misused model throws (`BACKEND-CODESTYLE.md`, section 8), and that is checked with `assertThrows` and the concrete class: `assertThrows(IllegalStateException.class, () -> ...)`.
+- An `assertFalse(action.perform(context).isSuccessful())` counts as one assertion.
 - The public contract is tested, not internal details.
 - After an operation that modifies the object, the resulting state is checked.
 - No assertions that verify nothing, nor the same behavior repeated for no reason.
@@ -255,3 +256,4 @@ They are listed so they are not copied. The golden rule of `agents/CODESTYLE.md`
 
 - `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run (`ROADMAP.md`, Pending tasks).
 - `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.
+- The action tests declare `throws GameException`, although `perform` returns an `ActionResult` and throws nothing.

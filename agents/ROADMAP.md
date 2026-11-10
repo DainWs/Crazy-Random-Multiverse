@@ -103,7 +103,7 @@ Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] Fix the order of the state sent when a socket is bound (`CON-23`): with Engine.IO v4, `netty-socketio` 2.0.12 runs the connect listeners on the handshake, so `SocketIOConnectionManager` sends the state before the namespace connect ack. The client works around it by starting the sync on `connecting`/`reconnecting` (`SessionSystem`), which blanks the screen for the whole reconnection, behind the notice of `UI-9`. The library has no hook after the ack; the options are a client request for the state (a new event, changing `CON-23`) or a delayed send
-- [ ] Ignore the events of a game that arrive after the user left it (`SPEC-3`): `GameStateApi` applies every `game:event`, so one in flight when a spectator leaves would rebuild the game state while the user is in the main menu. The server stops sending them, so it only happens in a race
+- [ ] Ignore the events of a game the user no longer has (`CON-12`, `SPEC-3`): `GameStateApi` applies every `game:event`, so one in flight when a spectator leaves would rebuild the game state while the user is in the main menu, and a late one of the previous game would restart the queue of the new one. The server stops sending them, so it only happens in a race
 - [ ] Make the HUD follow the snapshot of the board it is showing, not the live state (`UI-3`): `GameHudView` reads `StoreSystem` on every frame, so the round, the turn and the spectator buttons can run ahead of the animations of the board (`CON-12`)
 - [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
@@ -112,6 +112,7 @@ Not tied to a phase.
 - [ ] Send `damage`, `armor` and `health` of `CardDto` also with a value of 0, and `maxHealth` on combatants, and make them required in the frontend types (`CON-33`)
 - [ ] Stop waiting for a missing event after 10 seconds and go on with the next one, discarding it if it arrives later, with the time in a client constant (`CON-12`)
 - [ ] Reject `GET /game/{gameCode}/resources` with `exception.access_denied.wrong_game` for a spectator who left the game (`CON-28`, `SPEC-3`): `LoadUsecase.getManifest` only checks that the user is a player of it, and `Player.hasLeft` is ignored
+- [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs, so it may be flaky. Its name was not recorded
 - [x] Replace `IllegalAccessException` in `PlayerUsecase` with an `AccessDeniedException` that extends `UsecaseException`
 - [x] Mark `VIEW-9` as **[Post-MVP]** and add sounds and cursor animations to `SCOPE-4`
 - [x] State in `PARTY-5` that the party screen shows its code to be copied, and that its format is up to the server

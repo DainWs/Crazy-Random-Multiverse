@@ -4,7 +4,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 
 - **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
 - **FX-2** **[Post-MVP]** An effect belongs to one of three groups, so each one can be turned off or reduced on its own (`FX-13`):
-  - *Card effects*: they stay on the card while it is on the board (`FX-7`).
+  - *Card effects*: they stay on the card while it is on the board or in the hand (`FX-7`).
   - *Action effects*: they play once when an action happens (`FX-4`, `FX-8`).
   - *Interface effects*: they belong to the interface, not to a card. None is specified yet.
 
@@ -22,6 +22,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 - **FX-7** **[Post-MVP]** Glowing border: a card of a rarity that has this effect shows a light around its frame while it is on the board and in the hand. The color and the strength depend on the rarity.
 - **FX-8** **[Post-MVP]** The glow grows briefly when the card attacks or is hit, and goes back to its level afterwards. It does not hide the statistics of the card (`VIEW-2`).
 - **FX-9** **[OPEN]** Which rarities glow and how: only Rare and above, or every rarity with a different strength.
+- **FX-16** **[OPEN]** Which effects leaders and equipment have: `FX-1` and `FX-7` depend on the rarity, and only warriors have one (`CARD-4`). It is the same question as `VIEW-22` for the audio.
 
 ## Interface skins
 

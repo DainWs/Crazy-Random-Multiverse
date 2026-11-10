@@ -132,9 +132,9 @@ Automated tests for the checks that were done by hand in a real browser, with tw
 **Visual regression:**
 - [ ] Reference images approved by a person of the attack arrow, the confirmation dialog and the result
 
-**Cross-cutting:**
-- [ ] E2E game-flow tests
-- [ ] Reconnection, spectator mode and game completion tests
+**Reconnection and spectators:**
+- [ ] A reload or a lost connection with several cards in the hand, among them copies of the same card, restores the hand from `GAME_SYNC` without duplicating or losing cards (`CON-11`, `CON-13`, `HAND-4`)
+- [ ] An eliminated player has an empty hand, sends no action when dragging or clicking a card, and only has the leave button (`ELIM-3`, `SPEC-1`, `UI-8`)
 
 ## Pending checks
 
@@ -152,7 +152,6 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person double-clicks End Turn against the running server and checks that only one turn passes, and that the clients apply the events in `sequence` order (`CON-12`, `CON-22`). No test: each half has its own (`CardController.test.ts`, `GameEventQueue.test.ts` and the backend concurrency tests), and joining them needs the real Socket.IO server
 - [ ] A person attacks in a real browser and judges the look of the combat feedback (`VIEW-5`, `VIEW-6`, `VIEW-7`): the attacker grows and shrinks back, the target shakes and flashes red, the armor and health count down, a killed card shrinks and fades out and a killed leader shakes first and lasts longer. No test: a screenshot in the middle of a tween depends on timing, T13 covers that the animations happen and `AnimationSystem.test.ts` their order
 - [ ] A person looks at the animation of the cards received in the hand (`VIEW-8`). No test: same reason as the combat feedback, and `HandController.test.ts` covers when it starts
-- [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test. Not a test to write: without its name there is nothing to cover
 - [ ] A person renders `class_diagram-actions`, `-card`, `-dealer` and `-effect` and `activity-player_actions` and `usecases` in `docs/development/diagrams/` and checks that they draw. Not checked: they were rewritten against the code, and no PlantUML renderer is available in the agent environment
 - [x] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. It needs a person: the workflow only runs on GitHub
 - [ ] A person pushes a commit and checks that the backend job of `.github/workflows/maven.yml` runs `DisconnectedPlayerIntegrationTest`. Not checked: the workflow only runs on GitHub, and it now runs with `-P integration-tests`

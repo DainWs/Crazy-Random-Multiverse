@@ -73,23 +73,27 @@ Nested classes are not used: a class, record, enum or interface that another cla
 - `@Value` goes on a field. It may go on a setter only when that is justified, and never on a parameter: it adds too much noise to the signature. In a `@Configuration` the field has no access modifier (package-private) so that tests can set it; elsewhere it is private. The expression is always written inline, `@Value("${crm.some.property}")`, never held in a constant. Classes that read a property keep a plain setter for tests.
 
 ```java
-@RestController
-public class WebPlayerController implements PlayerController {
+@Service
+public class UserService {
+	private UserRepository userRepository;
+	private PartyService partyService;
+	private GameService gameService;
 
-	@Value("${crm.session.timeout}")
-	private Duration sessionTimeout;
+	@Value("${crm.user.disconnect-grace-period}")
+	private Duration disconnectGracePeriod;
 
-	private User userSession;
-
-	private PlayerUsecase playerUsecase;
-
-	public WebPlayerController(PlayerUsecase playerUsecase) {
-		this.playerUsecase = playerUsecase;
+	public UserService(UserRepository userRepository, PartyService partyService) {
+		this.userRepository = userRepository;
+		this.partyService = partyService;
 	}
 
 	@Autowired
-	public void setUserSession(User userSession) {
-		this.userSession = userSession;
+	public void setGameService(GameService gameService) {
+		this.gameService = gameService;
+	}
+
+	public void setDisconnectGracePeriod(Duration disconnectGracePeriod) {
+		this.disconnectGracePeriod = disconnectGracePeriod;
 	}
 }
 ```
@@ -233,7 +237,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - **Domain models** (`Zone`, `Player`, `Game`, `Card`…) expose queries (`zone.isFree(coordinate)`, `player.hasTurn()`) and protect their own invariants by throwing when they are misused (`IllegalStateException`, `IllegalArgumentException`, or a game exception from `domain.core.exception`). They do not return results.
 - **Domain services, actions and modes** (`Action`, game modes) check the rules through those queries *before* acting and return a result carrying the `ExceptionCode` when the action is rejected. They never catch a model's exception to turn it into a result. The client receives the code in the HTTP response to its request (`specs/CONTRACT.md`, `CON-18`).
 - Application exceptions extend `UsecaseException` and carry an `ExceptionCode`.
-- Denied accesses (a game or player that does not belong to the session) throw `AccessDeniedException`, which extends `UsecaseException`. They are a tampered request or a client bug, not a game move, so an exception is appropriate. Existing uses of `IllegalAccessException` (a checked reflection exception) are not copied.
+- Denied accesses (a game or player that does not belong to the session) throw `AccessDeniedException`, which extends `UsecaseException`. They are a tampered request or a client bug, not a game move, so an exception is appropriate. `IllegalAccessException`, a checked reflection exception, is not used for them.
 - When performing an action, everything that can reject it is validated before any state changes; an action never mutates the game and then undoes the change.
 
 ### `catch` rules
@@ -378,7 +382,7 @@ Several players act on the same game at the same time.
 
 ---
 
-## 18. Null, `Optional` and copies
+## 18. Null, `Optional` and `@Override`
 
 - `Optional` is only a return type: never a field, a parameter or a collection element. A method never returns `null` where an `Optional` or an empty collection fits.
 - `@Override` is always written.

@@ -70,7 +70,7 @@ Types of the details:
 ## Reconnection
 
 - **CON-11** When a socket is bound to a user who plays a game in progress, the server sends `GAME_SYNC`: `details.game` is the `GameDto`, `details.hand` is the hand of the receiving player (only in this event) and `sequence` is the number of the last event published before the snapshot.
-- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and `GAME_LOADING` are always applied and set the reference, also when they belong to a new game: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. When another event changes `game.code`, the queue starts over and waits for `sequence` 1 (`CON-9`). The animations of the events play in the same order, one after another, without delaying the state (`VIEW-12`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
+- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and `GAME_LOADING` are always applied and set the reference, also when they belong to a new game: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. When another event changes `game.code`, the queue starts over and waits for `sequence` 1 (`CON-9`). The client discards the events of a game it no longer has (`UI-17`): one it left as a spectator (`SPEC-3`), one cancelled (`LOAD-4`) or one already removed after its result (`WIN-5`), so a late event of the previous game neither brings it back nor restarts the queue of the new one. The animations of the events play in the same order, one after another, without delaying the state (`UI-4`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
 
 ## Hand
 
@@ -128,7 +128,7 @@ Types of the details:
 
 - **CON-34** In an `EQUIPMENT` card, `damage`, `armor` and `health` are the values it adds, negative when it subtracts, and it has no types, `maxHealth` or `rarity` (`EQUIP-1`).
 - **CON-27** `damage`, `armor`, `health` and `maxHealth` are effective values, with the equipment included. `equipment` only lists what the card holds.
-- **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`. For a spectator, `attackAvailable` and `targetable` are always `false`.
+- **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard`, `hand` and the cards of `equipment`. For a spectator, `attackAvailable` and `targetable` are always `false`.
 
 ### Other
 
@@ -171,7 +171,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 
 ## Event details and order
 
-- **CON-21** In `PLAYER_ATTACK_CARD`, `armorDamage` and `healthDamage` are the armor and health lost by the target, and `targetDead` says whether it died. The three are always sent, including a 0 or a `false`.
+- **CON-21** In `PLAYER_ATTACK_CARD`, `armorDamage` and `healthDamage` are the armor and health the target actually lost, not the damage of the attack: the damage beyond what the target had is not counted (`COMBAT-4`, `COMBAT-7`). `targetDead` says whether it died. The three are always sent, including a 0 or a `false`.
 - **CON-22** Events are published in the following order. The first round and the first turn publish their events like any other.
 
 | Situation | Order |

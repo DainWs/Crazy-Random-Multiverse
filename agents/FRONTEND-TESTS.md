@@ -35,7 +35,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
   - No "should", no "test that", no "it", no "correctly", no "properly". The enclosing `describe` already names the unit and the method, so the message does not repeat them.
   - Say the concrete outcome, not a category: the value returned, the state reached, the request sent, the error thrown.
   - Target 3 to 8 words. If it needs more, the test is probably checking more than one behavior: split it.
-  - Good: `returns 0 for zero cards`, `throws when game is not initialized`, `sends POST to leave endpoint`, `rejects drop outside a zone slot`, `completes after grab and drop`, `emits GAME_STARTED on socket connect`.
+  - Good: `returns 0 for zero cards`, `throws when game is not initialized`, `sends POST to leave endpoint`, `rejects drop outside a zone slot`, `completes after grab and drop`, `emits GAME_START on socket event`.
   - Bad: `works`, `test 1`, `should work correctly`, `returns correct result`, `handles the case where the user is not logged in and tries to leave the party`, `leaveParty sends POST` (repeats the unit name already in `describe`).
 - Names of tests in the same `describe` must be different from each other and must read as a list of behaviors of that unit.
 - Order inside a `describe`: constants and helpers, `let` declarations, `beforeEach`, the `it` blocks.
@@ -149,7 +149,7 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 ### Rules
 
 - Phaser objects are never created for real. Fakes mimic the shape the code uses (`scene.tweens.killTweensOf`, `scene.input.activePointer`), not the whole Phaser API.
-- A fake that is needed by more than one test file moves to a shared factory function in `test/support/` (for example `test/support/createMockScene.ts`, like `e2e/support/` for the browser tests), instead of being copied. The `@/` alias of `vitest.config.ts` only resolves `src/` today, so the first shared fake also adds `test/` to it. Create the helper on the second use, not before.
+- A fake that is needed by more than one test file moves to a shared factory function in `test/fakes/` (for example `test/fakes/createMockScene.ts`), instead of being copied. Not in `test/support/`: `tsconfig.json` resolves `@/` in `src/`, `test/` and `e2e/`, and `@/support/` already names `e2e/support/` (section 14). The `@/` alias of `vitest.config.ts` only resolves `src/` today, so the first shared fake also adds `test/` to it. Create the helper on the second use, not before.
 - Dependencies that the class accepts by constructor or options (`SocketService` receives `socketFactory`, `eventHandler`, `reconnectHandler`) are injected as fakes; `vi.mock` is not used for them.
 - Asserting calls (`toHaveBeenCalledWith`) is acceptable **at a system boundary**: what was sent to `fetch`, what was emitted on the socket, what was dispatched to another system. It is not acceptable to assert the internal calls between two collaborators of the unit under test.
 - `any` in tests is tolerated only to cast fakes (`as any`); prefer `as unknown as T`. New tests do not add `any` for convenience in assertions.
