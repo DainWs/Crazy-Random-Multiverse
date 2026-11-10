@@ -70,7 +70,7 @@ Types of the details:
 ## Reconnection
 
 - **CON-11** When a socket is bound to a user who plays a game in progress, the server sends `GAME_SYNC`: `details.game` is the `GameDto`, `details.hand` is the hand of the receiving player (only in this event) and `sequence` is the number of the last event published before the snapshot.
-- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and `GAME_LOADING` are always applied and set the reference, also when they belong to a new game: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. When another event changes `game.code`, the queue starts over and waits for `sequence` 1 (`CON-9`). The client discards the events of a game it no longer has (`UI-17`): one it left as a spectator (`SPEC-3`), one cancelled (`LOAD-4`) or one already removed after its result (`WIN-5`), so a late event of the previous game neither brings it back nor restarts the queue of the new one. The animations of the events play in the same order, one after another, without delaying the state (`UI-4`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
+- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and `GAME_LOADING` set the reference: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. They are applied also when they belong to a new game. One of the game the queue follows whose `sequence` is lower than that of the last event applied is discarded instead, because it arrived late and would take the client back, for example from the board to the loading screen. When another event changes `game.code`, the queue starts over and waits for `sequence` 1 (`CON-9`). The client remembers the code of the last game it stopped having (`UI-17`): one it left as a spectator (`SPEC-3`), one cancelled (`LOAD-4`) or one already removed after its result (`WIN-5`). It discards every event of that game, snapshots included, so a late one neither brings it back nor restarts the queue of the new one. The animations of the events play in the same order, one after another, without delaying the state (`UI-4`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
 
 ## Hand
 
@@ -132,10 +132,12 @@ Types of the details:
 
 ### Other
 
+- **CON-38** The other types of the contract are the following.
+
 - `CardCodeDto`: `{ code, type }`. See `CON-7` and `CON-26`.
 - `PositionDto`: `{ row, column }`.
 - `UserDto`: `{ id, username }`. See `CON-24`.
-- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users, locked }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto`, `users` a `UserDto[]`, and `locked` says whether the party is locked (`LOAD-1`, `LOAD-4`, `WIN-5`).
+- `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users, locked }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto`, `users` a `UserDto[]` in the order the users joined the party (`PARTY-7`, `UI-19`), and `locked` says whether the party is locked (`LOAD-1`, `LOAD-4`, `WIN-5`).
 - `PartyListDto`: `{ parties }`, a `PartyDto[]` whose `users` are empty: the list shows `userCount` (`UI-14`).
 - `gameMode`: `CLASSIC` is the only value in the MVP.
 - `ResourceManifestDto`: `{ fixed, dynamic }`, both `ResourceDto[]`. See `CON-28`.
@@ -162,10 +164,10 @@ Types of the fields:
 | `sourceCard` | `CardCodeDto` |
 | `sourcePosition`, `targetPosition` | `PositionDto` |
 
-An action without `type`, `game`, `sourcePlayer` or one of the required fields of its type, or whose `game` is not the `{gameCode}` of the path, is rejected with `exception.request.malformed`.
+- **CON-37** A request whose body or path cannot be read is rejected with `exception.request.malformed`, and so is an action without `type`, `game`, `sourcePlayer` or one of the required fields of its type, or whose `game` is not the `{gameCode}` of the path.
 
 - **CON-17** A valid action changes the state, and the result reaches every client through events, including the client that sent it.
-- **CON-18** The response to a request says whether it was accepted: 2xx if it was, 400 with `ExceptionCodeDto` (`{ key }`, an `exception.*` key) if it was rejected. This applies to every endpoint and every expected error (game rules, parties, users, denied accesses, elements not found). The client tells them apart by the key. When a request breaks several rules, the server returns the key of any of them, and the client does not depend on which. A 500 means an unexpected failure.
+- **CON-18** The response to a request says whether it was accepted: 2xx if it was, 400 with `ExceptionCodeDto` (`{ key }`, an `exception.*` key) if it was rejected. This applies to every endpoint and every expected error (game rules, parties, users, denied accesses, elements not found). The client tells them apart by the key. When a request breaks several rules, the server returns the key of any of them, and the client does not depend on which. A 500 means an unexpected failure and carries no `ExceptionCodeDto`: the client shows it, and any other status that is neither 2xx nor 400, with its own key `exception.unexpected` (`UI-6`).
 - **CON-19** The client sends no new action until the previous one has been answered. The server gives no special treatment to duplicates: it validates each action against the current state.
 - **CON-20** Errors are only reported in the response to a request. There is no socket channel for errors, because every expected error comes from a request. A refused socket connection (`CON-2`) is reported by Socket.IO itself.
 
@@ -179,7 +181,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | Start of a game | Leaders are dealt (`SETUP-2`), `GAME_CREATED`, `GAME_LOADING`, the players confirm, `GAME_START`, and the start of a round |
 | Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, `TURN_CHANGE` |
 | Turn passed | `PLAYER_PASS_TURN`, then `TURN_CHANGE`, or the start of a round if a new one starts |
-| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the start of the game if it happens during the load and every player left has confirmed (`LOAD-2`), the end of the game if only one player is left alive (`WIN-1`), or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
+| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the start of the game if it happens during the load and every player left has confirmed (`LOAD-2`), the end of the game if only one player is left alive (`WIN-1`), or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`). A user deleted after `GAME_END` is not eliminated and publishes nothing (`ABSENT-3`) |
 | End of a game | `GAME_END`, `GAME_END_WITH_WINNER` |
 | Cancelled loading | `GAME_CANCELLED`, `party:info` |
 
@@ -215,9 +217,11 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | `dynamic` | Card images | `warrior.<rarity>.<code>`, `leader.<code>`, `equipment.<code>` |
 | `dynamic` | Combatant audios | `<image key>.<action>` for an action with one variant, and `<image key>.<action>.<n>` for one with several, with `n` from 1 to its number of variants (`VIEW-21`). `<action>` is `put`, `die` or `attack` |
 
-- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`). Until `VIEW-22` is resolved, every combatant lists 1 variant of `put` and `die` and 3 of `attack`, whatever its rarity, so the manifest does not follow `VIEW-21` yet.
+- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`). Until `VIEW-22` is resolved, every combatant lists 1 variant of `put` and `die` and 3 of `attack`, whatever its rarity, so the manifest does not follow `VIEW-21` yet. **[OPEN]** The keys of the sounds of `VIEW-9` that do not belong to a combatant (turn and round changes, victory and defeat), and whether equipping has an `<action>` of its own.
 
 ## REST API
+
+- **CON-35** The endpoints are the following. `Who` is who may call each one: any session, a member of the party, its owner or a player of the game.
 
 | Method and path | Who | Body | Response |
 |---|---|---|---|
@@ -237,7 +241,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 
 ## Errors
 
-The keys of `CON-18`.
+- **CON-36** The keys of `CON-18` are the following. `exception.unexpected` and `exception.server_unreachable` are not among them: they are the client's own (`UI-6`, `UI-24`).
 
 | Key | Meaning |
 |---|---|
@@ -246,7 +250,7 @@ The keys of `CON-18`.
 | `exception.{game,player,card,zone,party,user,game_mode}.not_found` | The element does not exist |
 | `exception.party.user_is_not_party_owner` | Only the owner can do this |
 | `exception.party.user_already_in_party` | The user already belongs to a party |
-| `exception.request.malformed` | The body or the path of the request cannot be read, or an action lacks a required field (`CON-16`) |
+| `exception.request.malformed` | The body or the path of the request cannot be read, or an action lacks a required field (`CON-37`) |
 | `exception.party.locked` | The party is locked (`LOAD-1`, `PARTY-3`, `PARTY-5`, `PARTY-6`, `PARTY-9`) |
 | `exception.party.is_full` | The party has reached its capacity |
 | `exception.party.cannot_kick_owner` | `PARTY-6` |
@@ -274,5 +278,5 @@ The keys of `CON-18`.
 | `exception.player-action.selected_target_position_has_none_combatant` | The target slot of an attack or an equipment is empty (`COMBAT-12`, `EQUIP-3`) |
 | `exception.player-action.equip_target_not_owned` | `EQUIP-3` |
 | `exception.zone.coordinate.out_of_bounds` | The position is outside the zone |
-| `exception.zone.coordinate.requires_leader` | The slot only admits a leader |
+| `exception.zone.coordinate.requires_leader` | The slot only admits a leader. Only a placement checks it (`BOARD-7`), and in the MVP the leader slot is never empty while its owner can act (`ELIM-1`), so such a placement also breaks the rule of an occupied slot (`CON-18`) |
 | `exception.zone.row.previous_need_to_be_filled` | `BOARD-5` |

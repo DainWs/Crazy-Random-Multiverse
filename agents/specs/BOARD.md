@@ -20,7 +20,7 @@ Order from the center of the table: center → front row → back row → leader
 ## Movement
 
 - **BOARD-6** Moving has no cooldown: a player may move cards as many times as they want during their turn, before or after attacking with them.
-- **BOARD-7** A card moves only inside its owner's zone. To a free slot allowed by `BOARD-5`, checked with the card still in its origin, so a move may leave a gap behind, and a card in the front row cannot change slot inside it while the back row has a gap. To an occupied slot, the two cards swap places, without checking `BOARD-5`. The leader cannot be moved or swapped. A move to the card's own slot, or a swap with the leader, is rejected with `exception.player-action.selected_target_position_not_allowed`, and a move of the leader with `exception.player-action.selected_source_is_leader`. A swap is published as `PLAYER_MOVE_CARD`.
+- **BOARD-7** A card moves only inside its owner's zone. To a free slot allowed by `BOARD-5`, checked with the card still in its origin, so a move may leave a gap behind, and a card in the front row cannot change slot inside it while the back row has a gap. To an occupied slot, the two cards swap places, without checking `BOARD-5`. The leader cannot be moved or swapped. A move to the card's own slot, or a swap with the leader, is rejected with `exception.player-action.selected_target_position_not_allowed`, and a move of the leader with `exception.player-action.selected_source_is_leader`. A swap with the leader breaks only this rule: `exception.zone.coordinate.requires_leader` belongs to placement. A swap is published as `PLAYER_MOVE_CARD`.
 
 ### Scenario
 

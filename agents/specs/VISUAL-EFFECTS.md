@@ -26,7 +26,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 
 ## Interface skins
 
-- **FX-10** **[Post-MVP]** A skin changes the look of the interface without changing its layout or behavior: colors, fonts, frames, the table background, the icons of the statistics and the mark of the slots (`VIEW-1`).
+- **FX-10** **[Post-MVP]** A skin changes the look of the interface without changing its layout or behavior: colors, fonts, frames, the table background, the icons of the statistics and the mark of the slots (`CON-30`).
 - **FX-11** **[Post-MVP]** A skin is a set of resources with a name, replaceable as a whole. The resources it does not define fall back to the default skin, so a skin can change a single thing.
 - **FX-12** **[Post-MVP]** The player chooses their skin in the settings screen. It is a preference of that player only, the other players do not see it, and it is not part of the game state or of the contract with the backend.
 - **FX-13** **[Post-MVP]** The settings can turn the effects off by group (`FX-2`) or reduce them, as part of the reduced motion and accessibility options (`VIEW-10`). Without effects the game must be fully readable: no information is carried only by an effect.
@@ -42,7 +42,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 
 **Effects turned off** **[Post-MVP]**
 - Given a player who turned off the action effects
-- When a rare card attacks
+- When a card of a rarity that has the heartbeat attacks
 - Then the attack animation and the changes of the statistics are shown, and the heartbeat is not
 
 **Skin with missing resources** **[Post-MVP]**

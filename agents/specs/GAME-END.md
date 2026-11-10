@@ -12,7 +12,7 @@
 
 - **ABSENT-1** A disconnected player keeps their place, cards and turn, and can return to the game (`CON-11`) until the grace period ends and their user is deleted (`CON-3`).
 - **ABSENT-2** Closing the game is a disconnection, not a surrender. A player who has not been eliminated cannot abandon the game any other way than surrendering (`ELIM-2`).
-- **ABSENT-3** When the user of a disconnected player is deleted (`CON-3`), that player is eliminated, even outside their turn.
+- **ABSENT-3** When the user of a disconnected player is deleted (`CON-3`), that player is eliminated, even outside their turn. A user deleted while the result is shown (`WIN-4`) is not eliminated, because the game has already ended: no event is published, `isAlive` does not change, and they only leave the party when it unlocks (`PARTY-7`).
 - **ABSENT-4** **[Post-MVP]** Voting to kick a player in the middle of a game.
 
 ## Winning

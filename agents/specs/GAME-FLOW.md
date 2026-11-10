@@ -11,7 +11,7 @@
 - **TURN-1** The order drawn in `SETUP-3` does not change during the game. Eliminated players are skipped.
 - **TURN-2** In their turn a player may place, move, attack, equip, surrender or pass the turn.
 - **TURN-3** There is no limit of actions per turn beyond the rules of each action. The turn lasts until the player passes it or is eliminated (`ELIM-1`, `ELIM-4`).
-- **TURN-4** There is no turn time limit. A disconnected player blocks the game during their turn until their user is deleted (`ABSENT-3`). A player who stays connected without acting blocks it until their session expires (`USER-7`), because their user is not deleted before that, and the other players can only leave by closing the game (`ABSENT-2`). Both are accepted risks of the MVP.
+- **TURN-4** There is no turn time limit. A disconnected player blocks the game during their turn until their user is deleted (`ABSENT-3`). A player who stays connected without acting blocks it until the first session among the living players expires (`USER-7`), and the other players can only leave by closing the game (`ABSENT-2`). That session need not be theirs: the players who wait make no requests either, and an open socket does not renew a session. If the session of a waiting player expires first, that player is eliminated instead, and with two players left the one who was blocking wins (`WIN-1`). Both are accepted risks of the MVP.
 - **TURN-5** Actions are only accepted from the player whose turn it is, including surrender.
 - **TURN-6** Actions are validated by the server. A rejected action leaves the state unchanged.
 - **TURN-7** Actions are only accepted while the game is in progress: not while it is loading or after it ends.

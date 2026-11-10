@@ -75,8 +75,8 @@ Nested classes are not used: a class, record, enum or interface that another cla
 ```java
 @Service
 public class UserService {
-	private UserRepository userRepository;
-	private PartyService partyService;
+	private final UserRepository userRepository;
+	private final PartyService partyService;
 	private GameService gameService;
 
 	@Value("${crm.user.disconnect-grace-period}")
@@ -159,7 +159,7 @@ abstract class BaseGameModeFactory {
 
 // GOOD — composed collaborator
 class ClassicGameModeFactory implements GameModeFactory {
-	private Deck deck;
+	private final Deck deck;
 	private EventPublisher eventPublisher;
 
 	ClassicGameModeFactory(Deck deck) {

@@ -19,7 +19,7 @@ Leaders and warriors are the *combatants*: the cards that go on the board.
 
 ## Base content
 
-- **CARD-4** A card has a name, description, type, rarity if it is a warrior, statistics and a texture. The client derives the manifest keys of the frame and image of a card from `type`, `rarity` and `catalogCode` (`CON-30`) and gets their URLs from the manifest, so `CardDto` has no texture field.
+- **CARD-4** A card has a name, a description if it has one (leaders have none, `CARD-5`), a type, a rarity if it is a warrior, statistics and a texture. The client derives the manifest keys of the frame and image of a card from `type`, `rarity` and `catalogCode` (`CON-30`) and gets their URLs from the manifest, so `CardDto` has no texture field.
 - **CARD-5** The base content of the MVP is the following. All damage and armor are physical.
 - **CARD-6** A card in the deck can come with equipment already attached.
 - **CARD-7** The name and description of a card travel as the keys `card.<type>.<code>.name` and `card.<type>.<code>.description`, for example `card.warrior.0.name`, where `<type>` is the lowercase `type` and `<code>` is the one in `catalogCode` (`CON-26`), and the client translates them. The tables below give their text in Spanish.
@@ -64,7 +64,7 @@ Policía comes with Pistolón attached. Argoth and Odin are not dealt, because t
 - **EQUIP-4** A card can hold any number of pieces of equipment, and their effects add up.
 - **EQUIP-5** Damage, armor and maximum armor (`EQUIP-6`) do not drop below 0, and current and maximum health do not drop below 1 because of equipment. These limits apply to the total of all the pieces, not piece by piece. Equipment never kills a card.
 - **EQUIP-6** Equipment changes the maximum armor and health and keeps what the card has already lost: current health is the new maximum minus the health lost, so a health bonus raises both current and maximum health and a penalty lowers both. When `EQUIP-5` stops current health at 1, the health it saved no longer counts as lost. Armor works the same way, with two differences: a card has no maximum armor of its own, so its maximum is the armor it has when it receives its first piece plus the pieces, and `CardDto` does not carry it; and when `EQUIP-5` stops armor at 0, the armor it saved no longer counts as lost.
-- **EQUIP-7** **[Post-MVP]** When a living card loses equipment, its values are removed. Current health only drops if it exceeds the new maximum, so damage already taken is kept and losing equipment never kills.
+- **EQUIP-7** **[Post-MVP]** When a living card loses equipment, its values are removed with the model of `EQUIP-6`: the maximums change, what the card has already lost is kept, and the limits of `EQUIP-5` apply, so losing equipment never kills. For example, a card with 6 of 10 health that has lost 4 and loses a piece of +5 health is left with 1 of 5.
 - **EQUIP-8** The equipment disappears when the card dies. **[Post-MVP]** It also disappears when the card permanently changes owner.
 
 ### Scenarios

@@ -85,7 +85,7 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 - [x] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`, `VIEW-16`)
 - [x] Dragging a warrior from the hand to a valid slot sends `PUT_ACTION` with the row of that slot (`CON-14`) and the board shows it, with `dragenter` and `drop` reaching the slot under the pointer
 - [x] Clicking an own card and moving over a valid target draws the green arrow and shows the target in the side panel (`VIEW-4`, `UI-5`)
-- [x] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`COMBAT-11`)
+- [x] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`BOARD-9`)
 - [x] In a game of three players, hover, drag and drop and targets work on the rotated side zones (`VIEW-2`). A card can only be dropped on the zone of its owner, which is never rotated, so the drop on a rotated zone is checked to send no action
 
 ## T13 — Remaining checks
@@ -117,7 +117,7 @@ Automated tests for the checks that were done by hand in a real browser, with tw
 **Turns and rejections:**
 - [ ] The HUD shows the round and whose turn it is, ending the turn passes it, and the round advances after the last player (`UI-3`)
 - [ ] The player without the turn cannot act (`UI-4`)
-- [ ] An action the server rejects out of turn gets a 400 with `exception.player-action.allowed_only_on_turn`, shows "No es tu turno" and puts the card back in the hand (`UI-6`)
+- [ ] An action the client allows and the double rejects with a 400 and `exception.player-action.allowed_only_on_turn` shows "No es tu turno" and puts the card back in the hand (`UI-6`). The client blocks an action out of turn first (`UI-4`), so only the double can produce the rejection
 
 **Camera:**
 - [ ] The wheel changes the zoom, and dragging with the right button pans by the distance moved divided by the zoom
@@ -148,7 +148,7 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person checks with a real mouse that the hand folds when the pointer leaves it (`VIEW-16`). Not checked: the agent only sent simulated mouse events, with which the hand stayed expanded in a game of two and folded in a game of three, so it may be intermittent
 - [ ] A person judges whether the animations run without stutters or jumps during a full game. The look of each one has its own checks below. Not checked: the agent only has screenshots at given moments
 - [ ] A person cuts the real network during a game and checks that the state comes back when it returns (`UI-9`, `CON-23`). Not checked with a real cut: the agent closed the transport of the socket, and the state came back right, with the screen blank meanwhile
-- [ ] A person checks a rejection from the server during a game: the card goes back and a message explains it (`UI-6`). Not checked: the client blocks the invalid actions first, so none reached the server
+- [ ] A person checks a rejection from the server during a game: the card goes back and a message explains it (`UI-6`). Not checked: the client blocks the invalid actions first (`UI-4`, `UI-5`), so in normal play none reaches the server. T13 covers the client side with the double
 - [ ] A person double-clicks End Turn against the running server and checks that only one turn passes, and that the clients apply the events in `sequence` order (`CON-12`, `CON-22`). No test: each half has its own (`CardController.test.ts`, `GameEventQueue.test.ts` and the backend concurrency tests), and joining them needs the real Socket.IO server
 - [ ] A person attacks in a real browser and judges the look of the combat feedback (`VIEW-5`, `VIEW-6`, `VIEW-7`): the attacker grows and shrinks back, the target shakes and flashes red, the armor and health count down, a killed card shrinks and fades out and a killed leader shakes first and lasts longer. No test: a screenshot in the middle of a tween depends on timing, T13 covers that the animations happen and `AnimationSystem.test.ts` their order
 - [ ] A person looks at the animation of the cards received in the hand (`VIEW-8`). No test: same reason as the combat feedback, and `HandController.test.ts` covers when it starts

@@ -58,14 +58,14 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 ## Phase 11 — UX
 
 - [ ] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule)
-- [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-6`)
+- [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
-- [ ] Improve loading flow
+- [ ] Improve loading flow. It needs a rule first: what to improve is not defined yet
 - [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
 - [ ] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
 - [ ] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection
-- [ ] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board
+- [ ] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board (`VIEW-23`)
 - [ ] Redo the glow of the leader of the player with the turn (`VIEW-20`): today it is five stacked strokes over the corners of the slot and looks like a halo with thin lines at the corners. Use a Phaser 4 glow filter or a soft texture, with a discreet pulse that does not restart when the board is redrawn. Regenerate the 11 reference images that contain it
 - [ ] Improve the look of the zone of an eliminated player (`VIEW-11`): the veil is a flat black fill per slot and the label "Eliminado" is a plain red text. Make the veil cover the zone as one piece and give the label a panel or a style that fits the table
 - [ ] Improve the look of the connection notice (`UI-9`), the notices of `SessionNotice` (`UI-10`, `UI-24`, `LOAD-4`) and the leave button and its dialog (`UI-15`): they are unstyled, with default controls and a plain dark veil
@@ -75,15 +75,15 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 12 — Menu, lobby, user
 
-- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, the default name (`USER-2`), deleting the user when the session expires (`USER-7`), `exception.party.user_not_in_party` (`PARTY-6`), name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), a `PUT /party/{partyCode}` without `gameMode` or `maxUsers` rejected with `exception.request.malformed` instead of the 500 it gets today (REST API of `CONTRACT.md`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
+- [ ] Check users, parties and loading against `USER-*`, `PARTY-*` and `LOAD-*` and implement the differences: default capacity of 4 (`Party` uses 5) and its range, minimum to start, rejecting a start or a configuration change on a locked party (`PARTY-3`, `PARTY-9`), the result time counted as locked (`LOAD-1`), owner succession, the default name (`USER-2`), deleting the user when the session expires (`USER-7`), `exception.party.user_not_in_party` (`PARTY-6`), name rules with the name stored trimmed (`USER-4`), the capacity below the members rejected with `max_users_out_of_range` (`PARTY-2`), a `PUT /party/{partyCode}` without `gameMode` or `maxUsers` rejected with `exception.request.malformed` instead of the 500 it gets today (`CON-35`, `CON-37`), name of the party, and `party:info` sent to the members when a member changes their name (`PARTY-10`)
 - [ ] Main Menu: party list, loaded when its screen opens and with a refresh button, with the members out of the capacity, the join button disabled for a full party, and a rejected join shown as a message that reloads the list (`UI-1`, `UI-14`)
 - [ ] Lobby: listing, owner controls, kicking, configuration (`PARTY-*`, `UI-23`), and the message for a kicked user (`PARTY-12`); leaving is already in Phase 2.5. Leaving and kicking ask for confirmation (`UI-15`)
 - [ ] Show a rejected start as a message below the start button (`UI-20`), and disable leaving, kicking and the configuration while the party is locked (`UI-16`)
 - [ ] Username editing from the main menu, persisted with `PUT /user`, with a rejected name shown below the field (`USER-3`, `UI-13`)
-- [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`USER-3`)
+- [ ] Fix `WebUserController.setAccount`, which saves a clone of the session user over the stored one, so the user loses their sockets and stops receiving events, and ignore the `id` of the body (`CON-35`)
 - [ ] Send `gameMode` in `PartyDto`: `ModelMapper.toPartyDto` never sets it (`PARTY-3`)
 - [ ] Name the party after its owner (`PARTY-11`): `ModelMapper` sends `Party of <name>`
-- [ ] Style the main menu and the party screen, which use the default controls of the browser, and show the members in a stable order with the owner first: today the owner can be last
+- [ ] Style the main menu and the party screen, which use the default controls of the browser, and show the members with the owner first and the others in the order they joined (`UI-19`, `CON-38`): today the owner can be last, because `Party` keeps them in a `HashMap`
 
 ## Phase 13 — Testing
 
@@ -103,7 +103,7 @@ Not tied to a phase.
 
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] Fix the order of the state sent when a socket is bound (`CON-23`): with Engine.IO v4, `netty-socketio` 2.0.12 runs the connect listeners on the handshake, so `SocketIOConnectionManager` sends the state before the namespace connect ack. The client works around it by starting the sync on `connecting`/`reconnecting` (`SessionSystem`), which blanks the screen for the whole reconnection, behind the notice of `UI-9`. The library has no hook after the ack; the options are a client request for the state (a new event, changing `CON-23`) or a delayed send
-- [ ] Ignore the events of a game the user no longer has (`CON-12`, `SPEC-3`): `GameStateApi` applies every `game:event`, so one in flight when a spectator leaves would rebuild the game state while the user is in the main menu, and a late one of the previous game would restart the queue of the new one. The server stops sending them, so it only happens in a race
+- [ ] Ignore the events of a game the user no longer has, remembering the code of the last one, and discard a `GAME_SYNC` or `GAME_LOADING` of the followed game whose `sequence` is lower than that of the last event applied (`CON-12`, `SPEC-3`): `GameStateApi` applies every `game:event`, and `GameEventQueue` applies every snapshot, rewinding the queue, so one in flight when a spectator leaves would rebuild the game state while the user is in the main menu, and a late one of the previous game would restart the queue of the new one. The server stops sending them, so it only happens in a race
 - [ ] Make the HUD follow the snapshot of the board it is showing, not the live state (`UI-3`): `GameHudView` reads `StoreSystem` on every frame, so the round, the turn and the spectator buttons can run ahead of the animations of the board (`CON-12`)
 - [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
@@ -126,12 +126,15 @@ Not tied to a phase.
 
 - Spells (including exposing `UseCardAction` and `UseSpellAction` in the API), autotrigger (`R`) spells and complex equipment effects
 - Teams: a team model in the backend (from the game configuration and from spells) and its exposure to the frontend (for example a `team` in each `ZoneDto`), and in the interface: display, team victory and dead teammates
-- Vote to kick a player in the middle of a game (the MVP has no turn time limit, so a disconnected player blocks the game until their user is deleted, and one who stays connected without acting blocks it until their session expires, `USER-7`)
+- Vote to kick a player in the middle of a game (the MVP has no turn time limit, so a disconnected player blocks the game until their user is deleted, and one who stays connected without acting blocks it until a session of the game expires, `TURN-4`, `USER-7`)
 - Several decks instead of a single one per server: today one `Deck` bean, which is also the `CardRepository`, is injected into every game mode, and `PersistenceConfiguration` backs off if the application provides its own `Deck`; decide how a deck is chosen (per party, per game mode, uploaded as a zip, `VAR-3`), who uploads it, its format, validation and lifetime before designing it
 - Leaders do not repeat when the deck has enough for every player
 - Names and descriptions for the leaders (`CARD-5`)
 - Balance of the base content: higher rarities do not stand out (Alien, Epic, has 5 damage and 15 health, worse than Perro, Uncommon, with 10 and 10; Policía reaches 20 damage with Pistolón), and Argoth and Odin are not dealt, because the schedule has no slots for their rarities
 - Equipment on enemy cards
+- Losing equipment (`EQUIP-7`), and equipment that disappears when its card permanently changes owner (`EQUIP-8`)
+- Cards that can attack more than once per turn (`BOARD-9`)
+- Excess damage carried over to health from 100 physical damage (`COMBAT-10`), once its meaning is resolved
 - Rival hands shown as backs, one for each type and warrior rarity, through `PlayerDto.handBacks` and their keys in `fixed`, with the back a rival receives animated (`CON-13`, `VIEW-3`, `VIEW-8`)
 - Spectators from outside the game
 - English translation
@@ -144,4 +147,5 @@ Not tied to a phase.
 - Cursor animations
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`), with more variants for rarer cards once `VIEW-22` is resolved (`VIEW-21`)
 - Advanced trolling cards, green/red indicators, center-table behavior
+- Interface skins chosen by each player, and turning the effects off by group (`FX-10` to `FX-15`)
 - Settings screen, audio settings, accessibility (reduced motion, color-blind indicators), responsive and touch layouts

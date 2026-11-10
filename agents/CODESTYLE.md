@@ -143,9 +143,9 @@ The result of a transformation (a Stream API pipeline, an array method chain, a 
 **Preferred:**
 
 ```java
-List<CardDto> equipmentDtos = combatant.getEquipment().stream()
-        .map(ModelMapper::mapCardToDto)
-        .toList();
+List<CardDto> equipmentDtos = combatant.getEquipment().stream() //
+		.map(ModelMapper::mapCardToDto) //
+		.toList();
 
 cardDto.setEquipment(equipmentDtos);
 ```
@@ -154,9 +154,9 @@ cardDto.setEquipment(equipmentDtos);
 
 ```java
 cardDto.setEquipment(
-        combatant.getEquipment().stream()
-                .map(ModelMapper::mapCardToDto)
-                .toList()
+		combatant.getEquipment().stream() //
+				.map(ModelMapper::mapCardToDto) //
+				.toList()
 );
 ```
 

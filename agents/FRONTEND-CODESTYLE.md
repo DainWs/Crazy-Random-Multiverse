@@ -45,7 +45,7 @@ domain → (nothing)
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
 - Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
 - Other players' hands are never stored.
-- The session state (the party and the user state, `CON-23`) lives in `SessionSystem`, not in `StoreSystem`: it is not game state and the game never reads it. It is exposed as read-only `shallowRef`s so that Vue components can react to it. Vue reactivity is used only there; `StoreSystem` and everything Phaser touches stay plain objects, never wrapped in a Vue proxy.
+- The session state (the party and the user state, `CON-23`) lives in `SessionSystem`, not in `StoreSystem`: it is not game state, and the game only uses it for the session: `GameLoad` reads the active game and the user state and calls `abandonGame` (`UI-12`), and the leave button of a spectator goes through `PartyController`, which reads the party (`SPEC-3`). The local user, from which the own player is identified (`CON-24`), is in `StoreSystem`. It is exposed as read-only `shallowRef`s so that Vue components can react to it. Vue reactivity is used only there; `StoreSystem` and everything Phaser touches stay plain objects, never wrapped in a Vue proxy.
 - Which menu screen is shown is decided in `App.vue` from the user state (`UI-17`). Phaser scenes only switch when the state enters loading or game.
 
 ---
