@@ -74,7 +74,7 @@ Types of the details:
 
 ## Hand
 
-- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players know the type and, for a warrior, the rarity of each card in a hand, without knowing which card it is: `PlayerDto.handBacks` is a `CardBackDto[]` (`{ type, rarity }`) in the order of the hand, and the back received is the last one. `fixed` has a back for each type and warrior rarity (`CON-30`).
+- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players know the type and, for a warrior, the rarity of each card in a hand, without knowing which card it is: `PlayerDto.handBacks` is a `CardBackDto[]` (`{ type, rarity }`) in the order of the hand, and the back received is the last one. `fixed` has a back for each type and warrior rarity, whose keys `CON-30` does not define yet.
 
 ## Data
 
@@ -94,7 +94,7 @@ Types of the details:
 | `code` | text | The public id of the user (`CON-24`) |
 | `name` | text | The name of the user when the game was created. It does not change during the game |
 | `isAlive` | boolean | |
-| `isSpectator` | boolean | |
+| `isSpectator` | boolean | `true` from the elimination on (`SPEC-1`), so in the MVP it is always the opposite of `isAlive`. It stays `true` after leaving the game (`SPEC-3`) |
 
 ### `ZoneDto`
 
@@ -179,7 +179,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | Start of a game | Leaders are dealt (`SETUP-2`), `GAME_CREATED`, `GAME_LOADING`, the players confirm, `GAME_START`, and the start of a round |
 | Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, `TURN_CHANGE` |
 | Turn passed | `PLAYER_PASS_TURN`, then `TURN_CHANGE`, or the start of a round if a new one starts |
-| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the end of the game if only one player is left alive (`WIN-1`), or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
+| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the start of the game if it happens during the load and every player left has confirmed (`LOAD-2`), the end of the game if only one player is left alive (`WIN-1`), or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
 | End of a game | `GAME_END`, `GAME_END_WITH_WINNER` |
 | Cancelled loading | `GAME_CANCELLED`, `party:info` |
 
@@ -215,7 +215,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | `dynamic` | Card images | `warrior.<rarity>.<code>`, `leader.<code>`, `equipment.<code>` |
 | `dynamic` | Combatant audios | `<image key>.<action>` for an action with one variant, and `<image key>.<action>.<n>` for one with several, with `n` from 1 to its number of variants (`VIEW-21`). `<action>` is `put`, `die` or `attack` |
 
-- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`). Until `VIEW-22` is resolved, every combatant lists 1 variant of `put` and `die` and 3 of `attack`.
+- **CON-31** `dynamic` always lists the whole catalog, even if a file does not exist yet: the client finds out when the download fails (`UI-21`). Every entry of `fixed` must exist, because a failure blocks the load (`UI-12`). In the MVP the client does not download the audios, because sounds are **[Post-MVP]** (`VIEW-9`). Until `VIEW-22` is resolved, every combatant lists 1 variant of `put` and `die` and 3 of `attack`, whatever its rarity, so the manifest does not follow `VIEW-21` yet.
 
 ## REST API
 
@@ -228,7 +228,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | `GET /party/list` | Session | | `PartyListDto` |
 | `POST /party/{partyCode}/join` | Session | | `PartyDto` |
 | `POST /party/{partyCode}/leave` | Member | | |
-| `PUT /party/{partyCode}` | Owner | `{ gameMode, maxUsers }` | |
+| `PUT /party/{partyCode}` | Owner | `{ gameMode, maxUsers }`, both required (`PARTY-2`, `PARTY-3`) | |
 | `POST /party/{partyCode}/kick/{userCode}` | Owner | | |
 | `POST /party/{partyCode}/start` | Owner | | |
 | `GET /game/{gameCode}/resources` | Player | | `ResourceManifestDto` |

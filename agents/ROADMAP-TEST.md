@@ -61,7 +61,7 @@ Started at: `894fd92` · Finished at: `f10329f`
 
 Needs the tooling of T6.
 
-- [x] When the attack that kills the last rival leader and the end of the game arrive one right after the other, the result appears only after the last animation (`UI-4`, `VIEW-12`)
+- [x] When the attack that kills the last rival leader and the end of the game arrive one right after the other, the result appears only after the last animation (`UI-4`, `WIN-4`)
 
 
 ## T6 — Visual regression and smoke test
@@ -76,13 +76,13 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 - [x] Local double of the backend, prepared game state and test textures, failing on any request it does not expect
 
 **Visual regression:**
-- [x] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`)
+- [x] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`). `HAND-3` no longer shows them: the images that show the `Mano:` label of the rival zones are regenerated in Phase 10 of `ROADMAP.md`
 - [x] The board, the slots and the arrow keep their shape at zooms from 0.5 to 1.1 (`PHASER4-SPECS.md`)
 - [x] Cover the sharpness of the cards and texts, so that it can leave "Pending checks"
 
 **Smoke test:**
 - [x] Phaser starts with WebGL and reaches the main menu with no console errors other than the expected 400 of `/user` without a session
-- [x] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`)
+- [x] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`, `VIEW-16`)
 - [x] Dragging a warrior from the hand to a valid slot sends `PUT_ACTION` with the row of that slot (`CON-14`) and the board shows it, with `dragenter` and `drop` reaching the slot under the pointer
 - [x] Clicking an own card and moving over a valid target draws the green arrow and shows the target in the side panel (`VIEW-4`, `UI-5`)
 - [x] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`COMBAT-11`)
@@ -90,10 +90,10 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 
 ## T13 — Remaining checks
 
-Checks done by hand in a real browser, with two clients against a local backend, to validate the migration of Phase 6, so that they no longer have to be checked by hand.
+Automated tests for the checks that were done by hand in a real browser, with two clients against a local backend, to validate the migration of Phase 6, so that they no longer have to be checked by hand.
 
 **Startup:**
-- [ ] No file uses `Phaser` as a value without importing it (`PHASER4-SPECS.md`). It was checked with a script over the TypeScript AST, because `tsc` does not catch it
+- [ ] No file uses `Phaser` as a value without importing it (`PHASER4-SPECS.md`). It was checked once with a script over the TypeScript AST, because `tsc` does not catch it, and that check is not automated yet
 
 **Party and game start:**
 - [ ] A party is created, a second client joins with its code, and the start button is only enabled from 2 members (`UI-18`, `UI-20`)
@@ -126,7 +126,7 @@ Checks done by hand in a real browser, with two clients against a local backend,
 **End of the game:**
 - [ ] Surrendering asks for confirmation and "Sí" ends the game (`UI-15`, `ELIM-2`)
 - [ ] The result covers the board with "Victoria" or "Derrota", the winner and the countdown, and gameplay stays disabled (`WIN-4`)
-- [ ] Killing the last rival leader ends the game, and both clients go back to the party when the countdown ends (`WIN-5`)
+- [ ] Killing the last rival leader ends the game, and both clients go back to the party when the `party:info` that unlocks it arrives (`WIN-4`, `WIN-5`)
 - [ ] A second game can be started from the same party, with the game scene starting again and no console errors from the first game (`UI-17`)
 
 **Visual regression:**
@@ -140,12 +140,12 @@ Checks done by hand in a real browser, with two clients against a local backend,
 
 Not a phase. What could not be verified from the agent environment, for a person to check, and why it has no test.
 
-- [x] A person judges the sharpness of the cards and texts on Phaser 4 in a real browser, at several zoom levels (`agents/PHASER4-SPECS.md`), and compares the start of a game with Phaser 3, where the HUD and the card panel are cut off at the initial zoom of 1.1. Not checked: it needs a person's eye, and the comparison needs the old version. A two-player game was played on Phaser 4 from the agent environment and covered the rest of the view
+- [x] A person judges the sharpness of the cards and texts on Phaser 4 in a real browser, at several zoom levels (`agents/PHASER4-SPECS.md`), and compares the start of a game with Phaser 3, where the HUD and the card panel are cut off at the initial zoom of 1.1. It needs a person's eye, and the comparison needs the old version. Covered by the reference images of T6, approved by a person
 - [ ] A person starts the backend and checks that the Socket.IO server listens on port 9092. No test: the rules of `CLAUDE.md` do not allow a real port, and `SocketIOConfigurationTest` covers the start and stop of the server
 - [ ] A person tests a real browser connection with the session cookie. No test: the doubles of T6 replace the server that sets the cookie, and `SocketFactory.test.ts` already covers `withCredentials`
 - [ ] A person checks against a running server that the row of an action reaches the slot that was clicked (`CON-14`). No test: T6 checks the row that is sent, and what is left needs a real backend
 - [ ] A person checks that `/resources` arrives through the Vite proxy (`CON-29`). No test: the doubles of T6 answer before the proxy
-- [ ] A person checks with a real mouse that the hand folds when the pointer leaves it (`VIEW-14`). Not checked: the agent only sent simulated mouse events, with which the hand stayed expanded in a game of two and folded in a game of three, so it may be intermittent
+- [ ] A person checks with a real mouse that the hand folds when the pointer leaves it (`VIEW-16`). Not checked: the agent only sent simulated mouse events, with which the hand stayed expanded in a game of two and folded in a game of three, so it may be intermittent
 - [ ] A person judges whether the animations run without stutters or jumps during a full game. The look of each one has its own checks below. Not checked: the agent only has screenshots at given moments
 - [ ] A person cuts the real network during a game and checks that the state comes back when it returns (`UI-9`, `CON-23`). Not checked with a real cut: the agent closed the transport of the socket, and the state came back right, with the screen blank meanwhile
 - [ ] A person checks a rejection from the server during a game: the card goes back and a message explains it (`UI-6`). Not checked: the client blocks the invalid actions first, so none reached the server
@@ -154,11 +154,11 @@ Not a phase. What could not be verified from the agent environment, for a person
 - [ ] A person looks at the animation of the cards received in the hand (`VIEW-8`). No test: same reason as the combat feedback, and `HandController.test.ts` covers when it starts
 - [ ] Find the frontend test that failed once in a full run (1 of 454, `npx vitest run`) and passed in the next runs: its name was not recorded, and it may be a flaky test. Not a test to write: without its name there is nothing to cover
 - [ ] A person renders `class_diagram-actions`, `-card`, `-dealer` and `-effect` and `activity-player_actions` and `usecases` in `docs/development/diagrams/` and checks that they draw. Not checked: they were rewritten against the code, and no PlantUML renderer is available in the agent environment
-- [x] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. Not checked: the workflow only runs on GitHub
+- [x] A person pushes a commit and checks that both jobs of `.github/workflows/maven.yml` run and pass. It needs a person: the workflow only runs on GitHub
 - [ ] A person pushes a commit and checks that the backend job of `.github/workflows/maven.yml` runs `DisconnectedPlayerIntegrationTest`. Not checked: the workflow only runs on GitHub, and it now runs with `-P integration-tests`
 - [ ] A person checks in a real browser that the cards show their art and their Spanish name and description, that a leader shows no description, and that equipment shows `card.unknown` (`CARD-7`, `UI-21`). Not checked: it needs a person to look at the rendered cards
 - [ ] A person judges how panning with the right or middle button and zooming with the wheel feel in a real browser (`VIEW-19`). No test of the feel: `camera.spec.ts` covers that panning neither drags nor selects a card nor cancels a selection, that the wheel does nothing while dragging and that the board stays on the screen
-- [ ] A person checks in a real browser that the surrender dialog, the rejection message and the result stay whole and clickable at several zoom levels (`UI-3`). Not checked: `camera.spec.ts` covers the turn text and the buttons at zoom 0.8 and 0.5, but the dialog, the message and the result need a game state the double does not reach
+- [ ] A person checks in a real browser that the surrender dialog, the rejection message and the result stay whole and clickable at several zoom levels (`UI-6`, `UI-15`, `WIN-4`, `VIEW-19`). Not checked: `camera.spec.ts` covers the turn text and the buttons at zoom 0.8 and 0.5, but the dialog, the message and the result need a game state the double does not reach
 - [ ] A person looks at the glow of the leader of the player with the turn in a real browser (`VIEW-20`): the outlines are strokes of the slot corners, and in the references they look like a soft halo with thin lines at the corners. Not checked: it needs a person's eye, and the references were regenerated by the agent
 - [ ] A person looks at the veil and the label "Eliminado" over the zone of an eliminated player on the side zones (`VIEW-11`). The E2E test only checks that the table changes, not how it looks
 - [ ] A person eliminates a player in a real game and checks that the spectator sees the board, cannot act, and leaves with the button after confirming, and that the other clients keep playing and the leaver no longer receives events (`SPEC-3`, `UI-8`). Not checked against a real server: the E2E double has no real party, and the backend only has unit tests

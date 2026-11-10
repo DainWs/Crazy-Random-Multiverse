@@ -32,7 +32,7 @@ Practical corollary on DRY: two pieces of code that look alike today but change 
 - **Code, names, logs and comments in English.**
 - Existing exception messages in Spanish are tolerated; new ones are written in English.
 - Documentation in `docs/` is written in English. Existing `TODO`s in Spanish are tolerated.
-- Text the player sees does not live in the code: it is identified by key (`exception.*`, card `name` and `description`) and translated on the client (`frontend/src/core/Texts.ts`, `UI-2`).
+- Text the player sees does not live in the code: it is identified by key (`exception.*`, card `name` and `description`) and translated on the client (`frontend/src/core/Texts.ts`, `UI-2`). The name of a user is data, not an interface text: it is shown as it is, also the default name the server assigns (`USER-2`).
 
 ---
 
@@ -178,7 +178,7 @@ Readability, maintainability and ease of debugging come before minimizing the nu
 ## 8. Debuggability
 
 - Logging through SLF4J in the backend. **Never `System.out`.**
-- Structured logging. **Never write directly to the console** (`System.out`, `console.log`).
+- Structured logging. **Never write directly to the console** (`System.out`, `console.log`). The only exception is the communication trace of the frontend `api/` (`agents/FRONTEND-CODESTYLE.md`, section 7).
 - Log entries for a game include its `GameCode`; those for a player, their `PlayerCode`.
 - **Logging sessions, tokens or the contents of `.env.local.*` is forbidden.** A player's hand (private information) is not logged at any level above `trace`.
 - Messages describe facts, not moods.
@@ -189,7 +189,7 @@ Readability, maintainability and ease of debugging come before minimizing the nu
 
 - Specific style guides: `agents/BACKEND-TESTS.md` (backend) and `agents/FRONTEND-TESTS.md` (frontend).
 - **Unit tests do not touch the network, the real disk or a database.** If a test needs any of that, it is an integration test and is kept separate from the unit tests.
-- **Fakes before mocks.** The backend already has `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, builders (`CardBuilder`, `GameBuilder`, `PlayerBuilder`…) and monitors (`EventMonitor`): reuse them before creating new ones.
+- **Fakes before mocks.** The backend already has `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, builders (`CardBuilder`, `GameBuilder`, `PlayerBuilder`…) and monitors (`EventMonitor`): reuse them before creating new ones. The `Dummy` prefix belongs to those existing fakes; a new fake is named after what it does (`agents/BACKEND-TESTS.md`, section 9).
 - No logic in tests: no `if`, no loops over cases. For several cases, use parameterized tests.
 - Coverage percentages are not pursued. Cover what breaks in production.
 - Every failure found in production enters first as a failing test, and is then fixed.
@@ -235,9 +235,9 @@ Rejected outright in review:
 - Interfaces with a single implementation outside the exceptions in section 2
 - "Future-proofing" abstraction layers
 - Inheritance to share code
-- New `utils`, `helpers`, `common` modules
+- New `utils`, `helpers`, `common` modules in production code. The shared fakes of the tests are not one (`agents/FRONTEND-TESTS.md`, section 9)
 - Catching the generic exception and ignoring it
-- Direct console output (`System.out`, `console.log`) in production code
+- Direct console output (`System.out`, `console.log`) in production code, except the trace of the frontend `api/` (section 8)
 - Magic values
 - `switch`, in any form
 - Untyped dictionaries crossing layers

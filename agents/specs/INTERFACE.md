@@ -30,7 +30,7 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 ## Menu
 
 - **UI-13** The name is edited from the main menu. The interface does not offer it inside a party, although the server accepts it (`USER-3`). A rejected name is shown as a message below the field, based on its key, as in `UI-18`, and the previous name is kept. There is no settings screen in the MVP.
-- **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`). Each party shows its name and its members out of the capacity, and a full one shows the join button disabled (`PARTY-5`, `UI-5`). A rejected join is shown as a brief message based on its key, as in `UI-18`, and the list is loaded again, because it was out of date.
+- **UI-14** The party list is loaded when its screen opens and with a refresh button (`PARTY-4`). Each party shows its name and its members out of the capacity, and a full one shows the join button disabled (`PARTY-5`). A rejected join is shown as a brief message based on its key, as in `UI-18`, and the list is loaded again, because it was out of date.
 - **UI-18** The main menu creates a party with one action, using the default capacity and the Classic mode (`PARTY-2`, `PARTY-3`), and joins one with a field for the party code. A rejection (`exception.party.*`) is shown as a message below the field, based on its key.
 
 ## Party

@@ -1,12 +1,14 @@
 # Visual effects
 
-Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the attack arrow (`VIEW-4`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
+Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack arrow (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
 
 - **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
 - **FX-2** **[Post-MVP]** An effect belongs to one of three groups, so each one can be turned off or reduced on its own (`FX-13`):
   - *Card effects*: they stay on the card while it is on the board (`FX-7`).
   - *Action effects*: they play once when an action happens (`FX-4`, `FX-8`).
-  - *Interface effects*: they belong to the interface, not to a card (`FX-10`, `FX-11`).
+  - *Interface effects*: they belong to the interface, not to a card. None is specified yet.
+
+  A skin (`FX-10`) is not an effect: turning the effects off (`FX-13`) does not change the skin.
 - **FX-3** **[Post-MVP]** An effect is described by data (rarity it applies to, trigger, duration, intensity), not by a branch in the code of each card. A new effect is added without changing the cards.
 
 ## Heartbeat
@@ -18,7 +20,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 ## Card border glow
 
 - **FX-7** **[Post-MVP]** Glowing border: a card of a rarity that has this effect shows a light around its frame while it is on the board and in the hand. The color and the strength depend on the rarity.
-- **FX-8** **[Post-MVP]** The glow grows briefly when the card attacks or is hit, and goes back to its level afterwards. It does not hide the statistics of the card (`VIEW-14`).
+- **FX-8** **[Post-MVP]** The glow grows briefly when the card attacks or is hit, and goes back to its level afterwards. It does not hide the statistics of the card (`VIEW-2`).
 - **FX-9** **[OPEN]** Which rarities glow and how: only Rare and above, or every rarity with a different strength.
 
 ## Interface skins

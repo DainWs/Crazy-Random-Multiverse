@@ -262,7 +262,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - Today only the in-memory implementation exists (`persistence/memory`). It is selected through `crm.persistence.type` in `PersistenceConfiguration`. **In-memory repositories must be safe under concurrency** (several players act at the same time): concurrent collections, without exposing the internal ones.
 - If real persistence (JPA) is ever added, it follows the rules of this section: `*Entity` entities in `persistence`, conversion through `toDomain()` / `createEntity()`, services returning domain objects, parameterized queries, and transactions opened in the use case. Adding that dependency requires asking first (see `CLAUDE.md`).
 - Services return domain objects, never DTOs.
-- Card data is loaded with the populators in `configuration/persistence`; test data, with the populators in `src/test`.
+- Card data is loaded with the populators in `configuration/persistence`. Test data is built with the builders and fakes of the test tree (`agents/BACKEND-TESTS.md`, sections 8 and 14).
 
 ---
 
@@ -274,7 +274,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 - Codes that travel in the URL are encoded in Base64 URL-safe (`GameCode.fromBase64UrlSafe`). That is the contract with the frontend (`toBase64UrlSafe`).
 - The implementation converts identifiers to the domain on entry and delegates. It decides nothing.
 - Routes in lowercase separated by hyphens, grouped by resource (`/game/{gameCode}/action`, `/party/{partyCode}/leave`).
-- Identity comes from the session (`userSession`), never from the request. A `clone()` of the user is always passed to the use case (`WebPlayerController`).
+- Identity comes from the session (`userSession`), never from the request. A `clone()` of the user is always passed to the use case (`WebPlayerController`). The clone is only saved to create the user (`register`): the stored user is the one the sockets are bound to, so a change to an existing user is made on the stored one, never by saving the clone over it (`WebUserController.setAccount` breaks this, `ROADMAP.md`, Phase 12).
 
 ### Events
 

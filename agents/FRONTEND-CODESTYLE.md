@@ -74,7 +74,7 @@ domain → (nothing)
 - Closed sets are modeled with a literal union or `as const`; `enum` only where it is already used.
 - A literal union that mirrors a backend enum uses the backend's text, in uppercase (`'FRIENDLY'`, not `'friendly'`).
 - Whenever a type is imported it must use `import type`, and these go first in the import order.
-- `@/` alias to import from `src/` (`@/api`, `@/domain/Card`); **relative paths are forbidden**.
+- `@/` alias to import from `src/` (`@/api`, `@/domain/Card`), and in the browser tests also from `e2e/` (`@/support/test`, `FRONTEND-TESTS.md`, section 14); **relative paths are forbidden**.
 - Unused parameters are prefixed with `_` (ESLint rule).
 
 ---

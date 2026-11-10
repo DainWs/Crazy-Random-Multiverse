@@ -33,6 +33,8 @@
 | 6 | 1 Epic | Same (nothing if the deck has no Epic, `DECK-3`) |
 | 7 onwards | 1 Spell | 1 Equipment |
 
+**[OPEN]** How equipment is dealt once spells exist: the schedule with spells has no Equipment slot, so equipment would only arrive attached to a card (`CARD-6`).
+
 ### Scenarios
 
 **Eliminated starting player**

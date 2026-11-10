@@ -16,7 +16,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 ## Combat
 
-- **VIEW-4** A card attacks with clicks. Clicking an own card that can attack selects it, and an arrow goes from it to the pointer, green over a valid target and red elsewhere. Clicking a valid target attacks. Any other click, Escape or a change of the game state cancels the selection. While a card is being dragged, the slot under it is highlighted if the card can go there.
+- **VIEW-4** A card attacks with clicks. Clicking an own card that can attack selects it: its slot is marked in red, the slots of the cards it can attack in green (`UI-5`), and an arrow goes from it to the pointer, green over a valid target and red elsewhere. Clicking a valid target attacks. Any other click with the primary button, Escape or a change of the game state cancels the selection, and the marks disappear with it; the other buttons pan (`VIEW-19`). While a card is being dragged, the slot under it is marked in green if the card can go there, and the slot it comes from, if it comes from the board, in red.
 - **VIEW-5** A hit shows feedback, such as a shake or a red flash.
 - **VIEW-6** Changes in armor and health are animated: the values count down to the new ones, and a floating text over the target shows the armor and health it lost (`CON-21`).
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.
@@ -31,5 +31,5 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-21** **[Post-MVP]** The rarer a card, the more audio variants each of its actions has: for example 1 for placing a Common card and 2 or 3 for a Mythic one.
 - **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, reduced motion, color-blind indicators, and responsive and touch layouts.
-- **VIEW-11** The zone of an eliminated player is shown empty and marked as eliminated.
+- **VIEW-11** The zone of an eliminated player is shown empty and marked as eliminated. The cards that leave the board with the elimination (`ELIM-3`) have no animation: they disappear when the board is drawn again. Only a leader killed by an attack plays its death (`VIEW-7`).
 - **VIEW-15** A brief notice announces each turn change, with "Tu turno" or the name of the player whose turn starts, and each new round, with "Ronda N". It is one more animation of the queue of `CON-12`.

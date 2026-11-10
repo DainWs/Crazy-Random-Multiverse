@@ -44,7 +44,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 
 ## 4. Setup
 
-- Shared data is declared with `let` in the `describe` and assigned in `beforeEach`. Nothing is initialized at module level except pure factories (`const createEvent = (...) => ...`) and constants.
+- Shared data is declared with `let` in the `describe` and assigned in `beforeEach`. Nothing is initialized at module level except pure factories (`function createEvent(...) { ... }`) and constants.
 - `beforeEach` always starts by clearing mock state: `vi.clearAllMocks()` for `vi.fn()` and module mocks, `vi.restoreAllMocks()` when `vi.spyOn` was used (as in `PartyApi.test.ts`).
 - Prefer a **fresh object per test** over shared mutable state. `afterEach` is only needed to undo what `beforeEach` could not (fake timers, global stubs): `vi.useRealTimers()`, `vi.unstubAllGlobals()`.
 - **Module-level singletons** (`StoreSystem`, `EventSystem`) keep state between tests of the same file. Reset them explicitly in `beforeEach` through their own API (`StoreSystem.clearGame()`) or isolate the module with `vi.resetModules()` plus a dynamic `import()`. A test must not depend on the order in which tests run.
@@ -86,13 +86,13 @@ They replace loops and copied tests that only change the data. No `for`, `forEac
 
 ```ts
 it.each([
-  { cards: 1, expected: DEFAULT_SPACE_BETWEEN_CARDS.max },
-  { cards: 0, expected: 0 },
-  { cards: -1, expected: 0 }
+    { cards: 1, expected: DEFAULT_SPACE_BETWEEN_CARDS.max },
+    { cards: 0, expected: 0 },
+    { cards: -1, expected: 0 }
 ])('returns $expected spacing for $cards cards', ({ cards, expected }) => {
-  const calculator = new HandLayoutCalculator();
+    const calculator = new HandLayoutCalculator();
 
-  expect(calculator.calculateSpaceBetweenCards(cards)).toBe(expected);
+    expect(calculator.calculateSpaceBetweenCards(cards)).toBe(expected);
 });
 ```
 
@@ -112,12 +112,12 @@ The three steps are separated by a blank line and go in that order. They are not
 
 ```ts
 it('sends POST request to the leave endpoint', async () => {
-  const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
-  const partyCode = 'party/test=1';
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({} as Response);
+    const partyCode = 'party/test=1';
 
-  await partyMemberApi.leaveParty(partyCode);
+    await partyMemberApi.leaveParty(partyCode);
 
-  expect(fetchSpy).toHaveBeenCalledWith(`/party/${toBase64UrlSafe(partyCode)}/leave`, { method: 'POST' });
+    expect(fetchSpy).toHaveBeenCalledWith(`/party/${toBase64UrlSafe(partyCode)}/leave`, { method: 'POST' });
 });
 ```
 
@@ -149,7 +149,7 @@ General rules in `agents/CODESTYLE.md`, section 9: fakes before mocks.
 ### Rules
 
 - Phaser objects are never created for real. Fakes mimic the shape the code uses (`scene.tweens.killTweensOf`, `scene.input.activePointer`), not the whole Phaser API.
-- A fake that is needed by more than one test file moves to a shared helper in `test/` (a factory function, for example `test/helpers/createMockScene.ts`), instead of being copied. Create the helper on the second use, not before.
+- A fake that is needed by more than one test file moves to a shared factory function in `test/support/` (for example `test/support/createMockScene.ts`, like `e2e/support/` for the browser tests), instead of being copied. The `@/` alias of `vitest.config.ts` only resolves `src/` today, so the first shared fake also adds `test/` to it. Create the helper on the second use, not before.
 - Dependencies that the class accepts by constructor or options (`SocketService` receives `socketFactory`, `eventHandler`, `reconnectHandler`) are injected as fakes; `vi.mock` is not used for them.
 - Asserting calls (`toHaveBeenCalledWith`) is acceptable **at a system boundary**: what was sent to `fetch`, what was emitted on the socket, what was dispatched to another system. It is not acceptable to assert the internal calls between two collaborators of the unit under test.
 - `any` in tests is tolerated only to cast fakes (`as any`); prefer `as unknown as T`. New tests do not add `any` for convenience in assertions.

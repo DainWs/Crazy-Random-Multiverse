@@ -8,7 +8,7 @@
 - **USER-4** A name has 3 to 20 characters, counted after trimming its surrounding spaces, and it is stored trimmed. Two users can have the same name.
 - **USER-5** A user with an expired session, or with a valid session whose user has been deleted, is a new user.
 - **USER-6** `POST /register` creates the session's user with a default name, or returns the existing one. When it starts, the client calls `GET /user` and, on `exception.user.not_found`, `POST /register`.
-- **USER-7** A session expires after 24 hours without requests (configurable). Only requests renew it: an open socket does not. When it expires, the user is deleted at that moment and their sockets are closed. If they were playing, they are eliminated as in `ABSENT-3`.
+- **USER-7** A session expires after 24 hours without requests (`spring.session.timeout`). Only requests renew it: an open socket does not. When it expires, the user is deleted at that moment and their sockets are closed. If they were playing, they are eliminated as in `ABSENT-3`.
 - **USER-8** The client detects an expired session through `exception.user.not_found` in a response. A refused connection (`CON-2`) carries no key, so after a connection error the client calls `GET /user`, and only that key means an expired session; otherwise the retries of `UI-9` go on. Then it follows `UI-10`.
 
 ## Parties
@@ -19,8 +19,8 @@
 - **PARTY-4** Every party that is not locked (`LOAD-1`) appears in the public list, also when it is full. The list has no defined order. There are no private parties in the MVP.
 - **PARTY-5** A user joins from the list or with the party code. The party screen shows the code to be copied, and its format is up to the server. Nobody can join while the party is locked or when it is full.
 - **PARTY-6** A member can leave and the owner can kick a member, except while the party is locked. A spectator can still leave (`SPEC-3`), but cannot be kicked while the party is locked. The owner cannot kick themselves: they leave instead. Leaving a party one does not belong to, or kicking a user who is not a member, is rejected with `exception.party.user_not_in_party`.
-- **PARTY-7** If the owner leaves or their user is deleted, the member who has been in the party the longest becomes the owner. A user deleted while the party is locked stays a member until it unlocks, so the owner changes then.
-- **PARTY-8** A party is removed when it becomes empty. Its game, if any, is removed with it, and the wait of `WIN-5` is cancelled.
+- **PARTY-7** If the owner leaves or their user is deleted, the member who has been in the party the longest becomes the owner. A user deleted while the party is locked stays a member until it unlocks, so the owner changes then. Meanwhile they still appear in `users` and count in `userCount`.
+- **PARTY-8** A party is removed when it becomes empty. A locked party does not become empty, because its deleted users stay members (`PARTY-7`) and a player who has not been eliminated cannot leave it (`PARTY-6`). So a party left empty when it unlocks (`LOAD-4`, `WIN-5`) is removed after its game.
 - **PARTY-9** The owner can start the game whenever the party has at least 2 members and is not locked (`exception.party.locked`). No confirmation from the other members is needed.
 - **PARTY-10** Every member receives the updated party when it changes (`party:info`), including when a member changes their name. The lock of `LOAD-1` is the exception and sends none, because every member is in the game.
 - **PARTY-11** The name of a party is the current name of its owner. It changes when the owner changes (`PARTY-7`) or renames themselves.
@@ -58,7 +58,7 @@
 **Load blocked by a deleted user**
 - Given a game of three loading, where A and B have confirmed
 - When the user of C is deleted
-- Then the game starts with A and B
+- Then C is eliminated (`PLAYER_DIE`) and the game starts with A and B (`GAME_START`)
 
 **Page reloaded during a game**
 - Given a player whose game is in progress

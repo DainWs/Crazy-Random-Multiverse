@@ -14,6 +14,7 @@ Functional specification of Crazy Random Multiverse. Source of truth for behavio
 
 | File | Content | Prefixes |
 |---|---|---|
+| `SPECS.md` (this file) | Architecture constraints, MVP scope and non-functional requirements | `ARCH`, `SCOPE`, `NFR` |
 | `specs/CONTRACT.md` | Backend ↔ frontend contract and its catalogs | `CON` |
 | `specs/GAME-FLOW.md` | Setup, turns, rounds, deck and hand | `SETUP`, `TURN`, `ROUND`, `DECK`, `HAND` |
 | `specs/BOARD.md` | Zones, placement, movement and protection | `BOARD`, `PROT` |

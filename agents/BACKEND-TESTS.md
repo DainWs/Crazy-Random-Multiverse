@@ -147,16 +147,16 @@ void testGivenContext_whenPerform_thenPutCardInCoordinate() throws GameException
 
 ### Test builders
 
-When a domain object needs a lot of setup and is repeated across several test classes, a builder is created in the test tree, in the same package as the class it builds. Existing builders are **extended** before creating others. A new builder follows the same pattern: chainable `with*` / `use*` methods and a `build()` that returns a valid object by default.
+When a domain object needs a lot of setup and is repeated across several test classes, a builder is created in the test tree, in `src/test/.../domain/builder` with the others (`agents/BACKEND-CODESTYLE.md`, section 14). Existing builders are **extended** before creating others. A new builder follows the same pattern: chainable `with*` / `use*` methods and a `build()` that returns a valid object by default.
 
 ```java
-Warrior warrior = Warrior.commonWarriorBuilder()
-		.withCode(0L)
-		.withNoneDamage()
-		.withNoneArmor()
-		.withHealth(1)
+Warrior warrior = new WarriorBuilder() //
+		.useCommonWarrior() //
+		.withHealth(1) //
 		.build();
 ```
+
+The `use*` methods of `WarriorBuilder` return the production builder of the card (`Warrior.commonWarriorBuilder()`), which can also be used directly when the test sets every value.
 
 ### Contract files
 
@@ -171,7 +171,7 @@ General rules in `agents/CODESTYLE.md`, section 9.
 ### Fakes
 
 - Own classes are always replaced by a hand-written fake.
-- A fake carries no fixed prefix: its name says what it does, like any other class.
+- A new fake carries no fixed prefix: its name says what it does, like any other class (`RecordingCommunicationClient`). The existing `Dummy*` fakes keep their names and are reused (`agents/CODESTYLE.md`, section 9).
 - The fake lives in the test tree, in the same package as the class it replaces, so other tests can reuse it.
 - It is injected through the constructor or with the collaborator's public setter (see `agents/BACKEND-CODESTYLE.md`, section 3).
 - Domain ports (`EventPublisher`, etc.) are replaced by their fake or by the in-memory implementation.
@@ -235,9 +235,8 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 - `DisconnectedPlayerIntegrationTest` is the one that runs. It wires the real services by hand with in-memory repositories, because a Spring context would open the Socket.IO port. `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run.
 - They use local doubles, never real services (see `CLAUDE.md`).
 - Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`, which is what CI runs.
-- Configuration in `src/test/resources/application-test.properties`. The test configuration (`PersistenceTestConfiguration`) is imported with `@Import`.
-- Data is loaded with the populators (`PartyPopulator`, `UserPopulator`).
-- The event monitors (`GameEventWatcher`, `GameEventDebuger`) stand in for real clients.
+- An integration test builds its data with the domain and the services themselves, and replaces the clients, the scheduler and the publisher with fakes (`RecordingUserClient`, `ManualTaskScheduler`, `SynchronousEventPublisher`) and the clock with a fixed `Clock`, as `DisconnectedPlayerIntegrationTest` does.
+- The Spring test infrastructure (`application-test.properties`, `PersistenceTestConfiguration`, `PartyPopulator`, `UserPopulator`, `GameEventWatcher`, `GameEventDebuger`) is not used by any test: those classes are only referenced among themselves (`ROADMAP.md`, Pending tasks). New tests do not use it.
 - Test methods may declare `throws Exception` when the scenario requires it.
 
 ---

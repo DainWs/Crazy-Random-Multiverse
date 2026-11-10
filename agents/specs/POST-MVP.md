@@ -13,12 +13,12 @@ Still to be specified: friendly fire, valid targets among allies and their expos
 ## Spells
 
 - **SPELL-1** A spell has varied effects, good or harmful, and may change the rules of the game.
-- **SPELL-2** A spell whose description contains an `R` is cast automatically when played, with no intervention of the player. Who it affects depends on each spell.
+- **SPELL-2** A spell marked as automatic (an `R` in its description, in `docs/Requirements.md`) is cast when played, with no intervention of the player. Who it affects depends on each spell.
 - **SPELL-3** A spell can force the caster into an alliance with another player.
 - **SPELL-4** Using a card and casting a spell are exposed in the public API.
 - **SPELL-5** A spell can leave no leader alive, and then the game ends in a tie.
 
-Still to be specified: abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule, `COMBAT-5`, its audio variants (`VIEW-21`) and its back (`CON-13`).
+Still to be specified: how a spell is marked as automatic (`SPELL-2`), since the description travels as a translation key (`CARD-7`) and its text cannot carry the mark; abilities, which `COMBAT-8` mentions but no rule defines, and what distinguishes each rarity beyond the deal schedule, `COMBAT-5`, its audio variants (`VIEW-21`) and its back (`CON-13`).
 
 ## Variants
 
