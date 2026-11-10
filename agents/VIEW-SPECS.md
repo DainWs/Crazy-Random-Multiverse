@@ -25,7 +25,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 ## Other
 
-- **VIEW-16** **[OPEN]** How a hand that does not fit is shown, since `HAND-1` sets no limit. Probably the cards overlap. To be decided when testing the layouts (`ROADMAP.md`, Phase 10).
+- **VIEW-16** The hand has no limit (`HAND-1`), so the more cards it holds, the more they overlap, until each one only shows a minimum strip; from then on the hand grows wider. The hovered card shows whole, because the cards after it slide aside. At rest the hand is mostly hidden at the bottom edge, and it rises when hovered.
 - **VIEW-8** Newly received cards are animated, including the card a rival receives, which is not revealed. Cards restored from `GAME_SYNC` are not.
 - **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, reduced motion, color-blind indicators, and responsive and touch layouts.

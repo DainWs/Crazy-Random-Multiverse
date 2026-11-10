@@ -20,7 +20,7 @@
 
 - **ROUND-1** A round is a full pass of the turn order, starting at the starting player.
 - **ROUND-2** The first round starts when the game starts. A new round starts when the turn would return to the starting player's seat, even if that player has been eliminated.
-- **ROUND-3** At the start of each round, every living player receives that round's cards at the same time, before the first turn of the round.
+- **ROUND-3** At the start of each round, every living player receives that round's cards, one player after another in the order of `zones` (`CON-22`), before the first turn of the round.
 - **ROUND-4** The schedule below belongs to the game mode, in the backend. The frontend does not hardcode it and renders whatever cards it receives.
 
 | Round | Cards dealt | While spells do not exist (MVP) |

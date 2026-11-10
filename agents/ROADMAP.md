@@ -42,7 +42,6 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 - [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
 - [ ] Display opponent card backs (`VIEW-3`), adding the file, which does not exist yet, and its key to `fixed` (`CON-30`), and animate the card a rival receives (`VIEW-8`)
 - [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
-- [ ] Decide how a hand that does not fit is shown and close `VIEW-16`: `HAND-1` sets no limit and `HandView` sizes its bounds for 10 cards. Probably the cards overlap
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 - [ ] Reposition the board, the hand and the HUD when the window changes size: `App.vue` uses `Scale.RESIZE` and nothing reacts to it, so at 1100×620 the own leader, rows and buttons are out of view, and at 1920 wide the board is off-center. Only desktop windows: the responsive layouts of `VIEW-10` stay Post-MVP
 - [ ] Fix the hand staying expanded after the pointer leaves it (`VIEW-14`). Seen twice with simulated mouse events in a game of two, but it folded in a game of three, and the cause was not found, so confirm it with a real mouse first ("Pending checks" of `ROADMAP-TEST.md`)

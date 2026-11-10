@@ -20,7 +20,7 @@ Order from the center of the table: center → front row → back row → leader
 ## Movement
 
 - **BOARD-6** Moving has no cooldown: a player may move cards as many times as they want during their turn, before or after attacking with them.
-- **BOARD-7** A card moves only inside its owner's zone. To a free slot allowed by `BOARD-5`, checked with the card still in its origin, so a move may leave a gap behind. To an occupied slot, the two cards swap places. The leader cannot be moved or swapped. A swap is published as `PLAYER_MOVE_CARD`.
+- **BOARD-7** A card moves only inside its owner's zone. To a free slot allowed by `BOARD-5`, checked with the card still in its origin, so a move may leave a gap behind, and a card in the front row cannot change slot inside it while the back row has a gap. To an occupied slot, the two cards swap places, without checking `BOARD-5`. A move to the card's own slot is rejected. The leader cannot be moved or swapped. A swap is published as `PLAYER_MOVE_CARD`.
 
 ### Scenario
 
@@ -29,10 +29,15 @@ Order from the center of the table: center → front row → back row → leader
 - When its owner attacks with it and then moves it to a free slot in the back row
 - Then both actions are accepted
 
+**Front row with a gap behind**
+- Given a zone with 2 warriors in the back row and 1 in the front row
+- When its owner moves the warrior of the front row to a free slot of the front row
+- Then the action is rejected
+
 ## Attack limits
 
-- **BOARD-8** A placed card has a one-turn cooldown before it can attack. The leader has none: it can attack from its owner's first turn if it is unprotected.
-- **BOARD-9** Each card may attack once per turn unless the card says otherwise.
+- **BOARD-8** A placed card has a one-turn cooldown before it can attack: it can attack from its owner's next turn. Moving or swapping a card does not change its cooldown. The leader has none: it can attack from its owner's first turn if it is unprotected.
+- **BOARD-9** Each card may attack once per turn, and can attack again when its owner's next turn starts. **[Post-MVP]** A card can say otherwise.
 
 ## Protection
 

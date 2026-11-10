@@ -22,7 +22,7 @@ Functional specification of Crazy Random Multiverse. Source of truth for behavio
 | `specs/GAME-END.md` | Elimination, absence, winning and spectators | `ELIM`, `ABSENT`, `WIN`, `SPEC` |
 | `specs/LOBBY.md` | Users, parties and game loading | `USER`, `PARTY`, `LOAD` |
 | `specs/INTERFACE.md` | Interface behavior | `UI` |
-| `specs/VISUAL-EFFECTS.md` | Effects by rarity (heartbeat, border glow) and interface skins, all Post-MVP | `FX` |
+| `specs/VISUAL-EFFECTS.md` | Effects by rarity (heartbeat, border glow) and interface skins, all Post-MVP or open | `FX` |
 | `specs/POST-MVP.md` | Teams, spells and variants | `TEAM`, `SPELL`, `VAR` |
 | `VIEW-SPECS.md` | Interface appearance, separate from behavior | `VIEW` |
 

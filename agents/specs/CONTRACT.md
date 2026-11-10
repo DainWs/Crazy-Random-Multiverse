@@ -5,7 +5,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 ## Connection
 
 - **CON-1** The client opens a Socket.IO connection to the backend (port 9092, `crm.communication.socket-io.port` on the server, and path `/socket.io`; the client may override both) and sends the HTTP session cookie (`SESSION`) in the handshake.
-- **CON-2** The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user.
+- **CON-2** The server resolves the user from that session, binds the socket to the user and refuses the connection if the session does not belong to a registered user. The refusal closes the socket without a key (`CON-20`), and the client checks its session (`USER-8`).
 - **CON-3** When a socket drops, only the socket is unbound. The user, their party and their game are kept until the user has been without an open socket for longer than a grace period (5 minutes, `crm.user.disconnect-grace-period`). A periodic task deletes those users (every minute, `crm.user.cleanup-interval`). See `ABSENT` in `GAME-END.md`.
 - **CON-4** Reconnection is performed by the Socket.IO client.
 - **CON-5** One setting, `crm.communication.origin`, holds the client origin that REST and the socket allow, with credentials. It is an explicit origin, never `*`, because browsers refuse cookies with it.
@@ -70,7 +70,7 @@ Types of the details:
 ## Reconnection
 
 - **CON-11** When a socket is bound to a user who plays a game in progress, the server sends `GAME_SYNC`: `details.game` is the `GameDto`, `details.hand` is the hand of the receiving player (only in this event) and `sequence` is the number of the last event published before the snapshot.
-- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and the `GAME_LOADING` of `CON-23` are always applied and set the reference: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. When `game.code` changes, the queue starts over and waits for `sequence` 1 (`CON-9`). The animations of the events play in the same order, one after another, without delaying the state (`VIEW-12`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
+- **CON-12** Events can arrive out of order on a socket, so the client keeps them in a queue ordered by `sequence` and applies them one by one in that order. An event that arrives before the previous ones waits in the queue until they arrive or a new `GAME_SYNC` replaces them, for 10 seconds at most (a client constant). After that the client goes on with the next event it holds and discards the missing one if it arrives later. The board recovers, because each event carries the state (`CON-10`), but the hand can stay wrong until the next `GAME_SYNC`, which is an accepted risk of the MVP. `GAME_SYNC` and `GAME_LOADING` are always applied and set the reference, also when they belong to a new game: the queue continues from the next `sequence`, and the events not greater than it are discarded, because the snapshot already reflects them. When another event changes `game.code`, the queue starts over and waits for `sequence` 1 (`CON-9`). The animations of the events play in the same order, one after another, without delaying the state (`VIEW-12`). An event published while the snapshot is being built may already be reflected in it, and the client cannot detect it, because a card in the hand cannot be recognized (`CON-26`). This can leave a wrong hand on the client until the next `GAME_SYNC`. It can only happen when a socket is bound, and it is an accepted risk of the MVP.
 
 ## Hand
 
@@ -84,7 +84,7 @@ Types of the details:
 |---|---|---|
 | `code` | text | |
 | `round` | number | The current round, starting at 1. Not sent before the first `ROUND_CHANGE` |
-| `playerWithTurn` | `PlayerDto` | Not sent before the first `TURN_CHANGE` or once the game has ended |
+| `playerWithTurn` | `PlayerDto` | Not sent before the first `TURN_CHANGE`, nor from `GAME_END` on (`CON-32`) |
 | `zones` | `ZoneDto[]` | In turn order (`SETUP-3`), starting with the starting player, and it does not change during the game |
 
 ### `PlayerDto`
@@ -92,7 +92,7 @@ Types of the details:
 | Field | Type | Notes |
 |---|---|---|
 | `code` | text | The public id of the user (`CON-24`) |
-| `name` | text | |
+| `name` | text | The name of the user when the game was created. It does not change during the game |
 | `isAlive` | boolean | |
 | `isSpectator` | boolean | |
 | `handSize` | number | Public, see `HAND-3` |
@@ -102,12 +102,12 @@ Types of the details:
 | Field | Type | Notes |
 |---|---|---|
 | `owner` | `PlayerDto` | |
-| `type` | text | The type each zone declares: `BASE` for a zone with a leader slot |
+| `type` | text | The type each zone declares: `BASE` for a zone with a leader slot, the only type in the MVP |
 | `combatants` | `ZoneSlotDto[][]` | See `CON-14` |
 
 `ZoneDto` carries no team (see `TEAM` in `POST-MVP.md`) and no health: the health of a player's leader is in its card. The zone of an eliminated player stays in `zones` (`ELIM-5`).
 
-- **CON-14** `ZoneSlotDto` is `{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant?: CardDto }`. `combatant` is absent when the slot is empty (`CON-8`). Row indices are absolute: row 0 is the leader row, row 1 the back row and row 2 the front row, closest to the center of the table. Each zone is shown with its leader at the edge of the table and its rows towards the center (`VIEW-1`).
+- **CON-14** `ZoneSlotDto` is `{ allowedCombatant: 'LEADER' | 'WARRIOR', combatant?: CardDto }`. `combatant` is absent when the slot is empty (`CON-8`). Row indices are absolute: row 0 is the leader row, row 1 the back row and row 2 the front row, closest to the center of the table. Row 0 has a single slot, column 0, for the leader, and rows 1 and 2 have 3 slots each (`BOARD-3`). Each zone is shown with its leader at the edge of the table and its rows towards the center (`VIEW-1`).
 
 ### `CardDto`
 
@@ -127,6 +127,7 @@ Types of the details:
 
 - **CON-33** `damage`, `armor` and `health` are always sent, also with a value of 0, and `maxHealth` on combatants. The damage and armor types are sent too, because they apply to the equipment attached later (`EQUIP-1`).
 
+- **CON-34** In an `EQUIPMENT` card, `damage`, `armor` and `health` are the values it adds, negative when it subtracts, and it has no types, `maxHealth` or `rarity` (`EQUIP-1`).
 - **CON-27** `damage`, `armor`, `health` and `maxHealth` are effective values, with the equipment included. `equipment` only lists what the card holds.
 - **CON-15** The three flags are computed by the server for the player who receives the event. They are only meaningful in `game.zones` and are always `false` in `sourceCard`, `targetCard` and `hand`. For a spectator, `attackAvailable` and `targetable` are always `false`.
 
@@ -136,7 +137,7 @@ Types of the details:
 - `PositionDto`: `{ row, column }`.
 - `UserDto`: `{ id, username }`. See `CON-24`.
 - `PartyDto`: `{ code, name, gameMode, userCount, maxUsers, owner, users, locked }`. `name` is computed by the server (`PARTY-11`), `owner` is a `UserDto`, `users` a `UserDto[]`, and `locked` says whether the party is locked (`LOAD-1`, `LOAD-4`, `WIN-5`).
-- `PartyListDto`: `{ parties }`.
+- `PartyListDto`: `{ parties }`, a `PartyDto[]` whose `users` are empty: the list shows `userCount` (`UI-14`).
 - `gameMode`: `CLASSIC` is the only value in the MVP.
 - `ResourceManifestDto`: `{ fixed, dynamic }`, both `ResourceDto[]`. See `CON-28`.
 - `ResourceDto`: `{ key, type, url }`. `type` is `IMAGE` or `AUDIO`. See `CON-29` and `CON-30`.
@@ -179,15 +180,15 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | Start of a game | Leaders are dealt (`SETUP-2`), `GAME_CREATED`, `GAME_LOADING`, the players confirm, `GAME_START`, and the start of a round |
 | Start of a round | `ROUND_CHANGE`, one `PLAYER_RECEIVE_CARD` per card dealt, player by player in the order of `zones`, `TURN_CHANGE` |
 | Turn passed | `PLAYER_PASS_TURN`, then `TURN_CHANGE`, or the start of a round if a new one starts |
-| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the end of the game if only one leader is left, or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
+| Elimination | The cause (`PLAYER_ATTACK_CARD` or `PLAYER_SURRENDER`; none when the user is deleted), `PLAYER_DIE`, and then the cancelled loading if it happens during the load and fewer than 2 players are left (`LOAD-4`), the end of the game if only one player is left alive (`WIN-1`), or the same as a passed turn if the player had the turn (without `PLAYER_PASS_TURN`) |
 | End of a game | `GAME_END`, `GAME_END_WITH_WINNER` |
 | Cancelled loading | `GAME_CANCELLED`, `party:info` |
 
-- **CON-32** `playerWithTurn` only changes with `TURN_CHANGE`: the events before it still name the previous player, even if eliminated. The `game` of `TURN_CHANGE` already has the attacks and cooldowns of the new turn reset, because no other event refreshes `attackAvailable` before the player acts.
+- **CON-32** `playerWithTurn` only changes with `TURN_CHANGE`: the events before it still name the previous player, even if eliminated. The end of the game is the exception: from `GAME_END` on it is not sent. The `game` of `TURN_CHANGE` already has the attacks and cooldowns of the new turn reset, because no other event refreshes `attackAvailable` before the player acts.
 
 ## State on connection
 
-- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to that socket. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. A game that has ended sends neither (see the scenario). Then, if they are in a party, `party:info`. Last, always, `user:synced`. A `party:info` with no game state before it means that the user has no game, and the client goes to the party. A `user:synced` with no state before it means that the user has neither a game nor a party, and the client goes to the main menu.
+- **CON-23** When a socket is bound to a user, the server sends the state of that user in this order, only to that socket. First, if they have a game, `GAME_SYNC` for a game in progress (`CON-11`) or `GAME_LOADING` for a game that is loading, with `sequence` set as in `CON-11`. A game that has ended sends neither (see the scenario). Then, if they are in a party, `party:info`. Last, always, `user:synced`. A `party:info` with no game state before it means that the user has no game loading or in progress, and the client goes to the party, also when a game that has ended still locks it (`WIN-5`). A `user:synced` with no state before it means that the user has neither a game nor a party, and the client goes to the main menu.
 
 ### Scenario
 
@@ -224,7 +225,7 @@ An action without `type`, `game`, `sourcePlayer` or one of the required fields o
 | `POST /register` | Session | | `UserDto` |
 | `GET /user` | Session | | `UserDto` |
 | `PUT /user` | Session | `UserDto`, whose `id` is ignored | |
-| `POST /party` | Session | `{ gameMode, maxUsers }` | `PartyDto` |
+| `POST /party` | Session | `{ gameMode, maxUsers }`, both optional (`PARTY-2`, `PARTY-3`) | `PartyDto` |
 | `GET /party/list` | Session | | `PartyListDto` |
 | `POST /party/{partyCode}/join` | Session | | `PartyDto` |
 | `POST /party/{partyCode}/leave` | Member | | |

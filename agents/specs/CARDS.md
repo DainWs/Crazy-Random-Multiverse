@@ -9,6 +9,8 @@
 | Equipment | Attached to a Warrior or Leader to change its statistics. |
 | Spell | **[Post-MVP]** See `SPELL` in `POST-MVP.md`. |
 
+Leaders and warriors are the *combatants*: the cards that go on the board.
+
 ## Statistics
 
 - **CARD-1** Warriors and Leaders have damage, armor and health.
@@ -20,7 +22,7 @@
 - **CARD-4** A card has a name, description, type, rarity if it is a warrior, statistics and a texture. The client derives the manifest keys of the frame and image of a card from `type`, `rarity` and `catalogCode` (`CON-30`) and gets their URLs from the manifest, so `CardDto` has no texture field.
 - **CARD-5** The base content of the MVP is the following. All damage and armor are physical.
 - **CARD-6** A card in the deck can come with equipment already attached.
-- **CARD-7** The name and description of a card travel as the keys `card.<type>.<code>.name` and `card.<type>.<code>.description`, for example `card.warrior.0.name`, where `<code>` is the one in `catalogCode` (`CON-26`), and the client translates them. The tables below give their text in Spanish.
+- **CARD-7** The name and description of a card travel as the keys `card.<type>.<code>.name` and `card.<type>.<code>.description`, for example `card.warrior.0.name`, where `<type>` is the lowercase `type` and `<code>` is the one in `catalogCode` (`CON-26`), and the client translates them. The tables below give their text in Spanish.
 
 ### Leaders
 
@@ -60,8 +62,8 @@ Policía comes with Pistolón attached. Argoth and Odin are not dealt, because t
 - **EQUIP-2** Equipping is an action of the player's turn. It has no cooldown and does not use the card's attack.
 - **EQUIP-3** Equipment can only be attached to the player's own cards on the board, including the leader, protected cards and cards in cooldown. **[Post-MVP]** It can also be attached to enemy cards.
 - **EQUIP-4** A card can hold any number of pieces of equipment, and their effects add up.
-- **EQUIP-5** Damage and armor do not drop below 0, and health does not drop below 1 because of equipment. These limits apply to the total of all the pieces, not piece by piece. Equipment never kills a card.
-- **EQUIP-6** A health bonus raises both current and maximum health.
+- **EQUIP-5** Damage and armor do not drop below 0, and current and maximum health do not drop below 1 because of equipment. These limits apply to the total of all the pieces, not piece by piece. Equipment never kills a card.
+- **EQUIP-6** Equipment changes the maximum armor and health and keeps what the card has already lost: current health is the new maximum minus the health lost, so a health bonus raises both current and maximum health and a penalty lowers both. The same applies to armor. When `EQUIP-5` stops current health at 1, the health it saved no longer counts as lost.
 - **EQUIP-7** **[Post-MVP]** When a living card loses equipment, its values are removed. Current health only drops if it exceeds the new maximum, so damage already taken is kept and losing equipment never kills.
 - **EQUIP-8** The equipment disappears when the card dies. **[Post-MVP]** It also disappears when the card permanently changes owner.
 
@@ -71,6 +73,11 @@ Policía comes with Pistolón attached. Argoth and Odin are not dealt, because t
 - Given a warrior with 2 health
 - When its owner attaches equipment with -5 health
 - Then the warrior has 1 health and is alive
+
+**Penalty on a damaged card, then a bonus**
+- Given a warrior with 2 of 10 health
+- When its owner attaches equipment with -5 health and then equipment with +5 health
+- Then the warrior has 1 of 5 health after the first, and 6 of 10 after the second
 
 **Limits apply to the total**
 - Given a warrior with 3 damage

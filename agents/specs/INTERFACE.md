@@ -6,21 +6,21 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
 
 - **UI-1** The flow is: main menu → create a party, party list or join by code → party → loading → game → result → party.
 - **UI-2** All texts are in Spanish and prepared to be translated. A text key without a translation in the client is shown as the key itself. **[Post-MVP]** English and dynamic localization.
-- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game, after the load of `LOAD-6` if it applies. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards. It keeps the game state from `GAME_LOADING` on, whatever scene is active (`LOAD-6`), and drops it when the user no longer has a game.
+- **UI-17** The screen shown follows the user state (`CON-23`): no party → main menu; in a party → party screen; loading → loading; game in progress → game, after the load of `LOAD-6` if it applies. The client waits for `user:synced` before choosing one, and changes screen whenever the state changes afterwards. It keeps the game state from the first event of the game on (`GAME_CREATED`), although the screen only changes with `GAME_LOADING`, whatever scene is active (`LOAD-6`), and drops it when the user no longer has a game.
 
 ## Game
 
 - **UI-3** The interface shows whose turn it is and the current round.
 - **UI-4** The interface disables gameplay when it is not the player's turn, while an action is pending, while animations are still playing (`CON-12`), for a spectator and after the game ends. Waiting for the animations keeps what is shown in step with the state: the board of each event is drawn when the animations of the earlier events end, from the state that event carries.
 - **UI-5** The interface disables what the state already shows to be invalid, and highlights valid targets using `targetable`.
-- **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key.
+- **UI-6** If the server rejects an action, the card goes back to where it was and a brief message explains the reason, based on the error key. If it accepts it, the card stays where it was dropped until its event is applied (`HAND-2`).
 - **UI-7** Rival hands show only how many cards they hold.
 - **UI-8** A spectator or eliminated player sees the board with all interaction disabled, except a button to leave (`SPEC-3`).
 - **UI-15** Surrendering asks for confirmation (`ELIM-2`), and so do leaving the party (`PARTY-6`), kicking a member (`UI-23`) and leaving the game as a spectator (`SPEC-3`).
 
 ## Connection and failures
 
-- **UI-9** If the socket connection is lost, on any screen, a notice covers it and disables interaction while the client retries on its own, with no limit. When the connection returns, the state is restored as in `CON-23`, from `GAME_SYNC` during a game.
+- **UI-9** If the socket connection is lost, on any screen, a notice covers it and disables interaction while the client retries on its own, with no limit, also after the server closes the socket. A connection error makes the client check its session (`USER-8`). When the connection returns, the state is restored as in `CON-23`, from `GAME_SYNC` during a game.
 - **UI-10** If the session has expired, or the game no longer exists and the user is not in a party (`CON-23`), the client goes back to the main menu and explains what happened. An expired session starts as a new user (`USER-5`).
 - **UI-12** If the manifest, a `fixed` resource or `/ready` fails during the load (`LOAD-2`, `LOAD-6`), the client shows the failure and offers to retry, without confirming `/ready`. Retrying repeats only what failed. If the player closes the game, `LOAD-3` applies. A rejection with `exception.game.not_found` or `exception.access_denied.wrong_game` offers no retry: the client goes back to the party or, if the user is not in one, follows `UI-10`. `exception.user.not_found` follows `USER-8`.
 - **UI-24** If a REST request gets no response outside the load (`UI-12`), a brief message says so where that screen shows its errors, and the client stays on it. At startup, the client shows the main menu with a notice that asks to reload the page. A lost socket connection follows `UI-9` instead.
