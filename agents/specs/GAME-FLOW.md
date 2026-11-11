@@ -53,12 +53,12 @@
 - **DECK-1** In the MVP, every game uses the single deck of the server. Choosing or uploading a deck is **[Post-MVP]** (`VAR-3`).
 - **DECK-2** The deck never runs out. Each deal picks at random among the cards of the requested category, and cards can repeat.
 - **DECK-3** If the deck has no card of the requested category, nothing is dealt for that slot and the game continues.
-- **DECK-4** The deck contains at least one leader, because a game cannot start without one. If it has none, starting a game is rejected (`exception.party.deck_without_leader`).
+- **DECK-4** A game cannot start without a leader, so the deck must contain at least one. Starting a game with a deck without leaders is rejected (`exception.party.deck_without_leader`).
 - **DECK-5** Leaders can repeat in a game. **[Post-MVP]** They do not repeat when the deck has enough for every player.
 
 ## Hand
 
 - **HAND-1** A hand has no card limit.
 - **HAND-2** A played card leaves the hand only after the server confirms the action, when its event is applied (`CON-12`, `CON-13`).
-- **HAND-3** The cards in a hand are private, and in the MVP so is how many cards a player holds. **[Post-MVP]** The other players see a back for each card, which shows its type and, for a warrior, its rarity (`CON-13`).
+- **HAND-3** The cards in a hand are private. In the MVP the interface does not show how many cards a rival holds (`UI-7`), but the number is not secret: every player receives the events of the cards dealt to and played by the others (`CON-13`), so a client can work it out. **[Post-MVP]** The other players see a back for each card, which shows its type and, for a warrior, its rarity (`CON-13`).
 - **HAND-4** The client numbers the copies of a card in its hand by how many it holds, renumbering them when one leaves. That number is internal: it is not shown and never reaches the server (`CON-26`).

@@ -209,7 +209,7 @@ this.actionResolver.put(ActionType.PUT_ACTION, this::putAction);
   - **Record with a compact constructor**: the validation is simple, deterministic and free of side effects (`Objects.requireNonNull`, numeric ranges, non-blank text). The public canonical constructor is not a risk because the validation lives inside it: an invalid instance cannot be created, not even with `new`.
   - **Class with a private constructor and a static factory**: the creation parses or converts data that can fail (Base64, `Long.valueOf`), depends on something external, or the API returns an alternative such as an `Optional`. A record is not used here, since its canonical constructor of a public record cannot be private.
 - A record may also declare a static `from(...)` to convert a primitive or external value; it does not replace the validation in the compact constructor.
-- The primitive value is exposed with an accessor that says what it is: `number()` for numeric ones and `text()` for text ones.
+- The primitive value is exposed with an accessor that says what it is: `number()` for numeric ones and `text()` for text ones, whether the value object is a record or a class (`GameCode.text()`). It is the only exception to the `getX()` accessors of the other classes and enums. `PlayerCode.getCode()`, `EffectId.getNumber()`, `CardCode.code()` and `type()`, `ExceptionCode.value()` and the bare `text()` of the `Code` enums of `PlayerActionExceptionCode` and `ZoneExceptionCode` do not follow it yet.
 
 ### Static factories
 
@@ -292,6 +292,7 @@ General rules in `agents/CODESTYLE.md`, section 7.
 ## 12. Formatting
 
 - Indentation with **tabs**.
+- A line has at most 130 characters, without counting the indentation tabs, as in the tests (`agents/BACKEND-TESTS.md`) and the frontend.
 - Never use `var` to declare a variable: always write the type.
 - Imports in groups separated by a blank line: static (in tests), `java`, `javax`, `org`, `com`, and the rest (`jakarta`, `io`…). No wildcards. Static imports come first.
 - In call chains (streams, builders), each call goes on its own line ending in `//`. The `//` prevents the Eclipse formatter from joining them again: it reads better vertically than horizontally.

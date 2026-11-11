@@ -93,6 +93,7 @@ They replace loops and copied tests that only change the data.
 - The last parameter is the expected result (`expected`).
 
 ```java
+// COMBAT-2, COMBAT-4
 @ParameterizedTest
 @MethodSource("damageAgainstArmor")
 void testGivenDamageAndArmor_whenReceiveDamage_thenReturnExpectedHealth(
@@ -107,7 +108,7 @@ void testGivenDamageAndArmor_whenReceiveDamage_thenReturnExpectedHealth(
 static Stream<Arguments> damageAgainstArmor() {
 	return Stream.of(
 			Arguments.of(50, 0, 50),
-			Arguments.of(50, 25, 75)
+			Arguments.of(50, 25, 100)
 	);
 }
 ```
@@ -235,7 +236,7 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 
 - `DisconnectedPlayerIntegrationTest` is the one that runs. It wires the real services by hand with in-memory repositories, because a Spring context would open the Socket.IO port. `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run.
 - They use local doubles, never real services (see `CLAUDE.md`).
-- Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`, which is what CI runs.
+- Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`, the command of the backend job of `.github/workflows/maven.yml`. That the job runs `DisconnectedPlayerIntegrationTest` on GitHub is not checked yet (`ROADMAP-TEST.md`, Pending checks).
 - An integration test builds its data with the domain and the services themselves, and replaces the clients, the scheduler and the publisher with fakes (`RecordingUserClient`, `ManualTaskScheduler`, `SynchronousEventPublisher`) and the clock with a fixed `Clock`, as `DisconnectedPlayerIntegrationTest` does.
 - The Spring test infrastructure (`application-test.properties`, `PersistenceTestConfiguration`, `PartyPopulator`, `UserPopulator`, `GameEventWatcher`, `GameEventDebuger`) is not used by any test: those classes are only referenced among themselves (`ROADMAP.md`, Pending tasks). New tests do not use it.
 - Test methods may declare `throws Exception` when the scenario requires it.
