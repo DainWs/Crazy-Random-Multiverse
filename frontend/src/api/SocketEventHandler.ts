@@ -7,7 +7,6 @@ import { GAME_EVENT_CODES } from '@/api/models/GameEventCode';
 import { notifyListeners } from '@/api/models/Listeners';
 import { toParty } from '@/api/dtos/PartyDto';
 import { Socket } from 'socket.io-client';
-import EventSystem from '@/core/EventSystem';
 
 const PARTY_INFO_CHANNEL = 'party:info';
 const USER_SYNCED_CHANNEL = 'user:synced';
@@ -95,11 +94,6 @@ function handleIncomingEvent(rawEvent: RawEvent): void {
   notifyListeners(anyEventListeners, 'any event listener', event);
   if (event.code) {
     notifyListeners(eventListeners.get(event.code), `event listener for ${event.code}`, event);
-  }
-
-  EventSystem.rawEmit('socket.event', event);
-  if (event.code) {
-    EventSystem.rawEmit(`game.${String(event.code).toLowerCase()}`, event);
   }
 }
 

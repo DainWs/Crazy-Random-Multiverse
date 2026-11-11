@@ -12,7 +12,7 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 |---|---|
 | `api/` | Single point of contact with the backend: REST (`*Api.ts`, using `fetch`), Socket.IO (`SocketService`, `SocketEventHandler`, `SocketReconnectHandler`). |
 | `controllers/` | Connect interaction and actions (`CardController`, `HandController`). They send commands to the backend; they do not mutate the authoritative state. |
-| `core/` | Static cross-cutting systems: `StoreSystem`, `SessionSystem`, `EventSystem`, `AnimationSystem`, `ResourceSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `events/`, `interactions/`, `visual_effects/`. |
+| `core/` | Static cross-cutting systems: `StoreSystem`, `SessionSystem`, `AnimationSystem`, `ResourceSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `events/`, `interactions/`, `visual_effects/`. |
 | `domain/` | Frontend model (`Card`, `Zone`, `Player`, `Party`, `Battlefield`, `Action`…). No Phaser, no Vue, no `api`. |
 | `game/` | Phaser views: `battlefield`, `cards`, `hand`, `hud`, `zone`, `perspectives`. They only draw and animate. |
 | `scenes/` | Phaser scenes. They orchestrate, they contain no rules. |
@@ -41,7 +41,6 @@ domain → (nothing)
 - The game state lives in `StoreSystem`, only in memory, because `GAME_SYNC` restores it (`CON-11`). It is the single source of truth on the client; views read from it.
 - The authoritative state only changes when an event arrives from the backend (`CON-17`). **Optimistically mutating the board, the hand or the turn is forbidden**, except for purely visual previews that are reverted.
 - Flow of an action: interaction → `CardController` → `gameApi` (REST) → the server validates → Socket.IO event → `SocketEventHandler` → `GameStateApi`, whose `GameEventQueue` applies the events in `sequence` order (`CON-12`) → `StoreSystem` → views update, after the animations of the earlier events (`AnimationSystem`, `UI-4`).
-- Internal UI events (`EventSystem`) are independent of network events. UI event names are declared in the `Event` union in `EventSystem.ts`; loose strings and `rawEmit` are not used in new code.
 - Network events are identified with `GameEventCode`, which must match the backend's `EventCode`.
 - Codes travel as plain text inside JSON bodies, and in Base64 URL-safe only as part of a URL path (`CON-6`): there, always through `toBase64UrlSafe` / `fromBase64UrlSafe`.
 - Other players' hands are never stored.
@@ -52,14 +51,14 @@ domain → (nothing)
 
 ## 3. Systems and classes
 
-- The systems in `core/` are classes with static methods and module state (`EventSystem`, `StoreSystem`). This is the established pattern; it is followed for new cross-cutting systems, but **a new one is not created** if the behavior fits in an existing one.
+- The systems in `core/` are classes with static methods and module state (`StoreSystem`). This is the established pattern; it is followed for new cross-cutting systems, but **a new one is not created** if the behavior fits in an existing one.
 - Phaser views are classes (`CardView`, `ZoneView`, `HandView`) that extend Phaser classes. The remaining pieces (layout calculations, resolvers, strategies) are functions or small classes with no Phaser state, so they can be tested with Vitest.
 - A line must not exceed 130 characters. When it does, define variables or find another way to make it shorter while keeping or improving readability.
 - Every calculation of the size or position of an object `X` lives in its `XLayout` class (`GameHudLayout`, `ZoneLayout`, `ZoneSlotLayout`); the view `X` only applies the results.
 - Geometry and layout calculations go in pure classes/functions separated from the view (`HandLayoutCalculator`, `ZoneLayout`, `CardStackLayoutHelper`, `CameraCalculations`). That separation is what makes the visual layer testable: it is kept.
 - View strategies: `BattlefieldViewStrategy` and its dispatcher. A new board mode adds a strategy, not an `if` per mode.
 - `api/` modules are exported as objects or namespaces from `api/index.ts` (`gameApi`, `partyOwnerApi`…). A new API function is added to the module it belongs to and re-exported there. (The API can only be used through `api/index.ts`.)
-- One file = one responsibility. Default export for the file's main class (like `EventSystem`, `Party`, `Card`); named exports for functions and types.
+- One file = one responsibility. Default export for the file's main class (like `StoreSystem`, `Party`, `Card`); named exports for functions and types.
 - `export`s always go at the end; `export class CardView {...` is **forbidden**.
 
 ---
@@ -104,7 +103,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 ## 6. Phaser
 
 - Phaser objects are created in the scene (`create`) or in the view; views expose a method to destroy them, and whoever creates them destroys them.
-- Listeners (`EventSystem.on`, `scene.events.on`, `input.on`) are unsubscribed in `destroy`/`shutdown`. Every `on` without its `off` is a bug.
+- Listeners (`scene.events.on`, `input.on`) are unsubscribed in `destroy`/`shutdown`. Every `on` without its `off` is a bug.
 - Tweens are created in `core/visual_effects` or in the view's animation module; they are not mixed with rules logic.
 - `update` does not allocate new objects nor create closures per frame.
 - `setScrollFactor(0)` keeps the HUD, the dialogs and the result in place when the camera pans, but does not undo the zoom, so their layout compensates it (`GameHudLayout`). The player's hand does not use it: `HandView` follows the camera on every `prerender` and is scaled by `1 / zoom` (`PHASER4-SPECS.md`). A card that leaves the hand gets a scroll factor of `1`.

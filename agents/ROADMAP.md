@@ -28,7 +28,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 Started at: `12df6bd`
 
-- [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
+- [x] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it: nothing listened to it, so it is removed, and `AnimationSystem` stays apart
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
 - [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
 - [ ] Remove dead/unused architecture

@@ -1,17 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import socketEventHandler from '@/api/SocketEventHandler';
-import EventSystem from '@/core/EventSystem';
 import { GAME_EVENT_CODES, GameEventCode } from '@/api/models/GameEventCode';
 import User from '@/domain/User';
 import { Socket } from 'socket.io-client';
 
 type Function = (...args: unknown[]) => unknown;
-
-vi.mock('@/core/EventSystem', () => ({
-  default: {
-    rawEmit: vi.fn()
-  }
-}));
 
 describe('SocketEventHandler', () => {
   const createSocket = () => {
@@ -231,8 +224,6 @@ describe('SocketEventHandler', () => {
       socket.emit('event', event);
 
       expect(listener).toHaveBeenCalledWith(event);
-      expect(EventSystem.rawEmit).toHaveBeenCalledWith('socket.event', event);
-      expect(EventSystem.rawEmit).toHaveBeenCalledWith('game.game_start', event);
     });
 
     it('handles events received through game:event', () => {
@@ -285,7 +276,6 @@ describe('SocketEventHandler', () => {
 
       expect(listener).not.toHaveBeenCalled();
       expect(anyListener).not.toHaveBeenCalled();
-      expect(EventSystem.rawEmit).not.toHaveBeenCalled();
     });
 
     it('notifies only listeners matching the event code', () => {

@@ -47,7 +47,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 - Shared data is declared with `let` in the `describe` and assigned in `beforeEach`. Nothing is initialized at module level except pure factories (`function createEvent(...) { ... }`) and constants.
 - `beforeEach` always starts by clearing mock state: `vi.clearAllMocks()` for `vi.fn()` and module mocks, `vi.restoreAllMocks()` when `vi.spyOn` was used (as in `PartyApi.test.ts`).
 - Prefer a **fresh object per test** over shared mutable state. `afterEach` is only needed to undo what `beforeEach` could not (fake timers, global stubs): `vi.useRealTimers()`, `vi.unstubAllGlobals()`.
-- **Module-level singletons** (`StoreSystem`, `EventSystem`) keep state between tests of the same file. Reset them explicitly in `beforeEach` through their own API (`StoreSystem.clearGame()`) or isolate the module with `vi.resetModules()` plus a dynamic `import()`. A test must not depend on the order in which tests run.
+- **Module-level singletons** (`StoreSystem`) keep state between tests of the same file. Reset them explicitly in `beforeEach` through their own API (`StoreSystem.clearGame()`) or isolate the module with `vi.resetModules()` plus a dynamic `import()`. A test must not depend on the order in which tests run.
 - Deterministic data only. Time-dependent code uses `vi.useFakeTimers()`; never real `setTimeout` waits. Randomness is stubbed (`vi.spyOn(Math, 'random')`) when it influences the result.
 - Values the test asserts are written explicitly in the test, not computed with the same logic as the code under test.
 
