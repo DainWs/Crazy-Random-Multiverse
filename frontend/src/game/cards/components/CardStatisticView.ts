@@ -1,6 +1,5 @@
 import { Statistic } from "@/domain/Statistics";
 import * as TextUtils from "@/game/utils/TextUtils";
-import { showDebugBoxes } from "@/env";
 import Phaser from 'phaser';
 
 type IconPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -8,7 +7,6 @@ type IconPosition = 'left' | 'right' | 'top' | 'bottom';
 class CardStatisticView extends Phaser.GameObjects.Container {
   private statisticIcon: Phaser.GameObjects.Image;
   private statisticText: Phaser.GameObjects.Text;
-  private box: Phaser.GameObjects.Rectangle | undefined;
 
   private iconPosition: IconPosition;
 
@@ -26,13 +24,6 @@ class CardStatisticView extends Phaser.GameObjects.Container {
 
     this.statistic = statistic;
     this.affectedAmount = affectedAmount;
-
-    if (showDebugBoxes) {
-      this.box = this.scene.add.rectangle(0, 0);
-      this.box.setFillStyle(0x00FF00, 0.5);
-      this.box.setStrokeStyle(1, 0x000000);
-      this.add(this.box);
-    }
 
     this.statisticIcon = this.scene.add.image(0, 0, this.statistic.icon());
     this.statisticText = this.scene.add.text(0, 0, this.statistic.text());
@@ -67,10 +58,6 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     this.statisticIcon.setDisplaySize(iconSize, iconSize);
     this.statisticIcon.setPosition(iconPosition.x, iconPosition.y);
     this.statisticIcon.setOrigin(0.5, 0.5);
-
-    if (showDebugBoxes && this.box) {
-      this.box.setSize(textWidth, textHeight);
-    }
   }
 
   private getTextColor() {

@@ -54,11 +54,6 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     ]);
     
     this.setInteractive(polygon, Phaser.Geom.Polygon.Contains, true);
-
-    const debugGraphics = this.scene.add.graphics();
-    debugGraphics.lineStyle(2, 0xff0000, 1);
-    debugGraphics.strokePoints(polygon.points, true);
-    this.add(debugGraphics);
   }
 
   private initializeView() {

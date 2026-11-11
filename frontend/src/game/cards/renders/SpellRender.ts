@@ -1,5 +1,4 @@
 import type { CardRender } from "@/game/cards/renders/CardRender";
-import { showDebugBoxes } from "@/env";
 import * as TextUtils from "@/game/utils/TextUtils";
 import SpellView from "@/game/cards/SpellView";
 
@@ -16,15 +15,7 @@ function defineDescriptionStat(scene: Phaser.Scene, totalWidth: number, totalHei
   const x = 0;
   const y = totalHeight / 2 - (height / 2 + bottomPadding) - totalHeight * 0.02;
 
-  const gameObjects = [];
-  if (showDebugBoxes) {
-    const descriptionBox = scene.add.rectangle(x, y);
-    descriptionBox.setSize(width, height);
-    descriptionBox.setFillStyle(0xFF0000, 0.5);
-    descriptionBox.setStrokeStyle(1, 0x000000);
-    gameObjects.push(descriptionBox);
-  }
-
+  const gameObjects: Phaser.GameObjects.GameObject[] = [];
   const descriptionText = scene.add.text(0, 0, description);
   descriptionText.setColor('#000');
   descriptionText.setWordWrapWidth(width, true);

@@ -26,6 +26,8 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 9 — Architecture cleanup
 
+Started at: `12df6bd`
+
 - [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
 - [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
@@ -33,7 +35,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 - [ ] Finish remaining TODOs in comments
 - [ ] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds
 - [ ] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`)
-- [ ] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
+- [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
 
 ## Phase 10 — Board and cards
 

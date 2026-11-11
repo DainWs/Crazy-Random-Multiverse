@@ -2,7 +2,6 @@ import type { StatisticType } from "@/domain/Statistics";
 import type { CardRender } from "@/game/cards/renders/CardRender";
 import * as TextUtils from "@/game/utils/TextUtils";
 import { CardStatisticView } from "@/game/cards/components/CardStatisticView";
-import { showDebugBoxes } from "@/env";
 import CombatantView from "@/game/cards/CombatantView";
 import { CombatantCard } from "@/domain/Card";
 import { getText } from "@/core/Texts";
@@ -27,14 +26,6 @@ function defineCardName(scene: Phaser.Scene, totalWidth: number, totalHeight: nu
   const fontSize = Math.floor(totalHeight * 0.08);
 
   const gameObjects = [];
-  if (showDebugBoxes) {
-    const nameBox = scene.add.rectangle(x, y);
-    nameBox.setSize(width, height);
-    nameBox.setFillStyle(0xFF0000, 0.5);
-    nameBox.setStrokeStyle(1, 0x000000);
-    gameObjects.push(nameBox);
-  }
-
   const cardName = scene.add.text(x, y, name);
   cardName.setOrigin(0.5, 0.5);
   cardName.setSize(width, height);

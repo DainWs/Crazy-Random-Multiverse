@@ -96,7 +96,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 - Interaction, camera, card dimension and animation timing constants: `src/core/Constants.ts` or the module constant of their folder (`CardDimensions.ts`). Each constant with meaning carries a one-sentence TSDoc comment with its unit (px, ms).
 - Texture, audio and scene keys: constants, not repeated loose strings.
 - Colors in `game/utils/ColorUtils.ts` or constants, not inline hexadecimals.
-- Environment configuration (server URL, debug flags): `src/env.ts` / `import.meta.env`. `isDevelopment` controls what only exists in development. `showDebugBoxes` is debugging left in place that Phase 9 of `ROADMAP.md` removes: new code does not use it.
+- Environment configuration (server URL, debug flags): `src/env.ts` / `import.meta.env`. `isDevelopment` controls what only exists in development.
 - `.env.local.*` stays out of the repository.
 
 ---
