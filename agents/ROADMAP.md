@@ -34,7 +34,7 @@ Started at: `12df6bd`
 - [x] Remove dead/unused architecture: `CardActionPerspective` stays, kept for the effects of the Post-MVP section
 - [ ] Finish remaining TODOs in comments
 - [x] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds. Both were removed with the code that only they served
-- [ ] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`)
+- [x] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`): decided not to split it. About 7 distinct shapes over 18 codes do not justify a class and a mapper branch each (`CODESTYLE` section 2), and the contract does not change. The cost accepted is the nullable fields and the `has*()` checks of `CommunicationMapper`
 - [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
 
 ## Phase 10 — Board and cards
@@ -108,6 +108,7 @@ Not tied to a phase.
 - [x] Resolve the apparent `ActionMapper.toPlayerCode()` recursion bug
 - [ ] Fix the order of the state sent when a socket is bound (`CON-23`): with Engine.IO v4, `netty-socketio` 2.0.12 runs the connect listeners on the handshake, so `SocketIOConnectionManager` sends the state before the namespace connect ack. The client works around it by starting the sync on `connecting`/`reconnecting` (`SessionSystem`), which blanks the screen for the whole reconnection, behind the notice of `UI-9`. The library has no hook after the ack; the options are a client request for the state (a new event, changing `CON-23`) or a delayed send
 - [ ] Ignore the events of a game the user no longer has, remembering the code of the last one, and discard a `GAME_SYNC` or `GAME_LOADING` of the followed game whose `sequence` is lower than that of the last event applied (`CON-12`, `SPEC-3`): `GameStateApi` applies every `game:event`, and `GameEventQueue` applies every snapshot, rewinding the queue, so one in flight when a spectator leaves, or when a socket is bound after the game ended (`CON-23`), would rebuild the game state while the user is in the main menu or the party, and a late one of the previous game would restart the queue of the new one. The server stops sending them, so it only happens in a race
+- [ ] Remove `EventPublisher.publish(EventCode)` and its two implementations: nothing calls it (`Game` always sends details), and it builds `new EventDetails(null)`, whose `getGameCode()` would fail with a null game
 - [ ] Make the HUD follow the snapshot of the board it is showing, not the live state (`UI-3`): `GameHudView` reads `StoreSystem` on every frame, so the round, the turn and the spectator buttons can run ahead of the animations of the board (`CON-12`)
 - [ ] Define how production serves the frontend and the backend under one origin, routing `/resources` like the REST paths (`CON-29`): `config.prod.mjs` has no proxy and the relative URLs depend on it
 - [ ] Read the Socket.IO port from `crm.communication.socket-io.port`, 9092 by default, instead of hardcoding it in `SocketIOConfiguration` (`CON-1`)
