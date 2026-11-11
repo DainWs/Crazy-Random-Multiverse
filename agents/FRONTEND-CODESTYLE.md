@@ -12,7 +12,7 @@ The frontend is a **view of the server state**: Vue mounts the application and t
 |---|---|
 | `api/` | Single point of contact with the backend: REST (`*Api.ts`, using `fetch`), Socket.IO (`SocketService`, `SocketEventHandler`, `SocketReconnectHandler`). |
 | `controllers/` | Connect interaction and actions (`CardController`, `HandController`). They send commands to the backend; they do not mutate the authoritative state. |
-| `core/` | Static cross-cutting systems: `StoreSystem`, `SessionSystem`, `AnimationSystem`, `ResourceSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `events/`, `interactions/`, `visual_effects/`. |
+| `core/` | Static cross-cutting systems: `StoreSystem`, `SessionSystem`, `AnimationSystem`, `ResourceSystem`, `CameraSystem`, `ProjectionSystem`, plus `cameras/`, `interactions/`, `visual_effects/`. |
 | `domain/` | Frontend model (`Card`, `Zone`, `Player`, `Party`, `Battlefield`, `Action`…). No Phaser, no Vue, no `api`. |
 | `game/` | Phaser views: `battlefield`, `cards`, `hand`, `hud`, `zone`, `perspectives`. They only draw and animate. |
 | `scenes/` | Phaser scenes. They orchestrate, they contain no rules. |

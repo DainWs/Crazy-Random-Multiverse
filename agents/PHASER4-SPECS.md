@@ -12,7 +12,7 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 
 - **Symptom:** a shape drawn with `Graphics` loses detail or has odd corners.
 - **Likely cause:** `pathDetailThreshold` is 1 px by default, and the WebGL renderer merges the points of a path that are closer than that.
-- **Where to look:** `render.pathDetailThreshold` in the game configuration, or the property of the same name on the object. The shapes in use are `TableViewStrategy`, `ZoneSlotViewRenderer`, the arrow of `AttackTargetingPerspective` and `GameOverOverlay`. None of them showed this at zooms from 0.5 to 1.1.
+- **Where to look:** `render.pathDetailThreshold` in the game configuration, or the property of the same name on the object. The shapes in use are `TableViewStrategy`, `ZoneSlotViewRenderer` and the arrow of `AttackTargetingPerspective`. None of them showed this at zooms from 0.5 to 1.1.
 
 ## `Phaser is not defined`
 
