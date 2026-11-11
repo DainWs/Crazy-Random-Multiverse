@@ -7,11 +7,6 @@ import * as Constants from "@/core/Constants";
 
 let targeting: AttackTargetingPerspective | null = null;
 
-const onPointerDown = (_1: GameScene, _2: CardView, _3: Phaser.Input.Pointer): void => {
-  // No action is performed on pointerdown to allow Phaser to decide
-  // if the movement will result in a "drag" or a click.
-}
-
 const onPointerUp = (scene: GameScene, card: CardView, pointer: Phaser.Input.Pointer): void => {
   if (pointer.button !== Constants.PRIMARY_BUTTON) return;
   if (!card.canBeClicked()) return;
@@ -57,7 +52,6 @@ function cancelTargeting() {
 }
 
 const CardClickHandler = {
-  onPointerDown,
   onPointerUp,
   cancelTargeting
 }

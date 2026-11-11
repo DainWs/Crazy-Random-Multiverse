@@ -16,7 +16,6 @@ function handleCardInputs(scene: GameScene, card: CardView): void {
   const onPointerOver = () => mouseOver.onPointerOver(scene, card);
   const onPointerOut = () => mouseOver.onPointerOut(scene, card);
   const onPointerUp = (pointer: Pointer) => clickHandler.onPointerUp(scene, card, pointer);
-  const onPointerDown = (pointer: Pointer) => clickHandler.onPointerDown(scene, card, pointer);
 
   const onDragStart = () => dragAndDrop.onGrabCard(scene, card);
   const onDragEnd = () => dragAndDrop.onDragEnd(scene, card);
@@ -28,7 +27,6 @@ function handleCardInputs(scene: GameScene, card: CardView): void {
   listeners.set("pointerover", onPointerOver);
   listeners.set("pointerout", onPointerOut);
   listeners.set("pointerup", onPointerUp);
-  listeners.set("pointerdown", onPointerDown);
   listeners.set("dragstart", onDragStart);
   listeners.set("dragend", onDragEnd);
   listeners.set("dragenter", onDragEnter);

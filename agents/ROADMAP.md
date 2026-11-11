@@ -30,7 +30,7 @@ Started at: `12df6bd`
 
 - [x] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it: nothing listened to it, so it is removed, and `AnimationSystem` stays apart
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
-- [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
+- [x] Complete or remove unfinished card input logic; complete `CardClickHandler`: it already follows `VIEW-4`, so the empty `onPointerDown` and the logging of the dispatcher were removed
 - [ ] Remove dead/unused architecture
 - [ ] Finish remaining TODOs in comments
 - [ ] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds

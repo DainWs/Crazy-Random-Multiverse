@@ -90,15 +90,6 @@ describe('CardClickHandler', () => {
     });
   });
 
-  describe('onPointerDown', () => {
-    it('is a no-op so Phaser can distinguish click vs drag', () => {
-      const card = createCard(createSlot(true));
-
-      expect(() => CardClickHandler.onPointerDown(scene, card, clickInTime)).not.toThrow();
-      expect(mockEnter).not.toHaveBeenCalled();
-    });
-  });
-
   describe('onPointerUp', () => {
     it('does nothing when card cannot be clicked', () => {
       const card = createCard(createSlot(true), false);
