@@ -17,11 +17,10 @@ interface PreparedGame {
 
 const LOCAL_USER: UserDto = { id: 'user-1', username: 'Tester' };
 const RIVAL_NAMES = ['Rival', 'Tercero'];
-const HAND_SIZE = 3;
 const WARRIOR_COLUMNS = 3;
 
 function createPlayer(code: string, name: string): PlayerDto {
-    return { code, name, isSpectator: false, isAlive: true, handSize: HAND_SIZE };
+    return { code, name, isSpectator: false, isAlive: true };
 }
 
 function createLeader(code: string): CardDto {

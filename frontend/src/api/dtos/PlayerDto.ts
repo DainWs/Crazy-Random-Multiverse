@@ -7,7 +7,6 @@ interface PlayerDto {
   name: string;
   isSpectator: boolean;
   isAlive: boolean;
-  handSize: number;
 }
 
 function toPlayerCode(player: Player | PlayerCode | null | undefined): PlayerCodeDto | undefined {
@@ -20,7 +19,6 @@ function toPlayer(dto: PlayerDto): Player {
   const player = new Player(dto.code, dto.name);
   player.isSpectator = dto.isSpectator;
   player.isAlive = dto.isAlive;
-  player.handSize = dto.handSize;
   return player;
 }
 

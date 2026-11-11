@@ -4,7 +4,7 @@ import { toCombatResult } from '@/api/dtos/CombatResultDto';
 
 describe('toCombatResult', () => {
   const ROW_COUNT = 3;
-  const player = (code: string) => ({ code, name: code, isAlive: true, isSpectator: false, handSize: 0 });
+  const player = (code: string) => ({ code, name: code, isAlive: true, isSpectator: false });
   const createDetails = (overrides: Partial<EventDetailsDto> = {}): EventDetailsDto =>
     ({
       game: { code: 'game-1', zones: [] },

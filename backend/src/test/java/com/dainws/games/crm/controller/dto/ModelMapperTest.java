@@ -80,17 +80,6 @@ class ModelMapperTest {
 	}
 
 	@Test
-	void testGivenPlayerWithCardsInHand_whenMapToDto_thenHandSizeIsTheNumberOfCards() {
-		Player player = new PlayerBuilder().build();
-		player.getHand().addCard(CardBuilder.buildCommonWarrior());
-		player.getHand().addCard(CardBuilder.buildCommonWarrior());
-
-		PlayerDto playerDto = ModelMapper.mapPlayerToDto(player);
-
-		assertThat(playerDto.getHandSize()).isEqualTo(2);
-	}
-
-	@Test
 	void testGivenGameNotInProgress_whenMapGame_thenThereIsNoPlayerWithTurn() {
 		Game game = new GameBuilder().withNRandomPlayers(2).build();
 		GameStatusSetter.setStatus(game, Status.LOADING);

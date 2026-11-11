@@ -58,33 +58,6 @@ describe('ZoneSlotLayout', () => {
     });
   });
 
-  describe('calculateBoardPositionBehindSlot', () => {
-    // 3 rows of 150 high with 10 between them: the last row is centered at y = 160
-    it('places the point below the last row of an unrotated zone', () => {
-      const layout = new ZoneSlotLayout(defaultOptions);
-
-      const point = layout.calculateBoardPositionBehindSlot({ row: 2, column: 0 }, 3, 1, 100);
-
-      expect(point).toEqual({ x: 100, y: 460 });
-    });
-
-    it('places the point on the other side of a zone rotated 180 degrees', () => {
-      const layout = new ZoneSlotLayout({ ...defaultOptions, rotation: 180 });
-
-      const point = layout.calculateBoardPositionBehindSlot({ row: 2, column: 0 }, 3, 1, 100);
-
-      expect(point.y).toBeCloseTo(-60);
-    });
-
-    it('keeps the column of the slot', () => {
-      const layout = new ZoneSlotLayout(defaultOptions);
-
-      const point = layout.calculateBoardPositionBehindSlot({ row: 0, column: 1 }, 1, 2, 0);
-
-      expect(point.x).toBe(155);
-    });
-  });
-
   describe('rotateBoardOffset', () => {
     it('keeps offset unchanged at 0 degrees', () => {
       const layout = new ZoneSlotLayout({ ...defaultOptions, rotation: 0 });

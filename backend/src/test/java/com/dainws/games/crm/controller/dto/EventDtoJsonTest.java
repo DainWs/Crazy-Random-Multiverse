@@ -141,8 +141,8 @@ class EventDtoJsonTest {
 	}
 
 	@Test
-	void testGivenGameSync_whenSerialize_thenPlayerHasTheHandSize() {
-		assertThat(this.player.get("handSize").isInt()).isTrue();
+	void testGivenGameSync_whenSerialize_thenPlayerHasNoHandSize() {
+		assertThat(this.player.has("handSize")).isFalse();
 	}
 
 	@Test

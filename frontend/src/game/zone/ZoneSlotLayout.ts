@@ -89,17 +89,6 @@ class ZoneSlotLayout {
     };
   }
 
-  /** A point in board-space past the slot, towards the edge of the table: the zone is drawn with its last row on that side. */
-  public calculateBoardPositionBehindSlot(position: ZonePosition, numRows: number, numCols: number, distance: number): Point2D {
-    const offset = this.resolveOffsetForPosition(position, numRows, numCols);
-    const rotatedOffset = this.rotateBoardOffset({ x: offset.x, y: offset.y + distance });
-
-    return {
-      x: this.options.position.x + rotatedOffset.x,
-      y: this.options.position.y + rotatedOffset.y,
-    };
-  }
-
   /** The corners of a slot moved `margin` away from its center, which is the origin of their space. */
   public expandCorners(corners: Corners3D, margin: number): Corners3D {
     const expand = (corner: Point3D): Point3D => {

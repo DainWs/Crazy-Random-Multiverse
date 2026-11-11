@@ -162,7 +162,6 @@ public class ModelMapper {
 
 	public static PlayerDto mapPlayerToDto(Player player) {
 		PlayerDto playerDto = new PlayerDto();
-		playerDto.setHandSize(player.getHand().getCards().size());
 		playerDto.setCode(player.getCode());
 		playerDto.setName(player.getName());
 		playerDto.setSpectator(player.isSpectator());

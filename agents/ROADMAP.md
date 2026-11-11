@@ -26,12 +26,14 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 10 — Board and cards
 
+Started at: `9de2969`
+
 - [ ] Test layouts for 2 to 10 players (`VIEW-2`)
 - [ ] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
 - [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [ ] Review/fix existing table grid-line TODO
 - [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
-- [ ] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone. Regenerate the reference images that show the label: T6 of `ROADMAP-TEST.md` approved them with cards in the rival hands
+- [x] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone. Regenerate the reference images that show the label: T6 of `ROADMAP-TEST.md` approved them with cards in the rival hands
 - [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
 - [ ] Reposition the board, the hand and the HUD when the window changes size (`VIEW-24`): `App.vue` uses `Scale.RESIZE` and nothing reacts to it, so at 1100×620 the own leader, rows and buttons are out of view, and at 1920 wide the board is off-center. Only desktop windows: the responsive layouts of `VIEW-10` stay Post-MVP

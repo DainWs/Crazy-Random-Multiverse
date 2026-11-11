@@ -105,7 +105,6 @@ test.describe('elimination of a rival in a game of three', () => {
         const before = await frameOf(page, TABLE_AREA);
         const eliminated = structuredClone(prepared.game);
         eliminated.zones[RIVAL_ZONE].owner.isAlive = false;
-        eliminated.zones[RIVAL_ZONE].owner.handSize = 0;
 
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[RIVAL_ZONE].owner });
         await waitForStillFrame(page, before);

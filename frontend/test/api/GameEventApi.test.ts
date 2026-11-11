@@ -14,7 +14,7 @@ function createEvent(code: GameEventCode): EventDto {
                 code: 'game-1',
                 zones: [
                     {
-                        owner: { code: 'p1', name: 'One', isSpectator: false, isAlive: true, handSize: 0 },
+                        owner: { code: 'p1', name: 'One', isSpectator: false, isAlive: true },
                         type: 'BASE',
                         combatants: [
                             [

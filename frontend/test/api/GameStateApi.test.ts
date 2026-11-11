@@ -14,7 +14,7 @@ vi.mock('@/api/LocalStorageApi', () => ({
 }));
 
 describe('GameStateApi', () => {
-  const createPlayer = (code: string, handSize = 0): PlayerDto => ({ code, name: code, isSpectator: false, isAlive: true, handSize });
+  const createPlayer = (code: string): PlayerDto => ({ code, name: code, isSpectator: false, isAlive: true });
   const createCard = (code: string): CardDto => ({
     catalogCode: { code, type: 'WARRIOR' },
     name: `card.warrior.${code}.name`,
@@ -31,7 +31,7 @@ describe('GameStateApi', () => {
         round: sequence,
         zones: [
           { owner: createPlayer('p1'), type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] },
-          { owner: createPlayer('p2', 3), type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }
+          { owner: createPlayer('p2'), type: 'BASE', combatants: [[{ allowedCombatant: 'LEADER' }]] }
         ]
       },
       ...details
@@ -189,19 +189,9 @@ describe('GameStateApi', () => {
 
     // CON-13, HAND-3
     it('adds nothing when PLAYER_RECEIVE_CARD carries no card', () => {
-      listener(createEvent(2, 'PLAYER_RECEIVE_CARD', { targetPlayer: createPlayer('p2', 4) }));
+      listener(createEvent(2, 'PLAYER_RECEIVE_CARD', { targetPlayer: createPlayer('p2') }));
 
       expect(handCodes()).toEqual([]);
-    });
-
-    // UI-7
-    it('shows how many cards a rival holds after PLAYER_RECEIVE_CARD', () => {
-      const game = createEvent(2).details.game;
-      game.zones[1].owner.handSize = 4;
-
-      listener(createEvent(2, 'PLAYER_RECEIVE_CARD', { game, targetPlayer: createPlayer('p2', 4) }));
-
-      expect(StoreSystem.getZones()[1].owner.handSize).toBe(4);
     });
 
     // HAND-2, CON-13

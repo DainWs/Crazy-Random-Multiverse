@@ -134,8 +134,7 @@ describe('API Models and DTO Mappers', () => {
         code: 'p1',
         name: 'Player One',
         isSpectator: false,
-        isAlive: true,
-        handSize: 3
+        isAlive: true
       });
 
       expect(player).toBeInstanceOf(Player);
@@ -143,7 +142,6 @@ describe('API Models and DTO Mappers', () => {
       expect(player.name).toBe('Player One');
       expect(player.isSpectator).toBe(false);
       expect(player.isAlive).toBe(true);
-      expect(player.handSize).toBe(3);
     });
 
     it('toPlayerCode extracts code from Player, string, or undefined', () => {
@@ -155,7 +153,7 @@ describe('API Models and DTO Mappers', () => {
   });
 
   describe('ZoneDto', () => {
-    const owner = { code: 'p1', name: 'Player One', isSpectator: false, isAlive: true, handSize: 0 };
+    const owner = { code: 'p1', name: 'Player One', isSpectator: false, isAlive: true };
     const leaderDto: CardDto = {
       catalogCode: { code: '1', type: 'LEADER' },
       name: 'Leader',
@@ -219,7 +217,7 @@ describe('API Models and DTO Mappers', () => {
   });
 
   describe('GameDto', () => {
-    const player = { code: 'p1', name: 'One', isSpectator: false, isAlive: true, handSize: 0 };
+    const player = { code: 'p1', name: 'One', isSpectator: false, isAlive: true };
     const leaderCard = (code: string) => ({ catalogCode: { code, type: 'LEADER' as const }, name: code, description: '', type: 'LEADER' as const });
     const zone = (leaderCode?: string) => ({
       owner: player,
@@ -250,7 +248,7 @@ describe('API Models and DTO Mappers', () => {
     });
 
     describe('toGameSnapshot', () => {
-      const other = { code: 'p2', name: 'Two', isSpectator: false, isAlive: true, handSize: 3 };
+      const other = { code: 'p2', name: 'Two', isSpectator: false, isAlive: true };
       const zoneOf = (owner: typeof player) => ({ ...zone('0'), owner });
       const twoPlayers = (overrides: Partial<GameDto> = {}): GameDto => ({ code: 'game-1', zones: [zoneOf(other), zoneOf(player)], ...overrides });
 
