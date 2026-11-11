@@ -16,13 +16,8 @@ const onGameSync = (listener: Listener<ActiveGame>) => {
   return socketEventHandler.onGameEvent('GAME_SYNC', (event) => listener(toActiveGame(event.details.game)));
 }
 
-const onAnyGameApiEvent = (listener: GameEventListener) => {
-  return socketEventHandler.onAnyGameEvent(listener);
-}
-
 export {
   onGameApiEvent,
   onGameLoading,
-  onGameSync,
-  onAnyGameApiEvent
+  onGameSync
 }

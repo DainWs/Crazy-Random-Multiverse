@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   calculateHUDPosition,
-  calculateCameraCorners,
   clampScrollToBounds,
   calculateScreenFixedTransform,
   calculateBoundsOfPoints,
@@ -123,32 +122,6 @@ describe('CameraCalculations', () => {
       const result = clampScrollToBounds({ ...centeredOn(900, 0), zoom: 0.5 }, bounds);
 
       expect(result.x).toBe(500 - 960);
-    });
-  });
-
-  describe('calculateCameraCorners', () => {
-    it('returns full screen corners at zoom 1', () => {
-      const corners = calculateCameraCorners(defaultViewport);
-      expect(corners.tl).toEqual({ x: 0, y: 0 });
-      expect(corners.tr).toEqual({ x: 1920, y: 0 });
-      expect(corners.bl).toEqual({ x: 0, y: 1080 });
-      expect(corners.br).toEqual({ x: 1920, y: 1080 });
-    });
-
-    it('expands visible area when zoomed out', () => {
-      const viewport: CameraViewport = { ...defaultViewport, zoom: 0.5 };
-      const corners = calculateCameraCorners(viewport);
-      // width = 1920 / 0.5 = 3840, x = (1920 - 3840) / 2 = -960
-      expect(corners.tl.x).toBeCloseTo(-960, 5);
-      expect(corners.br.x).toBeCloseTo(2880, 5);
-    });
-
-    it('shrinks visible area when zoomed in', () => {
-      const viewport: CameraViewport = { ...defaultViewport, zoom: 2 };
-      const corners = calculateCameraCorners(viewport);
-      // width = 1920 / 2 = 960, x = (1920 - 960) / 2 = 480
-      expect(corners.tl.x).toBeCloseTo(480, 5);
-      expect(corners.br.x).toBeCloseTo(1440, 5);
     });
   });
 

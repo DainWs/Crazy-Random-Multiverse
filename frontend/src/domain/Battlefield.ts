@@ -1,6 +1,6 @@
 import BattlefieldSkin from "@/domain/BattlefieldSkin";
 import GameConfiguration from "@/domain/GameConfiguration";
-import { Corners2D, Point2D } from "@/domain/Geometry";
+import { Corners2D } from "@/domain/Geometry";
 import Zone from "@/domain/Zone";
 
 const BASE_BOARD_SIDE = 3200;
@@ -61,11 +61,6 @@ class Battlefield {
 
   public getMaxPlayersPerSide(): number {
     return this.maxPlayersPerSide;
-  }
-
-  public getCenter(): Point2D {
-    const half = this.sideSize / 2;
-    return { x: half, y: half };
   }
 
   public getCorners(): Corners2D {

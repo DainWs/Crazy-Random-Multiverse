@@ -1,9 +1,9 @@
-import { Corners2D, Point2D } from "@/domain/Geometry";
+import { Point2D } from "@/domain/Geometry";
 import { GameScene } from "@/scenes/Game";
 import CameraMovementManager from "@/core/cameras/CameraMovementManager";
 import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
-import { calculateBoundsOfPoints, calculateCameraCorners, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
+import { calculateBoundsOfPoints, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
 import type { Bounds2D, CameraViewport } from "@/core/cameras/CameraCalculations";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
@@ -30,10 +30,6 @@ class CameraSystem {
 
         this.camera.setZoom(cameraConfiguration.zoom);
         this.camera.centerOn(centerX, centerY + cameraConfiguration.yOffset);
-    }
-
-    public getCameraCorners(): Corners2D {
-        return calculateCameraCorners(this.getViewport());
     }
 
     public getCamera(): Phaser.Cameras.Scene2D.Camera {

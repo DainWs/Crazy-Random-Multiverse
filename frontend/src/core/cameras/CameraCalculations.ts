@@ -1,4 +1,4 @@
-import { Corners2D, Point2D } from "@/domain/Geometry";
+import { Point2D } from "@/domain/Geometry";
 
 /**
  * Pure camera math functions, independent of Phaser runtime.
@@ -68,20 +68,6 @@ function calculateScreenFixedTransform(screenWidth: number, screenHeight: number
   };
 }
 
-function calculateCameraCorners(viewport: CameraViewport): Corners2D {
-  const width = viewport.screenWidth / viewport.zoom;
-  const height = viewport.screenHeight / viewport.zoom;
-  const x = (viewport.screenWidth - width) / 2;
-  const y = (viewport.screenHeight - height) / 2;
-
-  return {
-    tl: { x, y },
-    tr: { x: x + width, y },
-    bl: { x, y: y + height },
-    br: { x: x + width, y: y + height }
-  };
-}
-
 type MaxPlayersPerSide = number;
 type CameraConfiguration = {
   zoom: number;
@@ -101,4 +87,4 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
 }
 
 export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
-export { calculateHUDPosition, calculateCameraCorners, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export { calculateHUDPosition, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };

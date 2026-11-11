@@ -108,26 +108,6 @@ class Card {
     return this.isType('LEADER') || this.isType('WARRIOR');
   }
 
-  public hasStatistics(): boolean {
-    return this.isCombatant() || this.isType('EQUIPMENT');
-  }
-
-  public hasSkills(): boolean {
-    return !!this.activeSkill || !!this.passiveSkill;
-  }
-
-  public getTypeDescription(): string {
-    if (!this.isType('WARRIOR')) {
-      return this.type;
-    }
-
-    if (this.rarity == undefined) {
-      throw new Error('Card of type Warriror requires rarity as not null');
-    }
-
-    return this.rarity;
-  }
-
   public getAudio(type: CardAudioType): Resource {
     const variant = Math.floor(Math.random() * ATTACK_AUDIO_VARIANTS) + 1;
     return cardAudioKey(this.getImage(), type, variant);
