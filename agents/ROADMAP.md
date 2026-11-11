@@ -22,12 +22,12 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Accepted risk: load without limit | A player can block the start of the game (`LOAD-3`) |
 | Accepted risk: wrong hand | The hand can stay wrong until the next `GAME_SYNC` (`CON-12`) |
 | Accepted risk: request without response | A request that reaches the server and is never answered has no client time limit, so the client waits until the page is reloaded (`UI-24`, `LOAD-7`) |
-| Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead (`TURN-4`) |
+| Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
 ## Phase 9 — Architecture cleanup
 
 - [ ] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it
-- [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4)
+- [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
 - [ ] Complete or remove unfinished card input logic; complete `CardClickHandler`
 - [ ] Remove dead/unused architecture
 - [ ] Finish remaining TODOs in comments

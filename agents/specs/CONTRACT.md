@@ -9,7 +9,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 - **CON-3** When a socket drops, only the socket is unbound. The user, their party and their game are kept until the user has been without an open socket for longer than a grace period (5 minutes, `crm.user.disconnect-grace-period`). A periodic task deletes those users (every minute, `crm.user.cleanup-interval`). See `ABSENT` in `GAME-END.md`.
 - **CON-4** Reconnection is performed by the Socket.IO client.
 - **CON-5** One setting, `crm.communication.origin`, holds the client origin that REST and the socket allow, with credentials. It is an explicit origin, never `*`, because browsers refuse cookies with it.
-- **CON-25** A user can have several sockets bound at once, for example with several tabs. All of them receive the user's events, `CON-23` applies to each socket when it is bound, and the drop of one does not affect the others. The response to a request only reaches the socket of the tab that sent it. Creating a party, leaving one, also as a spectator (`SPEC-3`), and renaming oneself outside a party send nothing to the user, so the other tabs keep the previous state until their socket is bound again or their next request is rejected.
+- **CON-25** A user can have several sockets bound at once, for example with several tabs. All of them receive the user's events, `CON-23` applies to each socket when it is bound, and the drop of one does not affect the others. The response to a request only reaches the tab that sent it. Creating a party, leaving one, also as a spectator (`SPEC-3`), and renaming oneself outside a party send nothing to the user, so the other tabs keep the previous state until their socket is bound again or their next request is rejected.
 
 ## Server → client channels
 
@@ -24,7 +24,7 @@ Differences between this document and the code are tracked in `ROADMAP.md`.
 - **CON-6** Codes travel as plain text inside JSON bodies. They are encoded as Base64 URL-safe only when they are part of a URL path.
 - **CON-7** Card codes (`CardCodeDto.code`) travel as decimal text so that no digit is lost in JavaScript: the backend keeps them as a `long` and the frontend as a `string`.
 - **CON-26** A `CardCodeDto` identifies a card in the catalog, so a code is only unique within its type and all the copies of a card share it. Cards have no unique id: on the board a card is identified by its position, and an action names a card in the hand by its `CardCodeDto`, because its copies are interchangeable (`HAND-4`).
-- **CON-8** A field with no value is not sent (the Socket.IO serializer omits `null`), so the frontend types of those fields are optional.
+- **CON-8** A field with no value is not sent in the socket events (the Socket.IO serializer omits `null`), so the frontend types of those fields are optional. The REST responses use the default serializer of Spring, which sends such a field as `null`.
 
 ## Events
 
@@ -74,7 +74,7 @@ Types of the details:
 
 ## Hand
 
-- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. `targetPlayer`, and the `PLAYER_PUT_CARD` and `PLAYER_EQUIP_CARD` of every player, reach everyone, so the size of a rival's hand can be worked out (`HAND-3`). A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players know the type and, for a warrior, the rarity of each card in a hand, without knowing which card it is: `PlayerDto.handBacks` is a `CardBackDto[]` (`{ type, rarity }`) in the order of the hand, and the back received is the last one. `fixed` has a back for each type and warrior rarity, whose keys `CON-30` does not define yet.
+- **CON-13** `PLAYER_RECEIVE_CARD` carries `targetPlayer` for every player and `targetCard` only for the player who receives the card. The client adds the card to the hand only if the event carries it. `targetPlayer`, and the `PLAYER_PUT_CARD` and `PLAYER_EQUIP_CARD` of every player, reach everyone, so the size of a rival's hand can be worked out (`HAND-3`). A played card leaves the hand with the `PLAYER_PUT_CARD` or `PLAYER_EQUIP_CARD` of its owner: one copy with the same `catalogCode` (`HAND-2`). The client empties the hand when it applies the `PLAYER_DIE` of its own player (`ELIM-3`). After a connection the client clears the hand and restores it from `GAME_SYNC`, not from these events. **[Post-MVP]** The other players know the type and, for a warrior, the rarity of each card in a hand, without knowing which card it is: `PlayerDto.handBacks` is a `CardBackDto[]` (`{ type, rarity }`) in the order of the hand, and the back received is the last one. `fixed` has a back for each type and warrior rarity. **[OPEN]** The keys of those backs in `CON-30`.
 
 ## Data
 
@@ -239,20 +239,22 @@ Types of the fields:
 | `POST /game/{gameCode}/ready` | Player | | |
 | `POST /game/{gameCode}/action` | Player | `ActionDto` | See `CON-18` |
 
+A request to an endpoint of the owner from any other user is rejected with `exception.party.user_is_not_party_owner`, and one to an endpoint of a player from a user who is not a player of that game with `exception.access_denied.wrong_game`.
+
 ## Errors
 
 - **CON-36** The keys of `CON-18` are the following. `exception.unexpected` and `exception.server_unreachable` are not among them: they are the client's own (`UI-6`, `UI-24`).
 
 | Key | Meaning |
 |---|---|
-| `exception.access_denied.wrong_game` | The action targets a game the user does not belong to |
+| `exception.access_denied.wrong_game` | The user is not a player of the game of the request: an action, `/ready` or the manifest. Also a spectator who left the game and requests its manifest (`CON-28`) |
 | `exception.access_denied.identity_mismatch` | `sourcePlayer` is not the session user's player |
 | `exception.{game,player,card,zone,party,user,game_mode}.not_found` | The element does not exist |
-| `exception.party.user_is_not_party_owner` | Only the owner can do this |
-| `exception.party.user_already_in_party` | The user already belongs to a party |
+| `exception.party.user_is_not_party_owner` | Only the owner can do this (`CON-35`) |
+| `exception.party.user_already_in_party` | The user already belongs to a party (`PARTY-1`) |
 | `exception.request.malformed` | The body or the path of the request cannot be read, or an action lacks a required field (`CON-37`) |
 | `exception.party.locked` | The party is locked (`LOAD-1`, `PARTY-3`, `PARTY-5`, `PARTY-6`, `PARTY-9`) |
-| `exception.party.is_full` | The party has reached its capacity |
+| `exception.party.is_full` | The party has reached its capacity (`PARTY-5`) |
 | `exception.party.cannot_kick_owner` | `PARTY-6` |
 | `exception.party.user_not_in_party` | The user who leaves, or the one kicked, is not a member (`PARTY-6`) |
 | `exception.party.max_users_out_of_range` | The capacity is outside 2 to 10 or below the current members (`PARTY-2`) |

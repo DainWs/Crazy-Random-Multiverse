@@ -72,7 +72,7 @@ domain → (nothing)
 - A 64-bit value (such as a card code) arrives from the backend as a `string` and is converted to the domain type in the `api` layer.
 - The DTOs in `api/dtos` are declared with `type`/`interface`, and converted to `domain` in the `api` layer. A DTO is never passed to a view.
 - Closed sets are modeled with a literal union or `as const`; `enum` only where it is already used.
-- A literal union that mirrors a backend enum uses the backend's text, in uppercase (`'FRIENDLY'`, not `'friendly'`).
+- A literal union that mirrors a backend enum uses the backend's text, in uppercase (`'PHYSICAL'`, not `'physical'`).
 - Whenever a type is imported it must use `import type`, and these go first in the import order.
 - `@/` alias to import from `src/` (`@/api`, `@/domain/Card`), and in the browser tests also from `e2e/` (`@/support/test`, `FRONTEND-TESTS.md`, section 14); **relative paths are forbidden**.
 - Unused parameters are prefixed with `_` (ESLint rule).
