@@ -81,13 +81,6 @@ public class ClassicGameFlow implements GameFlow {
 	}
 
 	@Override
-	public void onPrevTurn(Game game) {
-		if (game.isRunning()) {
-			this.turnManager.prevTurn(game);
-		}
-	}
-
-	@Override
 	public void updateGame(Game game) {
 		for (Player player : game.getAlivePlayers()) {
 			this.updatePlayer(game, player);

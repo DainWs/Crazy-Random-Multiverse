@@ -8,8 +8,6 @@ public interface GameFlow {
 
 	void onNextTurn(Game game);
 
-	void onPrevTurn(Game game);
-
 	void updateGame(Game game);
 
 }

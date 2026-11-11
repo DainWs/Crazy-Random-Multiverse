@@ -20,10 +20,6 @@ public class RecordingGameFlow implements GameFlow {
 	}
 
 	@Override
-	public void onPrevTurn(Game game) {
-	}
-
-	@Override
 	public void updateGame(Game game) {
 	}
 

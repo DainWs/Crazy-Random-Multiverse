@@ -24,11 +24,6 @@ public abstract class CompositeGameFlow implements GameFlow {
 	}
 
 	@Override
-	public void onPrevTurn(Game game) {
-		this.wrapper.onPrevTurn(game);
-	}
-
-	@Override
 	public void updateGame(Game game) {
 		this.wrapper.updateGame(game);
 	}

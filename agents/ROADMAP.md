@@ -33,7 +33,7 @@ Started at: `12df6bd`
 - [x] Complete or remove unfinished card input logic; complete `CardClickHandler`: it already follows `VIEW-4`, so the empty `onPointerDown` and the logging of the dispatcher were removed
 - [x] Remove dead/unused architecture: `CardActionPerspective` stays, kept for the effects of the Post-MVP section
 - [ ] Finish remaining TODOs in comments
-- [ ] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds
+- [x] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds. Both were removed with the code that only they served
 - [ ] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`)
 - [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
 
