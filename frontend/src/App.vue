@@ -4,7 +4,6 @@ import { AUTO, Scale } from 'phaser';
 import { Boot } from '@/scenes/Boot';
 import { GameLoad } from '@/scenes/GameLoad';
 import { GameScene } from '@/scenes/Game';
-import { MainMenu } from '@/scenes/MainMenu';
 import { Preloader } from '@/scenes/Preloader';
 import useAppController from '@/AppController';
 import SessionSystem from '@/core/SessionSystem';
@@ -25,7 +24,6 @@ const config: Phaser.Types.Core.GameConfig = {
     scene: [
         Boot,
         Preloader,
-        MainMenu,
         GameLoad,
         GameScene
     ],
