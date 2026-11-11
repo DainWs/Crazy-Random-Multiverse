@@ -1,7 +1,7 @@
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
-import { HAND_CARD, OWN_WARRIOR, TOOLTIP_AREA, frameOf, hover, openGame } from '@/support/board';
+import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, TOOLTIP_AREA, frameOf, hover, openGame } from '@/support/board';
 import { createEquipment, createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -30,6 +30,37 @@ test.describe('side panel of a combatant with equipment', () => {
         await hover(page, OWN_WARRIOR);
 
         await expect(page).toHaveScreenshot('panel-equipment.png', { clip: TOOLTIP_AREA, maxDiffPixels: 0 });
+    });
+});
+
+/** The card of the own warrior and the table to its left, where the pieces of equipment slide out. */
+const STACK_AREA: Area = { x: 650, y: 650, width: 310, height: 130 };
+
+// VIEW-14, EQUIP-4
+test.describe('equipment stacked behind its combatant', () => {
+    const pieces = [createEquipment('30', PISTOL), createEquipment('31', SHIELD)];
+
+    test.beforeEach(async ({ page, backend }) => {
+        await openGame(page, backend, withEquipmentOnOwnWarrior(createPreparedGame(2), pieces));
+    });
+
+    test('shows a strip of every piece behind the card', async ({ page }) => {
+        await expect(page).toHaveScreenshot('stack-rest.png', { clip: STACK_AREA, maxDiffPixels: 0 });
+    });
+
+    test('slides every piece out while hovering', async ({ page }) => {
+        await hover(page, OWN_WARRIOR);
+
+        await expect(page).toHaveScreenshot('stack-hover.png', { clip: STACK_AREA, maxDiffPixels: 0 });
+    });
+
+    test('slides the pieces back after leaving', async ({ page }) => {
+        const atRest = await frameOf(page, STACK_AREA);
+        await hover(page, OWN_WARRIOR);
+
+        await hover(page, EMPTY_TABLE);
+
+        expect((await frameOf(page, STACK_AREA)).equals(atRest)).toBe(true);
     });
 });
 

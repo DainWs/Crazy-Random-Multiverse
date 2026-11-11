@@ -1,38 +1,36 @@
 import type CardView from "@/game/cards/CardView";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
 
+/** How much of each piece of equipment shows behind its combatant at rest, in px of card space. */
 const BEHIND_CARD_OFFSET = 20;
 
+/**
+ * The offsets are in the space of the combatant, which is rotated with its zone, so a piece slides out
+ * towards the left of its card in every zone. `index` counts the pieces from 1, the nearest to the card.
+ */
 interface CardStackLayoutHelper {
-  revealCard(combatant: CardView, stackedCard: CardView): void;
-  hideCard(combatant: CardView, stackedCard: CardView): void;
-  calculateOffset(angle: number): [number, number];
+  revealCard(combatant: CardView, stackedCard: CardView, index: number): void;
+  hideCard(combatant: CardView, stackedCard: CardView, index: number): void;
+  calculateOffset(index: number): [number, number];
 }
 
-const revealCard = (combatant: CardView, stackedCard: CardView) => {
-  const [xWithOffset, yWithOffset] = calculateRevealedOffset(combatant.angle, combatant.width);
+const revealCard = (combatant: CardView, stackedCard: CardView, index: number) => {
+  const [xWithOffset, yWithOffset] = calculateRevealedOffset(combatant.width, index);
   CardAnimator.playTween(stackedCard, 'horizontal_slide', xWithOffset, yWithOffset);
 }
 
-const hideCard = (combatant: CardView, stackedCard: CardView) => {
-  const [xWithOffset, yWithOffset] = calculateOffset(combatant.angle);
+const hideCard = (_combatant: CardView, stackedCard: CardView, index: number) => {
+  const [xWithOffset, yWithOffset] = calculateOffset(index);
   CardAnimator.playTween(stackedCard, 'horizontal_slide', xWithOffset, yWithOffset);
 }
 
-function calculateOffset(angle: number, index: number = 1): [number, number] {
-  const offset = BEHIND_CARD_OFFSET * index;
-  if (angle === 90) return [0, offset];
-  if (angle === 180) return [offset, 0];
-  if (angle === -90) return [0, -offset];
-  return [-offset, 0];
+function calculateOffset(index: number): [number, number] {
+  return [-(BEHIND_CARD_OFFSET * index), 0];
 }
 
-function calculateRevealedOffset(angle: number, cardWidth: number, index: number = 1): [number, number] {
-  const totalOffset = (BEHIND_CARD_OFFSET * index) + cardWidth;
-  if (angle === 90) return [0, totalOffset];
-  if (angle === 180) return [totalOffset, 0];
-  if (angle === -90) return [0, -totalOffset];
-  return [-totalOffset, 0];
+/** Each piece slides out one card width further than the previous one, so every piece shows whole. */
+function calculateRevealedOffset(cardWidth: number, index: number): [number, number] {
+  return [-(BEHIND_CARD_OFFSET + cardWidth * index), 0];
 }
 
 const BASE_CARD_STACK_LAYOUT_HELPER: CardStackLayoutHelper = {

@@ -1,23 +1,14 @@
 import type { CardAudioType, CombatantCard } from "@/domain/Card";
-import type { CardStackLayoutHelper } from "@/game/cards/CardStackLayoutHelper";
 import type { CardRender } from "@/game/cards/renders/CombatantRender";
 import combatantRender from "@/game/cards/renders/CombatantRender";
 import CardView from "@/game/cards/CardView";
-import baseCardStackLayoutHelper from "@/game/cards/CardStackLayoutHelper";
+import stackLayoutHelper from "@/game/cards/CardStackLayoutHelper";
 
 class CombatantView extends CardView {
-  // TODO when mouse over stacked card, it should show the tooltip of the stacked card, this include to slide the cards to show the stacked card
-  private stackHelper?: CardStackLayoutHelper;
-  private stackedCard: CardView;
+  private readonly stackedCards: CardView[] = [];
 
   public constructor(scene: Phaser.Scene, combatantCard: CombatantCard) {
     super(scene, combatantCard);
-  }
-
-  protected override initializeView() {
-    super.initializeView();
-
-    this.stackHelper = baseCardStackLayoutHelper;
   }
 
   public override get cardRender(): CardRender {
@@ -26,25 +17,35 @@ class CombatantView extends CardView {
 
   // Stacking logic
 
-  public stack(card: CardView) {
-    if (this.stackHelper && this.stackedCard === undefined) {
-      this.stackedCard = card;
-
-      const [xWithOffset, yWithOffset] = this.stackHelper.calculateOffset(this.angle);
-      this.stackedCard.setOriginalPosition(xWithOffset, yWithOffset);
-      this.stackedCard.setOriginalDepth(this.depth - 1);
-      this.stackedCard.setAngle(this.angle);
-      this.stackedCard.reset();
-      this.stackedCard.disableInteractive();
-
-      this.addAt(this.stackedCard, 0);
-      this.scene.input.setDraggable(this.stackedCard, false);
-
-      this.on('pointerout', () => this.stackHelper?.hideCard(this, this.stackedCard));
-      this.on('pointerover', () => this.stackHelper?.revealCard(this, this.stackedCard));
-
-      this.stackedCard.disableClicks(); // TODO deprecated and temporal
+  /** Puts the pieces of equipment behind the card, the first one nearest, and slides them out while hovering (VIEW-14). */
+  public stackEquipment(pieces: CardView[]) {
+    for (const piece of pieces) {
+      this.stackPiece(piece);
     }
+
+    this.on('pointerout', this.hideStackedCards.bind(this));
+    this.on('pointerover', this.revealStackedCards.bind(this));
+  }
+
+  private stackPiece(piece: CardView) {
+    this.stackedCards.push(piece);
+
+    const [xWithOffset, yWithOffset] = stackLayoutHelper.calculateOffset(this.stackedCards.length);
+    piece.setOriginalPosition(xWithOffset, yWithOffset);
+    piece.reset();
+    piece.disableInteractive();
+    piece.disableClicks();
+
+    this.addAt(piece, 0);
+    this.scene.input.setDraggable(piece, false);
+  }
+
+  private revealStackedCards() {
+    this.stackedCards.forEach((piece, position) => stackLayoutHelper.revealCard(this, piece, position + 1));
+  }
+
+  private hideStackedCards() {
+    this.stackedCards.forEach((piece, position) => stackLayoutHelper.hideCard(this, piece, position + 1));
   }
 
 

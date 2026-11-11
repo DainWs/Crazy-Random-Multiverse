@@ -17,7 +17,6 @@ import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
-import CombatantView from '@/game/cards/CombatantView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
@@ -138,7 +137,7 @@ class GameScene extends Scene {
         for (const slotView of zoneView.getSlots().flat()) {
             const combatant = slotView.zoneSlot.combatant;
             if (combatant) {
-                slotView.setCard(CardViewFactory.createCardView(this, combatant) as CombatantView);
+                slotView.setCard(CardViewFactory.createCombatantView(this, combatant));
             }
         }
     }

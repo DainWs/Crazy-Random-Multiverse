@@ -4,43 +4,27 @@ import {
   calculateOffset as calculateStackedCardOffset
 } from '@/game/cards/CardStackLayoutHelper';
 
+// VIEW-14
 describe('CardStackLayoutHelper', () => {
   describe('calculateStackedCardOffset', () => {
-    it('returns [-offset, 0] for 0 degrees (default)', () => {
-      expect(calculateStackedCardOffset(0)).toEqual([-20, 0]);
+    it('shows the strip of the first piece to the left of the card', () => {
+      expect(calculateStackedCardOffset(1)).toEqual([-20, 0]);
     });
 
-    it('returns [0, offset] for 90 degrees', () => {
-      expect(calculateStackedCardOffset(90)).toEqual([0, 20]);
-    });
-
-    it('returns [offset, 0] for 180 degrees', () => {
-      expect(calculateStackedCardOffset(180)).toEqual([20, 0]);
-    });
-
-    it('returns [0, -offset] for -90 degrees', () => {
-      expect(calculateStackedCardOffset(-90)).toEqual([0, -20]);
+    it('moves each piece one strip further behind', () => {
+      expect(calculateStackedCardOffset(3)).toEqual([-60, 0]);
     });
   });
 
   describe('calculateRevealedCardOffset', () => {
     const cardWidth = 200;
-    const total = 220;
 
-    it('returns [-total, 0] for 0 degrees', () => {
-      expect(calculateRevealedCardOffset(0, cardWidth)).toEqual([-total, 0]);
+    it('slides the first piece out by a card width plus its strip', () => {
+      expect(calculateRevealedCardOffset(cardWidth, 1)).toEqual([-220, 0]);
     });
 
-    it('returns [0, total] for 90 degrees', () => {
-      expect(calculateRevealedCardOffset(90, cardWidth)).toEqual([0, total]);
-    });
-
-    it('returns [total, 0] for 180 degrees', () => {
-      expect(calculateRevealedCardOffset(180, cardWidth)).toEqual([total, 0]);
-    });
-
-    it('returns [0, -total] for -90 degrees', () => {
-      expect(calculateRevealedCardOffset(-90, cardWidth)).toEqual([0, -total]);
+    it('slides each piece one card width further than the previous', () => {
+      expect(calculateRevealedCardOffset(cardWidth, 2)).toEqual([-420, 0]);
     });
   });
 });
