@@ -36,7 +36,7 @@ public class PlayerActionFacade {
 	}
 
 	public ActionResult playerUseSpell(ActionContextTemplate contextTemplate) {
-		return this.execute(null, contextTemplate); // TODO pending
+		return this.execute(null, contextTemplate); // TODO Post-MVP (SPELL-4): pass UseSpellAction, a null action fails
 	}
 
 	public ActionResult playerSurrender(ActionContextTemplate contextTemplate) {

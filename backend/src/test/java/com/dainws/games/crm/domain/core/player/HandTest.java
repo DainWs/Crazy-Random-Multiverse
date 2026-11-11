@@ -89,6 +89,4 @@ class HandTest {
 		
 		assertFalse(result);
 	}
-	
-	// TODO implement more tests
 }

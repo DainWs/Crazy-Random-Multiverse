@@ -32,7 +32,7 @@ Started at: `12df6bd`
 - [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
 - [x] Complete or remove unfinished card input logic; complete `CardClickHandler`: it already follows `VIEW-4`, so the empty `onPointerDown` and the logging of the dispatcher were removed
 - [x] Remove dead/unused architecture: `CardActionPerspective` stays, kept for the effects of the Post-MVP section
-- [ ] Finish remaining TODOs in comments
+- [x] Finish remaining TODOs in comments: the ones of the spells now name their Post-MVP rule, and the ones of the grid, the stacked cards, the equipment tooltip and the card texts manifest stay with the phase that owns them
 - [x] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds. Both were removed with the code that only they served
 - [x] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`): decided not to split it. About 7 distinct shapes over 18 codes do not justify a class and a mapper branch each (`CODESTYLE` section 2), and the contract does not change. The cost accepted is the nullable fields and the `has*()` checks of `CommunicationMapper`
 - [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`

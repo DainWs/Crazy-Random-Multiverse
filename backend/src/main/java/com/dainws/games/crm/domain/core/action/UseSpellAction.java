@@ -14,9 +14,8 @@ public class UseSpellAction extends UseCardAction {
 
 	@Override
 	protected void performCardAction(Card card, ActionContext context) {
-		
-		// TODO perform spell card effect
-		
+		// TODO Post-MVP (SPELL-1): perform the effect of the spell
+
 		Player player = context.getSourcePlayer();
 		Hand hand = player.getHand();
 		hand.remove(card);

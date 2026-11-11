@@ -89,7 +89,6 @@ function handleIncomingEvent(rawEvent: RawEvent): void {
   const event: EventDto = parseRawEvent(rawEvent);
 
   console.log('[SocketService] Received game event:', event.code, event);
-  // TODO maybe its a good idea to syncronize the game here? syncGameStateFromEvent(event);
 
   notifyListeners(anyEventListeners, 'any event listener', event);
   if (event.code) {

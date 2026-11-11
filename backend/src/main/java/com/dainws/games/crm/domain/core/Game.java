@@ -81,7 +81,7 @@ public class Game {
 		this.isRunning = false;
 	}
 
-	public boolean isRunning() { // TODO possible alternative with status
+	public boolean isRunning() {
 		return this.isRunning;
 	}
 

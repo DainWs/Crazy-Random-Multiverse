@@ -2,7 +2,7 @@ package com.dainws.games.crm.domain.core.effect;
 
 import com.dainws.games.crm.domain.core.exception.EffectException;
 
-// TODO esto va a crecer mucho debido a la variedad y posibilidades de los effectos
+// TODO Post-MVP (SPELL-1): the variety of effects will make this contract grow
 public interface Effect {
 	EffectId getId();
 

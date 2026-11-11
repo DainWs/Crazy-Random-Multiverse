@@ -91,7 +91,6 @@ public class Warrior extends Combatant {
 			return this;
 		}
 
-		// TODO Tal vez hay que eliminar este withDamage(Damage)
 		public Builder withDamage(Damage damage) {
 			this.damage = damage;
 			return this;
@@ -122,7 +121,6 @@ public class Warrior extends Combatant {
 			return this;
 		}
 
-		// TODO Tal vez hay que eliminar este withArmor(Armor)
 		public Builder withArmor(Armor armor) {
 			this.armor = armor;
 			return this;
@@ -143,7 +141,6 @@ public class Warrior extends Combatant {
 			return this;
 		}
 
-		// TODO Tal vez hay que eliminar este withHealth(Health)
 		public Builder withHealth(Health health) {
 			this.health = health;
 			return this;
