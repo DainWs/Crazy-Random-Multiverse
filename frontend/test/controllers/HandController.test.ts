@@ -4,7 +4,7 @@ import type CardView from '@/game/cards/CardView';
 import type { GameScene } from '@/scenes/Game';
 import CardViewFactory from '@/controllers/CardViewFactory';
 import HandController from '@/controllers/HandController';
-import cardFactory from '@/domain/cardFactory';
+import cardFactory from '@/fakes/cardFactory';
 import ResourceSystem from '@/core/ResourceSystem';
 
 vi.mock('@/controllers/CardViewFactory', () => ({

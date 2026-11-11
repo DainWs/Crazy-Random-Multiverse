@@ -3,9 +3,10 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    }
+    alias: [
+      { find: /^@\/fakes\/(.*)$/, replacement: path.resolve(__dirname, './test/fakes/$1') },
+      { find: '@', replacement: path.resolve(__dirname, './src') }
+    ]
   },
   test: {
     include: ['test/**/*.test.ts'],

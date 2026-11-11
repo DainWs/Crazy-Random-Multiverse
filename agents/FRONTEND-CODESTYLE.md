@@ -133,7 +133,7 @@ Enforced by Prettier (`.prettierrc.js`) and ESLint (`eslint.config.js`); it is n
 - An arrow function that is a method or a named function (`const toActiveGame = (...) => { ... }`) is written in full: with `{}` and an explicit `return` when it returns something, never the one-line expression body. Inline callbacks (`computed(() => x)`, `some((known) => known.equals(leader))`) may keep the short form.
 - A callback with more than one statement is not written inline: it goes to a named method or function, passed by reference (`this.onClickYes.bind(this)`).
 - No wildcard imports. Order: libraries (`phaser`, `vue`, `socket.io-client`), `@/api`, `@/domain`, `@/core`, the rest.
-- Class and type files in `PascalCase.ts` (`CardView.ts`); modules with functions and domain utilities in `camelCase.ts` only where they already exist (`cardFactory.ts`).
+- Class and type files in `PascalCase.ts` (`CardView.ts`); `camelCase.ts` only for `index.ts`, `env.ts` and `main.ts`.
 - `npm run lint` must pass with no new errors.
 - `.editorconfig` also states 4 spaces, with CRLF. A whole file is not reformatted except in a separate commit.
 

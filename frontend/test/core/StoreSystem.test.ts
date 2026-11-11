@@ -4,7 +4,7 @@ import type Card from '@/domain/Card';
 import type { CombatResult } from '@/domain/CombatResult';
 import type Zone from '@/domain/Zone';
 import { CardCode } from '@/domain/Card';
-import cardFactory from '@/domain/cardFactory';
+import cardFactory from '@/fakes/cardFactory';
 import StoreSystem from '@/core/StoreSystem';
 
 vi.mock('@/api/LocalStorageApi', () => ({
