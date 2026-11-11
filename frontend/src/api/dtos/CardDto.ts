@@ -1,6 +1,6 @@
 import type { CardOptions, CardRarity, CardType, EquipmentCard } from "@/domain/Card";
-import type { ArmorType, DamageType } from "@/domain/Statistics";
-import { Armor, Damage, Health } from "@/domain/Statistics";
+import type { ArmorType, DamageType, Statistic, StatisticType } from "@/domain/Statistics";
+import { Armor, Bonus, Damage, Health } from "@/domain/Statistics";
 import Card, { CardCode } from "@/domain/Card";
 
 interface CardCodeDto {
@@ -68,6 +68,27 @@ function toHealth(dto: CardDto): Health | undefined {
   return Health(dto.health, maxVal);
 }
 
+/** A piece of equipment has no types: its values are what it adds or subtracts, and 0 is not sent (CON-8, CON-34). */
+function toBonus(type: StatisticType, value: number | undefined): Statistic | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return Bonus(type, value);
+}
+
+function applyStatistics(card: Card, dto: CardDto) {
+  if (dto.type === 'EQUIPMENT') {
+    card.damage = toBonus('Damage', dto.damage);
+    card.armor = toBonus('Armor', dto.armor);
+    card.health = toBonus('Health', dto.health);
+  } else {
+    card.damage = toDamage(dto);
+    card.armor = toArmor(dto);
+    card.health = toHealth(dto);
+  }
+}
+
 const toCard = (dto: CardDto): Card => {
   const cardOptions: CardOptions = {
     code: toCardCode(dto.catalogCode),
@@ -78,9 +99,7 @@ const toCard = (dto: CardDto): Card => {
   }
 
   const card = new Card(cardOptions);
-  card.damage = toDamage(dto);
-  card.armor = toArmor(dto);
-  card.health = toHealth(dto);
+  applyStatistics(card, dto);
   card.isProtected = dto.protected ?? false;
   card.isAttackAvailable = dto.attackAvailable ?? false;
   card.isTargetable = dto.targetable ?? false;

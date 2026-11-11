@@ -2,10 +2,12 @@ import type { GameScene } from "@/scenes/Game";
 import type Card from "@/domain/Card";
 import type CardView from "@/game/cards/CardView";
 import type { CardTooltip } from "@/game/cards/tooltip";
+import type { EquipmentValueLine } from "@/game/cards/EquipmentValueLines";
 import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 import { getText } from "@/core/Texts";
+import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 
 const SCALE_FACTOR = 1.6;
 const WIDTH = CARD_WIDTH * SCALE_FACTOR;
@@ -46,6 +48,9 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private currentWidth: number = 0;
   private currentHeight: number = 0;
+
+  /** The card the panel shows. Its pointer-out never fires if it is destroyed under the pointer (VIEW-14). */
+  private shownCardView?: CardView;
 
   public constructor(gameScene: GameScene) {
     super(gameScene);
@@ -101,10 +106,18 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private initSyncEvent() {
     this.scene.events.on('prerender', () => {
+      if (this.visible && this.isShownCardGone()) {
+        this.hide();
+      }
+
       if (this.visible) {
         this.updateBounds();
       }
     });
+  }
+
+  private isShownCardGone(): boolean {
+    return this.shownCardView !== undefined && !this.shownCardView.active;
   }
 
   private updateBounds() {
@@ -125,6 +138,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   public show(cardView: CardView) {
+    this.shownCardView = cardView;
     this.updateBounds();
 
     this.buildCardVisual(cardView);
@@ -137,6 +151,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   public hide() {
+    this.shownCardView = undefined;
     this.setVisible(false);
     this.cardContainer.removeAll(true);
   }
@@ -203,30 +218,28 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private renderEquipment(equipmentCard: Card, startYPosition: number): number {
-    let currentYPosition = startYPosition;
-    currentYPosition = this.renderEquipmentName(getText(equipmentCard.name), currentYPosition);
+    let currentYPosition = this.renderEquipmentName(getText(equipmentCard.name), startYPosition);
 
-    // TODO change to english labels and support for future multiple equipments
-    if (equipmentCard.damage) currentYPosition = this.renderEquipmentStat('Daño', equipmentCard.damage.value, currentYPosition);
-    if (equipmentCard.armor) currentYPosition = this.renderEquipmentStat('Armadura', equipmentCard.armor.value, currentYPosition);
-    if (equipmentCard.health) currentYPosition = this.renderEquipmentStat('Vida', equipmentCard.health.value, currentYPosition);
+    for (const line of equipmentValueLines(equipmentCard)) {
+      currentYPosition = this.renderEquipmentStat(line, currentYPosition);
+    }
+
     return currentYPosition + PADDING;
   }
 
   private renderEquipmentName(equipmentName: string, startYPosition: number): number {
     const equipmentNameText = this.createText(22, COLOR_EQUIPMENT_NAME, 'italic');
-    equipmentNameText.setText(`Equipo: ${equipmentName}`);
+    equipmentNameText.setText(`${getText('ui.card.equipment')} ${equipmentName}`);
     equipmentNameText.setStroke(COLOR_STROKE, 2);
     equipmentNameText.setPosition(0, startYPosition);
     this.addEquipmentText(equipmentNameText);
     return startYPosition + equipmentNameText.height + 6;
   }
 
-  private renderEquipmentStat(statLabel: string, statValue: number, startYPosition: number): number {
-    const statColor = statValue >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE;
-    const valueSign = statValue > 0 ? '+' : '';
+  private renderEquipmentStat(line: EquipmentValueLine, startYPosition: number): number {
+    const statColor = line.value >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE;
     const statTextElement = this.createText(20, statColor, 'bold');
-    statTextElement.setText(`${statLabel}: ${valueSign}${statValue}`);
+    statTextElement.setText(line.text);
     statTextElement.setStroke(COLOR_STROKE, 3);
     statTextElement.setPosition(0, startYPosition);
     this.addEquipmentText(statTextElement);

@@ -48,6 +48,18 @@ function Health(value: number, maxValue: number): Statistic {
   }
 }
 
+/** The value a piece of equipment adds or subtracts. It has no type or icon: it takes those of its card (EQUIP-1, CON-34). */
+function Bonus(type: StatisticType, value: number): Statistic {
+  return {
+    type,
+    value,
+    text: () => `${value}`,
+    icon: () => {
+      throw new Error(`A ${type} bonus of a piece of equipment has no icon`);
+    }
+  }
+}
+
 /** The armor or health at another value, keeping its maximum and type. */
 function withValue(statistic: Statistic, value: number): Statistic {
   if (statistic.type === 'Health') {
@@ -63,4 +75,4 @@ function valueAfterDamage(statistic: Statistic, damage: number): number {
 }
 
 export type { StatisticType, DamageType, ArmorType, Statistic };
-export { Damage, Armor, Health, withValue, valueAfterDamage };
+export { Damage, Armor, Health, Bonus, withValue, valueAfterDamage };

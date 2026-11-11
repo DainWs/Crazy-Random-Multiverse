@@ -86,6 +86,41 @@ describe('API Models and DTO Mappers', () => {
       expect(pieceNames).toEqual(['Sword']);
     });
 
+    // EQUIP-1, CON-34
+    it('toCard maps the values of a piece of equipment, which has no types', () => {
+      const pieceDto: CardDto = {
+        catalogCode: { code: '0', type: 'EQUIPMENT' },
+        name: 'Pistolon',
+        type: 'EQUIPMENT',
+        damage: 15,
+        armor: -2
+      };
+
+      const piece = toCard(pieceDto);
+
+      expect([piece.damage?.value, piece.armor?.value, piece.health]).toEqual([15, -2, undefined]);
+    });
+
+    // CON-27
+    it('toCard sums the values of the pieces of a combatant', () => {
+      const pieceDto = (damage: number): CardDto => ({
+        catalogCode: { code: String(damage), type: 'EQUIPMENT' },
+        name: 'Piece',
+        type: 'EQUIPMENT',
+        damage
+      });
+      const warriorDto: CardDto = {
+        catalogCode: { code: '10', type: 'WARRIOR' },
+        name: 'Knight',
+        type: 'WARRIOR',
+        equipment: [pieceDto(15), pieceDto(5)]
+      };
+
+      const warrior = toCard(warriorDto);
+
+      expect(warrior.getEquipmentValue('Damage')).toBe(20);
+    });
+
     it('toCard maps the runtime state sent by the server', () => {
       const cardDto: CardDto = {
         catalogCode: { code: '11', type: 'WARRIOR' },

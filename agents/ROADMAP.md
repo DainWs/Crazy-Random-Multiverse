@@ -32,7 +32,7 @@ Started at: `9de2969`
 - [ ] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
 - [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [ ] Review/fix existing table grid-line TODO
-- [ ] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
+- [x] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
 - [x] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone. Regenerate the reference images that show the label: T6 of `ROADMAP-TEST.md` approved them with cards in the rival hands
 - [ ] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
 - [ ] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
@@ -45,8 +45,8 @@ Started at: `9de2969`
 - [ ] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
 - [ ] Lower the contrast of the grid of the table, which competes with the cards (`VIEW-26`)
 - [ ] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
-- [ ] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
-- [ ] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
+- [x] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
+- [x] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
 
 ## Phase 11 — UX
 

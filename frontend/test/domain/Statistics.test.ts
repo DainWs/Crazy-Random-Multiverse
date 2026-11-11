@@ -1,7 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { Armor, Health, valueAfterDamage, withValue } from '@/domain/Statistics';
+import { Armor, Bonus, Health, valueAfterDamage, withValue } from '@/domain/Statistics';
 
 describe('Statistics', () => {
+  describe('Bonus', () => {
+    // EQUIP-1, CON-34
+    it('has no type of its own', () => {
+      const statistic = Bonus('Damage', 15);
+
+      expect(statistic.valueType).toBeUndefined();
+    });
+
+    it('throws when asked for an icon', () => {
+      expect(() => Bonus('Armor', 5).icon()).toThrow('A Armor bonus of a piece of equipment has no icon');
+    });
+  });
+
   describe('withValue', () => {
     it('keeps the maximum of a health', () => {
       const statistic = withValue(Health(10, 15), 7);

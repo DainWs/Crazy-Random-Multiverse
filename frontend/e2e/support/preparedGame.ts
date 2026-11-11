@@ -63,7 +63,7 @@ function createWarrior(code: string, flags: Partial<CardDto> = {}): CardDto {
     };
 }
 
-function createEquipment(code: string): CardDto {
+function createEquipment(code: string, flags: Partial<CardDto> = {}): CardDto {
     return {
         catalogCode: { code, type: 'EQUIPMENT' },
         name: 'Espada de prueba',
@@ -71,7 +71,8 @@ function createEquipment(code: string): CardDto {
         type: 'EQUIPMENT',
         damage: 3,
         armor: 0,
-        health: 0
+        health: 0,
+        ...flags
     };
 }
 
@@ -127,4 +128,4 @@ function withCombatant(game: GameDto, zone: number, position: PositionDto, comba
 }
 
 export type { PreparedGame };
-export { LOCAL_USER, createLoadingGame, createPreparedGame, createWarrior, withCombatant };
+export { LOCAL_USER, createEquipment, createLoadingGame, createPreparedGame, createWarrior, withCombatant };
