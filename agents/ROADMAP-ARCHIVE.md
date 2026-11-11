@@ -220,3 +220,16 @@ Started at: `eefedd9` · Finished at: `0cab669`
 - [x] Cancel the loading on the server when a removed player leaves fewer than 2: publish `GAME_CANCELLED`, remove the game and unlock the party (`LOAD-4`; done in Phase 5)
 - [x] Go back to the party and explain it when the loading is cancelled (`LOAD-4`)
 - [x] Let a spectator leave a locked party with `POST /party/{partyCode}/leave` and stop sending them the events of the game (`SPEC-3`): `Party.remove` rejected it with `exception.party.locked`
+
+## Phase 9 — Architecture cleanup
+
+Started at: `12df6bd` · Finished at: `929bbe8`
+
+- [x] Review `EventSystem`, and whether the animation system of Phase 5.5 (`core/`) joins it: nothing listened to it, so it is removed, and `AnimationSystem` stays apart
+- [x] Complete or remove `ActionResolver` (removed with `ActionSystem` in Phase 4). Done before the phase started, so it has no `Started at`
+- [x] Complete or remove unfinished card input logic; complete `CardClickHandler`: it already follows `VIEW-4`, so the empty `onPointerDown` and the logging of the dispatcher were removed
+- [x] Remove dead/unused architecture: `CardActionPerspective` stays, kept for the effects of the Post-MVP section
+- [x] Finish remaining TODOs in comments: the ones of the spells now name their Post-MVP rule, and the ones of the grid, the stacked cards, the equipment tooltip and the card texts manifest stay with the phase that owns them
+- [x] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds. Both were removed with the code that only they served
+- [x] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`): decided not to split it. About 7 distinct shapes over 18 codes do not justify a class and a mapper branch each (`CODESTYLE` section 2), and the contract does not change. The cost accepted is the nullable fields and the `has*()` checks of `CommunicationMapper`
+- [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
