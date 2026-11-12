@@ -45,6 +45,36 @@ describe('ZoneLayout', () => {
     });
   });
 
+  describe('getZoneScale', () => {
+    // VIEW-2
+    it('grows the zones when only two players share the table', () => {
+      const layout = new ZoneLayout(createMockBattlefield(0, 1), ENEMY_SIDES);
+
+      expect(layout.getZoneScale()).toBe(1.25);
+    });
+
+    // VIEW-2
+    it.each([
+      { description: 'no enemies', friendlyCount: 0, enemyCount: 0 },
+      { description: 'zones on the left and right sides', friendlyCount: 0, enemyCount: 3 },
+      { description: 'ten players', friendlyCount: 0, enemyCount: 9 }
+    ])('keeps the base size with $description', ({ friendlyCount, enemyCount }) => {
+      const layout = new ZoneLayout(createMockBattlefield(friendlyCount, enemyCount), ENEMY_SIDES);
+
+      expect(layout.getZoneScale()).toBe(1);
+    });
+
+    // VIEW-2
+    it('keeps the outer edge of the zones where it was', () => {
+      const layout = new ZoneLayout(createMockBattlefield(0, 1), ENEMY_SIDES);
+
+      const bottomPosition = layout.getPlayerZonePosition(BattlefieldSide.BOTTOM, 0);
+
+      // 1600 - (100 * 2 + 470 * 1.25): the zone center moves in so that its outer edge stays at 1400
+      expect(bottomPosition.y).toBe(812.5);
+    });
+  });
+
   describe('getNextBottomZonePosition', () => {
     it('skips the centerPlayerIndex for teammate slots', () => {
       const battlefield = createMockBattlefield(1, 0);

@@ -42,7 +42,7 @@ Started at: `9de2969`
 - [x] Make the expansion of the hand animate: `HandView.updateBounds` sets its `y` on every `prerender`, which overrides the tween of `HandAnimator`. Read from the code, not seen on screen
 - [x] Reduce the size of the cards of the hand: expanded they measure about 200×300 at 1600×900, a third of the screen height, and two cards take about 410 px. With 5 cards the expanded hand covers the left column of the own zone. They stay larger than the cards of the board, whose smaller size is what lets the whole board fit. The target size is not set: it is decided with the user at the start of the phase, looking at it on screen
 - [x] Center the hand on the screen according to the cards it holds (`VIEW-25`): its bounds are sized for 10 cards and anchored to the left
-- [ ] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
+- [x] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
 - [x] Lower the contrast of the grid of the table, which competes with the cards (`VIEW-26`)
 - [x] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
 - [x] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen

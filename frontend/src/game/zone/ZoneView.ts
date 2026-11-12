@@ -25,8 +25,10 @@ interface ZoneViewOptions {
 
 type AllZoneViewOptions = Required<ZoneViewOptions>;
 type DefaultZoneViewOptions = Omit<AllZoneViewOptions, 'position' | 'rotation' | 'slotSize'>;
+/** Space between the slots of a zone at its base size, in board-space units. */
+const BASE_SLOT_SPACING = 20;
 const defaultOptions: DefaultZoneViewOptions = {
-  spaceBetweenSlots: 20,
+  spaceBetweenSlots: BASE_SLOT_SPACING,
   hasTurn: false
 };
 
@@ -122,4 +124,5 @@ class ZoneView extends Phaser.GameObjects.Container {
   }
 }
 
+export { BASE_SLOT_SPACING };
 export default ZoneView;

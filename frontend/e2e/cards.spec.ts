@@ -34,7 +34,7 @@ test.describe('side panel of a combatant with equipment', () => {
 });
 
 /** The card of the own warrior and the table to its left, where the pieces of equipment slide out. */
-const STACK_AREA: Area = { x: 650, y: 650, width: 310, height: 130 };
+const STACK_AREA: Area = { x: 633, y: 610, width: 310, height: 130 };
 
 // VIEW-14, EQUIP-4
 test.describe('equipment stacked behind its combatant', () => {

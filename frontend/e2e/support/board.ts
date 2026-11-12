@@ -24,11 +24,11 @@ const DRAG_STEPS = 12;
 const ARROW_RED_MIN_VALUE = 180;
 
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
-const OWN_WARRIOR: Point = { x: 888, y: 715 };
-const RIVAL_WARRIOR: Point = { x: 1014, y: 180 };
+const OWN_WARRIOR: Point = { x: 872, y: 670 };
+const RIVAL_WARRIOR: Point = { x: 1029, y: 207 };
 const HAND_CARD: Point = { x: 830, y: 1050 };
 const SOLE_HAND_CARD: Point = { x: 960, y: 1050 };
-const EMPTY_OWN_SLOT: Point = { x: 960, y: 715 };
+const EMPTY_OWN_SLOT: Point = { x: 960, y: 672 };
 const EMPTY_TABLE: Point = { x: 1250, y: 450 };
 
 /** Where the cards of the left rival of the prepared game of three players are drawn, in a rotated zone. */
@@ -39,7 +39,7 @@ const TABLE_AREA: Area = { x: 370, y: 40, width: 1180, height: 970 };
 const TOOLTIP_AREA: Area = { x: 1440, y: 0, width: 480, height: 1080 };
 const EXPANDED_HAND_AREA: Area = { x: 700, y: 840, width: 520, height: 200 };
 const SIDE_ZONE_AREA: Area = { x: 540, y: 300, width: 320, height: 230 };
-const OWN_SLOT_AREA: Area = { x: 930, y: 665, width: 60, height: 100 };
+const OWN_SLOT_AREA: Area = { x: 925, y: 622, width: 70, height: 100 };
 
 function openBoard(page: Page, backend: BackendDouble, playerCount: number = 2): Promise<void> {
     return openGame(page, backend, createPreparedGame(playerCount));
