@@ -2,11 +2,13 @@ import Battlefield from "@/domain/Battlefield";
 import BattlefieldSkin from "@/domain/BattlefieldSkin";
 import BattlefieldViewStrategy from "@/game/battlefield/BattlefieldViewStrategy";
 import ProjectionSystem from "@/core/ProjectionSystem";
-import { Corner, Corners, Point } from "@/domain/Geometry";
+import { Corner, Corners, Point, Point2D } from "@/domain/Geometry";
 
 type Graphics = Phaser.GameObjects.Graphics
 
 const TABLE_LEG_HEIGHT = 300;
+/** Thickness of the lines of the grid of the table (VIEW-26), in px. */
+const GRID_LINE_WIDTH = 1;
 
 class TableViewStrategy implements BattlefieldViewStrategy {
   public render(graphics: Graphics, battlefield: Battlefield): void {
@@ -50,33 +52,29 @@ class TableViewStrategy implements BattlefieldViewStrategy {
     graphics.fillPath();
   }
 
-  // TODO think about grid lines, this is currently bad
   private renderGridLines(graphics: Graphics, battlefield: Battlefield) {
     const step = battlefield.skin.gridStep;
     const corners = battlefield.getCorners();
 
-    const leftX = corners.tl.x;
-    const rightX = corners.tr.x;
-    const upY = corners.tl.y;
-    const downY = corners.bl.y;
+    // Without a path of its own the stroke would draw the table surface and the earlier lines again, piling up their alpha
+    graphics.lineStyle(GRID_LINE_WIDTH, battlefield.skin.gridColor, battlefield.skin.gridAlpha);
+    graphics.beginPath();
+    for (let x = corners.tl.x; x <= corners.tr.x; x += step) {
+      this.addGridLine(graphics, { x, y: corners.bl.y }, { x, y: corners.tl.y });
+    }
 
-    graphics.lineStyle(2, battlefield.skin.gridColor, battlefield.skin.gridAlpha);
-    for (let x = leftX; x <= rightX; x += step) {
-      const pointNear = ProjectionSystem.toPoint3D({ x, y: downY });
-      const pointFar = ProjectionSystem.toPoint3D({ x, y: upY });
-      graphics.moveTo(pointNear.x, pointNear.y);
-      graphics.lineTo(pointFar.x, pointFar.y);
+    for (let y = corners.tl.y; y <= corners.bl.y; y += step) {
+      this.addGridLine(graphics, { x: corners.tl.x, y }, { x: corners.tr.x, y });
     }
     graphics.strokePath();
+  }
 
-    for (let y = upY; y <= downY; y += step) {
-      const pointNear = ProjectionSystem.toPoint3D({ x: leftX, y });
-      const pointFar = ProjectionSystem.toPoint3D({ x: rightX, y });
-      graphics.moveTo(pointNear.x, pointNear.y);
-      graphics.lineTo(pointFar.x, pointFar.y);
-    }
-    graphics.strokePath();
-    
+  private addGridLine(graphics: Graphics, from: Point2D, to: Point2D) {
+    const projectedFrom = ProjectionSystem.toPoint3D(from);
+    const projectedTo = ProjectionSystem.toPoint3D(to);
+
+    graphics.moveTo(projectedFrom.x, projectedFrom.y);
+    graphics.lineTo(projectedTo.x, projectedTo.y);
   }
 
   private renderTableOutline(graphics: Graphics, corners: Corners, skin: BattlefieldSkin) {
@@ -123,4 +121,5 @@ class TableViewStrategy implements BattlefieldViewStrategy {
   
 }
 
+export { GRID_LINE_WIDTH };
 export default TableViewStrategy

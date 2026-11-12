@@ -22,7 +22,7 @@ const BATTLEFIELD_SKINS: Record<string, BattlefieldSkin> = {
     borderColor: 0x4488cc,
     borderAlpha: 0.8,
     gridColor: 0x3355aa,
-    gridAlpha: 0.65,
+    gridAlpha: 0.3,
     thickness: 80,
     gridStep: 100
   },
