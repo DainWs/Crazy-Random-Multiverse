@@ -36,8 +36,12 @@ class Battlefield {
     this.recalculateDimensions();
   }
 
+  /** The zones are in turn order, so the others are taken starting with the one that plays after the local player (VIEW-13). */
   public addZones(zones: Zone[]) {
-    const notMyZones = zones.filter(z => z.owner.code !== this.myZone.owner.code);
+    const myIndex = zones.findIndex((zone) => zone.owner.code === this.myZone.owner.code);
+    const afterMine = zones.slice(myIndex + 1);
+    const beforeMine = zones.slice(0, Math.max(myIndex, 0));
+    const notMyZones = [...afterMine, ...beforeMine].filter((zone) => zone.owner.code !== this.myZone.owner.code);
 
     for (const zone of notMyZones) {
       if (zone.team === 'ENEMY') this.enemyZones.push(zone);

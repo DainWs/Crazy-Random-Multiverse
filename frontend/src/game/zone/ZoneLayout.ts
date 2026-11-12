@@ -1,6 +1,11 @@
 import Battlefield, { BattlefieldSide } from "@/domain/Battlefield";
 import { Point2D } from "@/domain/Geometry";
 
+/** The sides of the rivals in the direction the turn goes around the table, seen from the local player (VIEW-13). */
+const CLOCKWISE_ENEMY_SIDES = [BattlefieldSide.LEFT, BattlefieldSide.TOP, BattlefieldSide.RIGHT];
+
+type EnemySeat = { side: BattlefieldSide; innerIndex: number };
+
 const PLAYER_ZONE_HALF_HEIGHT = 470;
 const PLAYER_ZONE_HALF_WIDTH = 320;
 /** Space kept between the inner edges of two zones that face each other, in board units. */
@@ -22,6 +27,7 @@ class ZoneLayout {
 
   private enemySideIterator: BattlefieldSide[];
   private playersOnSide: Record<BattlefieldSide, number>;
+  private enemySeats: EnemySeat[];
 
   public constructor(battlefield: Battlefield, enemySideIterator: BattlefieldSide[]) {
     this.battlefield = battlefield;
@@ -29,6 +35,7 @@ class ZoneLayout {
     this.playerSpacing = battlefield.playerSpacing;
     this.halfWidth = battlefield.getSideSize() / 2;
     this.playersOnSide = this.calculatePlayersOnSide();
+    this.enemySeats = this.assignEnemySeats();
     this.zoneScale = this.calculateZoneScale();
     this.offset = this.calculateEdgeMargin() + PLAYER_ZONE_HALF_HEIGHT * this.zoneScale;
   }
@@ -97,10 +104,30 @@ class ZoneLayout {
     return this.getPlayerZonePosition(BattlefieldSide.BOTTOM, slotIndex, centerPlayerIndex);
   }
 
+  /**
+   * The rivals come in turn order: each side takes the next ones, going clockwise, so the turn goes around the table.
+   * Inside a side the index grows against the clockwise direction, so the seats are taken in reverse (VIEW-13).
+   */
+  private assignEnemySeats(): EnemySeat[] {
+    const seats: EnemySeat[] = [];
+
+    for (const side of CLOCKWISE_ENEMY_SIDES) {
+      const rivalsOnSide = this.playersOnSide[side];
+      for (let seat = 0; seat < rivalsOnSide; seat++) {
+        seats.push({ side, innerIndex: rivalsOnSide - 1 - seat });
+      }
+    }
+
+    return seats;
+  }
+
+  public getEnemySide(index: number): BattlefieldSide {
+    return this.enemySeats[index].side;
+  }
+
   public getNextEnemyZonePosition(index: number): Point2D {
-    const sideIndex = index % this.enemySideIterator.length;
-    const innerIndex = Math.floor(index / this.enemySideIterator.length);
-    return this.getPlayerZonePosition(this.enemySideIterator[sideIndex], innerIndex);
+    const { side, innerIndex } = this.enemySeats[index];
+    return this.getPlayerZonePosition(side, innerIndex);
   }
 
   public getPlayerZonePosition(side: BattlefieldSide, zoneIndex: number, referenceIndex?: number): Point2D {

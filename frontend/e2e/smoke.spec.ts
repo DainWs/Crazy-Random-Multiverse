@@ -26,7 +26,8 @@ import { expect, test } from '@/support/test';
 const GAME_CODE = 'game-1';
 const LOCAL_PLAYER = 'user-1';
 const RIVAL_PLAYER = 'user-2';
-const SIDE_RIVAL_PLAYER = 'user-3';
+/** The rival that plays next sits on the left side (VIEW-13). */
+const SIDE_RIVAL_PLAYER = 'user-2';
 const OWN_ZONE = 0;
 const RIVAL_ZONE = 1;
 const WARRIOR_POSITION = { row: 1, column: 0 };

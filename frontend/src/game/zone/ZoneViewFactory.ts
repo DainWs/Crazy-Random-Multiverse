@@ -70,7 +70,7 @@ function createEnemyZoneViews(scene: GameScene, battlefield: Battlefield, layout
 
   for (let index = 0; index < battlefield.enemyZones.length; index++) {
     const enemyZone = battlefield.enemyZones[index];
-    const side = ENEMY_SIDE_ITERATOR[index % ENEMY_SIDE_ITERATOR.length];
+    const side = layout.getEnemySide(index);
 
     const zoneView = new ZoneView(scene, enemyZone,  {
       position: layout.getNextEnemyZonePosition(index),

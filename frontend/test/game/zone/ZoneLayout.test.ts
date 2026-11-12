@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import ZoneLayout from '@/game/zone/ZoneLayout';
 import Battlefield, { BattlefieldSide } from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
+import type { Point2D } from '@/domain/Geometry';
 
 describe('ZoneLayout', () => {
   const createMockBattlefield = (friendlyCount = 0, enemyCount = 0) => {
@@ -28,7 +29,8 @@ describe('ZoneLayout', () => {
       expect(bottomPos.y).toBe(930);
     });
 
-    it('distributes enemy players round-robin across sides', () => {
+    // VIEW-13
+    it('seats the rivals clockwise from the left, starting with the one that plays next', () => {
       const battlefield = createMockBattlefield(0, 3);
       const layout = new ZoneLayout(battlefield, ENEMY_SIDES);
 
@@ -36,12 +38,56 @@ describe('ZoneLayout', () => {
       const enemy1 = layout.getNextEnemyZonePosition(1);
       const enemy2 = layout.getNextEnemyZonePosition(2);
 
-      // Enemy 0 should be on TOP side
-      expect(enemy0.y).toBe(-930);
-      // Enemy 1 should be on LEFT side
-      expect(enemy1.x).toBe(-930);
-      // Enemy 2 should be on RIGHT side
-      expect(enemy2.x).toBe(930);
+      // The first rival is on the LEFT side, the second on the TOP one and the third on the RIGHT one
+      expect([enemy0.x, enemy1.y, enemy2.x]).toEqual([-930, -930, 930]);
+    });
+  });
+
+  describe('getEnemySide', () => {
+    // VIEW-13
+    it.each([
+      { enemyCount: 1, expected: ['top'] },
+      { enemyCount: 2, expected: ['left', 'top'] },
+      { enemyCount: 4, expected: ['left', 'top', 'top', 'right'] },
+      { enemyCount: 9, expected: ['left', 'left', 'left', 'top', 'top', 'top', 'right', 'right', 'right'] }
+    ])('gives the sides $expected to $enemyCount rivals', ({ enemyCount, expected }) => {
+      const layout = new ZoneLayout(createMockBattlefield(0, enemyCount), ENEMY_SIDES);
+
+      const sides = Array.from({ length: enemyCount }, (_, index) => layout.getEnemySide(index));
+
+      expect(sides).toEqual(expected);
+    });
+  });
+
+  describe('turn order on a side', () => {
+    // VIEW-13
+    it('goes from the bottom to the top on the left side', () => {
+      const layout = new ZoneLayout(createMockBattlefield(0, 9), ENEMY_SIDES);
+
+      const [first, second, third] = [0, 1, 2].map((index) => layout.getNextEnemyZonePosition(index));
+
+      expect(first.y).toBeGreaterThan(second.y);
+      expect(second.y).toBeGreaterThan(third.y);
+    });
+
+    // VIEW-13
+    it('goes from the left to the right on the top side', () => {
+      const layout = new ZoneLayout(createMockBattlefield(0, 9), ENEMY_SIDES);
+
+      const [first, second, third] = [3, 4, 5].map((index) => layout.getNextEnemyZonePosition(index));
+
+      expect(first.x).toBeLessThan(second.x);
+      expect(second.x).toBeLessThan(third.x);
+    });
+
+    // VIEW-13
+    it('goes from the top to the bottom on the right side', () => {
+      const layout = new ZoneLayout(createMockBattlefield(0, 9), ENEMY_SIDES);
+
+      const [first, second, third] = [6, 7, 8].map((index) => layout.getNextEnemyZonePosition(index));
+
+      expect(first.y).toBeLessThan(second.y);
+      expect(second.y).toBeLessThan(third.y);
     });
   });
 
@@ -109,6 +155,61 @@ describe('ZoneLayout', () => {
 
       expect(leftSlot0.y).toBeLessThan(leftSlot1.y);
       expect(leftSlot1.y).toBeLessThan(leftSlot2.y);
+    });
+  });
+  // VIEW-2
+  describe('layouts of 2 to 10 players', () => {
+    const ZONE_WIDTH = 640;
+    const ZONE_HEIGHT = 940;
+
+    type Footprint = { name: string; left: number; right: number; top: number; bottom: number };
+
+    /** The area a zone covers on the table: the zone is turned a quarter on the left and right sides. */
+    const footprintOf = (name: string, center: Point2D, side: BattlefieldSide, scale: number): Footprint => {
+      const isSideways = side === BattlefieldSide.LEFT || side === BattlefieldSide.RIGHT;
+      const halfWidth = ((isSideways ? ZONE_HEIGHT : ZONE_WIDTH) * scale) / 2;
+      const halfHeight = ((isSideways ? ZONE_WIDTH : ZONE_HEIGHT) * scale) / 2;
+
+      return { name, left: center.x - halfWidth, right: center.x + halfWidth, top: center.y - halfHeight, bottom: center.y + halfHeight };
+    };
+
+    const footprintsOfLayout = (playerCount: number) => {
+      const enemyCount = playerCount - 1;
+      const sideSize = Battlefield.sideSizeForPlayerCount(Math.ceil(enemyCount / 3));
+      const battlefield = { ...createMockBattlefield(0, enemyCount), getSideSize: () => sideSize } as unknown as Battlefield;
+      const layout = new ZoneLayout(battlefield, ENEMY_SIDES);
+      const scale = layout.getZoneScale();
+
+      const own = footprintOf('own', layout.getPlayerZonePosition(BattlefieldSide.BOTTOM, 0, 0), BattlefieldSide.BOTTOM, scale);
+      const rivals = Array.from({ length: enemyCount }, (_, index) => {
+        return footprintOf(`rival ${index}`, layout.getNextEnemyZonePosition(index), layout.getEnemySide(index), scale);
+      });
+
+      return { footprints: [own, ...rivals], halfSide: sideSize / 2 };
+    };
+
+    const overlap = (first: Footprint, second: Footprint): boolean => {
+      return first.left < second.right && second.left < first.right && first.top < second.bottom && second.top < first.bottom;
+    };
+
+    const counts = [2, 3, 4, 5, 6, 7, 8, 9, 10].map((playerCount) => ({ playerCount }));
+
+    it.each(counts)('keeps every zone inside the table with $playerCount players', ({ playerCount }) => {
+      const { footprints, halfSide } = footprintsOfLayout(playerCount);
+
+      const outside = footprints.filter((zone) => Math.min(zone.left, zone.top) < -halfSide || Math.max(zone.right, zone.bottom) > halfSide);
+
+      expect(outside.map((zone) => zone.name)).toEqual([]);
+    });
+
+    it.each(counts)('overlaps no two zones with $playerCount players', ({ playerCount }) => {
+      const { footprints } = footprintsOfLayout(playerCount);
+
+      const overlapping = footprints.flatMap((zone, index) => {
+        return footprints.slice(index + 1).filter((other) => overlap(zone, other)).map((other) => `${zone.name} and ${other.name}`);
+      });
+
+      expect(overlapping).toEqual([]);
     });
   });
 });
