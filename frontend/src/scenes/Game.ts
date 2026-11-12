@@ -20,6 +20,8 @@ import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
+import { findLeaders, hideLeaders, playLeaderIntro } from '@/core/visual_effects/LeaderIntro';
+import SessionSystem from '@/core/SessionSystem';
 import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
@@ -34,13 +36,14 @@ class GameScene extends Scene {
     private hudView: GameHudView;
     private rejectionText?: Phaser.GameObjects.Text;
     private resultView?: GameResultView;
+    private isLeaderIntroPending = false;
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
     private readonly storeChangeHandlers: Record<GameChange, (event: GameChangeEvent) => void> = {
         GAME_UPDATED: (event) => this.queueZones(event),
         HAND_RESTORED: () => this.renderHand(),
-        HAND_CHANGED: () => this.handController.syncCards(StoreSystem.getPlayerHand()),
+        HAND_CHANGED: () => this.syncHand(),
         GAME_ENDED: () => this.queueResult()
     };
 
@@ -75,6 +78,10 @@ class GameScene extends Scene {
             onLeave: () => this.leaveGame()
         });
         this.renderAll();
+        this.isLeaderIntroPending = false;
+        if (SessionSystem.takeLeaderIntro()) {
+            this.queueLeaderIntro();
+        }
         this.resultView = undefined;
         if (StoreSystem.getResult()) {
             this.showResult();
@@ -91,6 +98,27 @@ class GameScene extends Scene {
     /** The hand, the HUD and the panel follow the screen on their own every frame, but the camera has to frame the board again (VIEW-24). */
     private onResize() {
         this.cameraSystem.fitToScreen();
+    }
+
+    /** The leaders are placed one after the other before anything else is animated, and the first cards wait for them (VIEW-12, VIEW-8). */
+    private queueLeaderIntro() {
+        const playerOrder = StoreSystem.getZones().map((zone) => zone.owner.code);
+        const leaders = findLeaders(this.zones, playerOrder);
+        hideLeaders(leaders);
+
+        this.isLeaderIntroPending = true;
+        AnimationSystem.enqueue(async () => {
+            await playLeaderIntro(this, leaders);
+            this.isLeaderIntroPending = false;
+        });
+    }
+
+    private syncHand() {
+        if (this.isLeaderIntroPending) {
+            AnimationSystem.enqueue(async () => this.handController.syncCards(StoreSystem.getPlayerHand()));
+        } else {
+            this.handController.syncCards(StoreSystem.getPlayerHand());
+        }
     }
 
     private renderAll() {

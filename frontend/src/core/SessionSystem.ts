@@ -116,6 +116,25 @@ const enterParty = (confirmed: Party) => {
   followLiveState('IN_PARTY', ['IDLE']);
 }
 
+let isLeaderIntroRequested = false;
+
+/** The client confirmed `/ready` from the page that will show the board, so the leaders are placed with an animation (VIEW-12). */
+const requestLeaderIntro = () => {
+  isLeaderIntroRequested = true;
+}
+
+/** A new load starts with no intro asked for. */
+const cancelLeaderIntro = () => {
+  isLeaderIntroRequested = false;
+}
+
+/** Whether the board being shown plays the intro, which only the first board after the confirmation does (VIEW-12). */
+const takeLeaderIntro = (): boolean => {
+  const isRequested = isLeaderIntroRequested;
+  isLeaderIntroRequested = false;
+  return isRequested;
+}
+
 /** The user cannot continue the game, so they go back to the party, or to the main menu if they have none (UI-12). Without a
  * party they are told why (UI-10). */
 const abandonGame = (reasonKey?: string) => {
@@ -285,6 +304,9 @@ const SessionSystem = {
   leaveParty,
   leaveGame,
   abandonGame,
+  requestLeaderIntro,
+  cancelLeaderIntro,
+  takeLeaderIntro,
   start
 }
 

@@ -44,6 +44,7 @@ class GameLoadScene extends Scene {
     init() {
         this.closed = false;
         this.manifest = undefined;
+        SessionSystem.cancelLeaderIntro();
 
         this.events.once('shutdown', this.onShutdown, this);
         this.createLoadingView();
@@ -127,6 +128,7 @@ class GameLoadScene extends Scene {
 
     private async confirmReady() {
         await gameApi.sendReady(this.activeGame.gameCode);
+        SessionSystem.requestLeaderIntro();
         if (!this.closed) {
             this.showStatus(getText('ui.game_load.waiting'));
         }

@@ -82,6 +82,31 @@ describe('SessionSystem', () => {
   });
 
   // USER-8, UI-10
+  // VIEW-12
+  describe('leader intro', () => {
+    beforeEach(() => {
+      SessionSystem.cancelLeaderIntro();
+    });
+
+    it('is not requested before the player confirms', () => {
+      expect(SessionSystem.takeLeaderIntro()).toBe(false);
+    });
+
+    it('is taken once after being requested', () => {
+      SessionSystem.requestLeaderIntro();
+
+      expect([SessionSystem.takeLeaderIntro(), SessionSystem.takeLeaderIntro()]).toEqual([true, false]);
+    });
+
+    it('is dropped when a new load starts', () => {
+      SessionSystem.requestLeaderIntro();
+
+      SessionSystem.cancelLeaderIntro();
+
+      expect(SessionSystem.takeLeaderIntro()).toBe(false);
+    });
+  });
+
   describe('expired session', () => {
     const newUser = new User('usr-2', 'Two');
 

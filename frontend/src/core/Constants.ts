@@ -77,6 +77,18 @@ export const HUD_TURN_SEPARATOR = ' · ';
 /** Alpha of a HUD button that cannot be used now (UI-4). */
 export const HUD_DISABLED_ALPHA = 0.4;
 
+/** Total milliseconds the leaders take to be placed when the board is first shown (VIEW-12). */
+export const LEADER_INTRO_TOTAL_MS = 2000;
+
+/** Fewest milliseconds the placement of one leader takes, so it is still seen with many players (VIEW-12). */
+export const LEADER_INTRO_MIN_MS = 120;
+
+/** Most milliseconds the placement of one leader takes, so it does not drag with few players (VIEW-12). */
+export const LEADER_INTRO_MAX_MS = 500;
+
+/** How many times its size a leader starts at before shrinking into its slot (VIEW-12). */
+export const LEADER_INTRO_START_SCALE = 1.6;
+
 /** Seconds the result stays on screen before the party unlocks: the default of `crm.game.result-duration` (WIN-4, WIN-5). */
 export const GAME_RESULT_COUNTDOWN_SECONDS = 15;
 
