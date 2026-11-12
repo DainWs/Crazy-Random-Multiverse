@@ -7,32 +7,28 @@ import { MOVE_TO_DURATION } from "@/core/visual_effects/CardTweens";
 type OnCompleteCallback = () => void;
 const NoneCallback = () => { };
 
+/** Time the hand takes to rise or sink when hovered, in ms. */
+const HAND_EXPANSION_DURATION = 250;
+/** Time the hand takes to sink while a card is dragged, in ms. */
+const HAND_HIDE_DURATION = 100;
+
 class HandAnimator {
 
-  private animationInProgress: boolean;
-
-  constructor() {
-    this.animationInProgress = false;
-  }
-
-  public animateHandExpansion(handView: HandView, targetY: number, duration: number = 250) {
-    if (this.animationInProgress) return;
-    this.animationInProgress = true;
-
+  /** Always starts from where the hand is, so the last request wins and a collapse is never dropped. */
+  public animateHandExpansion(handView: HandView, targetHiddenRatio: number, duration: number = HAND_EXPANSION_DURATION) {
+    handView.scene.tweens.killTweensOf(handView);
     handView.scene.tweens.add({
       targets: handView,
-      y: targetY,
+      hiddenRatio: targetHiddenRatio,
       duration,
       ease: 'Cubic.easeOut',
-      overwrite: true,
       persist: false
-    }).on('complete', () => this.animationInProgress = false);
+    });
   }
 
 
   public animateIncomingCards(fromPoint: Point2D, handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
     this.setInteractiveForCardViews(handCards, false);
-    this.animationInProgress = true;
 
     const tweenDelay = 200;
     for (let i = 0; i < incomingCards.length; i++) {
@@ -44,7 +40,6 @@ class HandAnimator {
 
     setTimeout(() => {
       this.setInteractiveForCardViews(handCards, true);
-      this.animationInProgress = false;
       onComplete();
     }, MOVE_TO_DURATION + (incomingCards.length * tweenDelay));
   }
@@ -62,4 +57,5 @@ class HandAnimator {
   }
 }
 
+export { HAND_HIDE_DURATION };
 export default HandAnimator;

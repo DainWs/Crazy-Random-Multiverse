@@ -62,6 +62,69 @@ describe('HandView', () => {
     });
   });
 
+  describe('addCards', () => {
+    const createIncomingCard = () => {
+      const card = { originalPosition: { x: 0, y: 0 }, setOriginalPosition: vi.fn(), setOriginalDepth: vi.fn() };
+      return card as unknown as CardView & { setOriginalPosition: ReturnType<typeof vi.fn> };
+    };
+
+    const createHandWithCards = (heldCards: number) => {
+      return {
+        cards: Array.from({ length: heldCards }, () => ({}) as unknown as CardView),
+        cardsDepth: 500,
+        y: 0,
+        height: 0,
+        layoutHelper: { calculateSlotPositionFromIndex: (index: number, length: number) => ({ x: index * 100 + length, y: 0 }) },
+        interactionManager: { attachListeners: vi.fn() },
+        animator: { animateIncomingCards: vi.fn() },
+        addAt: vi.fn()
+      };
+    };
+
+    // VIEW-8
+    it('places the incoming cards after the held ones', () => {
+      const hand = createHandWithCards(2);
+      const [first, second] = [createIncomingCard(), createIncomingCard()];
+
+      HandView.prototype.addCards.call(hand, first, second);
+
+      expect([first.setOriginalPosition.mock.calls[0], second.setOriginalPosition.mock.calls[0]]).toEqual([
+        [204, 0],
+        [304, 0]
+      ]);
+    });
+  });
+
+  describe('restCards', () => {
+    const createHand = (cardListenersEnabled: boolean) => {
+      return {
+        cardListenersEnabled,
+        hoverIndex: 1,
+        cards: [],
+        layoutHelper: { calculateXOffsetForSlicedCard: () => 0 },
+        animator: { animateHandExpansion: vi.fn() },
+        sliceCardsToShowHoverIndex: vi.fn()
+      };
+    };
+
+    // VIEW-16
+    it('lowers the hand to its resting position', () => {
+      const hand = createHand(true);
+
+      HandView.prototype.restCards.call(hand);
+
+      expect(hand.animator.animateHandExpansion).toHaveBeenCalledWith(hand, 0.75);
+    });
+
+    it('leaves the hand alone while a card is being dragged', () => {
+      const hand = createHand(false);
+
+      HandView.prototype.restCards.call(hand);
+
+      expect(hand.animator.animateHandExpansion).not.toHaveBeenCalled();
+    });
+  });
+
   describe('clearCards', () => {
     // CON-11
     it.each([{ cardCount: 1 }, { cardCount: 4 }, { cardCount: 7 }])('removes all $cardCount cards', ({ cardCount }) => {

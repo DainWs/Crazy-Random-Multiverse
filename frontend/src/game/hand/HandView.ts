@@ -6,7 +6,12 @@ import { CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";
 import HandLayoutHelper from "@/game/hand/HandLayoutHelper";
-import HandAnimator from "@/game/hand/HandAnimator";
+import HandAnimator, { HAND_HIDE_DURATION } from "@/game/hand/HandAnimator";
+import {
+  HAND_DRAGGING_HIDDEN_RATIO,
+  HAND_EXPANDED_HIDDEN_RATIO,
+  HAND_RESTING_HIDDEN_RATIO
+} from "@/game/hand/HandLayoutCalculator";
 
 interface HandViewOptions {
   spaceBetweenCards?: SpaceBetweenCardOptions;
@@ -29,7 +34,8 @@ class HandView extends Phaser.GameObjects.Container {
   private hoverIndex: number;
   private cards: CardView[];
   private cardListenersEnabled: boolean;
-  private isExpanded: boolean;
+  /** Tweened by `HandAnimator`; `updateBounds` turns it into `y` on every frame. */
+  public hiddenRatio: number;
 
   constructor(
     scene: GameScene,
@@ -43,7 +49,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.cards = [];
     this.cardListenersEnabled = true;
-    this.isExpanded = false;
+    this.hiddenRatio = HAND_RESTING_HIDDEN_RATIO;
     this.scale = 1
     this.depth = 499;
     this.cardsDepth = this.depth + 1;
@@ -66,10 +72,11 @@ class HandView extends Phaser.GameObjects.Container {
 
   public updateBounds() {
     this.layoutHelper.updateBounds();
-    const { x, y, width, height, scale } = this.getExpandedLayoutBounds();
+    const { x, y, width, height, scale } = this.layoutHelper.handBounds;
+    const hiddenOffset = this.layoutHelper.calculateHiddenOffset(this.hiddenRatio);
 
     this.setScale(scale);
-    this.setPosition(x, y);
+    this.setPosition(x, y + hiddenOffset);
     this.setSize(width, height);
 
     if (this.input && this.input.hitArea) {
@@ -78,11 +85,12 @@ class HandView extends Phaser.GameObjects.Container {
   }
 
   public addCards(...incomingCards: CardView[]) {
-    const newCardLength = this.cards.length + incomingCards.length;
+    const firstNewIndex = this.cards.length;
+    const newCardLength = firstNewIndex + incomingCards.length;
 
     for (let i = 0; i < incomingCards.length; i++) {
-      const newIndex = this.cards.length + i;
-      const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(i, newCardLength);
+      const newIndex = firstNewIndex + i;
+      const slotPosition = this.layoutHelper.calculateSlotPositionFromIndex(newIndex, newCardLength);
 
       const incomingCard = incomingCards[i];
       incomingCard.setOriginalPosition(slotPosition.x, slotPosition.y);
@@ -157,8 +165,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   public onHoverCard(hoverCard: CardView) {
     if (!this.cardListenersEnabled) return;
-    const { y } = this.getExpandedLayoutBounds(true);
-    this.animator.animateHandExpansion(this, y);
+    this.animator.animateHandExpansion(this, HAND_EXPANDED_HIDDEN_RATIO);
 
     const hoverIndex = this.cards.indexOf(hoverCard);
     if (hoverIndex != -1 && (this.hoverIndex === NONE_CARD_IS_HOVER || this.hoverIndex !== hoverIndex)) {
@@ -169,14 +176,21 @@ class HandView extends Phaser.GameObjects.Container {
 
   public onUnhoverCard(unhoverCard: CardView) {
     if (!this.cardListenersEnabled) return;
-    const { y } = this.getExpandedLayoutBounds(false);
-    this.animator.animateHandExpansion(this, y);
+    this.animator.animateHandExpansion(this, HAND_RESTING_HIDDEN_RATIO);
 
     const unhoverIndex = this.cards.indexOf(unhoverCard);
     if (this.hoverIndex === unhoverIndex) {
       this.hoverIndex = NONE_CARD_IS_HOVER;
       this.sliceCardsToShowHoverIndex();
     }
+  }
+
+  /** The pointer left the game without a `pointerout` reaching the card, so the hand is lowered by hand (VIEW-16). */
+  public restCards() {
+    if (!this.cardListenersEnabled) return;
+    this.hoverIndex = NONE_CARD_IS_HOVER;
+    this.sliceCardsToShowHoverIndex();
+    this.animator.animateHandExpansion(this, HAND_RESTING_HIDDEN_RATIO);
   }
 
   private sliceCardsToShowHoverIndex() {
@@ -192,19 +206,6 @@ class HandView extends Phaser.GameObjects.Container {
     }
   }
 
-  private getExpandedLayoutBounds(isExpanded: boolean = this.isExpanded, hidePercent = 0.75) {
-    this.isExpanded = isExpanded;
-    const { x, y, width, height, scale, zoom } = this.layoutHelper.handBounds;
-
-    const hiddenSize = (CARD_HEIGHT * hidePercent) / zoom;
-    let expandedY = y + hiddenSize;
-    if (isExpanded) {
-      expandedY -= hiddenSize;
-    }
-
-    return { x, y: expandedY, width, height, scale };
-  }
-
   public getCards() {
     return this.cards;
   }
@@ -218,8 +219,7 @@ class HandView extends Phaser.GameObjects.Container {
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();
 
-    const { y } = this.getExpandedLayoutBounds(false, 1);
-    this.animator.animateHandExpansion(this, y, 100);
+    this.animator.animateHandExpansion(this, HAND_DRAGGING_HIDDEN_RATIO, HAND_HIDE_DURATION);
   }
 
   public enableCardListeners() {

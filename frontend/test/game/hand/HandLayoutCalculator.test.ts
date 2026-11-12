@@ -86,6 +86,18 @@ describe('HandLayoutCalculator', () => {
     });
   });
 
+  describe('calculateHiddenOffset', () => {
+    it.each([
+      { hiddenRatio: 0, cardHeight: 300, zoom: 1, expected: 0 },
+      { hiddenRatio: 0.75, cardHeight: 300, zoom: 1, expected: 225 },
+      { hiddenRatio: 1, cardHeight: 300, zoom: 0.5, expected: 600 }
+    ])('returns $expected for ratio $hiddenRatio at zoom $zoom', ({ hiddenRatio, cardHeight, zoom, expected }) => {
+      const calculator = new HandLayoutCalculator();
+
+      expect(calculator.calculateHiddenOffset(hiddenRatio, cardHeight, zoom)).toBe(expected);
+    });
+  });
+
   describe('calculateHandBasePosition', () => {
     it('centers horizontally and aligns to bottom margin', () => {
       const calculator = new HandLayoutCalculator();

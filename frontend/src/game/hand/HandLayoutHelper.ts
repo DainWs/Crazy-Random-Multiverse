@@ -67,6 +67,10 @@ class HandLayoutHelper {
     return this.calculator.calculateXOffsetForSlicedCard(cardLength, CARD_WIDTH);
   }
 
+  public calculateHiddenOffset(hiddenRatio: number): number {
+    return this.calculator.calculateHiddenOffset(hiddenRatio, CARD_HEIGHT, this.handBounds.zoom);
+  }
+
   public getInteractiveBounds(): Phaser.Geom.Rectangle {
     return new Phaser.Geom.Rectangle(0, 0, this.handBounds.width, this.handBounds.height);
   }

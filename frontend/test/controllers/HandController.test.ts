@@ -49,6 +49,22 @@ describe('HandController', () => {
     Object.assign(controller, { handView });
   });
 
+  describe('onGameOut', () => {
+    // VIEW-16
+    it('lowers the hand before disabling its card listeners', () => {
+      const calls: string[] = [];
+      const handView = {
+        restCards: () => calls.push('restCards'),
+        disableCardListeners: () => calls.push('disableCardListeners')
+      };
+      Object.assign(controller, { handView });
+
+      controller['onGameOut']();
+
+      expect(calls).toEqual(['restCards', 'disableCardListeners']);
+    });
+  });
+
   describe('syncCards', () => {
     // UI-21
     it('retries the image of a card that arrived', () => {

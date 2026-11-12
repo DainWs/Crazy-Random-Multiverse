@@ -18,8 +18,13 @@ class HandController {
     this.handView = new HandView(this.scene);
 
     this.scene.children.add(this.handView);
-    this.scene.input.on('gameout', () => this.handView.disableCardListeners(false));
+    this.scene.input.on('gameout', this.onGameOut.bind(this));
     this.scene.input.on('gameover', () => this.handView.enableCardListeners());
+  }
+
+  private onGameOut() {
+    this.handView.restCards();
+    this.handView.disableCardListeners(false);
   }
 
   public update() {
