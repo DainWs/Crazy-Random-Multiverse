@@ -1,5 +1,5 @@
 import type { Area, Point } from '@/support/board';
-import { INITIAL_ZOOM, OWN_WARRIOR, RIVAL_WARRIOR, TABLE_AREA, TOOLTIP_AREA, atZoom, openBoard, waitForStillFrame, zoomOut } from '@/support/board';
+import { INITIAL_ZOOM, OWN_WARRIOR, RIVAL_WARRIOR, SIDE_ZONE_AREA, TABLE_AREA, TOOLTIP_AREA, atZoom, openBoard, waitForStillFrame, zoomOut } from '@/support/board';
 import { expect, test } from '@/support/test';
 
 /** The limits are the noise measured over five runs, which was zero in every area. */
@@ -33,6 +33,13 @@ test.describe('board appearance', () => {
 
     test('shows the hand', async ({ page }) => {
         await expect(page).toHaveScreenshot('hand.png', HAND);
+    });
+
+    // VIEW-1
+    test('shows the cards of a rotated zone aligned with their slots', async ({ page, backend }) => {
+        await openBoard(page, backend, 3);
+
+        await expect(page).toHaveScreenshot('side-zone.png', { clip: SIDE_ZONE_AREA, maxDiffPixels: 0 });
     });
 
     test('shows the tooltip of a hovered card', async ({ page }) => {

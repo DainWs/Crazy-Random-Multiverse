@@ -67,7 +67,9 @@ describe('TableViewStrategy', () => {
 
       strategy.render(graphics, battlefield);
 
-      const methodsAfterGrid = calls.slice(calls.indexOf(callsOfGrid(calls).at(-1)!) + 1).map((call) => call.method);
+      const gridCalls = callsOfGrid(calls);
+      const lastGridCall = gridCalls[gridCalls.length - 1];
+      const methodsAfterGrid = calls.slice(calls.indexOf(lastGridCall) + 1).map((call) => call.method);
       expect(methodsAfterGrid.indexOf('beginPath')).toBeLessThan(methodsAfterGrid.indexOf('strokePath'));
     });
 

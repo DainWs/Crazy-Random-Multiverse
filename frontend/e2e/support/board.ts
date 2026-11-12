@@ -38,6 +38,7 @@ const EMPTY_SIDE_RIVAL_SLOT: Point = { x: 787, y: 412 };
 const TABLE_AREA: Area = { x: 370, y: 40, width: 1180, height: 970 };
 const TOOLTIP_AREA: Area = { x: 1440, y: 0, width: 480, height: 1080 };
 const EXPANDED_HAND_AREA: Area = { x: 700, y: 840, width: 520, height: 200 };
+const SIDE_ZONE_AREA: Area = { x: 540, y: 300, width: 320, height: 230 };
 const OWN_SLOT_AREA: Area = { x: 930, y: 665, width: 60, height: 100 };
 
 function openBoard(page: Page, backend: BackendDouble, playerCount: number = 2): Promise<void> {
@@ -195,6 +196,7 @@ export {
     EMPTY_SIDE_RIVAL_SLOT,
     EMPTY_TABLE,
     EXPANDED_HAND_AREA,
+    SIDE_ZONE_AREA,
     HAND_CARD,
     SOLE_HAND_CARD,
     INITIAL_ZOOM,

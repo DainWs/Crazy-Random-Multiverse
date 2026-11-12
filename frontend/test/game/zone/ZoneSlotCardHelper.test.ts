@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { calculateCardTargetScale } from '@/game/zone/ZoneSlotCardHelper';
+import type CombatantView from '@/game/cards/CombatantView';
+import type ZoneSlotView from '@/game/zone/ZoneSlotView';
+import zoneSlotCardHelper, { calculateCardCenter, calculateCardTargetScale } from '@/game/zone/ZoneSlotCardHelper';
 import { Corners3D } from '@/domain/Geometry';
 
 describe('ZoneSlotCardHelper', () => {
@@ -62,5 +64,54 @@ describe('ZoneSlotCardHelper', () => {
       expect(scale.x).toBeCloseTo(expectedWidth / 200, 4);
       expect(scale.y).toBeCloseTo(1.0, 4);
     });
+  });
+
+  describe('calculateCardCenter', () => {
+    it('returns the middle of a trapezoid', () => {
+      const corners: Corners3D = {
+        tl: { x: 20, y: 0, z: 0, scale: 1 },
+        tr: { x: 180, y: 0, z: 0, scale: 1 },
+        bl: { x: -20, y: 300, z: 0, scale: 1 },
+        br: { x: 220, y: 300, z: 0, scale: 1 },
+      };
+
+      expect(calculateCardCenter(corners)).toEqual({ x: 100, y: 150 });
+    });
+  });
+
+  describe('applyCardTransformations', () => {
+    const corners: Corners3D = {
+      tl: { x: -50, y: -75, z: 0, scale: 1 },
+      tr: { x: 50, y: -75, z: 0, scale: 1 },
+      bl: { x: -50, y: 75, z: 0, scale: 1 },
+      br: { x: 50, y: 75, z: 0, scale: 1 },
+    };
+
+    const createCard = () => {
+      const card = {
+        angle: 0,
+        setOriginalPosition: () => {},
+        setOriginalScale: () => {},
+        setOriginalDepth: () => {},
+        reset: () => {},
+        setAngle(angle: number) {
+          card.angle = angle;
+        }
+      };
+      return card;
+    };
+
+    // VIEW-1
+    it.each([{ slotRotation: 0 }, { slotRotation: 90 }, { slotRotation: -90 }, { slotRotation: 180 }])(
+      'turns the card with its slot at $slotRotation degrees',
+      ({ slotRotation }) => {
+        const slot = { corners, depth: 1, slotRotation } as unknown as ZoneSlotView;
+        const card = createCard();
+
+        zoneSlotCardHelper.applyCardTransformations(slot, card as unknown as CombatantView);
+
+        expect(card.angle).toBe(slotRotation);
+      }
+    );
   });
 });

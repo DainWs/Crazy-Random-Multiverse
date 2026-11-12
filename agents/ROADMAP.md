@@ -44,7 +44,7 @@ Started at: `9de2969`
 - [x] Center the hand on the screen according to the cards it holds (`VIEW-25`): its bounds are sized for 10 cards and anchored to the left
 - [ ] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
 - [x] Lower the contrast of the grid of the table, which competes with the cards (`VIEW-26`)
-- [ ] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
+- [x] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
 - [x] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
 - [x] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
 

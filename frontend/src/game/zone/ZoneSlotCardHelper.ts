@@ -27,20 +27,32 @@ function calculateCardTargetScale(
   };
 }
 
+/** The middle of the four corners: with perspective it is not where the center of the slot is projected. */
+function calculateCardCenter(corners: Corners3D): Point2D {
+  const { tl, tr, bl, br } = corners;
+
+  return {
+    x: (tl.x + tr.x + bl.x + br.x) / 4,
+    y: (tl.y + tr.y + bl.y + br.y) / 4
+  };
+}
+
 function applyCardTransformations(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {
   const scale = calculateCardTargetScale(zoneSlotView.corners);
+  const center = calculateCardCenter(zoneSlotView.corners);
 
-  combatantView.setOriginalPosition(0, 0);
+  combatantView.setOriginalPosition(center.x, center.y);
   combatantView.setOriginalScale(scale.x, scale.y);
   combatantView.setOriginalDepth(zoneSlotView.depth + 1);
-  combatantView.setAngle(zoneSlotView.rotation);
+  combatantView.setAngle(zoneSlotView.slotRotation);
   combatantView.reset();
 }
 
 function previewCard(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {
   const { tx, ty } = zoneSlotView.getWorldTransformMatrix();
   const scale = calculateCardTargetScale(zoneSlotView.corners);
-  const tweenArgs = [tx, ty, scale, zoneSlotView.rotation];
+  const center = calculateCardCenter(zoneSlotView.corners);
+  const tweenArgs = [tx + center.x, ty + center.y, scale, zoneSlotView.slotRotation];
   CardAnimator.playTween(combatantView, 'preview_in_zone_slot', ...tweenArgs);
 }
 
@@ -50,5 +62,5 @@ const zoneSlotCardHelper = {
   calculateCardTargetScale
 };
 
-export { calculateCardTargetScale };
+export { calculateCardTargetScale, calculateCardCenter };
 export default zoneSlotCardHelper;
