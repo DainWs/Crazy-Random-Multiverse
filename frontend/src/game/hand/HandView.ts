@@ -15,12 +15,9 @@ import {
 
 interface HandViewOptions {
   spaceBetweenCards?: SpaceBetweenCardOptions;
-  maxCards: number;
 }
 
-const defaultOptions: HandViewOptions = {
-  maxCards: 10
-};
+const defaultOptions: HandViewOptions = {};
 
 const NONE_CARD_IS_HOVER: number = Number.MAX_VALUE;
 
@@ -44,7 +41,7 @@ class HandView extends Phaser.GameObjects.Container {
     super(scene);
     this.options = { ...defaultOptions, ...options };
     this.interactionManager = new HandInteractionManager();
-    this.layoutHelper = new HandLayoutHelper(scene.cameraSystem, this.options.maxCards, this.options.spaceBetweenCards);
+    this.layoutHelper = new HandLayoutHelper(scene.cameraSystem, this.options.spaceBetweenCards);
     this.animator = new HandAnimator();
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.cards = [];
@@ -71,7 +68,7 @@ class HandView extends Phaser.GameObjects.Container {
   }
 
   public updateBounds() {
-    this.layoutHelper.updateBounds();
+    this.layoutHelper.updateBounds(this.cards.length);
     const { x, y, width, height, scale } = this.layoutHelper.handBounds;
     const hiddenOffset = this.layoutHelper.calculateHiddenOffset(this.hiddenRatio);
 

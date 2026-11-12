@@ -4,7 +4,7 @@ import { expect, test } from '@/support/test';
 
 /** The limits are the noise measured over five runs, which was zero in every area. */
 const TABLE = { clip: TABLE_AREA, maxDiffPixels: 0 };
-const HAND = { clip: { x: 0, y: 1005, width: 560, height: 75 }, maxDiffPixels: 0 };
+const HAND = { clip: { x: 700, y: 1005, width: 520, height: 75 }, maxDiffPixels: 0 };
 const TOOLTIP = { clip: TOOLTIP_AREA, maxDiffPixels: 0 };
 const CARD_MAX_DIFF_PIXELS = 0;
 

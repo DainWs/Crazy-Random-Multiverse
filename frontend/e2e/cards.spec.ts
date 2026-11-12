@@ -1,7 +1,7 @@
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
-import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, TOOLTIP_AREA, frameOf, hover, openGame } from '@/support/board';
+import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openGame } from '@/support/board';
 import { createEquipment, createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -70,7 +70,7 @@ test.describe('equipment card', () => {
         const prepared = createPreparedGame(2);
         await openGame(page, backend, { ...prepared, hand: [createEquipment('30', PISTOL)] });
 
-        await hover(page, HAND_CARD);
+        await hover(page, SOLE_HAND_CARD);
 
         await expect(page).toHaveScreenshot('panel-equipment-card.png', { clip: TOOLTIP_AREA, maxDiffPixels: 0 });
     });

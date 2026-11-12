@@ -26,7 +26,8 @@ const ARROW_RED_MIN_VALUE = 180;
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
 const OWN_WARRIOR: Point = { x: 888, y: 715 };
 const RIVAL_WARRIOR: Point = { x: 1014, y: 180 };
-const HAND_CARD: Point = { x: 90, y: 1045 };
+const HAND_CARD: Point = { x: 830, y: 1050 };
+const SOLE_HAND_CARD: Point = { x: 960, y: 1050 };
 const EMPTY_OWN_SLOT: Point = { x: 960, y: 715 };
 const EMPTY_TABLE: Point = { x: 1250, y: 450 };
 
@@ -36,7 +37,7 @@ const EMPTY_SIDE_RIVAL_SLOT: Point = { x: 787, y: 412 };
 
 const TABLE_AREA: Area = { x: 370, y: 40, width: 1180, height: 970 };
 const TOOLTIP_AREA: Area = { x: 1440, y: 0, width: 480, height: 1080 };
-const EXPANDED_HAND_AREA: Area = { x: 0, y: 780, width: 570, height: 225 };
+const EXPANDED_HAND_AREA: Area = { x: 700, y: 840, width: 520, height: 200 };
 const OWN_SLOT_AREA: Area = { x: 930, y: 665, width: 60, height: 100 };
 
 function openBoard(page: Page, backend: BackendDouble, playerCount: number = 2): Promise<void> {
@@ -195,6 +196,7 @@ export {
     EMPTY_TABLE,
     EXPANDED_HAND_AREA,
     HAND_CARD,
+    SOLE_HAND_CARD,
     INITIAL_ZOOM,
     OWN_SLOT_AREA,
     OWN_WARRIOR,

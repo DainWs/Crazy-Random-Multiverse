@@ -2,7 +2,7 @@ import type CameraSystem from "@/core/CameraSystem";
 import type { Point2D } from "@/domain/Geometry";
 import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
-import HandLayoutCalculator, { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
+import HandLayoutCalculator, { HAND_CARD_SCALE, SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
 
 type Rectangle = Phaser.Geom.Rectangle & {
   scale: number;
@@ -17,46 +17,32 @@ class HandLayoutHelper {
   public readonly calculator: HandLayoutCalculator;
   private readonly cameraSystem: CameraSystem;
 
-  public constructor(cameraSystem: CameraSystem, maxCards: number, options?: Partial<SpaceBetweenCardOptions>) {
+  public constructor(cameraSystem: CameraSystem, options?: Partial<SpaceBetweenCardOptions>) {
     this.cameraSystem = cameraSystem;
     this.calculator = new HandLayoutCalculator(options);
-    this.handBounds = this.createBounds(maxCards);
+    this.handBounds = new Phaser.Geom.Rectangle(0, 0, 0, CARD_HEIGHT) as Rectangle;
+    this.updateBounds(0);
   }
 
-  private createBounds(maxCards: number): Rectangle {
-    const totalWidth = this.calculator.calculateTotalWidth(maxCards, CARD_WIDTH);
-    const totalHeight = CARD_HEIGHT;
-    const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
-
-    const rectangle = new Phaser.Geom.Rectangle(x, y, totalWidth, totalHeight) as Rectangle;
-    rectangle.zoom = this.cameraSystem.getCamera().zoom;
-    rectangle.scale = 1 / rectangle.zoom;
-    return rectangle;
-  }
-
-  public updateBounds() {
-    const totalWidth = this.handBounds.width;
-    const totalHeight = this.handBounds.height;
-
-    const { x, y } = this.calculateHandPosition(totalWidth, totalHeight);
+  /** The hand is as wide as the cards it holds and stays centered on the screen (VIEW-25). */
+  public updateBounds(cardCount: number) {
+    const totalWidth = this.calculator.calculateTotalWidth(cardCount, CARD_WIDTH);
+    const { x, y } = this.calculateHandPosition();
     this.handBounds.setPosition(x, y);
+    this.handBounds.setSize(totalWidth, CARD_HEIGHT);
     this.handBounds.zoom = this.cameraSystem.getCamera().zoom;
-    this.handBounds.scale = 1 / this.handBounds.zoom;
+    this.handBounds.scale = HAND_CARD_SCALE / this.handBounds.zoom;
   }
 
-  private calculateHandPosition(totalWidth: number, totalHeight: number): Point2D {
-    const screenHeight = this.cameraSystem.getScale().height;
-    const basePosition = this.calculator.calculateHandBasePosition(totalWidth, totalHeight, screenHeight);
+  private calculateHandPosition(): Point2D {
+    const { width, height } = this.cameraSystem.getScale();
+    const basePosition = this.calculator.calculateHandBasePosition(CARD_HEIGHT * HAND_CARD_SCALE, width, height);
     return this.cameraSystem.getHUDPosition(basePosition.x, basePosition.y);
   }
 
   public calculateSlotPositionFromIndex(index: number, cardLength: number): Point2D {
-    return this.calculator.calculateSlotPositionFromIndex(
-      index,
-      cardLength,
-      this.handBounds.width,
-      CARD_WIDTH
-    );
+    const handWidth = this.calculator.calculateTotalWidth(cardLength, CARD_WIDTH);
+    return this.calculator.calculateSlotPositionFromIndex(index, cardLength, handWidth, CARD_WIDTH);
   }
 
   public calculateSpaceBetweenCards(cardLength: number): number {
@@ -68,7 +54,7 @@ class HandLayoutHelper {
   }
 
   public calculateHiddenOffset(hiddenRatio: number): number {
-    return this.calculator.calculateHiddenOffset(hiddenRatio, CARD_HEIGHT, this.handBounds.zoom);
+    return this.calculator.calculateHiddenOffset(hiddenRatio, CARD_HEIGHT * HAND_CARD_SCALE, this.handBounds.zoom);
   }
 
   public getInteractiveBounds(): Phaser.Geom.Rectangle {

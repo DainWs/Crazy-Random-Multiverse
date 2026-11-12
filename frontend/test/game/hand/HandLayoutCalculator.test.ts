@@ -99,11 +99,12 @@ describe('HandLayoutCalculator', () => {
   });
 
   describe('calculateHandBasePosition', () => {
+    // VIEW-25
     it('centers horizontally and aligns to bottom margin', () => {
       const calculator = new HandLayoutCalculator();
-      const basePos = calculator.calculateHandBasePosition(400, 300, 1080);
+      const basePos = calculator.calculateHandBasePosition(300, 1920, 1080);
       expect(basePos).toEqual({
-        x: 200,
+        x: 960,
         y: 1080 - 150
       });
     });

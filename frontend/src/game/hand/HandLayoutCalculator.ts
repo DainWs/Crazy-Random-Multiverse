@@ -22,6 +22,8 @@ const DEFAULT_SPACE_BETWEEN_CARDS: SpaceBetweenCardOptions = {
 const HAND_EXPANDED_HIDDEN_RATIO = 0;
 const HAND_RESTING_HIDDEN_RATIO = 0.75;
 const HAND_DRAGGING_HIDDEN_RATIO = 1;
+/** Size of the cards of the hand relative to CARD_WIDTH by CARD_HEIGHT. */
+const HAND_CARD_SCALE = 0.75;
 
 class HandLayoutCalculator {
   public readonly options: SpaceBetweenCardOptions;
@@ -63,10 +65,10 @@ class HandLayoutCalculator {
     return (cardHeight * hiddenRatio) / zoom;
   }
 
-  public calculateHandBasePosition(totalWidth: number, totalHeight: number, screenHeight: number): Point2D {
+  public calculateHandBasePosition(handHeight: number, screenWidth: number, screenHeight: number): Point2D {
     return {
-      x: totalWidth / 2,
-      y: screenHeight - totalHeight / 2
+      x: screenWidth / 2,
+      y: screenHeight - handHeight / 2
     };
   }
 }
@@ -77,6 +79,7 @@ export {
   HAND_EXPANDED_HIDDEN_RATIO,
   HAND_RESTING_HIDDEN_RATIO,
   HAND_DRAGGING_HIDDEN_RATIO,
+  HAND_CARD_SCALE,
   HandLayoutCalculator
 };
 export default HandLayoutCalculator;
