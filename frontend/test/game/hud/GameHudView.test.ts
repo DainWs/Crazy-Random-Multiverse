@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import GameHudView from '@/game/hud/GameHudView';
 import type { GameScene } from '@/scenes/Game';
+import { HUD_MARGIN } from '@/core/Constants';
 
 const store = vi.hoisted(() => ({
   round: 2 as number | undefined,
@@ -77,6 +78,7 @@ describe('GameHudView', () => {
   let onLeave: Mock<() => void>;
   let hud: GameHudView;
   let zoom: number;
+  let screen: { width: number; height: number };
   let prerender: (() => void) | undefined;
 
   const turnText = () => texts[0];
@@ -95,9 +97,10 @@ describe('GameHudView', () => {
     onSurrender = vi.fn<() => void>();
     onLeave = vi.fn<() => void>();
     zoom = 1;
+    screen = { width: 1000, height: 800 };
     prerender = undefined;
     const scene = {
-      scale: { width: 1000, height: 800 },
+      scale: screen,
       cameraSystem: { getCamera: () => ({ zoom }) },
       events: {
         on: (_event: string, listener: () => void) => { prerender = listener; },
@@ -204,6 +207,29 @@ describe('GameHudView', () => {
       hud.destroy();
 
       expect(prerender).toBeUndefined();
+    });
+  });
+
+  // VIEW-24
+  describe('window size', () => {
+    it('keeps the buttons at the corner of a resized window', () => {
+      screen.width = 1400;
+      screen.height = 600;
+
+      prerender?.();
+
+      // the corner of the window minus the margin
+      expect([passTurnButton().x, passTurnButton().y]).toEqual([1400 - HUD_MARGIN, 600 - HUD_MARGIN]);
+    });
+
+    it('closes the dialog when the window changes size', () => {
+      hud.refresh(true);
+      surrenderButton().click();
+      screen.width = 1400;
+
+      prerender?.();
+
+      expect(containers[0].destroyed).toBe(true);
     });
   });
 

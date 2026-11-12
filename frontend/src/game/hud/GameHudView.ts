@@ -1,5 +1,5 @@
 import type Player from '@/domain/Player';
-import type { Point2D } from '@/domain/Geometry';
+import type { Point2D, Size2D } from '@/domain/Geometry';
 import type { GameScene } from '@/scenes/Game';
 import GameHudLayout from '@/game/hud/GameHudLayout';
 import StoreSystem from '@/core/StoreSystem';
@@ -27,10 +27,12 @@ class GameHudView {
     private enabled = false;
     private spectator = false;
     private zoom: number;
+    private screenSize: Size2D;
 
     public constructor(scene: GameScene, callbacks: HudCallbacks) {
         this.scene = scene;
         this.zoom = this.cameraZoom();
+        this.screenSize = this.currentScreenSize();
         this.layout = new GameHudLayout(scene.scale, this.zoom);
         this.callbacks = callbacks;
 
@@ -72,20 +74,32 @@ class GameHudView {
     // The scene events outlive a restart, so the listener goes with the HUD
     private listenToPreRender() {
         const sceneEvents = this.scene.events;
-        const onPreRender = () => this.followZoom();
+        const onPreRender = () => this.followScreen();
         sceneEvents.on('prerender', onPreRender);
         this.stopListening = () => sceneEvents.off('prerender', onPreRender);
     }
 
-    private followZoom() {
+    private currentScreenSize(): Size2D {
+        const { width, height } = this.scene.scale;
+        return { width, height };
+    }
+
+    /** The HUD keeps its place and size when the camera zooms and when the window changes size (UI-3, VIEW-24). */
+    private followScreen() {
         const zoom = this.cameraZoom();
-        if (zoom === this.zoom) {
+        const screenSize = this.currentScreenSize();
+        const hasSizeChanged = screenSize.width !== this.screenSize.width || screenSize.height !== this.screenSize.height;
+        if (zoom === this.zoom && !hasSizeChanged) {
             return;
         }
 
         this.zoom = zoom;
+        this.screenSize = screenSize;
         this.layout = new GameHudLayout(this.scene.scale, zoom);
         this.applyZoom();
+        if (hasSizeChanged) {
+            this.closeConfirmDialog();
+        }
     }
 
     /** The HUD stays at the same place and size on the screen at any zoom (UI-3). */

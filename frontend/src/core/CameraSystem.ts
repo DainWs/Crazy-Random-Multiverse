@@ -3,8 +3,8 @@ import { GameScene } from "@/scenes/Game";
 import CameraMovementManager from "@/core/cameras/CameraMovementManager";
 import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
-import { calculateBoundsOfPoints, calculateHUDPosition, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
-import type { Bounds2D, CameraViewport } from "@/core/cameras/CameraCalculations";
+import { calculateBoundsOfPoints, calculateHUDPosition, calculateScreenFit, resolveCameraConfiguration } from "@/core/cameras/CameraCalculations";
+import type { Bounds2D, CameraConfiguration, CameraViewport } from "@/core/cameras/CameraCalculations";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
@@ -12,6 +12,8 @@ class CameraSystem {
     private gameScene: GameScene;
     private camera: Camera;
     private boardBounds?: Bounds2D;
+    private configuration?: CameraConfiguration;
+    private center: Point2D = { x: 0, y: 0 };
 
     public initialize(gameScene: GameScene) {
         this.gameScene = gameScene;
@@ -26,10 +28,20 @@ class CameraSystem {
         const { tl, tr, bl, br } = ProjectionSystem.toCorners3D(battlefield.getCorners());
         this.boardBounds = calculateBoundsOfPoints([tl, tr, bl, br], boardOrigin);
         const maxPlayersPerSide = battlefield.getMaxPlayersPerSide();
-        const cameraConfiguration = resolveCameraConfiguration(maxPlayersPerSide);
+        this.configuration = resolveCameraConfiguration(maxPlayersPerSide);
+        this.center = { x: centerX, y: centerY };
 
-        this.camera.setZoom(cameraConfiguration.zoom);
-        this.camera.centerOn(centerX, centerY + cameraConfiguration.yOffset);
+        this.fitToScreen();
+    }
+
+    /** Frames the board again for the current size of the screen, so it stays in view and centered (VIEW-24). */
+    public fitToScreen() {
+        if (this.configuration) {
+            const { width, height } = this.gameScene.scale;
+
+            this.camera.setZoom(this.configuration.zoom * calculateScreenFit({ width, height }));
+            this.camera.centerOn(this.center.x, this.center.y + this.configuration.yOffset);
+        }
     }
 
     public getCamera(): Phaser.Cameras.Scene2D.Camera {

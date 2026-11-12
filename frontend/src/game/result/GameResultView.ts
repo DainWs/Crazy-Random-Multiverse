@@ -14,10 +14,13 @@ class GameResultView {
     private readonly scene: GameScene;
     private readonly layout: GameResultLayout;
     private readonly container: Phaser.GameObjects.Container;
+    private readonly veilShape: Phaser.GameObjects.Rectangle;
     private readonly title: Phaser.GameObjects.Text;
     private readonly winner: Phaser.GameObjects.Text;
     private readonly countdown: Phaser.GameObjects.Text;
     private readonly tick: Phaser.Time.TimerEvent;
+    private screenWidth: number;
+    private screenHeight: number;
     private remainingSeconds = Constants.GAME_RESULT_COUNTDOWN_SECONDS;
     private readonly stopListening: () => void;
 
@@ -28,18 +31,20 @@ class GameResultView {
         const positions = this.layout.positions();
         const { veil } = positions;
 
-        const veilShape = scene.add.rectangle(0, 0, veil.width, veil.height, Constants.CONFIRM_VEIL_COLOR, Constants.GAME_RESULT_VEIL_ALPHA);
-        veilShape.setOrigin(0, 0);
-        veilShape.setInteractive();
+        this.veilShape = scene.add.rectangle(0, 0, veil.width, veil.height, Constants.CONFIRM_VEIL_COLOR, Constants.GAME_RESULT_VEIL_ALPHA);
+        this.veilShape.setOrigin(0, 0);
+        this.veilShape.setInteractive();
 
         this.title = this.createText(positions.title, Constants.GAME_RESULT_TITLE_FONT_SIZE);
         this.winner = this.createText(positions.winner, Constants.GAME_RESULT_DETAIL_FONT_SIZE);
         this.countdown = this.createText(positions.countdown, Constants.GAME_RESULT_DETAIL_FONT_SIZE);
 
-        this.container = scene.add.container(0, 0, [veilShape, this.title, this.winner, this.countdown]);
+        this.container = scene.add.container(0, 0, [this.veilShape, this.title, this.winner, this.countdown]);
         this.container.setScrollFactor(0);
         this.container.setDepth(Constants.GAME_RESULT_DEPTH);
 
+        this.screenWidth = scene.scale.width;
+        this.screenHeight = scene.scale.height;
         this.showResult(result);
         this.applyZoom();
         const sceneEvents = scene.events;
@@ -70,8 +75,25 @@ class GameResultView {
     /** The result covers the whole screen at any zoom of the camera, which scales it even with scroll factor 0. */
     private applyZoom() {
         const { width, height } = this.scene.scale;
+        if (width !== this.screenWidth || height !== this.screenHeight) {
+            this.placeToScreen();
+        }
+
         const { x, y, scale } = calculateScreenFixedTransform(width, height, this.scene.cameraSystem.getCamera().zoom);
         this.container.setPosition(x, y).setScale(scale);
+    }
+
+    /** The veil and the lines follow the window when it changes size (VIEW-24). */
+    private placeToScreen() {
+        const { width, height } = this.scene.scale;
+        const positions = this.layout.positions();
+
+        this.screenWidth = width;
+        this.screenHeight = height;
+        this.veilShape.setSize(positions.veil.width, positions.veil.height);
+        this.title.setPosition(positions.title.x, positions.title.y);
+        this.winner.setPosition(positions.winner.x, positions.winner.y);
+        this.countdown.setPosition(positions.countdown.x, positions.countdown.y);
     }
 
     public destroy() {

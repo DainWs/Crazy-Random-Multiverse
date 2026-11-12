@@ -1,4 +1,4 @@
-import { Point2D } from "@/domain/Geometry";
+import { Point2D, Size2D } from "@/domain/Geometry";
 
 /**
  * Pure camera math functions, independent of Phaser runtime.
@@ -68,6 +68,16 @@ function calculateScreenFixedTransform(screenWidth: number, screenHeight: number
   };
 }
 
+/** The screen the board and the camera configurations are tuned for. */
+const REFERENCE_SCREEN: Size2D = { width: 1920, height: 1080 };
+/** Where the battlefield sits on the reference screen, as a fraction of its height. */
+const BOARD_ORIGIN_HEIGHT_RATIO = 0.3;
+
+/** How much the zoom shrinks or grows so that what fits the reference screen also fits `screen` (VIEW-24). */
+function calculateScreenFit(screen: Size2D): number {
+  return Math.min(screen.width / REFERENCE_SCREEN.width, screen.height / REFERENCE_SCREEN.height);
+}
+
 type MaxPlayersPerSide = number;
 type CameraConfiguration = {
   zoom: number;
@@ -87,4 +97,4 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
 }
 
 export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
-export { calculateHUDPosition, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export { REFERENCE_SCREEN, BOARD_ORIGIN_HEIGHT_RATIO, calculateScreenFit, calculateHUDPosition, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };

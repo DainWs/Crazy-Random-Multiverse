@@ -20,7 +20,7 @@ import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
-import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -54,8 +54,8 @@ class GameScene extends Scene {
     }
 
     public init() {
-        const { width, height } = this.scale;
-        this.battlefieldContainer = this.add.container(width / 2, height * 0.3);
+        const { width, height } = REFERENCE_SCREEN;
+        this.battlefieldContainer = this.add.container(width / 2, height * BOARD_ORIGIN_HEIGHT_RATIO);
         this.cardTooltipView = new GlobalCardTooltipView(this);
 
         this.cameraSystem.initialize(this);
@@ -80,9 +80,17 @@ class GameScene extends Scene {
             this.showResult();
         }
 
+        this.scale.on(Phaser.Scale.Events.RESIZE, this.onResize, this);
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scale.off(Phaser.Scale.Events.RESIZE, this.onResize, this));
+
         const stopListening = StoreSystem.onChange((event) => this.storeChangeHandlers[event.change](event));
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => AnimationSystem.clear());
+    }
+
+    /** The hand, the HUD and the panel follow the screen on their own every frame, but the camera has to frame the board again (VIEW-24). */
+    private onResize() {
+        this.cameraSystem.fitToScreen();
     }
 
     private renderAll() {

@@ -3,6 +3,7 @@ import {
   calculateHUDPosition,
   clampScrollToBounds,
   calculateScreenFixedTransform,
+  calculateScreenFit,
   calculateBoundsOfPoints,
   resolveCameraConfiguration,
   DEFAULT_CAMERA_CONFIGURATION
@@ -59,6 +60,19 @@ describe('CameraCalculations', () => {
       const { x, y, scale } = calculateScreenFixedTransform(1920, 1080, 0.65);
 
       expect([x + 960 * scale, y + 540 * scale].map((value) => Math.round(value))).toEqual([960, 540]);
+    });
+  });
+
+  // VIEW-24
+  describe('calculateScreenFit', () => {
+    it.each([
+      { width: 1920, height: 1080, expected: 1 },
+      { width: 960, height: 540, expected: 0.5 },
+      { width: 1100, height: 620, expected: 0.57292 },
+      { width: 1920, height: 540, expected: 0.5 },
+      { width: 3840, height: 2160, expected: 2 }
+    ])('returns $expected for a screen of $width by $height', ({ width, height, expected }) => {
+      expect(calculateScreenFit({ width, height })).toBeCloseTo(expected, 5);
     });
   });
 
