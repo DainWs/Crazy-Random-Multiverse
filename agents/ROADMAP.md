@@ -28,9 +28,9 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 Started at: `9de2969`
 
-- [ ] Test layouts for 2 to 10 players (`VIEW-2`)
-- [ ] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
-- [ ] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
+- [x] Test layouts for 2 to 10 players (`VIEW-2`)
+- [x] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
+- [x] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
 - [x] Review/fix existing table grid-line TODO
 - [x] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
 - [x] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone. Regenerate the reference images that show the label: T6 of `ROADMAP-TEST.md` approved them with cards in the rival hands

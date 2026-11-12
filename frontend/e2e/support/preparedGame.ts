@@ -16,7 +16,7 @@ interface PreparedGame {
 }
 
 const LOCAL_USER: UserDto = { id: 'user-1', username: 'Tester' };
-const RIVAL_NAMES = ['Rival', 'Tercero'];
+const FIRST_RIVAL_NAMES = ['Rival', 'Tercero'];
 const WARRIOR_COLUMNS = 3;
 
 function createPlayer(code: string, name: string): PlayerDto {
@@ -92,7 +92,12 @@ function createZone(owner: PlayerDto, leaderCode: string, warrior: CardDto): Zon
     };
 }
 
-function createRivalZone(name: string, index: number): ZoneDto {
+function rivalName(index: number): string {
+    return FIRST_RIVAL_NAMES[index] ?? `Rival ${index + 1}`;
+}
+
+function createRivalZone(index: number): ZoneDto {
+    const name = rivalName(index);
     const owner = createPlayer(`user-${index + 2}`, name);
 
     return createZone(owner, String(index + 1), createWarrior(String(index + 11), { targetable: true }));
@@ -102,7 +107,7 @@ function createRivalZone(name: string, index: number): ZoneDto {
 function createPreparedGame(playerCount: number): PreparedGame {
     const localPlayer = createPlayer(LOCAL_USER.id, LOCAL_USER.username);
     const localZone = createZone(localPlayer, '0', createWarrior('10', { attackAvailable: true }));
-    const rivalZones = RIVAL_NAMES.slice(0, playerCount - 1).map(createRivalZone);
+    const rivalZones = Array.from({ length: playerCount - 1 }, (_, index) => createRivalZone(index));
 
     return {
         user: LOCAL_USER,
