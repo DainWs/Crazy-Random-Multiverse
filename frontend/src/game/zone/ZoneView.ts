@@ -7,7 +7,7 @@ import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
-import { ELIMINATED_LABEL_COLOR, ELIMINATED_LABEL_FONT_SIZE } from "@/core/Constants";
+import { ELIMINATED_LABEL_COLOR, ELIMINATED_LABEL_FONT_SIZE, ELIMINATED_LABEL_STROKE_COLOR, ELIMINATED_LABEL_STROKE_WIDTH } from "@/core/Constants";
 import type { ZonePosition } from "@/domain/Position";
 
 interface ZoneViewOptions {
@@ -105,7 +105,9 @@ class ZoneView extends Phaser.GameObjects.Container {
 
     const label = this.scene.add.text(0, 0, getText('ui.game.eliminated'), {
       fontSize: ELIMINATED_LABEL_FONT_SIZE,
-      color: ELIMINATED_LABEL_COLOR
+      color: ELIMINATED_LABEL_COLOR,
+      stroke: ELIMINATED_LABEL_STROKE_COLOR,
+      strokeThickness: ELIMINATED_LABEL_STROKE_WIDTH
     });
     label.setOrigin(0.5, 0.5);
     label.setScale(ProjectionSystem.toPoint3D(this.options.position).scale);

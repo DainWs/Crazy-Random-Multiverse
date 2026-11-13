@@ -1,6 +1,8 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, SLOT_BORDER_WIDTH } from "@/core/Constants";
+import {
+  ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_COLOR, ELIMINATED_VEIL_BORDER_WIDTH, ELIMINATED_VEIL_COLOR, SLOT_BORDER_WIDTH
+} from "@/core/Constants";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -31,10 +33,11 @@ class ZoneSlotViewRenderer {
     graphics.strokePath();
   }
 
-  /** Darkens the slot of an eliminated player's zone (VIEW-11). */
+  /** Tints the slot of an eliminated player's zone a dark red, with a dark border that tells the slots apart (VIEW-11). */
   public static renderVeil(graphics: Graphics, corners: Corners3D) {
     graphics.clear();
     graphics.fillStyle(ELIMINATED_VEIL_COLOR, ELIMINATED_VEIL_ALPHA);
+    graphics.lineStyle(ELIMINATED_VEIL_BORDER_WIDTH, ELIMINATED_VEIL_BORDER_COLOR, 1);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);
@@ -42,6 +45,7 @@ class ZoneSlotViewRenderer {
     graphics.lineTo(corners.bl.x, corners.bl.y);
     graphics.closePath();
     graphics.fillPath();
+    graphics.strokePath();
   }
 
   /** Frames the slot with a solid line, to be drawn over its card so the mark stays visible (UI-5, VIEW-4). */

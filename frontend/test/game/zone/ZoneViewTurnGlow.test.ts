@@ -1,6 +1,7 @@
 import 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 import ZoneView from '@/game/zone/ZoneView';
+import { ELIMINATED_LABEL_STROKE_COLOR, ELIMINATED_LABEL_STROKE_WIDTH } from '@/core/Constants';
 
 /** Runs the private glow of a zone with the pieces it reads, without building a Phaser container. */
 function showTurnGlow(leaderCombatant: object | null) {
@@ -47,6 +48,17 @@ describe('ZoneView eliminated mark', () => {
     (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
 
     expect([slotViews.map((view) => view.showEliminatedVeil.mock.calls.length), label.text]).toEqual([[1, 1], 'Eliminado']);
+  });
+
+  // VIEW-11
+  it('outlines the label in black, with no panel behind it', () => {
+    const label = { setOrigin: vi.fn(), setScale: vi.fn() };
+    const text = vi.fn(() => label);
+    const zoneView = { slots: [[]], options: { position: { x: 0, y: 0 } }, scene: { add: { text } }, add: vi.fn() };
+
+    (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
+
+    expect(text).toHaveBeenCalledWith(0, 0, 'Eliminado', expect.objectContaining({ stroke: ELIMINATED_LABEL_STROKE_COLOR, strokeThickness: ELIMINATED_LABEL_STROKE_WIDTH }));
   });
 });
 

@@ -273,17 +273,29 @@ export const TURN_GLOW_MIN_ALPHA = 0.45;
 /** Duration in milliseconds of one pulse of the frame around the leader of the player with the turn (VIEW-20). */
 export const TURN_GLOW_PULSE_PERIOD_MS = 2400;
 
-/** Color of the veil over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_VEIL_COLOR = 0x000000;
+/** Color of the veil over each slot of the zone of an eliminated player: a dark red (VIEW-11). */
+export const ELIMINATED_VEIL_COLOR = 0x3b0a0a;
 
-/** Alpha of the veil over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_VEIL_ALPHA = 0.7;
+/** Alpha of the veil over each slot of the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_VEIL_ALPHA = 0.8;
+
+/** Color of the border drawn around each veiled slot of the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_VEIL_BORDER_COLOR = 0x1a0000;
+
+/** Width in board-space units of the border around each veiled slot of the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_VEIL_BORDER_WIDTH = 3;
 
 /** Font size in board-space units of the label "Eliminado" over the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_LABEL_FONT_SIZE = '72px';
 
 /** Color of the label over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_LABEL_COLOR = '#e74c3c';
+export const ELIMINATED_LABEL_COLOR = '#ff5a4d';
+
+/** Color of the outline of the label over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_LABEL_STROKE_COLOR = '#000000';
+
+/** Thickness in board-space units of the outline of the label over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_LABEL_STROKE_WIDTH = 10;
 
 /** Depth of the button to leave the game: above the result, so a spectator can still leave while it is shown (UI-8). */
 export const LEAVE_BUTTON_DEPTH = GAME_RESULT_DEPTH + 1;
