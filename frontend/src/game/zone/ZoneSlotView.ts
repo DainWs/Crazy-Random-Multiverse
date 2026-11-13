@@ -11,7 +11,7 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import { HIT_FLASH_DURATION_MS, SLOT_MARKER_READY_COLOR } from "@/core/Constants";
+import { HIT_FLASH_DURATION_MS, OWN_SLOT_BORDER_COLOR, OWN_SLOT_COLOR, SLOT_MARKER_READY_COLOR } from "@/core/Constants";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
@@ -70,6 +70,16 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
   public setZone(zone: Zone) {
     this.zone = zone;
+    this.restoreBackground();
+  }
+
+  /** The slots of the local player's zone are tinted, so their cards are told apart from the rivals' (VIEW-27). */
+  public restoreBackground() {
+    if (this.zone.isPlayerOwner(StoreSystem.getPlayer())) {
+      this.setBackgroundColor(OWN_SLOT_COLOR, OWN_SLOT_BORDER_COLOR);
+    } else {
+      this.setBackgroundColor(0xffffff);
+    }
   }
 
   public canReceive(card: Card): boolean {

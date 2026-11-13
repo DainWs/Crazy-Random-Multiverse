@@ -7,6 +7,7 @@ describe('ZoneSlotAnimation', () => {
   const createMockZoneSlot = () => {
     return {
       setBackgroundColor: vi.fn(),
+      restoreBackground: vi.fn(),
       showMarker: vi.fn(),
       hideMarker: vi.fn()
     } as unknown as ZoneSlotView;
@@ -38,10 +39,10 @@ describe('ZoneSlotAnimation', () => {
     expect(slot.showMarker).toHaveBeenCalledWith(Constants.SLOT_MARKER_VALID_COLOR);
   });
 
-  it('sets white background color for unhighlight', () => {
+  it('restores the background of the slot for unhighlight', () => {
     const slot = createMockZoneSlot();
     applyAnimation(slot, 'unhighlight');
-    expect(slot.setBackgroundColor).toHaveBeenCalledWith(0xffffff);
+    expect(slot.restoreBackground).toHaveBeenCalled();
   });
 
   it('removes the frame for unhighlight', () => {

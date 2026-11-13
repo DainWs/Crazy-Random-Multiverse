@@ -17,7 +17,7 @@ function highlightAsTarget(zoneSlot: ZoneSlotView): void {
 }
 
 function unhighlight(zoneSlot: ZoneSlotView): void {
-  zoneSlot.setBackgroundColor(0xffffff);
+  zoneSlot.restoreBackground();
   zoneSlot.hideMarker();
 }
 

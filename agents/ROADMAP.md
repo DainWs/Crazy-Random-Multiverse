@@ -52,7 +52,7 @@ Started at: `9de2969`
 
 Started at: `937e889`
 
-- [ ] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule)
+- [x] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule): `VIEW-27`
 - [x] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)

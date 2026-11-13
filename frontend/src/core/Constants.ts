@@ -76,6 +76,12 @@ export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 1600;
 /** Lowest alpha of the pulse of the frame of an own card that can attack now, between 0 and 1 (VIEW-17). */
 export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
 
+/** Fill color of the slots of the zone of the local player, at rest (VIEW-27). */
+export const OWN_SLOT_COLOR = 0x9fd8ff;
+
+/** Border color of the slots of the zone of the local player, at rest (VIEW-27). */
+export const OWN_SLOT_BORDER_COLOR = 0x3d9bff;
+
 /** Depth of the attack arrow, above the cards and the hand. */
 export const ATTACK_ARROW_DEPTH = 20000;
 
