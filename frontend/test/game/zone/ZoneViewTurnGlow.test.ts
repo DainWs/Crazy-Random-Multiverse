@@ -55,3 +55,24 @@ describe('ZoneView eliminated mark', () => {
     expect([slotViews.map((view) => view.showEliminatedVeil.mock.calls.length), label.text]).toEqual([[1, 1], 'Eliminado']);
   });
 });
+
+describe('ZoneView attack ready marks', () => {
+  /** Runs the private marks of a zone over slots whose cards can or cannot attack. */
+  function showAttackReadyMarks(attackAvailable: Array<boolean | null>) {
+    const slotViews = attackAvailable.map(() => ({ showReadyMark: vi.fn() }));
+    const slots = attackAvailable.map((available, column) => ({
+      position: { row: 0, column },
+      combatant: available === null ? null : { isAttackAvailable: available }
+    }));
+    const zoneView = { zone: { slots: [slots] }, getSlotAt: (position: { column: number }) => slotViews[position.column] };
+
+    (ZoneView.prototype as unknown as { showAttackReadyMarks(): void }).showAttackReadyMarks.call(zoneView);
+
+    return slotViews.map((view) => view.showReadyMark.mock.calls.length);
+  }
+
+  // VIEW-17
+  it('marks only the cards that can attack', () => {
+    expect(showAttackReadyMarks([true, false, null, true])).toEqual([1, 0, 0, 1]);
+  });
+});

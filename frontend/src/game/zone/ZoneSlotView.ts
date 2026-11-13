@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
+import { prefersReducedMotion, readyMarkAlpha } from "@/core/visual_effects/ReadyMarkPulse";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import type Card from "@/domain/Card";
@@ -10,12 +11,13 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import { HIT_FLASH_DURATION_MS } from "@/core/Constants";
+import { HIT_FLASH_DURATION_MS, SLOT_MARKER_READY_COLOR } from "@/core/Constants";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
   private markerGraphics?: Phaser.GameObjects.Graphics;
+  private readyGraphics?: Phaser.GameObjects.Graphics;
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
@@ -188,6 +190,26 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.bringToTop(this.markerGraphics);
   }
 
+  /** Frames an own card that can attack now with a pulse, under the frames of `showMarker` (VIEW-17). */
+  public showReadyMark() {
+    this.readyGraphics ??= this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, SLOT_MARKER_READY_COLOR);
+    this.add(this.readyGraphics);
+    this.bringToTop(this.readyGraphics);
+
+    if (prefersReducedMotion()) {
+      return;
+    }
+
+    this.pulseReadyMark();
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
+  }
+
+  private pulseReadyMark = () => {
+    this.readyGraphics?.setAlpha(readyMarkAlpha(this.scene.time.now));
+  };
+
   public hideMarker() {
     this.markerGraphics?.destroy();
     this.markerGraphics = undefined;
@@ -207,6 +229,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
   protected preDestroy(): void {
     super.preDestroy();
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
     InteractiveObjectManager.unregisterGameObject(this.scene, this);
 
     if (this.cardView) {

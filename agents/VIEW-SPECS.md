@@ -22,7 +22,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-5** A hit shows feedback, such as a shake or a red flash.
 - **VIEW-6** Changes in armor and health are animated: the values count down to the new ones, and a floating text over the target shows the armor and health it lost (`CON-21`).
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.
-- **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the highlight of the valid targets while attacking (`UI-5`, `PROT-6`). The rule only covers protection and does not rule out other marks, such as one for the own cards that can attack.
+- **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the highlight of the valid targets while attacking (`UI-5`, `PROT-6`). The own cards that can attack now (`attackAvailable`, `CON-15`) do have a mark, while the board being shown is the turn of the local player (`CON-12`): a cyan frame, drawn over the card like those of `VIEW-4`, with a discreet pulse that does not restart when the board is drawn again, as in `VIEW-20`, and that stays still when the system asks for reduced motion. While a card is selected to attack, its own mark is replaced by the red one of `VIEW-4`.
 - **VIEW-18** The equipment of a combatant is part of its card (`VIEW-14`): when the card dies (`EQUIP-8`) it plays the death animation together with it and has no animation of its own. The board drawn afterwards has neither.
 
 ## Other

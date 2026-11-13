@@ -67,6 +67,15 @@ export const SLOT_MARKER_VALID_COLOR = ATTACK_ARROW_VALID_COLOR;
 /** Color of the frame of the slot of the attacker or the origin of a drag, the red of the arrow (UI-5, VIEW-4). */
 export const SLOT_MARKER_SOURCE_COLOR = ATTACK_ARROW_INVALID_COLOR;
 
+/** Color of the frame of an own card that can attack now (VIEW-17). */
+export const SLOT_MARKER_READY_COLOR = 0x00e5ff;
+
+/** Duration in milliseconds of one pulse of the frame of an own card that can attack now (VIEW-17). */
+export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 1600;
+
+/** Lowest alpha of the pulse of the frame of an own card that can attack now, between 0 and 1 (VIEW-17). */
+export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
+
 /** Depth of the attack arrow, above the cards and the hand. */
 export const ATTACK_ARROW_DEPTH = 20000;
 

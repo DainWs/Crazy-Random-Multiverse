@@ -13,6 +13,8 @@ export default defineConfig({
     reporter: 'list',
     use: {
         baseURL: E2E_ORIGIN,
+        // A pulse would keep the frames from ever being still, so the images and the wait for a still frame need it off.
+        reducedMotion: 'reduce',
         trace: 'retain-on-failure'
     },
     projects: [

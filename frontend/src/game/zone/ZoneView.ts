@@ -3,6 +3,7 @@ import { GameScene } from "@/scenes/Game";
 import Zone from "@/domain/Zone";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import ZoneSlotLayout from "@/game/zone/ZoneSlotLayout";
+import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
@@ -81,6 +82,19 @@ class ZoneView extends Phaser.GameObjects.Container {
 
     if (this.options.hasTurn) {
       this.showTurnGlow();
+
+      if (this.zone.isPlayerOwner(StoreSystem.getPlayer())) {
+        this.showAttackReadyMarks();
+      }
+    }
+  }
+
+  /** Marks the own cards that can attack, on the turn of the board being shown (VIEW-17). */
+  private showAttackReadyMarks() {
+    for (const zoneSlot of this.zone.slots.flat()) {
+      if (zoneSlot.combatant?.isAttackAvailable) {
+        this.getSlotAt(zoneSlot.position)?.showReadyMark();
+      }
     }
   }
 
