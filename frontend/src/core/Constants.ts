@@ -40,6 +40,30 @@ export const REJECTION_MESSAGE_COLOR = '#ff6b6b';
 /** Depth of the message about a rejected action: above the cards. */
 export const REJECTION_MESSAGE_DEPTH = 20000;
 
+/** Time in milliseconds a notice of a new round or turn takes to fade in, and again to fade out (VIEW-15). */
+export const TURN_NOTICE_FADE_MS = 200;
+
+/** Time in milliseconds a notice of a new round or turn stays fully visible (VIEW-15). */
+export const TURN_NOTICE_HOLD_MS = 1100;
+
+/** Distance from the top edge of the screen to the notice of a new round or turn, as a fraction of the screen height (VIEW-15). */
+export const TURN_NOTICE_TOP_RATIO = 0.2;
+
+/** Font size of the notice of a new round or turn (VIEW-15). */
+export const TURN_NOTICE_FONT_SIZE = '40px';
+
+/** Color of the text of the notice of a new round or turn (VIEW-15). */
+export const TURN_NOTICE_COLOR = '#ffffff';
+
+/** Color of the panel behind the notice of a new round or turn (VIEW-15). */
+export const TURN_NOTICE_BACKGROUND = '#1b2631';
+
+/** Padding in pixels between the text of the notice of a new round or turn and its panel (VIEW-15). */
+export const TURN_NOTICE_PADDING = { x: 28, y: 12 };
+
+/** Depth of the notice of a new round or turn: above the cards. */
+export const TURN_NOTICE_DEPTH = 20000;
+
 /** Color of the attack arrow while the pointer is over a target the attack can reach (UI-5, VIEW-4). */
 export const ATTACK_ARROW_VALID_COLOR = 0x2ecc71;
 

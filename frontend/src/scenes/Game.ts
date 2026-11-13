@@ -21,6 +21,8 @@ import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
 import { findLeaders, hideLeaders, playLeaderIntro } from '@/core/visual_effects/LeaderIntro';
+import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
+import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
 import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
@@ -37,6 +39,8 @@ class GameScene extends Scene {
     private rejectionText?: Phaser.GameObjects.Text;
     private resultView?: GameResultView;
     private isLeaderIntroPending = false;
+    /** The round and the turn of the last board queued, which is what the next one is compared with to announce a change (VIEW-15). */
+    private queuedTurn: BoardTurn = {};
     private battlefieldContainer: Phaser.GameObjects.Container;
     public zones: ZoneView[];
 
@@ -78,6 +82,7 @@ class GameScene extends Scene {
             onLeave: () => this.leaveGame()
         });
         this.renderAll();
+        this.queuedTurn = { round: StoreSystem.getRound(), playerWithTurn: StoreSystem.getPlayerWithTurn()?.code };
         this.isLeaderIntroPending = false;
         if (SessionSystem.takeLeaderIntro()) {
             this.queueLeaderIntro();
@@ -137,6 +142,13 @@ class GameScene extends Scene {
         }
 
         AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield, snapshot.playerWithTurn));
+
+        const next = { round: snapshot.round, playerWithTurn: snapshot.playerWithTurn };
+        const players = snapshot.zones.map((zone) => zone.owner);
+        for (const text of describeNotices(this.queuedTurn, next, StoreSystem.getPlayer().code, players)) {
+            AnimationSystem.enqueue(() => playNotice(this, text));
+        }
+        this.queuedTurn = next;
     }
 
 
