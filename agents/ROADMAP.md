@@ -66,7 +66,7 @@ Started at: `937e889`
 - [x] Improve the look of the connection notice (`UI-9`), the notices of `SessionNotice` (`UI-10`, `UI-24`, `LOAD-4`) and the leave button and its dialog (`UI-15`): they are unstyled, with default controls and a plain dark veil. The notices are Vue panels with a shared palette; the leave button and its dialog share the HUD style of the next bullet (`VIEW-28`)
 - [x] Improve the look of the HUD, the confirmation dialog and the spectator state (`UI-3`, `UI-8`): make clear that the player is watching and cannot act, beyond hiding the buttons. `VIEW-28`: hover on the buttons, a border on the dialog and a label next to the leave button
 - [ ] Review the look of every effect of the game together, so that the glow, the veils, the notices, the combat feedback (`VIEW-5` to `VIEW-7`) and the transitions share one style. Regenerate the reference images when it changes
-- [ ] Draw the card of a slot in perspective, deformed like the slot (`VIEW-1`, `VIEW-2`): `ZoneSlotCardHelper` places a flat rectangle with the average scale of the projected edges, so zoomed in it does not follow the trapezoid of the slot. It needs a mesh or a quad with the four corners of the slot
+- [x] Draw the card of a slot in perspective, deformed like the slot (`VIEW-1`, `VIEW-2`): `ZoneSlotCardHelper` placed a flat rectangle with the average scale of the projected edges, so zoomed in it did not follow the trapezoid of the slot. Done with a Displacement filter on an inner container of the card, not with a mesh: see `PHASER4-SPECS.md`
 - [x] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
 
 ## Phase 12 — Menu, lobby, user

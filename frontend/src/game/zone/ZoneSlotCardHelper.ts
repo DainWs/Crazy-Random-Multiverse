@@ -1,8 +1,9 @@
 import type ZoneSlotView from "@/game/zone/ZoneSlotView";
 import type { Corners3D, Point2D } from "@/domain/Geometry";
-import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import { CARD_WIDTH, CARD_HEIGHT, CARD_SIZE } from "@/game/cards/CardDimensions";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
 import CombatantView from "@/game/cards/CombatantView";
+import { calculateCardPlacement } from "@/game/cards/CardWarp";
 
 function distanceBetween(x1: number, y1: number, x2: number, y2: number): number {
   return Math.hypot(x2 - x1, y2 - y1);
@@ -37,15 +38,16 @@ function calculateCardCenter(corners: Corners3D): Point2D {
   };
 }
 
+/** Puts the card in the slot, drawn inside the four corners of the slot (VIEW-1, VIEW-2). */
 function applyCardTransformations(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {
-  const scale = calculateCardTargetScale(zoneSlotView.corners);
-  const center = calculateCardCenter(zoneSlotView.corners);
+  const { center, scale, quad } = calculateCardPlacement(zoneSlotView.corners, zoneSlotView.slotRotation, CARD_SIZE);
 
   combatantView.setOriginalPosition(center.x, center.y);
   combatantView.setOriginalScale(scale.x, scale.y);
   combatantView.setOriginalDepth(zoneSlotView.depth + 1);
   combatantView.setAngle(zoneSlotView.slotRotation);
   combatantView.reset();
+  combatantView.applyWarp(quad);
 }
 
 function previewCard(zoneSlotView: ZoneSlotView, combatantView: CombatantView) {

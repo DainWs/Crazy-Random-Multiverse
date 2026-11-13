@@ -312,3 +312,9 @@ export const LEAVE_BUTTON_DEPTH = GAME_RESULT_DEPTH + 1;
 
 /** Depth of the dialog that asks for confirmation: above every other element of the game (UI-15). */
 export const CONFIRM_DIALOG_DEPTH = GAME_RESULT_DEPTH + 2;
+
+/** Fraction of the width and the height of a card that the Displacement filter can move a pixel, in each direction (VIEW-1). Smaller means a finer map, because it has 256 steps. */
+export const WARP_DISPLACEMENT_AMOUNT = 0.5;
+
+/** Pixels around a card that the filter keeps when it draws the card inside the quad of its slot (VIEW-1). */
+export const WARP_PADDING = 8;

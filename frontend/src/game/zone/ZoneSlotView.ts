@@ -118,6 +118,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     const heldCard = this.cardView;
     if (heldCard) {
       this.remove(heldCard);
+      heldCard.clearWarp();
       this.cardView = null;
     }
 
@@ -136,6 +137,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.zoneSlot.combatant = null;
     if (this.cardView) {
       this.remove(this.cardView);
+      this.cardView.clearWarp();
       this.cardView = null;
     }
   }

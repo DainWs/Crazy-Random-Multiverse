@@ -3,6 +3,7 @@ import type { CardRender } from "@/game/cards/renders/CombatantRender";
 import combatantRender from "@/game/cards/renders/CombatantRender";
 import CardView from "@/game/cards/CardView";
 import stackLayoutHelper from "@/game/cards/CardStackLayoutHelper";
+import type { CardQuad } from "@/game/cards/CardWarp";
 
 class CombatantView extends CardView {
   private readonly stackedCards: CardView[] = [];
@@ -37,7 +38,21 @@ class CombatantView extends CardView {
     piece.disableClicks();
 
     this.addAt(piece, 0);
+    const warp = this.getWarp();
+    if (warp) {
+      piece.applyWarp(warp);
+    }
     this.scene.input.setDraggable(piece, false);
+  }
+
+  public override applyWarp(quad: CardQuad) {
+    super.applyWarp(quad);
+    this.stackedCards.forEach((piece) => piece.applyWarp(quad));
+  }
+
+  public override clearWarp() {
+    super.clearWarp();
+    this.stackedCards.forEach((piece) => piece.clearWarp());
   }
 
   private revealStackedCards() {

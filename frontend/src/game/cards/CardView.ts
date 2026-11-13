@@ -3,12 +3,18 @@ import type { OriginalBounds, OriginalPosition, OriginalScale } from "@/game/car
 import type Card from "@/domain/Card";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
+import { buildDisplacementMap } from "@/game/cards/CardWarp";
+import type { CardQuad } from "@/game/cards/CardWarp";
+import { WARP_DISPLACEMENT_AMOUNT, WARP_PADDING } from "@/core/Constants";
 import Phaser from "phaser";
 
 abstract class CardView extends Phaser.GameObjects.Container {
 
   private originalBounds: OriginalBounds;
 
+  /** Everything the card draws. It is the one that takes the filter of the perspective, because a filter on a rotated container turns out wrong. */
+  protected readonly content: Phaser.GameObjects.Container;
+  private warpQuad: CardQuad | null = null;
   private background: Phaser.GameObjects.Image;
   private cardImage: Phaser.GameObjects.Image;
   public abstract get cardRender(): CardRender;
@@ -38,6 +44,9 @@ abstract class CardView extends Phaser.GameObjects.Container {
     };
 
     this.card = card;
+    this.content = scene.add.container(0, 0);
+    this.content.setSize(CARD_WIDTH, CARD_HEIGHT);
+    this.add(this.content);
 
     this.initializeView();
     this.setInteractive({ draggable: true, useHandCursor: true });
@@ -50,8 +59,55 @@ abstract class CardView extends Phaser.GameObjects.Container {
   protected initializeView() {
     this.initializeBackground();
     this.initializeCardImage();
-    this.add([this.cardImage, this.background]);
-    this.add(this.cardRender.render(this.scene, this, this.width, this.height));
+    this.content.add([this.cardImage, this.background]);
+    this.content.add(this.cardRender.render(this.scene, this, this.width, this.height));
+  }
+
+  public override getByName<T extends Phaser.GameObjects.GameObject>(name: string): T {
+    return this.content.getByName(name);
+  }
+
+  /** Draws the card inside `quad`, the corners of its slot in the space of the card (VIEW-1, VIEW-2). */
+  public applyWarp(quad: CardQuad) {
+    this.warpQuad = quad;
+    this.content.enableFilters();
+    const filters = this.content.filters;
+    if (!filters) {
+      return;
+    }
+
+    const key = this.ensureWarpTexture(quad);
+    const { width, height } = this.scene.textures.get(key).getSourceImage();
+    filters.internal.clear();
+    const displacement = filters.internal.addDisplacement(key, WARP_DISPLACEMENT_AMOUNT, WARP_DISPLACEMENT_AMOUNT);
+    displacement.setPaddingOverride(0, 0, 0, 0);
+    this.content.focusFiltersOverride(undefined, undefined, width, height);
+  }
+
+  public clearWarp() {
+    this.warpQuad = null;
+    this.content.filters?.internal.clear();
+  }
+
+  public getWarp(): CardQuad | null {
+    return this.warpQuad;
+  }
+
+  /** One map per quad: the slots of a board do not change, so a map is shared by every card that stands in its slot. */
+  private ensureWarpTexture(quad: CardQuad): string {
+    const key = `card-warp:${quad.map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`).join(":")}`;
+    if (this.scene.textures.exists(key)) {
+      return key;
+    }
+
+    const map = buildDisplacementMap(quad, { width: CARD_WIDTH, height: CARD_HEIGHT }, WARP_PADDING);
+    const canvas = document.createElement("canvas");
+    canvas.width = map.width;
+    canvas.height = map.height;
+    canvas.getContext("2d")!.putImageData(new ImageData(map.data, map.width, map.height), 0, 0);
+    this.scene.textures.addCanvas(key, canvas);
+
+    return key;
   }
 
   protected initializeBackground() {

@@ -37,3 +37,9 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** with a `Glow` filter on the leader of the player with the turn the game fell from about 24 to 2.8 frames per second in the browser tests, which render with software WebGL, and a person saw it stall.
 - **Likely cause:** a filter on a game object renders it to a texture and runs a shader pass over it on every frame, and changing its strength for a pulse keeps it from ever being cached. Software WebGL makes it far worse than a GPU would.
 - **Where to look:** `VIEW-20` draws its frame with plain `Graphics` and only changes its alpha. Before using `enableFilters()` on an object that is on the board, measure the frames per second at 3 or more players, as `e2e` does with a `requestAnimationFrame` counter.
+
+## The cards of the board lower the frames per second
+
+- **Symptom:** with software WebGL the browser tests measured 24.5 to 21 frames per second at 3 players, 24.25 to 19.5 at 5 and 23 to 15.5 at 10 after the cards were drawn in perspective (`VIEW-1`). On a desktop GPU 200 filtered cards kept 60 frames per second.
+- **Likely cause:** each card on the board has a Displacement filter on its inner container (`CardView.content`), so it is rendered to its own texture on every frame, and the cost grows with the cards on the table.
+- **Where to look:** `CardView.applyWarp` and `CardWarp.ts`. The filter goes on the inner container because a filter on a rotated container is drawn turned twice, and the container needs `setSize` or its output is drawn at the top left corner of the screen. Measure the frames per second at 3, 5 and 10 players with a `requestAnimationFrame` counter before adding another filter to the board.

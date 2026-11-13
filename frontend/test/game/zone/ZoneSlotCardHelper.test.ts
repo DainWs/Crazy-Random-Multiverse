@@ -94,6 +94,7 @@ describe('ZoneSlotCardHelper', () => {
         setOriginalScale: () => {},
         setOriginalDepth: () => {},
         reset: () => {},
+        applyWarp: () => {},
         setAngle(angle: number) {
           card.angle = angle;
         }
