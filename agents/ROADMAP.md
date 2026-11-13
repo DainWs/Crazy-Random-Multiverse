@@ -50,6 +50,8 @@ Started at: `9de2969`
 
 ## Phase 11 — UX
 
+Started at: `937e889`
+
 - [ ] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule)
 - [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
@@ -65,7 +67,7 @@ Started at: `9de2969`
 - [ ] Improve the look of the HUD, the confirmation dialog and the spectator state (`UI-3`, `UI-8`): make clear that the player is watching and cannot act, beyond hiding the buttons
 - [ ] Review the look of every effect of the game together, so that the glow, the veils, the notices, the combat feedback (`VIEW-5` to `VIEW-7`) and the transitions share one style. Regenerate the reference images when it changes
 - [ ] Draw the card of a slot in perspective, deformed like the slot (`VIEW-1`, `VIEW-2`): `ZoneSlotCardHelper` places a flat rectangle with the average scale of the projected edges, so zoomed in it does not follow the trapezoid of the slot. It needs a mesh or a quad with the four corners of the slot
-- [ ] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
+- [x] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
 
 ## Phase 12 — Menu, lobby, user
 
