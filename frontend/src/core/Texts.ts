@@ -34,6 +34,7 @@ const TEXTS: Record<string, string> = {
   'ui.game.surrender': 'Rendirse',
   'ui.game.surrender_confirm': '¿Seguro que quieres rendirte?',
   'ui.game.leave': 'Salir',
+  'ui.game.spectating': 'Estás observando la partida',
   'ui.game.leave_confirm': '¿Seguro que quieres salir de la partida?',
   'ui.feedback.invalid_slot': 'Ese hueco no admite esa carta',
   'ui.feedback.no_slot_available': 'No hay ningún hueco libre para esa carta',

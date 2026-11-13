@@ -22,6 +22,7 @@ vi.mock('@/core/StoreSystem', () => ({
 class FakeText {
   public text = '';
   public color = '';
+  public background = '';
   public alpha = 1;
   public visible = true;
   public height = 30;
@@ -38,7 +39,7 @@ class FakeText {
   public setColor(color: string) { this.color = color; return this; }
   public setAlpha(alpha: number) { this.alpha = alpha; return this; }
   public setVisible(visible: boolean) { this.visible = visible; return this; }
-  public setBackgroundColor() { return this; }
+  public setBackgroundColor(background: string) { this.background = background; return this; }
   public setPadding() { return this; }
   public setOrigin() { return this; }
   public scale = 1;
@@ -50,9 +51,12 @@ class FakeText {
   public on(event: string, listener: () => void) { this.listeners.set(event, listener); return this; }
   public destroy() { this.destroyed = true; }
   public click() { this.listeners.get('pointerup')?.(); }
+  public hover() { this.listeners.get('pointerover')?.(); }
+  public unhover() { this.listeners.get('pointerout')?.(); }
 }
 
 class FakeShape {
+  public setStrokeStyle() { return this; }
   public setOrigin() { return this; }
   public setInteractive() { return this; }
 }
@@ -85,6 +89,7 @@ describe('GameHudView', () => {
   const passTurnButton = () => texts[1];
   const surrenderButton = () => texts[2];
   const leaveButton = () => texts[3];
+  const spectatorLabel = () => texts[4];
   const dialogButton = (label: string) => texts.find((text) => text.text === label)!;
 
   beforeEach(() => {
@@ -311,6 +316,11 @@ describe('GameHudView', () => {
       expect(leaveButton().visible).toBe(true);
     });
 
+    // VIEW-28
+    it('shows that they are only watching', () => {
+      expect([spectatorLabel().visible, spectatorLabel().text]).toEqual([true, 'Estás observando la partida']);
+    });
+
     it('asks for confirmation instead of leaving at once', () => {
       leaveButton().click();
 
@@ -332,6 +342,21 @@ describe('GameHudView', () => {
 
       expect(containers[0].destroyed).toBe(false);
     });
+  });
+
+  // VIEW-28
+  it('does not show the spectator label to a player', () => {
+    hud.refresh(true);
+
+    expect(spectatorLabel().visible).toBe(false);
+  });
+
+  it('lights a button under the pointer and restores it when the pointer leaves', () => {
+    passTurnButton().hover();
+    const hovered = passTurnButton().background;
+    passTurnButton().unhover();
+
+    expect([hovered, passTurnButton().background]).toEqual(['#46627f', '#34495e']);
   });
 
   // UI-8

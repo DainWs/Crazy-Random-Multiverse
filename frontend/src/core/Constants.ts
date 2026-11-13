@@ -176,6 +176,12 @@ export const HUD_BUTTON_PADDING = { x: 12, y: 6 };
 /** Background color of a HUD button. */
 export const HUD_BUTTON_BACKGROUND = '#34495e';
 
+/** Background color of a HUD button under the pointer. */
+export const HUD_BUTTON_HOVER_BACKGROUND = '#46627f';
+
+/** Text color of the label that tells a spectator they are only watching (VIEW-28). */
+export const HUD_SPECTATOR_COLOR = '#bdc3c7';
+
 /** Depth of the game HUD: above the cards and below the messages about rejected actions. */
 export const HUD_DEPTH = 15000;
 
@@ -187,6 +193,10 @@ export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };
 
 /** Background color of the dialog that asks for confirmation. */
 export const CONFIRM_DIALOG_BACKGROUND = 0x1b2631;
+
+/** Width in pixels and color of the border of the confirmation dialog. */
+export const CONFIRM_DIALOG_BORDER_WIDTH = 2;
+export const CONFIRM_DIALOG_BORDER_COLOR = 0x34495e;
 
 /** Color of the veil that covers the game behind the dialog that asks for confirmation. */
 export const CONFIRM_VEIL_COLOR = 0x000000;

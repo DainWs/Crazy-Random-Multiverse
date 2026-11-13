@@ -22,6 +22,7 @@ class GameHudView {
     private readonly passTurnButton: Phaser.GameObjects.Text;
     private readonly surrenderButton: Phaser.GameObjects.Text;
     private readonly leaveButton: Phaser.GameObjects.Text;
+    private readonly spectatorLabel: Phaser.GameObjects.Text;
     private confirmDialog: Phaser.GameObjects.Container | null = null;
     private stopListening: () => void = () => undefined;
     private enabled = false;
@@ -57,7 +58,12 @@ class GameHudView {
         );
         this.leaveButton.setVisible(false);
 
-        for (const element of [this.turnText, this.passTurnButton, this.surrenderButton]) {
+        this.spectatorLabel = this.createText(this.layout.spectatorLabelAnchor(this.leaveButton.height), getText('ui.game.spectating'));
+        this.spectatorLabel.setColor(Constants.HUD_SPECTATOR_COLOR);
+        this.spectatorLabel.setOrigin(1, 1);
+        this.spectatorLabel.setVisible(false);
+
+        for (const element of [this.turnText, this.passTurnButton, this.surrenderButton, this.spectatorLabel]) {
             element.setScrollFactor(0);
             element.setDepth(Constants.HUD_DEPTH);
         }
@@ -108,11 +114,13 @@ class GameHudView {
         const turnPosition = this.layout.turnTextPosition();
         const passTurnPosition = this.layout.passTurnButtonAnchor();
         const surrenderPosition = this.layout.surrenderButtonAnchor(this.passTurnButton.height);
+        const spectatorLabelPosition = this.layout.spectatorLabelAnchor(this.leaveButton.height);
 
         this.turnText.setScale(scale).setPosition(turnPosition.x, turnPosition.y);
         this.passTurnButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
         this.surrenderButton.setScale(scale).setPosition(surrenderPosition.x, surrenderPosition.y);
         this.leaveButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
+        this.spectatorLabel.setScale(scale).setPosition(spectatorLabelPosition.x, spectatorLabelPosition.y);
         this.applyDialogZoom();
     }
 
@@ -147,6 +155,7 @@ class GameHudView {
         this.passTurnButton.destroy();
         this.surrenderButton.destroy();
         this.leaveButton.destroy();
+        this.spectatorLabel.destroy();
     }
 
     private refreshRole() {
@@ -160,6 +169,7 @@ class GameHudView {
         this.passTurnButton.setVisible(!spectator);
         this.surrenderButton.setVisible(!spectator);
         this.leaveButton.setVisible(spectator);
+        this.spectatorLabel.setVisible(spectator);
     }
 
     private refreshTurnText() {
@@ -199,6 +209,8 @@ class GameHudView {
         button.setOrigin(1, 1);
         button.setInteractive({ useHandCursor: true });
         button.on('pointerup', onClick);
+        button.on('pointerover', () => button.setBackgroundColor(Constants.HUD_BUTTON_HOVER_BACKGROUND));
+        button.on('pointerout', () => button.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND));
         return button;
     }
 
@@ -226,6 +238,7 @@ class GameHudView {
 
         const panelColor = Constants.CONFIRM_DIALOG_BACKGROUND;
         const panelShape = this.scene.add.rectangle(panel.x, panel.y, panel.width, panel.height, panelColor);
+        panelShape.setStrokeStyle(Constants.CONFIRM_DIALOG_BORDER_WIDTH, Constants.CONFIRM_DIALOG_BORDER_COLOR);
 
         const question = this.createText(dialog.question, getText(textKey));
         question.setOrigin(0.5);

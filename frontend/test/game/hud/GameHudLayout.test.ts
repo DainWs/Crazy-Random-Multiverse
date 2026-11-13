@@ -22,6 +22,11 @@ describe('GameHudLayout', () => {
     expect(anchor).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: expectedY });
   });
 
+  // VIEW-28
+  it('anchors the spectator label above the button to leave, with a gap', () => {
+    expect(layout.spectatorLabelAnchor(30)).toEqual(layout.surrenderButtonAnchor(30));
+  });
+
   // UI-3
   describe('with the camera zoomed', () => {
     const zoomed = new GameHudLayout({ width: 1000, height: 800 }, 2);

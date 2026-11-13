@@ -52,6 +52,11 @@ class GameHudLayout {
         });
     }
 
+    /** Anchor of the bottom right corner of the label of a spectator, above the button to leave. `buttonHeight` is the height of the button on the screen. */
+    public spectatorLabelAnchor(buttonHeight: number): Point2D {
+        return this.surrenderButtonAnchor(buttonHeight);
+    }
+
     private passTurnScreenAnchor(): Point2D {
         return { x: this.screen.width - Constants.HUD_MARGIN, y: this.screen.height - Constants.HUD_MARGIN };
     }
