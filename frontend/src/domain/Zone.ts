@@ -68,6 +68,11 @@ class Zone {
       && (!card.isCombatant() || this.isRowTowardsLeaderFilled(position.row));
   }
 
+  /** Whether any slot of the zone can take the card now (UI-25). */
+  public hasSlotFor(card: Card, player: Owner): boolean {
+    return this.slots.some((row) => row.some((slot) => this.canPlaceCard(slot.position, card, player)));
+  }
+
   /** A warrior moves inside the zone of the player to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
   public canMoveCard(source: ZoneSlot, target: ZoneSlot, player: Owner): boolean {
     return this.isPlayerOwner(player.code)

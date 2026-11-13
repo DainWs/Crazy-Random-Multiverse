@@ -12,6 +12,11 @@ import HandView from "@/game/hand/HandView";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
 const UNEXPECTED_ERROR_KEY = "exception.unexpected";
+const NOT_YOUR_TURN_KEY = "exception.player-action.allowed_only_on_turn";
+const INVALID_SLOT_KEY = "ui.feedback.invalid_slot";
+const NO_SLOT_AVAILABLE_KEY = "ui.feedback.no_slot_available";
+const INVALID_TARGET_KEY = "ui.feedback.invalid_target";
+const CANNOT_MOVE_KEY = "ui.feedback.cannot_move";
 
 type UndoPreviewCallback = () => void;
 
@@ -19,7 +24,7 @@ class CardController {
   private actionPending = false;
   private readonly onRejected: (key: string) => void;
 
-  /** `onRejected` receives the key of the error when the server rejects an action (UI-6). */
+  /** `onRejected` receives the key of the error when the server rejects an action (UI-6) or the drop of a card is refused before sending it (UI-25). */
   public constructor(onRejected: (key: string) => void) {
     this.onRejected = onRejected;
   }
@@ -41,6 +46,29 @@ class CardController {
     return this.sendCommand("SURRENDER_ACTION");
   }
 
+  /**
+   * Whether a drop is refused before sending anything. Gameplay closed by a pending action or an animation says nothing (UI-4);
+   * otherwise the first reason found is reported (UI-25).
+   */
+  private refuseDrop(invalidReason: () => string | undefined): boolean {
+    if (!StoreSystem.canPlayerAct()) {
+      this.onRejected(NOT_YOUR_TURN_KEY);
+      return true;
+    }
+
+    if (!this.canAct()) {
+      return true;
+    }
+
+    const reason = invalidReason();
+    if (reason) {
+      this.onRejected(reason);
+      return true;
+    }
+
+    return false;
+  }
+
   private sendCommand(type: ActionType): boolean {
     if (!this.canAct()) {
       return false;
@@ -59,7 +87,7 @@ class CardController {
 
   /** The card stays in the slot as a preview until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public putCardOnZoneSlot(cardView: CombatantView, handView: HandView, zoneSlotView: ZoneSlotView) {
-    if (!this.canAct() || !zoneSlotView.canReceive(cardView.card)) {
+    if (this.refuseDrop(() => this.whyCannotPlace(cardView, zoneSlotView))) {
       return false;
     }
 
@@ -86,6 +114,14 @@ class CardController {
     }
   }
 
+  private whyCannotPlace(cardView: CombatantView, zoneSlotView: ZoneSlotView): string | undefined {
+    if (zoneSlotView.canReceive(cardView.card)) {
+      return undefined;
+    }
+
+    return zoneSlotView.zone.hasSlotFor(cardView.card, StoreSystem.getPlayer()) ? INVALID_SLOT_KEY : NO_SLOT_AVAILABLE_KEY;
+  }
+
   private createPutAction(cardView: CombatantView, zoneSlotView: ZoneSlotView): Action {
     const gameCode: GameCode = StoreSystem.getGameConfiguration().gameCode;
     const player = StoreSystem.getPlayer();
@@ -105,7 +141,7 @@ class CardController {
 
   /** The cards show their new places as a preview until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public moveCardOnZoneSlot(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
-    if (!this.canAct() || !this.isMovable(combatantView, fromZoneSlot, toZoneSlot)) {
+    if (this.refuseDrop(() => this.whyCannotMove(combatantView, fromZoneSlot, toZoneSlot))) {
       return false;
     }
 
@@ -115,8 +151,12 @@ class CardController {
     return true;
   }
 
-  private isMovable(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): boolean {
-    return fromZoneSlot.getCombatant() === combatantView && toZoneSlot.canReceiveFrom(fromZoneSlot);
+  private whyCannotMove(combatantView: CombatantView, fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView): string | undefined {
+    if (fromZoneSlot.getCombatant() !== combatantView || combatantView.card.isType('LEADER')) {
+      return CANNOT_MOVE_KEY;
+    }
+
+    return toZoneSlot.canReceiveFrom(fromZoneSlot) ? undefined : INVALID_SLOT_KEY;
   }
 
   /** Shows the moved card in the target slot and the card that was there, if any, in the source slot. Returns the function that undoes it. */
@@ -171,7 +211,7 @@ class CardController {
 
   /** The equipment disappears from the screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
   public equipCardOnZoneSlot(equipmentView: EquipmentView, handView: HandView, zoneSlotView: ZoneSlotView) {
-    if (!this.canAct() || !zoneSlotView.canReceive(equipmentView.card)) {
+    if (this.refuseDrop(() => (zoneSlotView.canReceive(equipmentView.card) ? undefined : INVALID_TARGET_KEY))) {
       return false;
     }
 

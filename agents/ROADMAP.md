@@ -53,11 +53,11 @@ Started at: `9de2969`
 Started at: `937e889`
 
 - [ ] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule)
-- [ ] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
+- [x] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow. It needs a rule first: what to improve is not defined yet
-- [ ] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
+- [x] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
 - [ ] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
 - [ ] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection, and today nothing marks them
 - [ ] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board (`VIEW-23`)

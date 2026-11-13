@@ -31,7 +31,8 @@ class FakeZoneSlot {
   public held: unknown;
   public accepts = true;
   public attacks = true;
-  public zone: { owner: Player } = { owner: player };
+  public zoneHasRoom = true;
+  public zone = { owner: player, hasSlotFor: () => this.zoneHasRoom };
   public readonly zoneSlot: { position: ZonePosition };
 
   public constructor(row: number, column: number, held: unknown = null) {
@@ -104,7 +105,7 @@ describe('CardController', () => {
     canPlayerAct.mockReturnValue(true);
     onRejected = vi.fn<(key: string) => void>();
     controller = new CardController(onRejected);
-    cardView = { card: { code: { code: '1', type: 'WARRIOR' } }, reset: vi.fn() } as unknown as CombatantView;
+    cardView = { card: { code: { code: '1', type: 'WARRIOR' }, isType: () => false }, reset: vi.fn() } as unknown as CombatantView;
     hand = new FakeHand([{}, cardView]);
     handView = hand as unknown as HandView;
     slot = new FakeZoneSlot(1, 2);
@@ -138,6 +139,31 @@ describe('CardController', () => {
     });
 
     // CON-19
+    // UI-25
+    it('reports the invalid slot when the slot cannot receive the card but another one can', () => {
+      slot.accepts = false;
+
+      controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.invalid_slot');
+    });
+
+    // UI-25
+    it('reports that no slot is available when no slot of the zone can receive the card', () => {
+      slot.accepts = false;
+      slot.zoneHasRoom = false;
+
+      controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.no_slot_available');
+    });
+
+    it('reports nothing when the drop is accepted', () => {
+      controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(onRejected).not.toHaveBeenCalled();
+    });
+
     it('rejects a second drop while the first action is pending', () => {
       controller.putCardOnZoneSlot(cardView, handView, slotView);
 
@@ -258,6 +284,33 @@ describe('CardController', () => {
       expect(result).toBe(false);
     });
 
+    // UI-25
+    it('reports the invalid slot when the target slot cannot receive the card', () => {
+      slot.accepts = false;
+
+      controller.moveCardOnZoneSlot(cardView, asSlotView(fromSlot), slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.invalid_slot');
+    });
+
+    // UI-25
+    it('reports that the card cannot move when it is not in the source slot', () => {
+      fromSlot = new FakeZoneSlot(1, 0, {});
+
+      controller.moveCardOnZoneSlot(cardView, asSlotView(fromSlot), slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.cannot_move');
+    });
+
+    // UI-25
+    it('reports that the card cannot move when it is a leader', () => {
+      (cardView.card as unknown as { isType: () => boolean }).isType = () => true;
+
+      controller.moveCardOnZoneSlot(cardView, asSlotView(fromSlot), slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.cannot_move');
+    });
+
     // CON-19
     it('rejects a move while another action is pending', () => {
       controller.moveCardOnZoneSlot(cardView, asSlotView(fromSlot), slotView);
@@ -348,6 +401,15 @@ describe('CardController', () => {
       expect(sendPlayerAction).not.toHaveBeenCalled();
     });
 
+    // UI-25
+    it('reports the invalid target when the slot cannot receive the equipment', () => {
+      slot.accepts = false;
+
+      controller.equipCardOnZoneSlot(equipmentView, handView, slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('ui.feedback.invalid_target');
+    });
+
     // CON-19
     it('rejects a second drop while the first action is pending', () => {
       controller.equipCardOnZoneSlot(equipmentView, handView, slotView);
@@ -399,6 +461,13 @@ describe('CardController', () => {
       expect(sendPlayerAction).not.toHaveBeenCalled();
     });
 
+    // UI-25
+    it('reports that it is not their turn when a card is dropped', () => {
+      controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(onRejected).toHaveBeenCalledWith('exception.player-action.allowed_only_on_turn');
+    });
+
     it('rejects passing the turn and sends nothing', () => {
       const result = controller.passTurn();
 
@@ -433,6 +502,13 @@ describe('CardController', () => {
 
       expect(result).toBe(false);
       expect(sendPlayerAction).not.toHaveBeenCalled();
+    });
+
+    it('rejects the drop of a card without a message', () => {
+      const result = controller.putCardOnZoneSlot(cardView, handView, slotView);
+
+      expect(result).toBe(false);
+      expect(onRejected).not.toHaveBeenCalled();
     });
 
     it('reports that it cannot act', () => {
@@ -488,7 +564,7 @@ describe('CardController', () => {
     beforeEach(() => {
       fromSlot = new FakeZoneSlot(1, 0, cardView);
       targetSlot = new FakeZoneSlot(0, 1, {});
-      targetSlot.zone = { owner: rival };
+      targetSlot.zone = { owner: rival, hasSlotFor: () => true };
     });
 
     it('returns true and sends an ATTACK_ACTION with both positions and the owner of the target', () => {

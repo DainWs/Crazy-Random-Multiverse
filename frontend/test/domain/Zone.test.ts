@@ -107,6 +107,26 @@ describe('Zone', () => {
     });
   });
 
+  describe('hasSlotFor', () => {
+    it('accepts a warrior while a slot of the zone can take it', () => {
+      zone = createZone(0, 0);
+
+      expect(zone.hasSlotFor(createCard('WARRIOR'), owner)).toBe(true);
+    });
+
+    it('rejects a warrior when every warrior slot is occupied', () => {
+      zone = createZone(WARRIOR_COLUMNS, WARRIOR_COLUMNS);
+
+      expect(zone.hasSlotFor(createCard('WARRIOR'), owner)).toBe(false);
+    });
+
+    it('rejects a card in the zone of another player', () => {
+      zone = createZone(0, 0);
+
+      expect(zone.hasSlotFor(createCard('WARRIOR'), new Player('p-2', 'Two'))).toBe(false);
+    });
+  });
+
   describe('canMoveCard', () => {
     // BOARD-7
     it('accepts a move to a free slot of a row whose previous row is filled', () => {
