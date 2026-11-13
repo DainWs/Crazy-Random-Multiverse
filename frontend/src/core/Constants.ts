@@ -164,6 +164,12 @@ export const GAME_RESULT_DEFEAT_COLOR = '#e74c3c';
 /** Alpha of the veil that covers the board while the result is shown (WIN-4). */
 export const GAME_RESULT_VEIL_ALPHA = 0.7;
 
+/** Size in pixels of the panel behind the texts of the result of the game (VIEW-23). */
+export const GAME_RESULT_PANEL_SIZE = { width: 760, height: 240 };
+
+/** Alpha of the panel behind the texts of the result of the game, high enough for the slots not to show through (VIEW-23). */
+export const GAME_RESULT_PANEL_ALPHA = 0.95;
+
 /** Distance in pixels between two HUD buttons. */
 export const HUD_BUTTON_GAP = 16;
 

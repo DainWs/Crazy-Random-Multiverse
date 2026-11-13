@@ -3,12 +3,13 @@ import * as Constants from '@/core/Constants';
 
 type GameResultLayoutPositions = {
     veil: Size2D;
+    panel: Point2D & Size2D;
     title: Point2D;
     winner: Point2D;
     countdown: Point2D;
 };
 
-/** Pure layout of the result of the game for a screen size: three centered lines over a veil (WIN-4). */
+/** Pure layout of the result of the game for a screen size: three centered lines on a panel, over a veil (WIN-4, VIEW-23). */
 class GameResultLayout {
     private readonly screen: Size2D;
 
@@ -23,6 +24,7 @@ class GameResultLayout {
 
         return {
             veil: { width, height },
+            panel: { x: centerX, y: centerY + Constants.GAME_RESULT_LINE_GAP / 2, ...Constants.GAME_RESULT_PANEL_SIZE },
             title: { x: centerX, y: centerY - Constants.GAME_RESULT_LINE_GAP },
             winner: { x: centerX, y: centerY + Constants.GAME_RESULT_LINE_GAP },
             countdown: { x: centerX, y: centerY + 2 * Constants.GAME_RESULT_LINE_GAP }
