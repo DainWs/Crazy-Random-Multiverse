@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { prefersReducedMotion, readyMarkAlpha } from '@/core/visual_effects/ReadyMarkPulse';
+import { prefersReducedMotion, pulseWave, readyMarkAlpha } from '@/core/visual_effects/ReadyMarkPulse';
 import { SLOT_MARKER_READY_MIN_ALPHA, SLOT_MARKER_READY_PULSE_PERIOD_MS } from '@/core/Constants';
 
 describe('readyMarkAlpha', () => {
@@ -43,5 +43,17 @@ describe('prefersReducedMotion', () => {
     vi.stubGlobal('matchMedia', undefined);
 
     expect(prefersReducedMotion()).toBe(false);
+  });
+});
+
+describe('pulseWave', () => {
+  // VIEW-20
+  it('goes from 0 to 1 and back in one period', () => {
+    expect([pulseWave(750, 1000), pulseWave(250, 1000)]).toEqual([expect.closeTo(0), expect.closeTo(1)]);
+  });
+
+  // VIEW-20
+  it('is the same one period later, so a glow drawn again continues in phase', () => {
+    expect(pulseWave(130 + 2400, 2400)).toBeCloseTo(pulseWave(130, 2400));
   });
 });

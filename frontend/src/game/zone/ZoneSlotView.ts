@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
-import { prefersReducedMotion, readyMarkAlpha } from "@/core/visual_effects/ReadyMarkPulse";
+import { prefersReducedMotion, pulseWave, readyMarkAlpha } from "@/core/visual_effects/ReadyMarkPulse";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import type Card from "@/domain/Card";
@@ -11,13 +11,17 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import { HIT_FLASH_DURATION_MS, OWN_SLOT_BORDER_COLOR, OWN_SLOT_COLOR, SLOT_MARKER_READY_COLOR } from "@/core/Constants";
+import {
+  HIT_FLASH_DURATION_MS, OWN_SLOT_BORDER_COLOR, OWN_SLOT_COLOR, SLOT_MARKER_READY_COLOR, TURN_GLOW_COLOR, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS
+} from "@/core/Constants";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
   private markerGraphics?: Phaser.GameObjects.Graphics;
   private readyGraphics?: Phaser.GameObjects.Graphics;
+  private glowGraphics?: Phaser.GameObjects.Graphics;
+  private turnFramePulses = false;
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
@@ -178,12 +182,21 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     });
   }
 
-  /** Draws the glow of the player with the turn behind the card of this slot (VIEW-20). */
-  public showTurnGlow(outlines: Corners3D[]) {
-    const glowGraphics = this.scene.add.graphics();
-    ZoneSlotViewRenderer.renderGlow(glowGraphics, outlines);
-    this.addAt(glowGraphics, 0);
+  /** Frames this slot, for the player with the turn, over its own border and under its card, with a pulse that follows the clock of the scene (VIEW-20). */
+  public showTurnGlow() {
+    this.glowGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderMarker(this.glowGraphics, this.corners, TURN_GLOW_COLOR);
+    this.add(this.glowGraphics);
+
+    this.turnFramePulses = !prefersReducedMotion();
+    this.pulseTurnGlow();
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
   }
+
+  private pulseTurnGlow = () => {
+    const wave = this.turnFramePulses ? pulseWave(this.scene.time.now, TURN_GLOW_PULSE_PERIOD_MS) : 1;
+    this.glowGraphics?.setAlpha(TURN_GLOW_MIN_ALPHA + (1 - TURN_GLOW_MIN_ALPHA) * wave);
+  };
 
   /** Covers the slot with a dark veil, for the zone of an eliminated player (VIEW-11). */
   public showEliminatedVeil() {
@@ -213,6 +226,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
     this.pulseReadyMark();
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
   }
 

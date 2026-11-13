@@ -82,9 +82,6 @@ export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
 /** Distance in board-space units between the tip of the attack arrow and the card of the valid target it points at (UI-5). */
 export const ATTACK_ARROW_TARGET_GAP = 8;
 
-/** Width in board-space units of the frame that marks the slot of the attacker, of a valid target and of a drop (UI-5, VIEW-4). */
-export const SLOT_MARKER_WIDTH = 6;
-
 /** Color of the frame of a valid target or drop slot, the green of the arrow (UI-5, VIEW-4). */
 export const SLOT_MARKER_VALID_COLOR = ATTACK_ARROW_VALID_COLOR;
 
@@ -264,17 +261,17 @@ export const LEADER_DEATH_SCALE = 0.3;
 /** Times a dead leader shakes back and forth before it fades out (VIEW-7). */
 export const LEADER_DEATH_SHAKE_REPEATS = 8;
 
-/** Color of the glow around the leader of the player with the turn (VIEW-20). */
+/** Color of the frame around the leader of the player with the turn (VIEW-20). */
 export const TURN_GLOW_COLOR = 0xf1c40f;
 
-/** Number of outlines that make up the glow around the leader of the player with the turn (VIEW-20). */
-export const TURN_GLOW_LAYERS = 5;
+/** Width in board-space units of the border that every slot draws around itself, and of every frame that covers it: the marks of an attack and a drop, of the cards that can attack and of the leader with the turn (VIEW-4, VIEW-17, VIEW-20). */
+export const SLOT_BORDER_WIDTH = 2;
 
-/** Distance in board-space units between two outlines of the glow, and width of the outermost one (VIEW-20). */
-export const TURN_GLOW_STEP = 8;
+/** Alpha of the frame at the low point of its pulse, between 0 and 1 (VIEW-20). */
+export const TURN_GLOW_MIN_ALPHA = 0.45;
 
-/** Alpha of each outline of the glow; they add up towards the card (VIEW-20). */
-export const TURN_GLOW_LAYER_ALPHA = 0.22;
+/** Duration in milliseconds of one pulse of the frame around the leader of the player with the turn (VIEW-20). */
+export const TURN_GLOW_PULSE_PERIOD_MS = 2400;
 
 /** Color of the veil over the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_VEIL_COLOR = 0x000000;

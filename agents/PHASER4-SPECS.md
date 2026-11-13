@@ -31,3 +31,9 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** a test that imports a view inside the test fails with `Test timed out in 5000ms`, only when there is no Vitest cache.
 - **Likely cause:** loading the ESM build of Phaser takes over 5 s without a cache, and an `await import(...)` inside `it` counts towards the timeout.
 - **Where to look:** add a static `import 'phaser';` at the top of the test file, as in `test/game/cards/CardView.test.ts`.
+
+## The game drops to a few frames per second with a glow filter
+
+- **Symptom:** with a `Glow` filter on the leader of the player with the turn the game fell from about 24 to 2.8 frames per second in the browser tests, which render with software WebGL, and a person saw it stall.
+- **Likely cause:** a filter on a game object renders it to a texture and runs a shader pass over it on every frame, and changing its strength for a pulse keeps it from ever being cached. Software WebGL makes it far worse than a GPU would.
+- **Where to look:** `VIEW-20` draws its frame with plain `Graphics` and only changes its alpha. Before using `enableFilters()` on an object that is on the board, measure the frames per second at 3 or more players, as `e2e` does with a `requestAnimationFrame` counter.

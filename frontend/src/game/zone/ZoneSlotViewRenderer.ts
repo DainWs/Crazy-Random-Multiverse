@@ -1,6 +1,6 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, SLOT_MARKER_WIDTH, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
+import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, SLOT_BORDER_WIDTH } from "@/core/Constants";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -9,7 +9,6 @@ const BACKGROUND_ALPHA = 0.45;
 const BACKGROUND_COLOR = 0xffffff;
 const BACKGROUND_BORDER_COLOR = 0x4488cc;
 const BACKGROUND_BORDER_ALPHA = 0.8;
-const BACKGROUND_BORDER_WIDTH = 2;
 
 class ZoneSlotViewRenderer {
 
@@ -21,7 +20,7 @@ class ZoneSlotViewRenderer {
   public static renderBackground(graphics: Graphics, corners: Corners3D, backgroundColor = BACKGROUND_COLOR, borderColor = BACKGROUND_BORDER_COLOR) {
     graphics.clear();
     graphics.fillStyle(backgroundColor, BACKGROUND_ALPHA);
-    graphics.lineStyle(BACKGROUND_BORDER_WIDTH, borderColor, BACKGROUND_BORDER_ALPHA);
+    graphics.lineStyle(SLOT_BORDER_WIDTH, borderColor, BACKGROUND_BORDER_ALPHA);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);
@@ -48,7 +47,7 @@ class ZoneSlotViewRenderer {
   /** Frames the slot with a solid line, to be drawn over its card so the mark stays visible (UI-5, VIEW-4). */
   public static renderMarker(graphics: Graphics, corners: Corners3D, color: number) {
     graphics.clear();
-    graphics.lineStyle(SLOT_MARKER_WIDTH, color, 1);
+    graphics.lineStyle(SLOT_BORDER_WIDTH, color, 1);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);
@@ -56,22 +55,6 @@ class ZoneSlotViewRenderer {
     graphics.lineTo(corners.bl.x, corners.bl.y);
     graphics.closePath();
     graphics.strokePath();
-  }
-
-  /** Strokes the outlines one over another, the widest first, so the glow gets stronger towards the card (VIEW-20). */
-  public static renderGlow(graphics: Graphics, outlines: Corners3D[]) {
-    graphics.clear();
-    graphics.lineStyle(TURN_GLOW_STEP, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA);
-
-    for (const corners of outlines) {
-      graphics.beginPath();
-      graphics.moveTo(corners.tl.x, corners.tl.y);
-      graphics.lineTo(corners.tr.x, corners.tr.y);
-      graphics.lineTo(corners.br.x, corners.br.y);
-      graphics.lineTo(corners.bl.x, corners.bl.y);
-      graphics.closePath();
-      graphics.strokePath();
-    }
   }
 
   private static renderMark(mark: Image, zoneSlotView: ZoneSlotView) {

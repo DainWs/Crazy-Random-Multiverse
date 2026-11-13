@@ -7,8 +7,7 @@ import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
-import type { Corners3D } from "@/domain/Geometry";
-import { ELIMINATED_LABEL_COLOR, ELIMINATED_LABEL_FONT_SIZE, TURN_GLOW_LAYERS, TURN_GLOW_STEP } from "@/core/Constants";
+import { ELIMINATED_LABEL_COLOR, ELIMINATED_LABEL_FONT_SIZE } from "@/core/Constants";
 import type { ZonePosition } from "@/domain/Position";
 
 interface ZoneViewOptions {
@@ -119,13 +118,7 @@ class ZoneView extends Phaser.GameObjects.Container {
     const leaderSlotView = leaderSlot && this.getSlotAt(leaderSlot.position);
 
     if (leaderSlot?.combatant && leaderSlotView) {
-      const outlines: Corners3D[] = [];
-
-      for (let layer = TURN_GLOW_LAYERS; layer >= 1; layer--) {
-        outlines.push(this.slotLayout.expandCorners(leaderSlotView.corners, layer * TURN_GLOW_STEP));
-      }
-
-      leaderSlotView.showTurnGlow(outlines);
+      leaderSlotView.showTurnGlow();
     }
   }
 
