@@ -1,6 +1,6 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
+import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_COLOR, SLOT_MARKER_WIDTH, TURN_GLOW_COLOR, TURN_GLOW_LAYER_ALPHA, TURN_GLOW_STEP } from "@/core/Constants";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -43,6 +43,19 @@ class ZoneSlotViewRenderer {
     graphics.lineTo(corners.bl.x, corners.bl.y);
     graphics.closePath();
     graphics.fillPath();
+  }
+
+  /** Frames the slot with a solid line, to be drawn over its card so the mark stays visible (UI-5, VIEW-4). */
+  public static renderMarker(graphics: Graphics, corners: Corners3D, color: number) {
+    graphics.clear();
+    graphics.lineStyle(SLOT_MARKER_WIDTH, color, 1);
+    graphics.beginPath();
+    graphics.moveTo(corners.tl.x, corners.tl.y);
+    graphics.lineTo(corners.tr.x, corners.tr.y);
+    graphics.lineTo(corners.br.x, corners.br.y);
+    graphics.lineTo(corners.bl.x, corners.bl.y);
+    graphics.closePath();
+    graphics.strokePath();
   }
 
   /** Strokes the outlines one over another, the widest first, so the glow gets stronger towards the card (VIEW-20). */

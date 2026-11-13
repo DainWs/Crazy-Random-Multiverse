@@ -15,6 +15,7 @@ import { HIT_FLASH_DURATION_MS } from "@/core/Constants";
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
+  private markerGraphics?: Phaser.GameObjects.Graphics;
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
@@ -177,6 +178,19 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     const veilGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderVeil(veilGraphics, this.corners);
     this.add(veilGraphics);
+  }
+
+  /** Frames the slot over its card (UI-5, VIEW-4). */
+  public showMarker(color: number) {
+    this.markerGraphics ??= this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderMarker(this.markerGraphics, this.corners, color);
+    this.add(this.markerGraphics);
+    this.bringToTop(this.markerGraphics);
+  }
+
+  public hideMarker() {
+    this.markerGraphics?.destroy();
+    this.markerGraphics = undefined;
   }
 
   public setBackgroundColor(color: number, borderColor?: number): void {

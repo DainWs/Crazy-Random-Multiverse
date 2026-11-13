@@ -4,6 +4,7 @@ import type { GameScene } from "@/scenes/Game";
 import Phaser from "phaser";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import CardView from "@/game/cards/CardView";
+import AttackArrowLayout from "@/game/perspectives/AttackArrowLayout";
 import * as Constants from "@/core/Constants";
 
 const CANCEL_KEY_EVENT = "keydown-ESC";
@@ -85,25 +86,22 @@ class AttackTargetingPerspective implements Perspective {
 
         const origin = this.sourceSlot.getWorldTransformMatrix();
         const hoveredSlot = getTopGameObjectAtCursor(this.scene, "ZoneSlotView") as ZoneSlotView | undefined;
-        const color = hoveredSlot && this.sourceSlot.canAttack(hoveredSlot) ? Constants.ATTACK_ARROW_VALID_COLOR : Constants.ATTACK_ARROW_INVALID_COLOR;
+        const target = hoveredSlot && this.sourceSlot.canAttack(hoveredSlot) ? hoveredSlot : undefined;
+        const color = target ? Constants.ATTACK_ARROW_VALID_COLOR : Constants.ATTACK_ARROW_INVALID_COLOR;
+
+        const layout = new AttackArrowLayout({ x: origin.tx, y: origin.ty });
+        const tip = layout.tip({ x: pointer.worldX, y: pointer.worldY }, target && this.targetOf(target));
 
         this.arrow?.clear();
         this.arrow?.lineStyle(Constants.ATTACK_ARROW_LINE_WIDTH, color);
-        this.arrow?.lineBetween(origin.tx, origin.ty, pointer.worldX, pointer.worldY);
+        this.arrow?.lineBetween(origin.tx, origin.ty, tip.x, tip.y);
         this.arrow?.fillStyle(color);
-        this.arrow?.fillTriangle(...this.calculateArrowHead(origin.tx, origin.ty, pointer.worldX, pointer.worldY));
+        this.arrow?.fillTriangle(...layout.head(tip));
     }
 
-    private calculateArrowHead(fromX: number, fromY: number, toX: number, toY: number): [number, number, number, number, number, number] {
-        const angle = Math.atan2(toY - fromY, toX - fromX);
-        const left = angle + Math.PI - Constants.ATTACK_ARROW_HEAD_ANGLE;
-        const right = angle + Math.PI + Constants.ATTACK_ARROW_HEAD_ANGLE;
-
-        return [
-            toX, toY,
-            toX + Constants.ATTACK_ARROW_HEAD_LENGTH * Math.cos(left), toY + Constants.ATTACK_ARROW_HEAD_LENGTH * Math.sin(left),
-            toX + Constants.ATTACK_ARROW_HEAD_LENGTH * Math.cos(right), toY + Constants.ATTACK_ARROW_HEAD_LENGTH * Math.sin(right)
-        ];
+    private targetOf(slot: ZoneSlotView) {
+        const center = slot.getWorldTransformMatrix();
+        return { center: { x: center.tx, y: center.ty }, radius: AttackArrowLayout.targetRadius(slot.corners) };
     }
 }
 

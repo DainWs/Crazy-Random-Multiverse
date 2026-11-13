@@ -1,4 +1,5 @@
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
+import { SLOT_MARKER_SOURCE_COLOR, SLOT_MARKER_VALID_COLOR } from "@/core/Constants";
 
 type ZoneSlotAnimation = 'highlight_as_source' | 'highlight_as_target' | 'unhighlight';
 type ZoneSlotAnimationProvider = (zoneSlot: ZoneSlotView) => void;
@@ -7,14 +8,17 @@ function noneAnimation() {};
 
 function highlightAsSource(zoneSlot: ZoneSlotView): void {
   zoneSlot.setBackgroundColor(0xD40000);
+  zoneSlot.showMarker(SLOT_MARKER_SOURCE_COLOR);
 }
 
 function highlightAsTarget(zoneSlot: ZoneSlotView): void {
   zoneSlot.setBackgroundColor(0xAAFFAA);
+  zoneSlot.showMarker(SLOT_MARKER_VALID_COLOR);
 }
 
 function unhighlight(zoneSlot: ZoneSlotView): void {
   zoneSlot.setBackgroundColor(0xffffff);
+  zoneSlot.hideMarker();
 }
 
 const animations = new Map<ZoneSlotAnimation, ZoneSlotAnimationProvider>();

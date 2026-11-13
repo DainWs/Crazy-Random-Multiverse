@@ -55,6 +55,18 @@ export const ATTACK_ARROW_HEAD_LENGTH = 40;
 /** Angle in radians between the attack arrow line and each side of its head. */
 export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
 
+/** Distance in board-space units between the tip of the attack arrow and the card of the valid target it points at (UI-5). */
+export const ATTACK_ARROW_TARGET_GAP = 8;
+
+/** Width in board-space units of the frame that marks the slot of the attacker, of a valid target and of a drop (UI-5, VIEW-4). */
+export const SLOT_MARKER_WIDTH = 6;
+
+/** Color of the frame of a valid target or drop slot, the green of the arrow (UI-5, VIEW-4). */
+export const SLOT_MARKER_VALID_COLOR = ATTACK_ARROW_VALID_COLOR;
+
+/** Color of the frame of the slot of the attacker or the origin of a drag, the red of the arrow (UI-5, VIEW-4). */
+export const SLOT_MARKER_SOURCE_COLOR = ATTACK_ARROW_INVALID_COLOR;
+
 /** Depth of the attack arrow, above the cards and the hand. */
 export const ATTACK_ARROW_DEPTH = 20000;
 

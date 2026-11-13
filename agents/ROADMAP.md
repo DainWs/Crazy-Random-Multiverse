@@ -58,7 +58,7 @@ Started at: `937e889`
 - [ ] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
 - [ ] Improve loading flow. It needs a rule first: what to improve is not defined yet
 - [x] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
-- [ ] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
+- [x] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
 - [ ] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection, and today nothing marks them
 - [ ] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board (`VIEW-23`)
 - [ ] Redo the glow of the leader of the player with the turn (`VIEW-20`): today it is five stacked strokes over the corners of the slot and looks like a halo with thin lines at the corners. Use a Phaser 4 glow filter or a soft texture, with a discreet pulse that does not restart when the board is redrawn. Regenerate the 11 reference images that contain it
