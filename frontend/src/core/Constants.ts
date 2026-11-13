@@ -318,3 +318,32 @@ export const WARP_DISPLACEMENT_AMOUNT = 0.5;
 
 /** Pixels around a card that the filter keeps when it draws the card inside the quad of its slot (VIEW-1). */
 export const WARP_PADDING = 8;
+
+/** Size in pixels of the panel behind the bar and the texts of the loading screen (VIEW-29). */
+export const LOAD_PANEL_SIZE = { width: 560, height: 220 };
+
+/** Fill, border and corner radius of the panel of the loading screen, in the palette of the HUD (VIEW-29). */
+export const LOAD_PANEL_COLOR = 0x1b2631;
+export const LOAD_PANEL_BORDER_COLOR = 0x34495e;
+export const LOAD_PANEL_BORDER_WIDTH = 2;
+
+/** Width and height in pixels of the frame of the progress bar of the loading screen, and the room left around its fill (VIEW-29). */
+export const LOAD_BAR_SIZE = { width: 468, height: 32 };
+export const LOAD_BAR_FILL_MARGIN = 4;
+
+/** Color of the fill of the progress bar of the loading screen (VIEW-29). */
+export const LOAD_BAR_FILL_COLOR = 0x2ecc71;
+
+/** Distance in pixels from the vertical center of the window to the center of the bar, and from the bar to the status text and to the retry button of the loading screen (VIEW-29). */
+export const LOAD_BAR_OFFSET_Y = 0;
+export const LOAD_STATUS_OFFSET_Y = 56;
+export const LOAD_RETRY_OFFSET_Y = 104;
+
+/** How far down from the center of the window the panel of the loading screen sits, so it holds the bar, the text and the button (VIEW-29). */
+export const LOAD_PANEL_OFFSET_Y = 40;
+
+/** Duration in milliseconds of the board fading in over the loading screen, which fades out at the same time (VIEW-29). */
+export const LOAD_TRANSITION_MS = 400;
+
+/** Key of the scene of the loading screen. */
+export const LOAD_SCENE_KEY = 'GameLoad';

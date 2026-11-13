@@ -4,8 +4,9 @@ import { waitForStillFrame } from '@/support/board';
 import { createLoadingGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
-const LOADING_VIEW = { clip: { x: 270, y: 360, width: 490, height: 160 }, maxDiffPixels: 0 };
-const RETRY_BUTTON = { x: 512, y: 488 };
+/** The loading screen is centered on the window of 1920 by 1080, with its panel a little below the middle (VIEW-29). */
+const LOADING_VIEW = { clip: { x: 660, y: 450, width: 600, height: 260 }, maxDiffPixels: 0 };
+const RETRY_BUTTON = { x: 960, y: 644 };
 const REQUIRED_TEXTURE = 'card.unknown';
 
 async function openLoadWaitingForTexture(page: Page, backend: BackendDouble): Promise<void> {

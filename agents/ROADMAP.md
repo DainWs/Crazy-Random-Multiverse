@@ -56,7 +56,7 @@ Started at: `937e889`
 - [x] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
 - [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
 - [x] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
-- [ ] Improve loading flow. It needs a rule first: what to improve is not defined yet
+- [x] Improve loading flow. `VIEW-29`: the bar and the texts on a panel in the palette of the HUD, the retry button styled like the HUD buttons, everything centered and placed again when the window changes size, and the board fading in over the loading screen
 - [x] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
 - [x] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
 - [x] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection, and today nothing marks them

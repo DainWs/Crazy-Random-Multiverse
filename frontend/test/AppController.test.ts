@@ -34,12 +34,13 @@ describe('syncScenes', () => {
     expect(active).toEqual(new Set());
   });
 
-  it('replaces the loading scene when the game starts', () => {
+  // VIEW-29
+  it('keeps the loading scene under the board when the game starts, for the board to fade it out', () => {
     active = new Set(['GameLoad']);
 
     syncScenes(sceneManager, 'GAME_IN_PROGRESS', true);
 
-    expect(active).toEqual(new Set(['Game']));
+    expect(active).toEqual(new Set(['GameLoad', 'Game']));
   });
 
   it('does not restart an active scene', () => {

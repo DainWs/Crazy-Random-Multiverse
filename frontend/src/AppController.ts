@@ -3,7 +3,7 @@ import { Game } from 'phaser';
 import { ref, watch } from 'vue';
 import { UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
 import SessionSystem from '@/core/SessionSystem';
-import { PRELOADED_EVENT } from '@/core/Constants';
+import { LOAD_SCENE_KEY, PRELOADED_EVENT } from '@/core/Constants';
 
 const SCENE_BY_USER_STATE: Partial<Record<UserState, string>> = {
     GAME_LOADING: 'GameLoad',
@@ -17,7 +17,9 @@ const syncScenes = (sceneManager: Phaser.Scenes.SceneManager, userState: UserSta
     const target = sceneFor(userState, hasGameResources);
 
     for (const key of GAME_SCENES) {
-        if (key !== target && sceneManager.isActive(key)) {
+        // The loading screen stays under the board while this fades in over it, and the board scene removes it (VIEW-29)
+        const isFadedOutByBoard = key === LOAD_SCENE_KEY && target === 'Game';
+        if (key !== target && !isFadedOutByBoard && sceneManager.isActive(key)) {
             sceneManager.stop(key);
         }
     }

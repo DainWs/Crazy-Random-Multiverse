@@ -24,6 +24,7 @@ import { findLeaders, hideLeaders, playLeaderIntro } from '@/core/visual_effects
 import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
 import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
+import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
 import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
@@ -72,6 +73,7 @@ class GameScene extends Scene {
     }
 
     public create() {
+        playLoadTransition(this);
         this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
