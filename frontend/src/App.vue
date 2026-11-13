@@ -51,6 +51,16 @@ defineExpose({ scene, game });
 </template>
 
 <style>
+:root {
+    --panel-background: #1b2631;
+    --panel-border: #34495e;
+    --text-color: #ffffff;
+    --alert-color: #e74c3c;
+    --veil-background: rgba(0, 0, 0, 0.7);
+    --button-background: #34495e;
+    --button-hover-background: #46627f;
+}
+
 html,
 body {
     background-image: url(assets/background_gold.png);
