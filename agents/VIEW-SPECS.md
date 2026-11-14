@@ -32,7 +32,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 - **VIEW-16** The hand has no limit (`HAND-1`), so the more cards it holds, the more they overlap, until each one only shows a minimum strip; from then on the hand grows wider. The hovered card shows whole, because the cards after it slide aside. At rest the hand is mostly hidden at the bottom edge, and it rises when hovered, with an animation. It always folds again when the pointer leaves the hand, also when it leaves the window, and a request made while it is still rising is not dropped. Its cards are drawn at 75% of the size of a card (150 by 225 at the reference screen), so the expanded hand takes about a fifth of the screen height and does not cover the own zone.
 - **VIEW-25** The hand is centered horizontally on the screen according to the cards it holds, not according to the space it could take. Its width follows the number of cards, so the cards move to their new slots when one arrives or leaves.
-- **VIEW-8** Newly received cards are animated. Cards restored from `GAME_SYNC` are not. **[Post-MVP]** The back of the card a rival receives is animated too (`VIEW-3`).
+- The arrival of a card in the hand (`VIEW-8`) is in `specs/ui/HAND-ARRIVAL.md`.
 - **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat, and for a click refused while attacking (`VIEW-4`).
 - **VIEW-21** **[Post-MVP]** The rarer a card, the more audio variants each of its actions has: for example 1 for placing a Common card and 2 or 3 for a Mythic one.
 - **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
