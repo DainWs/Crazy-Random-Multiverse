@@ -24,7 +24,7 @@ Read these only when the task needs them:
 
 - `agents/ROADMAP-ARCHIVE.md` — the closed phases of the roadmap. When the history of a closed phase is needed.
 - `agents/ROADMAP-TEST.md` — the equivalent of the roadmap for tests: cross-cutting tests, visual regression and pending checks. When working on a test phase or recording something that could not be verified.
-- `agents/VIEW-SPECS.md` — appearance of the interface. When the task changes how the interface looks, animates or sounds.
+- `agents/VIEW-SPECS.md` and `agents/specs/ui/` — appearance of the interface; the `VIEW` rules are split between them. When the task changes how the interface looks, animates or sounds.
 - `agents/PHASER4-SPECS.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look. When working on Phaser views or when something in the view looks or behaves wrong.
 - `agents/CODESTYLE.md` — general conventions and architecture. When writing code in either application. They are not suggestions.
 - `agents/BACKEND-CODESTYLE.md` — mandatory conventions for the backend. When writing backend code. They are not suggestions.

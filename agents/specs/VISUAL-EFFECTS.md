@@ -1,9 +1,9 @@
 # Visual effects
 
-Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack arrow (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
+Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
 
 - **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
-- **FX-2** **[Post-MVP]** An effect belongs to one of three groups, so each one can be turned off or reduced on its own (`FX-13`):
+- **FX-2** **[Post-MVP]** An effect belongs to one of three groups. Every effect of this file is non-essential (`UI-26`):
   - *Card effects*: they stay on the card while it is on the board or in the hand (`FX-7`).
   - *Action effects*: they play once when an action happens (`FX-4`, `FX-8`).
   - *Interface effects*: they belong to the interface, not to a card. None is specified yet.
@@ -29,7 +29,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 - **FX-10** **[Post-MVP]** A skin changes the look of the interface without changing its layout or behavior: colors, fonts, frames, the table background, the icons of the statistics and the mark of the slots (`CON-30`).
 - **FX-11** **[Post-MVP]** A skin is a set of resources with a name, replaceable as a whole. The resources it does not define fall back to the default skin, so a skin can change a single thing.
 - **FX-12** **[Post-MVP]** The player chooses their skin in the settings screen. It is a preference of that player only, the other players do not see it, and it is not part of the game state or of the contract with the backend.
-- **FX-13** **[Post-MVP]** The settings can turn the effects off by group (`FX-2`) or reduce them, as part of the reduced motion and accessibility options (`VIEW-10`). Without effects the game must be fully readable: no information is carried only by an effect.
+- **FX-13** **[Post-MVP]** The effects of this file follow the settings of `UI-27`: being non-essential, they do not happen with low quality (`UI-28`) or with reduced motion (`UI-29`). Without them the game must be fully readable: no information is carried only by an effect of this file.
 - **FX-14** **[OPEN]** Whether the skins are part of the game or can be added by the players, and whether a skin may replace the audio.
 - **FX-15** **[OPEN]** Whether a skin may also change the effects of `FX-7` and `FX-4` or only the base look.
 

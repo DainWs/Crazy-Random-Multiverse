@@ -25,7 +25,7 @@ Functional specification of Crazy Random Multiverse. Source of truth for behavio
 | `specs/INTERFACE.md` | Interface behavior | `UI` |
 | `specs/VISUAL-EFFECTS.md` | Effects by rarity (heartbeat, border glow) and interface skins, all Post-MVP or open | `FX` |
 | `specs/POST-MVP.md` | Teams, spells and variants | `TEAM`, `SPELL`, `VAR` |
-| `VIEW-SPECS.md` | Interface appearance, separate from behavior | `VIEW` |
+| `VIEW-SPECS.md` and `specs/ui/` | Interface appearance, separate from behavior. `specs/ui/` has one file per effect, named `CATEGORY-EFFECT.md`, plus `MOTION-BASE.md` with the shared durations and curves; its files describe what is seen and never how it is built. The rules of `VIEW-SPECS.md` move there as they are reviewed, keeping their identifiers | `VIEW` |
 
 ## Overview
 
