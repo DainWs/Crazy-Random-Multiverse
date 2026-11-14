@@ -1,6 +1,6 @@
 # Cards: actionable under the pointer
 
-How an own card of the board that can attack now reacts to the pointer, so that the player tells it apart from the cards that cannot act. Its mark at rest is the cyan frame of `../../VIEW-SPECS.md` (`VIEW-17`), and the durations and curves are in `MOTION-BASE.md`. Decided with the product owner on 2026-11-14.
+How an own card of the board that can attack now reacts to the pointer, so that the player tells it apart from the cards that cannot act. Its mark at rest is the cyan frame of `GAME-PULSES.md` (`VIEW-17`), and the durations and curves are in `MOTION-BASE.md`. Decided with the product owner on 2026-11-14.
 
 - **VIEW-37** While the board being shown is the local player's turn (`CON-12`), and the pointer is over an own card that can attack now (`attackAvailable`, `CON-15`) and has its cyan frame (`VIEW-17`):
   - The cyan frame stops pulsing and is drawn at its full opacity, at once. When the pointer leaves the card, the pulse goes on at once from the clock of the scene, as `VIEW-17` says.
