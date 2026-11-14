@@ -233,3 +233,27 @@ Started at: `12df6bd` · Finished at: `929bbe8`
 - [x] Remove or fix the latent defects of unused code: the inverted condition of `Zone.isLineFull` in the frontend and `TurnManager.getPrevTurn`, which wraps out of bounds. Both were removed with the code that only they served
 - [x] Weigh the pros and cons of giving each event its own `EventDetails` implementation (`CON-21`): decided not to split it. About 7 distinct shapes over 18 codes do not justify a class and a mapper branch each (`CODESTYLE` section 2), and the contract does not change. The cost accepted is the nullable fields and the `has*()` checks of `CommunicationMapper`
 - [x] Remove the debugging left in place: `createDebugUI` in `GameScene`, the red polygon in `ZoneSlotView` and `showDebugBoxes`
+
+## Phase 10 — Board and cards
+
+Started at: `9de2969` · Finished at: `49ba30f`
+
+- [x] Test layouts for 2 to 10 players (`VIEW-2`)
+- [x] Review whether the sides of the rivals should reflect the turn order around the table (`VIEW-13`)
+- [x] Verify card readability, targeting and hover previews with 10 players (`VIEW-2`)
+- [x] Review/fix existing table grid-line TODO
+- [x] Connect card preview to real backend data (types, stats, rarity, descriptions, equipment), listing every piece of equipment (`VIEW-14`, `EQUIP-4`): `GlobalCardTooltipView` only shows one
+- [x] Stop showing the rival hands (`HAND-3`, `UI-7`): remove `handSize` from `PlayerDto` in both applications, and the `Mano:` label that `ZoneView` draws in each rival zone. Regenerate the reference images that show the label: T6 of `ROADMAP-TEST.md` approved them with cards in the rival hands
+- [x] Complete stacked-card hover behavior, with every piece of equipment stacked behind its combatant (`VIEW-14`)
+- [x] Animate the leaders being placed one after the other when the board is first shown, with the first deal animation waiting for them, and set its duration per leader so that the start stays short with 10 players (`VIEW-12`)
+- [x] Reposition the board, the hand and the HUD when the window changes size (`VIEW-24`): `App.vue` uses `Scale.RESIZE` and nothing reacts to it, so at 1100×620 the own leader, rows and buttons are out of view, and at 1920 wide the board is off-center. Only desktop windows: the responsive layouts of `VIEW-10` stay Post-MVP
+- [x] Fix the hand staying expanded after the pointer leaves it (`VIEW-16`). Seen twice with simulated mouse events in a game of two, but it folded in a game of three. Confirmed with a real mouse: the hand folds, and it opens again when the pointer comes back slowly over the card it left from
+- [x] Fix the slot of the incoming cards in `HandView.addCards` (`VIEW-8`): the position uses `i` instead of the index in the hand, and `newIndex` drifts because the cards are pushed inside the loop. Target and depth are wrong until `updateCards` runs at the end of the animation. Probably why, in 2 of 3 sessions of a game of three, only one of the 2 first cards was shown until the hand was hovered
+- [x] Make the expansion of the hand animate: `HandView.updateBounds` sets its `y` on every `prerender`, which overrides the tween of `HandAnimator`. Read from the code, not seen on screen
+- [x] Reduce the size of the cards of the hand: expanded they measure about 200×300 at 1600×900, a third of the screen height, and two cards take about 410 px. With 5 cards the expanded hand covers the left column of the own zone. They stay larger than the cards of the board, whose smaller size is what lets the whole board fit. The target size is not set: it is decided with the user at the start of the phase, looking at it on screen
+- [x] Center the hand on the screen according to the cards it holds (`VIEW-25`): its bounds are sized for 10 cards and anchored to the left
+- [x] Make the values of the cards of the board readable without hovering (`VIEW-2`): with 2 players a card is about 65 px wide, and about 50 px in the rival zone, while the table between the zones is mostly empty
+- [x] Lower the contrast of the grid of the table, which competes with the cards (`VIEW-26`)
+- [x] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
+- [x] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
+- [x] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
