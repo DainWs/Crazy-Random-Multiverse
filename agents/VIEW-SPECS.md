@@ -23,7 +23,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 ## Combat
 
 - The attack (`VIEW-4`) is in `specs/ui/COMBAT-ATTACK.md`, and the shared durations and curves of the animations (`VIEW-30`, `VIEW-31`) in `specs/ui/MOTION-BASE.md`.
-- **VIEW-5** A hit shows feedback, such as a shake or a red flash.
+- The hit (`VIEW-5`) is in `specs/ui/COMBAT-HIT.md`.
 - **VIEW-6** Changes in armor and health are animated: the values count down to the new ones, and a floating text over the target shows the armor and health it lost (`CON-21`).
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.
 - **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the red frame and the crossed circle icon they show under the pointer while attacking (`VIEW-4`, `UI-5`, `PROT-6`). The own cards that can attack now (`attackAvailable`, `CON-15`) do have a mark, while the board being shown is the turn of the local player (`CON-12`): a cyan frame, drawn over the card like those of `VIEW-32`, with a discreet pulse that does not restart when the board is drawn again, as in `VIEW-20`. While a card is selected to attack and lifted (`VIEW-4`), its cyan frame is not drawn.
@@ -34,7 +34,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-16** The hand has no limit (`HAND-1`), so the more cards it holds, the more they overlap, until each one only shows a minimum strip; from then on the hand grows wider. The hovered card shows whole, because the cards after it slide aside. At rest the hand is mostly hidden at the bottom edge, and it rises when hovered, with an animation. It always folds again when the pointer leaves the hand, also when it leaves the window, and a request made while it is still rising is not dropped. Its cards are drawn at 75% of the size of a card (150 by 225 at the reference screen), so the expanded hand takes about a fifth of the screen height and does not cover the own zone.
 - **VIEW-25** The hand is centered horizontally on the screen according to the cards it holds, not according to the space it could take. Its width follows the number of cards, so the cards move to their new slots when one arrives or leaves.
 - **VIEW-8** Newly received cards are animated. Cards restored from `GAME_SYNC` are not. **[Post-MVP]** The back of the card a rival receives is animated too (`VIEW-3`).
-- **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat.
+- **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat, and for a click refused while attacking (`VIEW-4`).
 - **VIEW-21** **[Post-MVP]** The rarer a card, the more audio variants each of its actions has: for example 1 for placing a Common card and 2 or 3 for a Mythic one.
 - **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, a color-blind palette chosen in a settings screen (`UI-13`), the graphics quality and reduced motion options (`UI-27`), and responsive and touch layouts.
