@@ -4,7 +4,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 **MVP goal:** a complete game loop: deal -> placement -> combat -> victory/defeat.
 
-**MVP scope:** Phases 1 to 13 (including 2.5, 2.6 and 5.5). Phase 14 and the Post-MVP section are out of it.
+**MVP scope:** Phases 1 to 13 (including 2.5, 2.6, 5.5 and 11.1 to 11.7). Phase 14 and the Post-MVP section are out of it.
 
 ## Closed decisions
 
@@ -41,9 +41,59 @@ Started at: `937e889`
 - [x] Improve the look of the zone of an eliminated player (`VIEW-11`): the veil is a flat black fill per slot and the label "Eliminado" is a plain red text. Make the veil cover the zone as one piece and give the label a panel or a style that fits the table. Done as chosen among 10 sketches: a dark red veil on each slot, with a border, and an outlined label
 - [x] Improve the look of the connection notice (`UI-9`), the notices of `SessionNotice` (`UI-10`, `UI-24`, `LOAD-4`) and the leave button and its dialog (`UI-15`): they are unstyled, with default controls and a plain dark veil. The notices are Vue panels with a shared palette; the leave button and its dialog share the HUD style of the next bullet (`VIEW-28`)
 - [x] Improve the look of the HUD, the confirmation dialog and the spectator state (`UI-3`, `UI-8`): make clear that the player is watching and cannot act, beyond hiding the buttons. `VIEW-28`: hover on the buttons, a border on the dialog and a label next to the leave button
-- [ ] Review the look of every effect of the game together, so that the glow, the veils, the notices, the combat feedback (`VIEW-5` to `VIEW-7`) and the transitions share one style. Regenerate the reference images when it changes
 - [x] Draw the card of a slot in perspective, deformed like the slot (`VIEW-1`, `VIEW-2`): `ZoneSlotCardHelper` placed a flat rectangle with the average scale of the projected edges, so zoomed in it did not follow the trapezoid of the slot. Done with a Displacement filter on an inner container of the card, not with a mesh: see `PHASER4-SPECS.md`
 - [x] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
+
+## Phase 11.1 — UX/UI: accessibility
+
+What can be done without a settings screen, which stays **[Post-MVP]** (`UI-13`, `VIEW-10`). "Decided with the product owner" means that the bullet is not implemented until the product owner has chosen, among sketches when it is visual, and the choice is written in the rule first.
+
+- [ ] Give every mark of the board a second signal that does not depend on color: a shape, an icon or a line pattern, the same one wherever the mark appears. The signal of each mark is decided with the product owner and written in a new `VIEW` rule. The marks told apart today only by color are: the blue tint of the own zone (`VIEW-27`), the cyan frame of a card that can attack (`VIEW-17`), the gold frame of the leader with the turn (`VIEW-20`), the red frame of the attacker and the green frames of its targets (`VIEW-4`), and the dark red tint of an eliminated zone (`VIEW-11`). Red and green are the pair that red-green color blindness confuses. The marks of the attack (`VIEW-4`) are done after the attack bullet of Phase 11.4, because that bullet may remove or change them
+- [ ] Write a new `VIEW` rule with minimum contrasts, measured against the color directly behind, and fix what falls under them: 4.5:1 for the texts of the HUD (`UI-3`, `VIEW-28`), the notices (`VIEW-15`), the side panel (`VIEW-14`), the result (`VIEW-23`), the loading screen (`VIEW-29`) and the dialogs (`UI-15`); 3:1 for texts of 24 px or more, or 19 px or more in bold, and for the frames and tints of the marks of the previous bullet against the slot. Today the round and turn text of the HUD is green drawn straight over the saturated background, with no panel
+- [ ] Write a new `VIEW` rule with a minimum text size of 18 px on screen, with the window at 1920 by 1080 and the zoom of the camera at 1 (`VIEW-24`), for the same texts as the previous bullet, and fix what falls under it. The texts of the cards on the board are not covered by this bullet: see Phase 11.3
+- [ ] Replace the mentions of reduced motion of `VIEW-17`, `VIEW-20` and `VIEW-29` with one new `VIEW` rule that applies when the system asks for reduced motion (the `prefers-reduced-motion: reduce` media query) and lists every animation and what replaces it: the arrival of cards (`VIEW-8`), the placement of the leaders (`VIEW-12`), the notices (`VIEW-15`), the hit, the counting values and the death (`VIEW-5` to `VIEW-7`), the hand rising and folding (`VIEW-16`), the pulses (`VIEW-17`, `VIEW-20`) and the fade of the loading screen (`VIEW-29`). What replaces each one is decided with the product owner
+- [ ] Write a new `UI` rule for the keyboard and implement it: Enter accepts and Escape cancels the confirmation dialog (`UI-15`); a key ends the turn, does nothing while the button is disabled (`UI-4`) and is decided with the product owner; and the notices of `UI-9`, `UI-10` and `UI-24` and the confirmation dialog put the focus on their first button when they open, do not let it leave them while open, and draw the focused button with a mark different from the hover of `VIEW-28`
+
+## Phase 11.2 — UX/UI: HUD hierarchy
+
+- [ ] Give the end turn button the style of the primary action and the surrender button a different, destructive style, and stop them from being next to each other: today both have the same style and the surrender button is right above the end turn one (`VIEW-28`). The styles and the new place of the surrender button are decided with the product owner and written in a new `VIEW` rule. Surrendering keeps its confirmation (`UI-15`)
+- [ ] Put the round and the turn on a panel in the palette of `VIEW-28`, at the top left corner where the text is today. The turn says "Tu turno" when it is the local player's and the name of the player otherwise, as the notices of `VIEW-15`. It follows the board being shown (`UI-3`). Write it in a new `VIEW` rule
+- [ ] Mark the end turn button with a pulse like that of `VIEW-17`, still under reduced motion, while it is the local player's turn and they have nothing left to do: no own card has `attackAvailable` (`CON-15`) and no card of the hand has a valid slot or target under `BOARD-5` and `EQUIP-3` (`UI-5`). Moving a card already on the board does not count. Write it in a new `VIEW` rule
+- [ ] Lower the visual weight of the background around the table so that the board stands out over it. Whether by lowering its saturation, darkening it or adding a vignette is decided with the product owner and written in a new `VIEW` rule
+
+## Phase 11.3 — UX/UI: board legibility
+
+- [ ] Show the name of each player in a label next to their zone, with "Tú" instead of the name in the local player's zone: today the turn notice names the player (`VIEW-15`), but nothing on the board says which zone is theirs (`VIEW-13`). The label never covers a slot, and keeps the size on screen of the minimum text of Phase 11.1 at any zoom. Its place is decided with the product owner and written in a new `VIEW` rule
+- [ ] Show the health of every leader outside its card, readable without hovering at any count from 2 to 10 players (`VIEW-2`): eliminating the leaders is the goal of the game, and with 10 players the values of the cards cannot be read. It keeps the size on screen of the minimum text of Phase 11.1 at any zoom and any count of players. Whether it is a number, a bar or both, and its place, are decided with the product owner and written in a new `VIEW` rule
+- [ ] Measure, with the window at 1920 by 1080 and the zoom at 1, which values of a card on the board (damage, armor and health) reach the minimum size of Phase 11.1 with 2, 4, 6 and 10 players. With that measurement, the product owner decides which values must reach it without hovering, and how (`VIEW-2`, `VIEW-14`). Record the measurement in this bullet
+- [ ] Show the turn order on the board (`VIEW-13`, `UI-3`). Whether each name label of the first bullet shows the position of its player in the order, or only the zone of the player who plays next is marked, is decided with the product owner and written in a new `VIEW` rule
+
+## Phase 11.4 — UX/UI: feedback and game feel
+
+- [ ] Replace the arrow of the attack with lifting the selected card, as the product owner asked, once they answer the 9 questions sent on 2026-11-14: the lift, the frame of the attacker, the highlight of the targets, the reaction of the target under the pointer, the signal over an invalid target, the animation, its height, cancelling and confirming, reduced motion and removing the arrow (`VIEW-4`, `UI-5`). Rewrite `VIEW-4` with the answers before implementing it. Regenerate the reference images of the arrow and of `attack-marks`
+- [ ] Rewrite `VIEW-5`, which only says "such as a shake or a red flash", with three tiers of combat feedback: a hit, the death of a card and the death of a leader (`VIEW-5` to `VIEW-7`). The channels and durations of each tier are decided with the product owner, within these limits: the shake moves the camera and never the cards; a freeze of the animation, if there is one, is only for the death of a leader and lasts 0.15 s or less; a flash happens at most three times per second (WCAG 2.3.1)
+- [ ] Give a hover state, decided with the product owner and written in a new `VIEW` rule, to the own cards of the board that the player can act on now, while the board being shown is the local player's turn: those with `attackAvailable` (`CON-15`) and those that can be moved (`BOARD-7`). Today nothing on the board reacts to the pointer before a click, except the enlargement and the side panel of `VIEW-14`, which every card has
+- [ ] Animate every card that enters a slot of the board from an event, own or rival, placed or moved: it grows to 1.1 times its size and goes back to exactly its size in 0.18 s, with an ease that overshoots before settling. A card restored from `GAME_SYNC` does not play it (`VIEW-8`), and it does not play under reduced motion. Write it in a new `VIEW` rule
+
+## Phase 11.5 — UX/UI: visual language
+
+- [ ] Write in `VIEW-SPECS.md` a table of the colors of the interface, with the name, the hexadecimal value and the meaning of each one, used by the board, the HUD, the notices, the side panel and the dialogs. No color has two meanings: today red is the attacker and an invalid target (`VIEW-4`), the negative values (`VIEW-14`) and the eliminated zone (`VIEW-11`). The colors are decided with the product owner
+- [ ] Write in `VIEW-SPECS.md`, for every pair of marks that can be on the same slot at the same time, which one is drawn, or whether both are and how: the tint of the own zone (`VIEW-27`), the frame of a card that can attack (`VIEW-17`), the frame of the leader with the turn (`VIEW-20`), the frames of the attack (`VIEW-4`) and the tint of an eliminated zone (`VIEW-11`). Today only `VIEW-17` and `VIEW-27` say it
+- [ ] Choose a typeface and the sizes of four levels of text (title, body, label and numbers) for the HUD, the notices, the side panel, the dialogs and the cards, and write them in `VIEW-SPECS.md`: every text of the reference images uses the same monospaced typewriter face. The typeface is decided with the product owner. A new font file is a new asset: ask before adding it
+- [ ] Review together the look of every effect of the game: the glow of the leader (`VIEW-20`), the veils (`VIEW-11`, `VIEW-23`), the notices (`VIEW-15`), the combat feedback (`VIEW-5` to `VIEW-7`) and the fades (`VIEW-29`), so that they use the colors of the first bullet and the same durations and easings. Write the durations and easings in `VIEW-SPECS.md`. Regenerate the reference images that change. Moved from Phase 11
+
+## Phase 11.6 — UX/UI: layout
+
+- [ ] Write in `VIEW-24` the smallest supported window, decided with the product owner (1280 by 720 is proposed), and keep the HUD, the hand and the board from overlapping at any size from it up to 1920 by 1080. The reference image of `resize.spec.ts` at 1100 by 620 shows the end turn button over the edge of the table; whether that size has to work depends on the minimum chosen
+- [ ] Decide with the product owner, and write in `VIEW-14`, whether the side panel ends above the HUD buttons or covers them while it is open: today the buttons are drawn over the panel
+- [ ] Check whether the side panel (`VIEW-14`) covers the hovered card when it is in the zone of a rival on the right side (`VIEW-13`). If it does, write in `VIEW-14` that the panel is shown on the left side of the screen when the hovered card is in the right half of the screen, and implement it
+- [ ] Check, at the smallest window of the first bullet and with 10 players, whether the expanded hand covers a slot of the own zone (`VIEW-16`). Record the result in this bullet, and if it does, fix it
+
+## Phase 11.7 — UX/UI: learnability
+
+- [ ] Add a help button to the HUD that opens a panel over the board with a legend of the marks of the board: each one with its color, its second signal (Phase 11.1) and its meaning. The panel closes with the same button, with Escape and with a click outside it. Whether gameplay stays enabled while it is open is decided with the product owner. Write it in new `UI` and `VIEW` rules
+- [ ] Add to the panel of the previous bullet a summary of the rules, in a second section: the goal, the turn, placing a card, attacking, protection and elimination (`TURN-*`, `BOARD-*`, `PROT-*`, `ELIM-*`). The text is in Spanish, goes through the texts of `UI-2`, and is approved by the product owner. Write it in a new `UI` rule
+- [ ] Say in the side panel (`VIEW-14`) of an own card on the board, while the board being shown is the local player's turn, whether it can attack this turn, from `attackAvailable` (`CON-15`): a click on a card that cannot attack does nothing and says nothing (`UI-25`). The contract does not say why a card cannot attack, so the panel gives no reason. Write it in a new `VIEW` rule
 
 ## Phase 12 — Menu, lobby, user
 
@@ -121,4 +171,4 @@ Not tied to a phase.
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat (`VIEW-9`), with more variants for rarer cards once `VIEW-22` is resolved (`VIEW-21`)
 - Advanced trolling cards, green/red indicators, center-table behavior
 - Interface skins chosen by each player, and turning the effects off by group (`FX-10` to `FX-15`)
-- Settings screen, audio settings, accessibility (reduced motion, color-blind indicators), responsive and touch layouts
+- Settings screen, audio settings, a color-blind palette chosen in the settings, responsive and touch layouts. The accessibility of the MVP is Phase 11.1
