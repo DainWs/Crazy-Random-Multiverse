@@ -7,7 +7,7 @@ Shared rules of every animation of the interface. The rule of each animation, in
   - Medium, 250 ms: a card that travels from one place to another, a panel that opens or closes, and a shake.
   - Slow, 400 ms: a layer that covers the screen or a large part of it appearing or disappearing, such as a fade or a veil.
 
-  The placement of the leaders (`VIEW-12`) keeps its own durations, as an exception kept by the product owner.
+  The placement of the leaders (`VIEW-12`) and the elimination (`VIEW-11`) keep their own durations, as exceptions kept by the product owner.
 - **VIEW-31** No animation goes beyond its final size, position or opacity before settling: none bounces. Each one follows one of four curves, and ends exactly at its final value:
   - It slows down at the end: for what appears, enters the screen or settles, such as a card that lifts or arrives.
   - It starts slowly and speeds up: for what disappears or leaves the screen.

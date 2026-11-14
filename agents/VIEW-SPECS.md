@@ -35,6 +35,6 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-21** **[Post-MVP]** The rarer a card, the more audio variants each of its actions has: for example 1 for placing a Common card and 2 or 3 for a Mythic one.
 - **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, a color-blind palette chosen in a settings screen (`UI-13`), the graphics quality and reduced motion options (`UI-27`), and responsive and touch layouts.
-- **VIEW-11** The zone of an eliminated player is shown empty, with every slot tinted a dark red and bordered in a darker one, and the label "Eliminado" over it in red with a black outline and no panel. The cards that leave the board with the elimination (`ELIM-3`) have no animation: they disappear when the board is drawn again. Only a leader killed by an attack plays its death (`VIEW-7`).
+- The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
 - **VIEW-23** The result (`WIN-4`) covers the board with a veil, and its texts, victory or defeat, the winner and the countdown, sit on a panel, so the slots of the board do not show through them.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
