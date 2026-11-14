@@ -26,7 +26,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The hit (`VIEW-5`) is in `specs/ui/COMBAT-HIT.md`.
 - The count of the values and the floating text (`VIEW-6`) are in `specs/ui/COMBAT-VALUES.md`.
 - The death of a card and of a leader, the equipment that dies with its card and the total duration of an attack (`VIEW-7`, `VIEW-18`, `VIEW-33`) are in `specs/ui/COMBAT-DEATH.md`.
-- **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the red frame and the crossed circle icon they show under the pointer while attacking (`VIEW-4`, `UI-5`, `PROT-6`). The own cards that can attack now (`attackAvailable`, `CON-15`) do have a mark, while the board being shown is the turn of the local player (`CON-12`): a cyan frame, drawn over the card like those of `VIEW-32`, with a discreet pulse that does not restart when the board is drawn again, as in `VIEW-20`. While a card is selected to attack and lifted (`VIEW-4`), its cyan frame is not drawn.
+- **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the red frame and the crossed circle icon they show under the pointer while attacking (`VIEW-4`, `UI-5`, `PROT-6`). The own cards that can attack now (`attackAvailable`, `CON-15`) do have a mark, while the board being shown is the turn of the local player (`CON-12`): a cyan frame, drawn over the card like those of `VIEW-32`, with a discreet pulse that does not restart when the board is drawn again, as in `VIEW-20`. While a card is selected to attack and lifted (`VIEW-4`), its cyan frame is not drawn. Under the pointer it stops pulsing (`VIEW-37`, `specs/ui/CARDS-ACTIONABLE.md`).
 
 ## Other
 
