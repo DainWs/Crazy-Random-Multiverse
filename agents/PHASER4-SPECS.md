@@ -43,3 +43,9 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** with software WebGL the browser tests measured 24.5 to 21 frames per second at 3 players, 24.25 to 19.5 at 5 and 23 to 15.5 at 10 after the cards were drawn in perspective (`VIEW-1`). On a desktop GPU 200 filtered cards kept 60 frames per second.
 - **Likely cause:** each card on the board has a Displacement filter on its inner container (`CardView.content`), so it is rendered to its own texture on every frame, and the cost grows with the cards on the table.
 - **Where to look:** `CardView.applyWarp` and `CardWarp.ts`. The filter goes on the inner container because a filter on a rotated container is drawn turned twice, and the container needs `setSize` or its output is drawn at the top left corner of the screen. Measure the frames per second at 3, 5 and 10 players with a `requestAnimationFrame` counter before adding another filter to the board.
+
+## The hand does not open when the pointer comes back over the same card
+
+- **Symptom:** the first time the pointer enters the hand from outside the window it opens, but when it goes out and comes back slowly, over the same card, it stays closed. A quick entry works because it lands on another card (`VIEW-16`).
+- **Likely cause:** leaving the game sends no `pointerout`, and `InputPlugin` keeps the card in its list of hovered objects, so it sends no `pointerover` when the pointer comes back to it. Making the card interactive again on `gameout` does not help: Phaser sends the `pointerover` at once, while the listeners are off.
+- **Where to look:** `HandView.restCards` remembers the card the pointer left over and `HandView.enableCardListeners`, called on `gameover`, makes it interactive again.

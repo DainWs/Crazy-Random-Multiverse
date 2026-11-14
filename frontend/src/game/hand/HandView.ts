@@ -31,6 +31,7 @@ class HandView extends Phaser.GameObjects.Container {
   private hoverIndex: number;
   private cards: CardView[];
   private cardListenersEnabled: boolean;
+  private cardLeftHovered?: CardView;
   /** Tweened by `HandAnimator`; `updateBounds` turns it into `y` on every frame. */
   public hiddenRatio: number;
 
@@ -182,9 +183,12 @@ class HandView extends Phaser.GameObjects.Container {
     }
   }
 
-  /** The pointer left the game without a `pointerout` reaching the card, so the hand is lowered by hand (VIEW-16). */
+  /** The pointer left the game without a `pointerout` reaching the card, so it is sent by hand and the hand is lowered (VIEW-16). */
   public restCards() {
     if (!this.cardListenersEnabled) return;
+    const hoveredCard = this.cards[this.hoverIndex];
+    hoveredCard?.emit("pointerout");
+    this.cardLeftHovered = hoveredCard;
     this.hoverIndex = NONE_CARD_IS_HOVER;
     this.sliceCardsToShowHoverIndex();
     this.animator.animateHandExpansion(this, HAND_RESTING_HIDDEN_RATIO);
@@ -219,8 +223,18 @@ class HandView extends Phaser.GameObjects.Container {
     this.animator.animateHandExpansion(this, HAND_DRAGGING_HIDDEN_RATIO, HAND_HIDE_DURATION);
   }
 
+  /**
+   * Phaser keeps as hovered the card the pointer left the game over, and sends no `pointerover` when it comes back to it,
+   * so it is made interactive again once the listeners are on (VIEW-16).
+   */
   public enableCardListeners() {
     this.cardListenersEnabled = true;
+    const card = this.cardLeftHovered;
+    this.cardLeftHovered = undefined;
+    if (card?.input?.enabled) {
+      card.disableInteractive();
+      card.setInteractive();
+    }
   }
 
   public disableCardListeners(sliceCards = true) {

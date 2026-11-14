@@ -96,11 +96,11 @@ describe('HandView', () => {
   });
 
   describe('restCards', () => {
-    const createHand = (cardListenersEnabled: boolean) => {
+    const createHand = (cardListenersEnabled: boolean, cards: unknown[] = []) => {
       return {
         cardListenersEnabled,
         hoverIndex: 1,
-        cards: [],
+        cards,
         layoutHelper: { calculateXOffsetForSlicedCard: () => 0 },
         animator: { animateHandExpansion: vi.fn() },
         sliceCardsToShowHoverIndex: vi.fn()
@@ -116,12 +116,55 @@ describe('HandView', () => {
       expect(hand.animator.animateHandExpansion).toHaveBeenCalledWith(hand, 0.75);
     });
 
+    // VIEW-14, VIEW-16
+    it('sends the pointerout to the hovered card so that it goes back to its size', () => {
+      const hovered = { emit: vi.fn() };
+      const hand = createHand(true, [{}, hovered]);
+
+      HandView.prototype.restCards.call(hand);
+
+      expect(hovered.emit).toHaveBeenCalledWith('pointerout');
+    });
+
     it('leaves the hand alone while a card is being dragged', () => {
       const hand = createHand(false);
 
       HandView.prototype.restCards.call(hand);
 
       expect(hand.animator.animateHandExpansion).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('enableCardListeners', () => {
+    const createCard = (inputEnabled: boolean) => ({ input: { enabled: inputEnabled }, disableInteractive: vi.fn(), setInteractive: vi.fn() });
+
+    // VIEW-16
+    it('makes interactive again the card the pointer left the game over, so that it sends its pointerover', () => {
+      const card = createCard(true);
+      const hand = { cardListenersEnabled: false, cardLeftHovered: card };
+
+      HandView.prototype.enableCardListeners.call(hand);
+
+      expect(card.disableInteractive).toHaveBeenCalledBefore(card.setInteractive);
+    });
+
+    it('does it only once', () => {
+      const card = createCard(true);
+      const hand = { cardListenersEnabled: false, cardLeftHovered: card };
+      HandView.prototype.enableCardListeners.call(hand);
+
+      HandView.prototype.enableCardListeners.call(hand);
+
+      expect(card.setInteractive).toHaveBeenCalledOnce();
+    });
+
+    it('leaves alone a card that was not interactive', () => {
+      const card = createCard(false);
+      const hand = { cardListenersEnabled: false, cardLeftHovered: card };
+
+      HandView.prototype.enableCardListeners.call(hand);
+
+      expect(card.setInteractive).not.toHaveBeenCalled();
     });
   });
 
