@@ -257,3 +257,24 @@ Started at: `9de2969` · Finished at: `49ba30f`
 - [x] Fix the cards of the side zones (`VIEW-1`, `VIEW-2`): they are drawn upright over rotated slots, off-center, overlapping the neighboring cards
 - [x] Close the side panel when the hovered card disappears (`VIEW-14`): after the elimination of a player the panel of a card of their hand stayed open, up to the result screen
 - [x] Draw the name and the values of an equipment card: `EquipmentRender` draws nothing, so it shows two blank areas in the hand and in the side panel
+
+## Phase 11 — UX
+
+Started at: `937e889` · Finished at: `1d64abf`
+
+- [x] Distinguish the local player's cards from the rivals' (needs a new `VIEW` rule): `VIEW-27`
+- [x] Feedback: invalid drop, invalid target, not your turn, card cannot move, no available slot (`UI-25`)
+- [x] Stop a slow click from grabbing the card when attacking (`VIEW-4`): `DRAG_TIME_THRESHOLD`, the time after which Phaser starts a drag without the pointer moving and below which `CardClickHandler` counts a click, was raised from 100 to 150 ms (`53e8a60`, `4320859`). Done before the phase started, so it has no `Started at`. A click held 150 ms or more still grabs the card
+- [x] Round transition presentation and gameplay event notifications, including the turn and round notices (`VIEW-15`)
+- [x] Improve loading flow. `VIEW-29`: the bar and the texts on a panel in the palette of the HUD, the retry button styled like the HUD buttons, everything centered and placed again when the window changes size, and the board fading in over the loading screen
+- [x] Move the hardcoded texts of the game scenes to `core/Texts.ts`, and show the key itself for a text key without a translation (`UI-2`)
+- [x] Make the highlight of the valid targets easier to see, and stop the arrow from covering the target (`UI-5`, `VIEW-4`)
+- [x] Mark the own cards that can attack. It needs a new `VIEW` rule: `VIEW-17` only rules out marks for protection, and today nothing marks them
+- [x] Put a panel behind the texts of the result screen: the countdown overlaps the slots of the board (`VIEW-23`)
+- [x] Redo the glow of the leader of the player with the turn (`VIEW-20`): today it is five stacked strokes over the corners of the slot and looks like a halo with thin lines at the corners. Use a Phaser 4 glow filter or a soft texture, with a discreet pulse that does not restart when the board is redrawn. Regenerate the 11 reference images that contain it
+- [x] Improve the look of the zone of an eliminated player (`VIEW-11`): the veil is a flat black fill per slot and the label "Eliminado" is a plain red text. Make the veil cover the zone as one piece and give the label a panel or a style that fits the table. Done as chosen among 10 sketches: a dark red veil on each slot, with a border, and an outlined label
+- [x] Improve the look of the connection notice (`UI-9`), the notices of `SessionNotice` (`UI-10`, `UI-24`, `LOAD-4`) and the leave button and its dialog (`UI-15`): they are unstyled, with default controls and a plain dark veil. The notices are Vue panels with a shared palette; the leave button and its dialog share the HUD style of the next bullet (`VIEW-28`)
+- [x] Improve the look of the HUD, the confirmation dialog and the spectator state (`UI-3`, `UI-8`): make clear that the player is watching and cannot act, beyond hiding the buttons. `VIEW-28`: hover on the buttons, a border on the dialog and a label next to the leave button
+- [x] Draw the card of a slot in perspective, deformed like the slot (`VIEW-1`, `VIEW-2`): `ZoneSlotCardHelper` placed a flat rectangle with the average scale of the projected edges, so zoomed in it did not follow the trapezoid of the slot. Done with a Displacement filter on an inner container of the card, not with a mesh: see `PHASER4-SPECS.md`
+- [x] Set the title of the page: `frontend/index.html` still says `Phaser Vue Template`
+- The review of the look of every effect together was moved to Phase 11.5 before closing
