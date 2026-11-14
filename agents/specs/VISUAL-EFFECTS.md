@@ -1,6 +1,6 @@
 # Visual effects
 
-Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
+Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the elimination of a player (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
 
 - **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
 - **FX-2** **[Post-MVP]** An effect belongs to one of three groups. Every effect of this file is non-essential (`UI-26`):
