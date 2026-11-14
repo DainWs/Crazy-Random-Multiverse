@@ -1,6 +1,6 @@
 # Cards: drag
 
-How the local player drags a card from the hand or from the board, and what is seen while the server answers. The behavior is in `../INTERFACE.md` (`UI-5`, `UI-6`, `UI-25`), the hand in `../../VIEW-SPECS.md` (`VIEW-16`), and the durations and curves in `MOTION-BASE.md`. Decided with the product owner on 2026-11-14, keeping what the interface already did except for its durations, moved to the scale of `VIEW-30`.
+How the local player drags a card from the hand or from the board, and what is seen while the server answers. The behavior is in `../INTERFACE.md` (`UI-5`, `UI-6`, `UI-25`), the hand in `HAND-MOTION.md` (`VIEW-16`), and the durations and curves in `MOTION-BASE.md`. Decided with the product owner on 2026-11-14, keeping what the interface already did except for its durations, moved to the scale of `VIEW-30`.
 
 - **VIEW-32** While a card is being dragged:
   - **Grab.** The side panel of `VIEW-14` closes. If the card comes from the hand, the hand lowers until it is fully hidden below the bottom edge of the screen, in 150 ms, slowing down at the end, and follows `VIEW-16` again when the drag ends.
