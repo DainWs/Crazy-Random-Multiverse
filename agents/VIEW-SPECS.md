@@ -24,7 +24,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 
 - The attack (`VIEW-4`) is in `specs/ui/COMBAT-ATTACK.md`, and the shared durations and curves of the animations (`VIEW-30`, `VIEW-31`) in `specs/ui/MOTION-BASE.md`.
 - The hit (`VIEW-5`) is in `specs/ui/COMBAT-HIT.md`.
-- **VIEW-6** Changes in armor and health are animated: the values count down to the new ones, and a floating text over the target shows the armor and health it lost (`CON-21`).
+- The count of the values and the floating text (`VIEW-6`) are in `specs/ui/COMBAT-VALUES.md`.
 - **VIEW-7** A dead card plays a death animation before disappearing. A leader has its own.
 - **VIEW-17** Protected cards and an exposed leader have no mark of their own: what tells them apart is the red frame and the crossed circle icon they show under the pointer while attacking (`VIEW-4`, `UI-5`, `PROT-6`). The own cards that can attack now (`attackAvailable`, `CON-15`) do have a mark, while the board being shown is the turn of the local player (`CON-12`): a cyan frame, drawn over the card like those of `VIEW-32`, with a discreet pulse that does not restart when the board is drawn again, as in `VIEW-20`. While a card is selected to attack and lifted (`VIEW-4`), its cyan frame is not drawn.
 - **VIEW-18** The equipment of a combatant is part of its card (`VIEW-14`): when the card dies (`EQUIP-8`) it plays the death animation together with it and has no animation of its own. The board drawn afterwards has neither.
