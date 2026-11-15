@@ -1,0 +1,38 @@
+diff --git a/frontend/src/game/hud/GameHudView.ts b/frontend/src/game/hud/GameHudView.ts
+index a00b924..1bcda88 100644
+--- a/frontend/src/game/hud/GameHudView.ts
++++ b/frontend/src/game/hud/GameHudView.ts
+@@ -5,6 +5,7 @@ import GameHudLayout from '@/game/hud/GameHudLayout';
+ import StoreSystem from '@/core/StoreSystem';
+ import { getText } from '@/core/Texts';
+ import * as Constants from '@/core/Constants';
++import * as HudPrototype from '@/game/hud/HudPrototype';
+ 
+ type HudCallbacks = {
+     onPassTurn: () => void;
+@@ -38,6 +39,7 @@ class GameHudView {
+         this.callbacks = callbacks;
+ 
+         this.turnText = this.createText(this.layout.turnTextPosition(), '');
++        HudPrototype.decorateTurn(scene, this.turnText);
+ 
+         this.passTurnButton = this.createButton(
+             this.layout.passTurnButtonAnchor(),
+@@ -209,6 +211,9 @@ class GameHudView {
+         button.setOrigin(1, 1);
+         button.setInteractive({ useHandCursor: true });
+         button.on('pointerup', onClick);
++        if (HudPrototype.decorateButton(this.scene, button, label)) {
++            return button;
++        }
+         button.on('pointerover', () => button.setBackgroundColor(Constants.HUD_BUTTON_HOVER_BACKGROUND));
+         button.on('pointerout', () => button.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND));
+         return button;
+@@ -250,6 +255,7 @@ class GameHudView {
+         this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
+         this.confirmDialog.setScrollFactor(0);
+         this.confirmDialog.setDepth(Constants.CONFIRM_DIALOG_DEPTH);
++        HudPrototype.decorateDialog(this.scene, this.confirmDialog, panelShape, question);
+         this.applyDialogZoom();
+     }
+ 
