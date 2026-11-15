@@ -1,30 +1,33 @@
-// Reference only, not production code: every skin of docs/skins, by the name of its folder.
-import type { Skin } from './kit';
-import fantasyHud from '../fantasy/hud';
-import fantasyField from '../fantasy/battlefield';
-import parchmentHud from '../parchment/hud';
-import parchmentField from '../parchment/battlefield';
-import neonHud from '../neon/hud';
-import neonField from '../neon/battlefield';
-import sciFiHud from '../sci-fi/hud';
-import sciFiField from '../sci-fi/battlefield';
-import arcadeHud from '../arcade-blocks/hud';
-import arcadeField from '../arcade-blocks/battlefield';
-import woodHud from '../wood/hud';
-import woodField from '../wood/battlefield';
+// Reference only, not production code: the skins of each element by the name of its folder, and the one chosen for each element.
+import type { BattlefieldSkin, HudSkin } from './kit';
+import fantasy from '../huds/fantasy/hud';
+import parchment from '../huds/parchment/hud';
+import neon from '../huds/neon/hud';
+import sciFi from '../huds/sci-fi/hud';
+import arcadeBlocks from '../huds/arcade-blocks/hud';
+import wood from '../huds/wood/hud';
 
-export const SKINS: Record<string, Skin> = {
-    fantasy: { hud: fantasyHud, battlefield: fantasyField },
-    parchment: { hud: parchmentHud, battlefield: parchmentField },
-    neon: { hud: neonHud, battlefield: neonField },
-    'sci-fi': { hud: sciFiHud, battlefield: sciFiField },
-    'arcade-blocks': { hud: arcadeHud, battlefield: arcadeField },
-    wood: { hud: woodHud, battlefield: woodField }
+export const HUDS: Record<string, HudSkin> = {
+    fantasy,
+    parchment,
+    neon,
+    'sci-fi': sciFi,
+    'arcade-blocks': arcadeBlocks,
+    wood
 };
 
-/** The skin chosen for one element with `window.__hudSkin` or `window.__battlefieldSkin`. */
-export function chosen(element: 'hud' | 'battlefield'): Skin | undefined {
-    const w = window as unknown as { __hudSkin?: string; __battlefieldSkin?: string };
-    const name = element === 'hud' ? w.__hudSkin : w.__battlefieldSkin;
-    return name ? SKINS[name] : undefined;
+export const BATTLEFIELDS: Record<string, BattlefieldSkin> = {};
+
+type Choices = { __hudSkin?: string; __battlefieldSkin?: string };
+
+/** The HUD skin chosen with `window.__hudSkin`; none keeps the HUD of the game. */
+export function chosenHud(): HudSkin | undefined {
+    const name = (window as unknown as Choices).__hudSkin;
+    return name ? HUDS[name] : undefined;
+}
+
+/** The battlefield skin chosen with `window.__battlefieldSkin`; none keeps the table of the game. */
+export function chosenBattlefield(): BattlefieldSkin | undefined {
+    const name = (window as unknown as Choices).__battlefieldSkin;
+    return name ? BATTLEFIELDS[name] : undefined;
 }

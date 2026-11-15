@@ -3,12 +3,12 @@ import Phaser from 'phaser';
 import { getText } from '@/core/Texts';
 import StoreSystem from '@/core/StoreSystem';
 import type { HudSkin, Icon, Kind, Rect } from './kit';
-import { chosen } from './registry';
+import { chosenHud } from './registry';
 
 const HOVER_MS = 150;
 
 function skin(): HudSkin | undefined {
-    return chosen('hud')?.hud;
+    return chosenHud();
 }
 
 function kindOf(label: string): Kind {

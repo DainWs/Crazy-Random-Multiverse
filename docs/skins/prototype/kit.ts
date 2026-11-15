@@ -7,6 +7,7 @@ export type Icon = 'skip' | 'flag' | null;
 export type PanelMode = 'dialog' | 'turn';
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Point { x: number; y: number }
+export type Segment = [number, number, number, number];
 export interface Padding { left: number; right: number; top: number; bottom: number }
 
 /** What a HUD skin draws for one button on each frame. `p` is the progress of the hover, from 0 to 1. */
@@ -31,28 +32,48 @@ export interface HudSkin {
     turnIcon?: boolean;
 }
 
-/** The board is the square from (-h, -h), the far left corner, to (h, h), the near right one, in board units. */
+/** A random spot of `spots`, with its own repeatable random numbers `r(k)` from 0 to 1. */
+export interface Spot { x: number; y: number; i: number; r: (k: number) => number }
+
+/** The board is the square from (-h, -h), the far left corner, to (h, h), the near right one, in board units.
+ * `z` is a height over the ground, in board units. Everything outside the board is the surroundings. */
 export interface FieldCtx {
     g: Graphics;
     h: number;
-    /** The point of the board on the screen, in perspective. */
-    at: (x: number, y: number) => Point;
+    /** The part of the ground seen around the board, in board units. */
+    world: { left: number; right: number; far: number; near: number };
+    /** The point of the board on the screen, in perspective, `z` units over the ground. */
+    at: (x: number, y: number, z?: number) => Point;
     /** A quadrilateral of the board, from its far left corner to its near right one. */
     quad: (x0: number, y0: number, x1: number, y1: number, color: number, alpha?: number) => void;
     poly: (points: Point[], color: number, alpha?: number) => void;
     /** Lines of the board drawn as one path, so their transparency does not pile up (VIEW-26). */
     lines: (segments: [number, number, number, number][], width: number, color: number, alpha?: number) => void;
-    ring: (cx: number, cy: number, r: number, width: number, color: number, alpha?: number) => void;
-    disc: (cx: number, cy: number, r: number, color: number, alpha?: number) => void;
+    /** A line through points of the board. */
+    path: (points: [number, number][], width: number, color: number, alpha?: number, closed?: boolean) => void;
+    ring: (cx: number, cy: number, r: number, width: number, color: number, alpha?: number, z?: number) => void;
+    disc: (cx: number, cy: number, r: number, color: number, alpha?: number, z?: number) => void;
+    /** A disc that fades from `alpha` at its middle to nothing at radius `r`. */
+    glow: (cx: number, cy: number, r: number, color: number, alpha: number, steps?: number) => void;
+    /** An irregular round shape, the same for the same `seed`; `wobble` is how far its edge strays, as a share of `r`. */
+    blob: (cx: number, cy: number, r: number, seed: number, color: number, alpha?: number, wobble?: number) => void;
+    /** Bands from `from` to `to` along y (far to near) or x (left to right). */
+    gradient: (x0: number, y0: number, x1: number, y1: number, from: number, to: number, axis: 'x' | 'y', steps?: number, alpha?: number) => void;
+    /** The whole ground seen around the board. */
+    ground: (color: number, alpha?: number) => void;
     /** A band that hangs from an edge of the board towards the bottom of the screen, `t` units tall. */
     side: (edge: 'near' | 'left' | 'right', t: number, color: number, outline?: [number, number]) => void;
+    /** A box standing on the ground, with its top, its near face and the side face that looks at the middle. */
+    box: (x0: number, y0: number, x1: number, y1: number, z: number, top: number, front: number, side: number, outline?: [number, number]) => void;
+    /** A column standing on the ground. */
+    pillar: (cx: number, cy: number, r: number, z: number, body: number, top: number, outline?: [number, number]) => void;
+    /** `n` random spots in the rectangle, from far to near, left out those within `margin` of the board when `margin` is given. */
+    spots: (seed: number, n: number, x0: number, y0: number, x1: number, y1: number, margin?: number) => Spot[];
     /** A repeatable random number from 0 to 1 for the index `i`. */
     rnd: (i: number) => number;
 }
 
 export type BattlefieldSkin = (c: FieldCtx) => void;
-
-export interface Skin { hud: HudSkin; battlefield: BattlefieldSkin }
 
 // ---------- colors ----------
 
