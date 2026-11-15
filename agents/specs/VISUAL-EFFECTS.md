@@ -27,10 +27,15 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 ## Interface skins
 
 - **FX-10** **[Post-MVP]** A skin changes the look of one element of the interface, without changing its layout or behavior. There is no skin of the whole interface: each element has skins of its own. The elements with skins are two:
-  - The HUD (`UI-3`, `VIEW-28`): the turn panel, the buttons and the confirmation dialog, with their colors, fonts, frames and the reaction of the buttons under the pointer.
+  - The HUD (`UI-3`, `VIEW-28`): the turn panel, the buttons and the confirmation dialog, with their colors, fonts, frames and the reaction of the buttons under the pointer. Also the label of a spectator (`VIEW-28`), the turn, round and elimination notices (`VIEW-15`, `VIEW-11`), the result (`VIEW-23`), the message of a rejected action (`UI-6`), the side panel of a card (`VIEW-14`), the loading screen (`VIEW-29`) and the notices of the session and the connection (`UI-9`, `UI-10`, `UI-24`).
   - The battlefield: the surface under the zones, the slots and the cards, and what is seen around it. It can be any surface, such as a table, a floor or a map, and it does not change the zones, the slots or the cards.
 
   **[OPEN]** Whether the cards, the icons of the statistics and the mark of the slots (`CON-30`) become elements with skins of their own.
+- **FX-17** **[Post-MVP]** A skin of the HUD defines a set of base pieces, and every part of the HUD of `FX-10` is drawn with them, so a part added later takes the look of every skin without changing them:
+  - Two panels: the one of the HUD, and the one of the notices and the result.
+  - Three buttons, each one with its look under the pointer: the primary action, the destructive action and the neutral one.
+  - The four levels of text of the interface: title, body, label and numbers (Phase 11.5 of `ROADMAP.md`).
+  - The accent colors: the turn of the local player, positive, negative and disabled.
 - **FX-11** **[Post-MVP]** Each element has its own catalog of skins, each one with a name. A skin replaces the look of its element as a whole. What it does not define of its element falls back to the default look of that element, so a skin can change a single thing.
 - **FX-12** **[Post-MVP]** The player chooses one skin for each element in the settings screen, each one on its own: any skin of the HUD goes with any skin of the battlefield. An element without a skin chosen keeps its default look. The choices are a preference of that player only, the other players do not see them, and they are not part of the game state or of the contract with the backend.
 - **FX-13** **[Post-MVP]** The effects of this file follow the settings of `UI-27`: being non-essential, they do not happen with low quality (`UI-28`) or with reduced motion (`UI-29`). Without them the game must be fully readable: no information is carried only by an effect of this file.

@@ -161,5 +161,5 @@ Not tied to a phase.
 - Cursor animations
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat, and a click refused while attacking (`VIEW-9`), with more variants for rarer cards once `VIEW-22` is resolved (`VIEW-21`)
 - Advanced trolling cards, green/red indicators, center-table behavior
-- Skins of the HUD and of the battlefield, each one chosen on its own by each player, and turning the effects off by group (`FX-10` to `FX-15`)
+- Skins of the HUD and of the battlefield, each one chosen on its own by each player, and turning the effects off by group (`FX-10` to `FX-17`). The HUD skins are built from base pieces (`FX-17`). Their last parts, after the turn panel, the buttons and the dialog: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session, which are Vue panels
 - Settings screen, with the graphics quality and reduced motion options (`UI-27` to `UI-29`), audio settings, a color-blind palette chosen in the settings, responsive and touch layouts. The accessibility of the MVP is Phase 11.1
