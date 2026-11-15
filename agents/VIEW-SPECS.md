@@ -36,5 +36,5 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, a color-blind palette chosen in a settings screen (`UI-13`), the graphics quality and reduced motion options (`UI-27`), and responsive and touch layouts.
 - The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
-- **VIEW-23** The result (`WIN-4`) covers the board with a veil, and its texts, victory or defeat, the winner and the countdown, sit on a panel, so the slots of the board do not show through them.
+- The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
