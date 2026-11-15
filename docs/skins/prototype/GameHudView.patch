@@ -1,12 +1,12 @@
 diff --git a/frontend/src/game/hud/GameHudView.ts b/frontend/src/game/hud/GameHudView.ts
-index a00b924..1bcda88 100644
+index a00b924..6dd48ef 100644
 --- a/frontend/src/game/hud/GameHudView.ts
 +++ b/frontend/src/game/hud/GameHudView.ts
 @@ -5,6 +5,7 @@ import GameHudLayout from '@/game/hud/GameHudLayout';
  import StoreSystem from '@/core/StoreSystem';
  import { getText } from '@/core/Texts';
  import * as Constants from '@/core/Constants';
-+import * as HudPrototype from '@/game/hud/HudPrototype';
++import * as HudSkin from '@/skins/prototype/hud';
  
  type HudCallbacks = {
      onPassTurn: () => void;
@@ -14,7 +14,7 @@ index a00b924..1bcda88 100644
          this.callbacks = callbacks;
  
          this.turnText = this.createText(this.layout.turnTextPosition(), '');
-+        HudPrototype.decorateTurn(scene, this.turnText);
++        HudSkin.decorateTurn(scene, this.turnText);
  
          this.passTurnButton = this.createButton(
              this.layout.passTurnButtonAnchor(),
@@ -22,7 +22,7 @@ index a00b924..1bcda88 100644
          button.setOrigin(1, 1);
          button.setInteractive({ useHandCursor: true });
          button.on('pointerup', onClick);
-+        if (HudPrototype.decorateButton(this.scene, button, label)) {
++        if (HudSkin.decorateButton(this.scene, button, label)) {
 +            return button;
 +        }
          button.on('pointerover', () => button.setBackgroundColor(Constants.HUD_BUTTON_HOVER_BACKGROUND));
@@ -32,7 +32,7 @@ index a00b924..1bcda88 100644
          this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
          this.confirmDialog.setScrollFactor(0);
          this.confirmDialog.setDepth(Constants.CONFIRM_DIALOG_DEPTH);
-+        HudPrototype.decorateDialog(this.scene, this.confirmDialog, panelShape, question);
++        HudSkin.decorateDialog(this.scene, this.confirmDialog, panelShape, question);
          this.applyDialogZoom();
      }
  

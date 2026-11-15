@@ -1,0 +1,22 @@
+diff --git a/frontend/src/game/battlefield/BattlefieldView.ts b/frontend/src/game/battlefield/BattlefieldView.ts
+index b09c142..e08aba8 100644
+--- a/frontend/src/game/battlefield/BattlefieldView.ts
++++ b/frontend/src/game/battlefield/BattlefieldView.ts
+@@ -2,6 +2,7 @@ import Phaser from 'phaser';
+ import Battlefield from '@/domain/Battlefield';
+ import BattlefieldViewStrategy from '@/game/battlefield/BattlefieldViewStrategy';
+ import { dispatchBattlefieldViewStrategy } from '@/game/battlefield/BattlefieldViewStrategyDispatcher';
++import * as BattlefieldSkin from '@/skins/prototype/battlefield';
+ 
+ class BattlefieldView extends Phaser.GameObjects.Graphics {
+     private battlefield: Battlefield;
+@@ -17,6 +18,9 @@ class BattlefieldView extends Phaser.GameObjects.Graphics {
+     }
+ 
+     private render() {
++        if (BattlefieldSkin.render(this, this.battlefield)) {
++            return;
++        }
+         this.battlefieldViewStrategy.render(this, this.battlefield);
+     }
+ 

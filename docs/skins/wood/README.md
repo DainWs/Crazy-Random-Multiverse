@@ -1,8 +1,12 @@
 # Wood
 
-Wooden signs with grain and nails, a warm glow under the pointer, and the turn hanging from two ropes. Prototype name: `wood` (`madera` in the recordings).
+**HUD:** Wooden signs with grain and nails, a warm glow under the pointer, and the turn hanging from two ropes. **Battlefield:** A deck of staggered planks with grain and nails, inside a frame of beams.
+
+The code is in `hud.ts` and `battlefield.ts`. Name in `docs/skins/prototype/registry.ts`: `wood`. The HUD was recorded as `madera`.
 
 ![Overview](overview.jpg)
+
+# HUD
 
 ## Text
 
@@ -37,3 +41,14 @@ Wooden signs with grain and nails, a warm glow under the pointer, and the turn h
 
 - The board of the turn panel at 520 by 200 px, without ropes, split in four planks by three lines of 2 px of `#3b2410` at 80%.
 - Question in `#f6e3bd`. "Sí" uses the destructive button, "No" the neutral one.
+
+# Battlefield
+
+![Battlefield in detail](battlefield-detail.jpg)
+
+- **Bands.** 60 units under the left and right edges in `#3f230f`, and under the near edge in `#4a2a12`, all with an outline of 3 units of `#2a170a`.
+- **Seams.** The whole board in `#3b2410`.
+- **Planks.** 14 rows across the board, from the far edge to the near one. Each row is split into planks from 0.35 `h` to 0.85 `h` long, at random and always the same; the first one of each row is that length times a random factor from 0.3 to 1.3, so the joints of the rows do not line up. The last one ends at the edge. Each plank is 0.006 `h` smaller on every edge, so the seams show, and takes one of `#7a4a26`, `#6e4220`, `#845230` and `#734624`.
+- **Grain.** Two lines along each plank, at a third and two thirds of its width, 1.5 units of `#5a3418` at 35%.
+- **Nails.** At each end of a plank, at 30% of the width of the row from the end, two squares of 0.012 `h` of `#c9a66b`, at 30% and 70% of the width of the row.
+- **Frame.** A beam of 0.05 `h` of `#4a2a12` along the four edges, with lines of 3 units of `#2a170a` on its inner and outer edge.

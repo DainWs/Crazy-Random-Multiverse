@@ -1,8 +1,12 @@
 # Arcade blocks
 
-Arcade blocks with depth and a thick black outline, whose top face rises under the pointer, with heavy capitals. Prototype name: `arcade-blocks` (`bloque3d` in the recordings).
+**HUD:** Arcade blocks with depth and a thick black outline, whose top face rises under the pointer, with heavy capitals. **Battlefield:** A floating platform of grass blocks in a checkerboard, over layers of dirt.
+
+The code is in `hud.ts` and `battlefield.ts`. Name in `docs/skins/prototype/registry.ts`: `arcade-blocks`. The HUD was recorded as `bloque3d`.
 
 ![Overview](overview.jpg)
+
+# HUD
 
 ## Text
 
@@ -40,3 +44,11 @@ Arcade blocks with depth and a thick black outline, whose top face rises under t
 
 - The block of the turn panel in `#2f3542`, at 520 by 200 px.
 - Question in `#dfe4ea`, in capitals. "Sí" uses the destructive button, "No" the neutral one.
+
+# Battlefield
+
+![Battlefield in detail](battlefield-detail.jpg)
+
+- **Bands.** The dirt under the platform: 90 units under the left and right edges in `#8b4513`, and under the near edge in `#a0522d`, all with an outline of 5 units of `#111111`. Two layers of 6 units of `#7a3e1d` run along the near band, 30 and 60 units below the edge.
+- **Grass.** A checkerboard of 10 by 10 blocks, alternately `#2ed573` and `#7bed9f`, the far left one `#2ed573`.
+- **Lines.** 3 units of `#111111` between the blocks, and 6 units on the edge of the board.

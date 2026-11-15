@@ -1,8 +1,12 @@
 # Parchment
 
-Notes of aged paper with a ribbon, that rise from the table under the pointer. Prototype name: `parchment` (`pergamino` in the recordings).
+**HUD:** Notes of aged paper with a ribbon, that rise from the table under the pointer. **Battlefield:** A campaign map spread on the ground, with a compass rose, mountains and a dashed route.
+
+The code is in `hud.ts` and `battlefield.ts`. Name in `docs/skins/prototype/registry.ts`: `parchment`. The HUD was recorded as `pergamino`.
 
 ![Overview](overview.jpg)
+
+# HUD
 
 ## Text
 
@@ -35,3 +39,15 @@ Notes of aged paper with a ribbon, that rise from the table under the pointer. P
 
 - The paper of the turn panel at 520 by 200 px, with a circle of 6 px of radius of `#6b4a2b` on each corner, like pins.
 - Question in `#3b2a1a`. "Sí" uses the destructive button, "No" the neutral one.
+
+# Battlefield
+
+![Battlefield in detail](battlefield-detail.jpg)
+
+- **Bands.** The map rolled at its edges: 12 units under the left and right edges in `#cbb684`, and 28 units under the near edge in `#d8c393`, all with an outline of 2 units of `#6b4a2b`.
+- **Paper.** The whole board in `#e4d3a6`, aged along its edges: a border 0.15 `h` wide inside the edge, of `#b89a62` at 12%, made of five frames of 0.03 `h` side by side, darker on the corners where the sides of each frame overlap.
+- **Grid.** Lines every 0.25 `h` in both directions, 2 units of `#6b4a2b` at 22%.
+- **Mountains.** Up to 14 triangles of `#6b4a2b` at 35%, 0.07 `h` wide and 0.056 `h` tall, at random places within 0.85 `h` of the middle, always the same; those within 0.35 `h` of the middle are left out.
+- **Route.** A dashed line of 4 units of `#8b1a12` at 50%, from `(-0.8 h, 0.6 h)` to `(0.7 h, -0.7 h)`, waving 0.15 `h` to each side, in 20 dashes as long as the gaps between them.
+- **Compass rose.** A ring of radius 0.2 `h`, 3 units of `#6b4a2b` at 50%, and eight points from the middle: the four of the cardinal directions 0.26 `h` long, the other four 0.14 `h`, all 0.08 `h` wide at the middle. Each point has a dark half of `#6b4a2b` and a light half of `#a07c4a`, both at 55%.
+- **Outline.** 3 units of `#6b4a2b` on the edge of the board.

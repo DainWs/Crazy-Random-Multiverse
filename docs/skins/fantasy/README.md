@@ -1,8 +1,12 @@
 # Fantasy
 
-Dark plates with cut corners and a double gold border that lights up under the pointer, with serif type. Prototype name: `fantasy` (`fantasia` in the recordings).
+**HUD:** Dark plates with cut corners and a double gold border that lights up under the pointer, with serif type. **Battlefield:** A floor of stone slabs with a gold inlay and a rune circle in the middle.
+
+The code is in `hud.ts` and `battlefield.ts`. Name in `docs/skins/prototype/registry.ts`: `fantasy`. The HUD was recorded as `fantasia`.
 
 ![Overview](overview.jpg)
+
+# HUD
 
 ## Text
 
@@ -35,3 +39,14 @@ Dark plates with cut corners and a double gold border that lights up under the p
 
 - The panel of the turn, at 520 by 200 px.
 - Question in `#d9d2c0`. "Sí" uses the destructive button, "No" the neutral one.
+
+# Battlefield
+
+![Battlefield in detail](battlefield-detail.jpg)
+
+- **Bands.** 70 units under the left and right edges in `#1c1e25`, and under the near edge in `#23262f`, all with an outline of 2 units of `#0d0e12`.
+- **Mortar.** The whole board in `#15171c`.
+- **Slabs.** A grid of 8 by 8 slabs, each one 4% of its side smaller on every edge, so the mortar shows between them. Each slab takes one of `#353a46`, `#30343f`, `#3a3f4c` and `#2d313b`, chosen at random and always the same for the same slab.
+- **Gold inlay.** A square at 0.94 `h` from the middle, 6 units of `#d4af37` at 75%, and another at 0.9 `h`, 2 units at 50%. A gold diamond at 90%, 0.03 `h` from its center to each tip, at each corner, centered at 0.92 `h`.
+- **Rune circle.** Centered on the middle: a ring of radius 0.32 `h`, 5 units of `#d4af37` at 45%, and one of 0.27 `h`, 2 units at 35%. Between them, 16 radial ticks of 3 units at 40%, alternately from 0.27 and from 0.29 `h` to 0.32 `h`.
+- **Outline.** 3 units of `#d4af37` at 90% on the edge of the board.

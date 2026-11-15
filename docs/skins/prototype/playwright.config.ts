@@ -1,18 +1,16 @@
+// Reference only, not production code: the Playwright configuration of capture.spec.ts, from frontend/prototypes/.
 import { defineConfig } from '@playwright/test';
 import base from '../playwright.config';
-
-const VIEWPORT = { width: 1920, height: 1080 };
 
 export default defineConfig({
     ...base,
     testDir: '.',
-    testMatch: '*.record.spec.ts',
+    testMatch: 'capture.spec.ts',
     outputDir: './results',
     timeout: 120000,
     use: {
         ...base.use,
-        reducedMotion: 'no-preference',
-        video: { mode: 'on', size: VIEWPORT }
+        reducedMotion: 'no-preference'
     },
     projects: [
         {
