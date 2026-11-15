@@ -49,3 +49,15 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** the first time the pointer enters the hand from outside the window it opens, but when it goes out and comes back slowly, over the same card, it stays closed. A quick entry works because it lands on another card (`VIEW-16`).
 - **Likely cause:** leaving the game sends no `pointerout`, and `InputPlugin` keeps the card in its list of hovered objects, so it sends no `pointerover` when the pointer comes back to it. Making the card interactive again on `gameout` does not help: Phaser sends the `pointerover` at once, while the listeners are off.
 - **Where to look:** `HandView.restCards` remembers the card the pointer left over and `HandView.enableCardListeners`, called on `gameover`, makes it interactive again.
+
+## An animation of a zone breaks after an event
+
+- **Symptom:** an animation started on the slots or a text of a zone stops halfway or starts again, and the console shows `Cannot read properties of undefined (reading 'scale')`. Seen on 2026-11-14 with a prototype of the elimination (`VIEW-11`).
+- **Likely cause:** `ZoneView` and its `ZoneSlotView` are built again every time the board is drawn, and the board is drawn again right after `PLAYER_DIE`. A tween of the old zone keeps running on destroyed objects, and an animation started when the zone is drawn starts again with every draw.
+- **Where to look:** start the animation when its event is applied, and keep its start time outside the view, so a zone drawn again goes on from the same moment. A listener on `UPDATE` of a slot is removed in its `preDestroy`, or it reads `this.scene` of a destroyed slot: the pending task of the gold pulse of `ROADMAP.md`.
+
+## Fades look instant in a recorded video
+
+- **Symptom:** in a video recorded by Playwright, fades of 250 to 400 ms look like a jump, and the animations look faster than in a real browser.
+- **Likely cause:** the browser tests render with software WebGL (SwiftShader), at about 19 frames per second on the board of a game of three, so a short fade gets four to eight frames. They also run with `reducedMotion: 'reduce'`, which skips the pulses (`VIEW-17`, `VIEW-20`).
+- **Where to look:** to judge an animation, record with the GPU, passing `--use-angle=d3d11`, `--ignore-gpu-blocklist` and `--enable-gpu` to Chromium, with `reducedMotion: 'no-preference'`. That gave 60 frames per second on 2026-11-14.
