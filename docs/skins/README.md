@@ -17,6 +17,8 @@ Each skin has its own folder inside the folder of its element, named after the s
 
 Chosen on 2026-11-15 from ten styles recorded as prototypes.
 
+They cover the turn panel, the buttons and the dialog. Decided on 2026-11-15 and still to do, in this order: rebuild them from the base pieces of `FX-17` (two panels, three buttons, four levels of text and the accent colors); and last, add the other parts of the HUD of `FX-10`: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session.
+
 | Folder | Look |
 |---|---|
 | `huds/fantasy/` | Dark plates with cut corners and a double gold border that lights up, serif type |
