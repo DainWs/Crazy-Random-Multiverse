@@ -1,4 +1,4 @@
-// Command bridge: a battlefield of the sci-fi style. Reference only, not production code.
+// Command bridge battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type Segment } from '../../prototype/kit';
 import { metalPlates, metalDeck } from '../../prototype/shapes';
 

@@ -1,4 +1,4 @@
-// Hexagons: a battlefield of the neon style. Reference only, not production code.
+// Hexagons battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type Point, type Segment } from '../../prototype/kit';
 import { neonLines, neonEdge } from '../../prototype/shapes';
 

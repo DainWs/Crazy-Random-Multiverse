@@ -1,6 +1,6 @@
 # Circuit board
 
-A black board with glowing cyan and orange traces, solder pads and two chips, over a dark floor with faint traces. A battlefield of the neon style, chosen on 2026-11-15 from the candidates (`Placa de circuitos`).
+A black board with glowing cyan and orange traces, solder pads and two chips, over a dark floor with faint traces. Chosen on 2026-11-15 from the candidates (`Placa de circuitos`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

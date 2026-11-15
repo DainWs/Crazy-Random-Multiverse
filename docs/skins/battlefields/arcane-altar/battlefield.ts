@@ -1,4 +1,4 @@
-// Arcane altar in the void: a battlefield of the fantasy style. Reference only, not production code.
+// Arcane altar in the void battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type Segment } from '../../prototype/kit';
 
 const battlefield: BattlefieldSkin = (c) => {

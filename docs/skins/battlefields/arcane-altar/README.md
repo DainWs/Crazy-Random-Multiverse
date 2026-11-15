@@ -1,6 +1,6 @@
 # Arcane altar in the void
 
-An obsidian floor with a large violet magic circle, a seven-pointed star and sigils at the corners, floating in a starry void with rocks. A battlefield of the fantasy style, chosen on 2026-11-15 from the candidates (`Altar arcano en el vacío`).
+An obsidian floor with a large violet magic circle, a seven-pointed star and sigils at the corners, floating in a starry void with rocks. Chosen on 2026-11-15 from the candidates (`Altar arcano en el vacío`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

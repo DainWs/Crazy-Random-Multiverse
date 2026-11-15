@@ -1,6 +1,6 @@
 # Dance floor
 
-A floor of glowing tiles of six colors, two thirds of them lit, under colored light beams in the dark. A battlefield of the neon style, chosen on 2026-11-15 from the candidates (`Pista de baile`).
+A floor of glowing tiles of six colors, two thirds of them lit, under colored light beams in the dark. Chosen on 2026-11-15 from the candidates (`Pista de baile`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

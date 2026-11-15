@@ -1,17 +1,17 @@
 # Skins
 
-Proposals of skins chosen by the product owner. They are reference material to recreate each style later, not specification: nothing here is a rule. The rules are `FX-10` to `FX-15` in `agents/specs/VISUAL-EFFECTS.md`, and every skin is **[Post-MVP]**.
+Proposals of skins chosen by the product owner. They are reference material to recreate each skin later, not specification: nothing here is a rule. The rules are `FX-10` to `FX-15` in `agents/specs/VISUAL-EFFECTS.md`, and every skin is **[Post-MVP]**.
 
 ## Skins by element
 
-There is no skin of the whole interface. Each element of the interface has skins of its own, and the player chooses one for each element on its own (`FX-10`, `FX-12`): the battlefield of one style goes with the HUD of any other, such as a fantasy battlefield with an arcade HUD. An element without a skin chosen keeps the look of the game.
+There is no skin of the whole interface. Each element of the interface has skins of its own, and the player chooses one for each element on its own (`FX-10`, `FX-12`): any battlefield goes with any HUD, such as the throne hall with the arcade blocks HUD. An element without a skin chosen keeps the look of the game.
 
 | Folder | Element | What a skin of it restyles |
 |---|---|---|
 | `huds/` | HUD (`UI-3`, `VIEW-28`) | The turn panel at the top left corner; the end turn button as the primary action and the surrender button as the destructive one, with their reaction under the pointer; and the confirmation dialog, with "Sí" in the destructive style and "No" in the neutral one |
 | `battlefields/` | Battlefield | The surface under the zones, the slots and the cards, and what is seen around it. It can be any surface, such as a table, a floor or a map. The zones, the slots and the cards keep their look |
 
-Each skin has its own folder inside the folder of its element, named after its style. Two skins of different elements can share a style, such as `huds/fantasy/` and a fantasy battlefield, but neither depends on the other.
+Each skin has its own folder inside the folder of its element, named after the skin. A HUD and a battlefield do not depend on each other.
 
 ### HUDs
 
@@ -39,28 +39,28 @@ A HUD folder has:
 
 ### Battlefields
 
-Chosen on 2026-11-15 from sixty candidates, ten for each of six styles: fantasy, parchment, neon, sci-fi, arcade blocks and wood. Each one includes its surroundings.
+Chosen on 2026-11-15 from sixty candidates. Each one includes its surroundings.
 
 | Folder | Look |
 |---|---|
-| `battlefields/fantasy-throne-hall/` | A marble checkerboard with a red carpet and gold borders, between rows of white columns |
-| `battlefields/fantasy-arcane-altar/` | An obsidian floor with a violet magic circle and a seven-pointed star, in a starry void with floating rocks |
-| `battlefields/fantasy-crypt/` | Cracked slabs with missing ones, cobwebs and candles, among sarcophagi and green mist |
-| `battlefields/parchment-star-chart/` | A navy star chart with gold rings, a zodiac band and constellations, on purple velvet |
-| `battlefields/neon-circuit-board/` | A black board with glowing cyan and orange traces, pads and chips |
-| `battlefields/neon-hexagons/` | Cyan neon hexagons, some filled with cyan or magenta, over faint violet hexagons |
-| `battlefields/neon-dance-floor/` | Tiles of six colors, two thirds of them lit, under colored beams of light |
-| `battlefields/sci-fi-space-hangar/` | A deck of metal plates with hazard stripes and a landing ring, held by struts in space next to a planet |
-| `battlefields/sci-fi-command-bridge/` | Dark blue panels with a holographic display, between consoles with glowing screens |
-| `battlefields/wood-tavern-table/` | A tabletop of long planks with mug stains, candles and plates, on a stone floor |
-| `battlefields/wood-river-raft/` | Eleven logs bound with ropes, on a river between green banks with trees |
-| `battlefields/wood-dojo/` | Straw mats with dark borders, between walls of paper screens |
-| `battlefields/arcade-blocks-sky-island/` | Grass blocks over dirt, floating in the sky among block clouds |
-| `battlefields/arcade-blocks-desert/` | Sand blocks among dunes, block cacti and rocks |
-| `battlefields/arcade-blocks-snow/` | Snow and ice blocks in a snowy field with block pines |
-| `battlefields/arcade-blocks-volcano/` | Basalt blocks with lava blocks, in a sea of lava |
-| `battlefields/arcade-blocks-castle/` | A courtyard of stone blocks with corner towers, in a moat |
-| `battlefields/arcade-blocks-beach/` | Sand blocks on a beach with block palms, in a blue sea |
+| `battlefields/throne-hall/` | A marble checkerboard with a red carpet and gold borders, between rows of white columns |
+| `battlefields/arcane-altar/` | An obsidian floor with a violet magic circle and a seven-pointed star, in a starry void with floating rocks |
+| `battlefields/crypt/` | Cracked slabs with missing ones, cobwebs and candles, among sarcophagi and green mist |
+| `battlefields/star-chart/` | A navy star chart with gold rings, a zodiac band and constellations, on purple velvet |
+| `battlefields/circuit-board/` | A black board with glowing cyan and orange traces, pads and chips |
+| `battlefields/hexagons/` | Cyan neon hexagons, some filled with cyan or magenta, over faint violet hexagons |
+| `battlefields/dance-floor/` | Tiles of six colors, two thirds of them lit, under colored beams of light |
+| `battlefields/space-hangar/` | A deck of metal plates with hazard stripes and a landing ring, held by struts in space next to a planet |
+| `battlefields/command-bridge/` | Dark blue panels with a holographic display, between consoles with glowing screens |
+| `battlefields/tavern-table/` | A tabletop of long planks with mug stains, candles and plates, on a stone floor |
+| `battlefields/river-raft/` | Eleven logs bound with ropes, on a river between green banks with trees |
+| `battlefields/dojo/` | Straw mats with dark borders, between walls of paper screens |
+| `battlefields/sky-island/` | Grass blocks over dirt, floating in the sky among block clouds |
+| `battlefields/desert/` | Sand blocks among dunes, block cacti and rocks |
+| `battlefields/snow/` | Snow and ice blocks in a snowy field with block pines |
+| `battlefields/volcano/` | Basalt blocks with lava blocks, in a sea of lava |
+| `battlefields/castle-moat/` | A courtyard of stone blocks with corner towers, in a moat |
+| `battlefields/beach/` | Sand blocks on a beach with block palms, in a blue sea |
 
 A battlefield folder has:
 
@@ -85,7 +85,7 @@ Reference only: it is not production code, it does not follow the guides of `age
 `prototype/` has the code shared by every skin:
 
 - `kit.ts`: the types of a skin of each element (`HudSkin`, `BattlefieldSkin`) and the helpers to draw colors, shapes on the screen, and shapes on the board and its surroundings in perspective.
-- `shapes.ts`: the shapes used by more than one battlefield: cracks, neon lines and grids, metal plates and decks, wooden planks, and the blocks of the arcade style. A shape used by a single battlefield stays in its file.
+- `shapes.ts`: the shapes used by more than one battlefield: cracks, neon lines and grids, metal plates and decks, wooden planks, and blocks with a black outline. A shape used by a single battlefield stays in its file.
 - `registry.ts`: the skins of each element by the name of their folder (`HUDS`, `BATTLEFIELDS`), and the one chosen for each element with `window.__hudSkin` and `window.__battlefieldSkin`.
 - `hud.ts`: draws the chosen HUD skin behind the texts of the HUD, follows them on every frame and plays the hover.
 - `battlefield.ts`: draws the chosen battlefield skin instead of the table, through the projection of the board.

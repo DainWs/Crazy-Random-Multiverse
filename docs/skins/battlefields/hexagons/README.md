@@ -1,6 +1,6 @@
 # Hexagons
 
-A dark floor of cyan neon hexagons, some of them filled with cyan or magenta, under a magenta glow, over a floor of faint violet hexagons. A battlefield of the neon style, chosen on 2026-11-15 from the candidates (`Hexágonos`).
+A dark floor of cyan neon hexagons, some of them filled with cyan or magenta, under a magenta glow, over a floor of faint violet hexagons. Chosen on 2026-11-15 from the candidates (`Hexágonos`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

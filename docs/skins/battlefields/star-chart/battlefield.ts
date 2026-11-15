@@ -1,4 +1,4 @@
-// Star chart: a battlefield of the parchment style. Reference only, not production code.
+// Star chart battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type FieldCtx, type Segment } from '../../prototype/kit';
 
 function shadow(c: FieldCtx) {

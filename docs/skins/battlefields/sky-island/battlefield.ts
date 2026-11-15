@@ -1,4 +1,4 @@
-// Floating island in the sky: a battlefield of the arcade-blocks style. Reference only, not production code.
+// Floating island in the sky battlefield. Reference only, not production code.
 import { type BattlefieldSkin, type FieldCtx } from '../../prototype/kit';
 import { block, blockLayers, checker } from '../../prototype/shapes';
 

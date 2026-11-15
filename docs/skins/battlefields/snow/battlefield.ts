@@ -1,4 +1,4 @@
-// Snow: a battlefield of the arcade-blocks style. Reference only, not production code.
+// Snow battlefield. Reference only, not production code.
 import { type BattlefieldSkin, type FieldCtx } from '../../prototype/kit';
 import { block, cube, blockLayers, checker } from '../../prototype/shapes';
 

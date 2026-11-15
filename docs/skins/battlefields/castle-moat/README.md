@@ -1,6 +1,6 @@
 # Castle with a moat
 
-A courtyard of stone blocks with a tower at each corner, surrounded by a moat of water with patches of grass beyond. A battlefield of the arcade-blocks style, chosen on 2026-11-15 from the candidates (`Castillo con foso`).
+A courtyard of stone blocks with a tower at each corner, surrounded by a moat of water with patches of grass beyond. Chosen on 2026-11-15 from the candidates (`Castillo con foso`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

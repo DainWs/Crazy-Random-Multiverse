@@ -1,4 +1,4 @@
-// Hangar in space: a battlefield of the sci-fi style. Reference only, not production code.
+// Hangar in space battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type FieldCtx } from '../../prototype/kit';
 import { metalPlates, metalDeck } from '../../prototype/shapes';
 

@@ -1,6 +1,6 @@
 # Command bridge
 
-A floor of dark blue panels with a holographic tactical display in the middle, between consoles with glowing screens. A battlefield of the sci-fi style, chosen on 2026-11-15 from the candidates (`Puente de mando`).
+A floor of dark blue panels with a holographic tactical display in the middle, between consoles with glowing screens. Chosen on 2026-11-15 from the candidates (`Puente de mando`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

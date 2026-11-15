@@ -1,6 +1,6 @@
 # Dojo
 
-Straw mats with dark borders laid in a classic pattern, on a floor of dark planks between walls of paper screens. A battlefield of the wood style, chosen on 2026-11-15 from the candidates (`Dojo`).
+Straw mats with dark borders laid in a classic pattern, on a floor of dark planks between walls of paper screens. Chosen on 2026-11-15 from the candidates (`Dojo`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

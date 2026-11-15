@@ -1,6 +1,6 @@
 # Hangar in space
 
-A deck of metal plates with hazard stripes and a landing ring, held by struts with red beacons in open space, next to a blue planet. A battlefield of the sci-fi style, chosen on 2026-11-15 from the candidates (`Hangar en el espacio`).
+A deck of metal plates with hazard stripes and a landing ring, held by struts with red beacons in open space, next to a blue planet. Chosen on 2026-11-15 from the candidates (`Hangar en el espacio`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

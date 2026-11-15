@@ -1,4 +1,4 @@
-// Desert: a battlefield of the arcade-blocks style. Reference only, not production code.
+// Desert battlefield. Reference only, not production code.
 import { type BattlefieldSkin } from '../../prototype/kit';
 import { cube, blockLayers, checker } from '../../prototype/shapes';
 

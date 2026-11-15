@@ -1,4 +1,4 @@
-// Tavern table: a battlefield of the wood style. Reference only, not production code.
+// Tavern table battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type FieldCtx } from '../../prototype/kit';
 import { woodPlanks, NAIL } from '../../prototype/shapes';
 

@@ -1,6 +1,6 @@
 # Throne hall
 
-A marble checkerboard with a red carpet down the middle and gold borders, between two rows of white columns, on a floor of dark tiles. A battlefield of the fantasy style, chosen on 2026-11-15 from the candidates (`Throne room hall`).
+A marble checkerboard with a red carpet down the middle and gold borders, between two rows of white columns, on a floor of dark tiles. Chosen on 2026-11-15 from the candidates (`Throne room hall`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

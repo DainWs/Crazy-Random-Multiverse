@@ -1,6 +1,6 @@
 # Star chart
 
-A navy star chart with gold rings, a zodiac band, constellations and a sky of stars, spread on purple velvet. A battlefield of the parchment style, chosen on 2026-11-15 from the candidates (`Mapa celeste`).
+A navy star chart with gold rings, a zodiac band, constellations and a sky of stars, spread on purple velvet. Chosen on 2026-11-15 from the candidates (`Mapa celeste`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

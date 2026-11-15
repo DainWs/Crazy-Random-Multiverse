@@ -1,6 +1,6 @@
 # Beach
 
-A platform of sand blocks on a strip of beach with block palms, a towel and a parasol, in a sea of blue. A battlefield of the arcade-blocks style, chosen on 2026-11-15 from the candidates (`Playa`).
+A platform of sand blocks on a strip of beach with block palms, a towel and a parasol, in a sea of blue. Chosen on 2026-11-15 from the candidates (`Playa`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

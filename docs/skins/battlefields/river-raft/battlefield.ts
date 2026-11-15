@@ -1,4 +1,4 @@
-// Raft on a river: a battlefield of the wood style. Reference only, not production code.
+// Raft on a river battlefield. Reference only, not production code.
 import { type BattlefieldSkin, type Segment } from '../../prototype/kit';
 import { woodEdges } from '../../prototype/shapes';
 

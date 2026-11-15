@@ -1,4 +1,4 @@
-// Circuit board: a battlefield of the neon style. Reference only, not production code.
+// Circuit board battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type Segment } from '../../prototype/kit';
 import { neonLines, neonPath, gridLines, neonEdge } from '../../prototype/shapes';
 

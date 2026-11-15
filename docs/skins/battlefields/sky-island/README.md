@@ -1,6 +1,6 @@
 # Floating island in the sky
 
-A platform of grass blocks over layers of dirt and stone, floating in a blue sky among block clouds, with small flowers. A battlefield of the arcade-blocks style, chosen on 2026-11-15 from the candidates (`Isla flotante en el cielo`).
+A platform of grass blocks over layers of dirt and stone, floating in a blue sky among block clouds, with small flowers. Chosen on 2026-11-15 from the candidates (`Isla flotante en el cielo`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

@@ -1,4 +1,4 @@
-// Castle with a moat: a battlefield of the arcade-blocks style. Reference only, not production code.
+// Castle with a moat battlefield. Reference only, not production code.
 import { type BattlefieldSkin, type Segment } from '../../prototype/kit';
 import { block, cube, blockLayers, checker, OUTLINE } from '../../prototype/shapes';
 

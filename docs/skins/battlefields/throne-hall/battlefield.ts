@@ -1,4 +1,4 @@
-// Throne hall: a battlefield of the fantasy style. Reference only, not production code.
+// Throne hall battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square } from '../../prototype/kit';
 import { crack } from '../../prototype/shapes';
 

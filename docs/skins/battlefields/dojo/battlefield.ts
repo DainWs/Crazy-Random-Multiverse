@@ -1,4 +1,4 @@
-// Dojo: a battlefield of the wood style. Reference only, not production code.
+// Dojo battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type Segment } from '../../prototype/kit';
 import { woodPlanks, woodEdges } from '../../prototype/shapes';
 

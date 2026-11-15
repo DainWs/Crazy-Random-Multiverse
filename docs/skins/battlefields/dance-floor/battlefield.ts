@@ -1,4 +1,4 @@
-// Dance floor: a battlefield of the neon style. Reference only, not production code.
+// Dance floor battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square } from '../../prototype/kit';
 import { neonLines, gridLines, neonEdge } from '../../prototype/shapes';
 

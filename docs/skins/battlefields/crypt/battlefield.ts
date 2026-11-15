@@ -1,4 +1,4 @@
-// Crypt: a battlefield of the fantasy style. Reference only, not production code.
+// Crypt battlefield. Reference only, not production code.
 import { type BattlefieldSkin, square, type FieldCtx, type Segment } from '../../prototype/kit';
 import { crack } from '../../prototype/shapes';
 

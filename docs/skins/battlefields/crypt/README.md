@@ -1,6 +1,6 @@
 # Crypt
 
-Cracked slabs of grey stone, some missing, with cobwebs on the corners and candles around, in a dark crypt with sarcophagi and green mist. A battlefield of the fantasy style, chosen on 2026-11-15 from the candidates (`Cripta`).
+Cracked slabs of grey stone, some missing, with cobwebs on the corners and candles around, in a dark crypt with sarcophagi and green mist. Chosen on 2026-11-15 from the candidates (`Cripta`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

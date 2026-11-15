@@ -1,6 +1,6 @@
 # Tavern table
 
-A tabletop of long planks wider than the board, with ring stains of mugs, candles and plates, on a stone floor warmed by a hearth. A battlefield of the wood style, chosen on 2026-11-15 from the candidates (`Mesa de taberna`).
+A tabletop of long planks wider than the board, with ring stains of mugs, candles and plates, on a stone floor warmed by a hearth. Chosen on 2026-11-15 from the candidates (`Mesa de taberna`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

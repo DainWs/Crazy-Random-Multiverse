@@ -1,6 +1,6 @@
 # Volcano
 
-A platform of basalt blocks with glowing lava blocks, in a sea of lava with rocks sinking in it. A battlefield of the arcade-blocks style, chosen on 2026-11-15 from the candidates (`Volcán`).
+A platform of basalt blocks with glowing lava blocks, in a sea of lava with rocks sinking in it. Chosen on 2026-11-15 from the candidates (`Volcán`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 

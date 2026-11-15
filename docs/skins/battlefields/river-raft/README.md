@@ -1,6 +1,6 @@
 # Raft on a river
 
-A raft of eleven logs bound with three ropes, floating on a blue river between green banks with trees. A battlefield of the wood style, chosen on 2026-11-15 from the candidates (`Balsa en el río`).
+A raft of eleven logs bound with three ropes, floating on a blue river between green banks with trees. Chosen on 2026-11-15 from the candidates (`Balsa en el río`).
 
 The code is in `battlefield.ts`, which holds every exact value; this file gives the colors and the main sizes. Sizes are in board units and `h` is half the side of the board (`../../README.md`).
 
