@@ -17,7 +17,7 @@ Each skin has its own folder inside the folder of its element, named after the s
 
 Chosen on 2026-11-15 from ten styles recorded as prototypes.
 
-They cover the turn panel, the buttons and the dialog. Decided on 2026-11-15 and still to do, in this order: rebuild them from the base pieces of `FX-17` (two panels, three buttons, four levels of text and the accent colors); and last, add the other parts of the HUD of `FX-10`: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session.
+Each one is built from the base pieces of `FX-17`: four levels of text, the accent colors, two panels (the HUD panel and the notice panel) and three buttons (primary, destructive and neutral). Today they cover the turn panel, the buttons and the dialog. Still to do, decided on 2026-11-15 as the last part of the skins: draw with the same pieces the other parts of the HUD of `FX-10`: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session.
 
 | Folder | Look |
 |---|---|
@@ -30,8 +30,8 @@ They cover the turn panel, the buttons and the dialog. Decided on 2026-11-15 and
 
 A HUD folder has:
 
-- `README.md`: its look in exact values.
-- `hud.ts`: the code that draws it.
+- `README.md`: its look in exact values, piece by piece.
+- `hud.ts`: its base pieces.
 - Captures with the battlefield of the game, the window at 1920 by 1080 and a game of two players:
   - `overview.jpg`: the whole screen, at rest.
   - `turn.png`: the turn panel.
@@ -86,10 +86,10 @@ Reference only: it is not production code, it does not follow the guides of `age
 
 `prototype/` has the code shared by every skin:
 
-- `kit.ts`: the types of a skin of each element (`HudSkin`, `BattlefieldSkin`) and the helpers to draw colors, shapes on the screen, and shapes on the board and its surroundings in perspective.
+- `kit.ts`: the types of a skin of each element (`HudSkin` with its base pieces, `BattlefieldSkin`) and the helpers to draw colors, shapes on the screen, and shapes on the board and its surroundings in perspective.
 - `shapes.ts`: the shapes used by more than one battlefield: cracks, neon lines and grids, metal plates and decks, wooden planks, and blocks with a black outline. A shape used by a single battlefield stays in its file.
 - `registry.ts`: the skins of each element by the name of their folder (`HUDS`, `BATTLEFIELDS`), and the one chosen for each element with `window.__hudSkin` and `window.__battlefieldSkin`.
-- `hud.ts`: draws the chosen HUD skin behind the texts of the HUD, follows them on every frame and plays the hover.
+- `hud.ts`: draws each part of the HUD with the base piece of the chosen skin that belongs to it, behind its text; follows the texts on every frame and plays the hover.
 - `battlefield.ts`: draws the chosen battlefield skin instead of the table, through the projection of the board.
 - `GameHudView.patch` and `BattlefieldView.patch`: the hooks in `frontend/src/game/hud/GameHudView.ts` and `frontend/src/game/battlefield/BattlefieldView.ts`. Without a skin chosen, the element draws as in the game.
 - `capture.spec.ts` and `playwright.config.ts`: the Playwright test that takes the captures of every skin folder, each element with the other one as the game draws it.

@@ -2,34 +2,55 @@
 import Phaser from 'phaser';
 
 export type Graphics = Phaser.GameObjects.Graphics;
-export type Kind = 'primary' | 'danger' | 'neutral' | 'label';
-export type Icon = 'skip' | 'flag' | null;
-export type PanelMode = 'dialog' | 'turn';
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Point { x: number; y: number }
 export type Segment = [number, number, number, number];
 export interface Padding { left: number; right: number; top: number; bottom: number }
 
-/** What a HUD skin draws for one button on each frame. `p` is the progress of the hover, from 0 to 1. */
-export interface ButtonCtx { g: Graphics; r: Rect; base: Rect; p: number; kind: Kind; s: number; icon: Icon }
+// ---------- HUD: base pieces (FX-17) ----------
 
-export interface HudSkin {
+/** One of the four levels of text of the interface. */
+export interface TextLevel {
     font: string;
     size: number;
     bold?: boolean;
     upper?: boolean;
+    /** Pixels between letters. */
     spacing?: number;
-    padding: Padding;
-    iconPadding?: number;
+    /** Color and width of an outline around the letters. */
     stroke?: [string, number];
-    shadow?: (kind: Kind) => [number, number, string, number];
-    /** Pixels the button rises under the pointer. */
+}
+
+/** `highlight` marks a panel that calls for attention, such as the turn panel on the turn of the local player. */
+export type PanelTone = 'normal' | 'highlight';
+
+export interface PanelPiece {
+    /** Color of its text. */
+    text: string;
+    /** Color of a glow around the letters of its text. */
+    glow?: string;
+    padding: Padding;
+    draw: (g: Graphics, r: Rect, s: number, tone: PanelTone) => void;
+}
+
+/** What a button draws on each frame: `r` where it is, `base` where it rests, `p` the progress of the hover from 0 to 1. */
+export interface ButtonCtx { g: Graphics; r: Rect; base: Rect; p: number; s: number }
+
+export interface ButtonPiece {
+    text: (p: number) => string;
+    glow?: string;
+    padding: Padding;
+    /** Pixels it rises under the pointer. */
     lift?: number;
-    textColor: (kind: Kind, p: number) => string;
-    turnColor: (own: boolean) => string;
-    drawButton: (c: ButtonCtx) => void;
-    drawPanel: (g: Graphics, r: Rect, s: number, mode: PanelMode, own: boolean) => void;
-    turnIcon?: boolean;
+    draw: (c: ButtonCtx) => void;
+}
+
+export interface HudSkin {
+    text: { title: TextLevel; body: TextLevel; label: TextLevel; numbers: TextLevel };
+    accents: { ownTurn: string; positive: string; negative: string; disabled: string };
+    /** `hud` for the panels of the HUD, `notice` for the notices, the result and the dialogs. */
+    panels: { hud: PanelPiece; notice: PanelPiece };
+    buttons: { primary: ButtonPiece; destructive: ButtonPiece; neutral: ButtonPiece };
 }
 
 /** A random spot of `spots`, with its own repeatable random numbers `r(k)` from 0 to 1. */
@@ -85,7 +106,6 @@ export function lerp(a: number, b: number, t: number): number {
     return mix(16) | mix(8) | mix(0);
 }
 export const lerpHex = (a: string, b: string, t: number) => hex(lerp(num(a), num(b), t));
-export const byKind = <T,>(primary: T, danger: T, neutral: T, label: T) => (k: Kind) => ({ primary, danger, neutral, label })[k];
 
 // ---------- board shapes ----------
 
