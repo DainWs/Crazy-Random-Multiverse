@@ -1,6 +1,6 @@
 # Visual effects
 
-Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
+Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposals of skins, as reference material and not as rules, are in `docs/skins/`. Everything here is **[Post-MVP]**: the MVP only has the effects of `VIEW-SPECS.md`, such as the attack (`VIEW-4`), the combat feedback (`VIEW-5` to `VIEW-7`), the veil of an eliminated zone (`VIEW-11`), the placement of the leaders (`VIEW-12`), the turn notices (`VIEW-15`) and the glow of the leader (`VIEW-20`). The effects are drawn by the frontend from confirmed events and never change the game state (`ARCH-2`).
 
 - **FX-1** **[Post-MVP]** The effects grow with the rarity of the card, in the same way as its audio variants (`VIEW-21`): the rarer the card, the more and the stronger the effects it plays.
 - **FX-2** **[Post-MVP]** An effect belongs to one of three groups. Every effect of this file is non-essential (`UI-26`):
@@ -26,9 +26,13 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 
 ## Interface skins
 
-- **FX-10** **[Post-MVP]** A skin changes the look of the interface without changing its layout or behavior: colors, fonts, frames, the table background, the icons of the statistics and the mark of the slots (`CON-30`).
-- **FX-11** **[Post-MVP]** A skin is a set of resources with a name, replaceable as a whole. The resources it does not define fall back to the default skin, so a skin can change a single thing.
-- **FX-12** **[Post-MVP]** The player chooses their skin in the settings screen. It is a preference of that player only, the other players do not see it, and it is not part of the game state or of the contract with the backend.
+- **FX-10** **[Post-MVP]** A skin changes the look of one element of the interface, without changing its layout or behavior. There is no skin of the whole interface: each element has skins of its own. The elements with skins are two:
+  - The HUD (`UI-3`, `VIEW-28`): the turn panel, the buttons and the confirmation dialog, with their colors, fonts, frames and the reaction of the buttons under the pointer.
+  - The battlefield: the surface under the zones, the slots and the cards, and what is seen around it. It can be any surface, such as a table, a floor or a map, and it does not change the zones, the slots or the cards.
+
+  **[OPEN]** Whether the cards, the icons of the statistics and the mark of the slots (`CON-30`) become elements with skins of their own.
+- **FX-11** **[Post-MVP]** Each element has its own catalog of skins, each one with a name. A skin replaces the look of its element as a whole. What it does not define of its element falls back to the default look of that element, so a skin can change a single thing.
+- **FX-12** **[Post-MVP]** The player chooses one skin for each element in the settings screen, each one on its own: any skin of the HUD goes with any skin of the battlefield. An element without a skin chosen keeps its default look. The choices are a preference of that player only, the other players do not see them, and they are not part of the game state or of the contract with the backend.
 - **FX-13** **[Post-MVP]** The effects of this file follow the settings of `UI-27`: being non-essential, they do not happen with low quality (`UI-28`) or with reduced motion (`UI-29`). Without them the game must be fully readable: no information is carried only by an effect of this file.
 - **FX-14** **[OPEN]** Whether the skins are part of the game or can be added by the players, and whether a skin may replace the audio.
 - **FX-15** **[OPEN]** Whether a skin may also change the effects of `FX-7` and `FX-4` or only the base look.
@@ -46,6 +50,11 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Everyth
 - Then the attack animation and the changes of the statistics are shown, and the heartbeat is not
 
 **Skin with missing resources** **[Post-MVP]**
-- Given a skin that only defines the table background
+- Given a skin of the battlefield that only defines its surface
 - When the player selects it
-- Then the table shows its background and everything else uses the default skin
+- Then the battlefield shows that surface and the rest of the battlefield keeps its default look, and the HUD keeps the skin chosen for it
+
+**Skins of different families** **[Post-MVP]**
+- Given a player who chose a fantasy skin for the battlefield and an arcade skin for the HUD
+- When a game starts
+- Then the battlefield is the fantasy one and the HUD the arcade one
