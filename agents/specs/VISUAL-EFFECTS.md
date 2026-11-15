@@ -54,7 +54,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 - When the player selects it
 - Then the battlefield shows that surface and the rest of the battlefield keeps its default look, and the HUD keeps the skin chosen for it
 
-**Skins of different families** **[Post-MVP]**
-- Given a player who chose a fantasy skin for the battlefield and an arcade skin for the HUD
+**A HUD and a battlefield chosen apart** **[Post-MVP]**
+- Given a player who chose a skin for the battlefield and a skin for the HUD that were made apart
 - When a game starts
-- Then the battlefield is the fantasy one and the HUD the arcade one
+- Then the battlefield shows its skin and the HUD its own, together
