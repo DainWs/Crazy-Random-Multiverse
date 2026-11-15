@@ -39,11 +39,32 @@ A HUD folder has:
 
 ### Battlefields
 
-Chosen by the product owner from sixty candidates recorded on 2026-11-15, ten for each of six styles: fantasy, parchment, neon, sci-fi, arcade blocks and wood. Until they are chosen, `battlefields/` is empty.
+Chosen on 2026-11-15 from sixty candidates, ten for each of six styles: fantasy, parchment, neon, sci-fi, arcade blocks and wood. Each one includes its surroundings.
+
+| Folder | Look |
+|---|---|
+| `battlefields/fantasy-throne-hall/` | A marble checkerboard with a red carpet and gold borders, between rows of white columns |
+| `battlefields/fantasy-arcane-altar/` | An obsidian floor with a violet magic circle and a seven-pointed star, in a starry void with floating rocks |
+| `battlefields/fantasy-crypt/` | Cracked slabs with missing ones, cobwebs and candles, among sarcophagi and green mist |
+| `battlefields/parchment-star-chart/` | A navy star chart with gold rings, a zodiac band and constellations, on purple velvet |
+| `battlefields/neon-circuit-board/` | A black board with glowing cyan and orange traces, pads and chips |
+| `battlefields/neon-hexagons/` | Cyan neon hexagons, some filled with cyan or magenta, over faint violet hexagons |
+| `battlefields/neon-dance-floor/` | Tiles of six colors, two thirds of them lit, under colored beams of light |
+| `battlefields/sci-fi-space-hangar/` | A deck of metal plates with hazard stripes and a landing ring, held by struts in space next to a planet |
+| `battlefields/sci-fi-command-bridge/` | Dark blue panels with a holographic display, between consoles with glowing screens |
+| `battlefields/wood-tavern-table/` | A tabletop of long planks with mug stains, candles and plates, on a stone floor |
+| `battlefields/wood-river-raft/` | Eleven logs bound with ropes, on a river between green banks with trees |
+| `battlefields/wood-dojo/` | Straw mats with dark borders, between walls of paper screens |
+| `battlefields/arcade-blocks-sky-island/` | Grass blocks over dirt, floating in the sky among block clouds |
+| `battlefields/arcade-blocks-desert/` | Sand blocks among dunes, block cacti and rocks |
+| `battlefields/arcade-blocks-snow/` | Snow and ice blocks in a snowy field with block pines |
+| `battlefields/arcade-blocks-volcano/` | Basalt blocks with lava blocks, in a sea of lava |
+| `battlefields/arcade-blocks-castle/` | A courtyard of stone blocks with corner towers, in a moat |
+| `battlefields/arcade-blocks-beach/` | Sand blocks on a beach with block palms, in a blue sea |
 
 A battlefield folder has:
 
-- `README.md`: its look in exact values.
+- `README.md`: its look, with its colors and its main sizes. Its `battlefield.ts` holds every exact value.
 - `battlefield.ts`: the code that draws it.
 - Captures with the HUD of the game, the window at 1920 by 1080 and a game of two players:
   - `overview.jpg`: the whole screen, at rest.
@@ -64,13 +85,14 @@ Reference only: it is not production code, it does not follow the guides of `age
 `prototype/` has the code shared by every skin:
 
 - `kit.ts`: the types of a skin of each element (`HudSkin`, `BattlefieldSkin`) and the helpers to draw colors, shapes on the screen, and shapes on the board and its surroundings in perspective.
+- `shapes.ts`: the shapes used by more than one battlefield: cracks, neon lines and grids, metal plates and decks, wooden planks, and the blocks of the arcade style. A shape used by a single battlefield stays in its file.
 - `registry.ts`: the skins of each element by the name of their folder (`HUDS`, `BATTLEFIELDS`), and the one chosen for each element with `window.__hudSkin` and `window.__battlefieldSkin`.
 - `hud.ts`: draws the chosen HUD skin behind the texts of the HUD, follows them on every frame and plays the hover.
 - `battlefield.ts`: draws the chosen battlefield skin instead of the table, through the projection of the board.
 - `GameHudView.patch` and `BattlefieldView.patch`: the hooks in `frontend/src/game/hud/GameHudView.ts` and `frontend/src/game/battlefield/BattlefieldView.ts`. Without a skin chosen, the element draws as in the game.
 - `capture.spec.ts` and `playwright.config.ts`: the Playwright test that takes the captures of every skin folder, each element with the other one as the game draws it.
 
-A skin imports only from `prototype/kit.ts`. Adding a skin is adding its folder with its code inside the folder of its element, and its line in `registry.ts` and in `HUDS` or `BATTLEFIELDS` of `capture.spec.ts`.
+A skin imports only from `prototype/kit.ts` and `prototype/shapes.ts`. Adding a skin is adding its folder with its code inside the folder of its element, and its line in `registry.ts` and in `HUDS` or `BATTLEFIELDS` of `capture.spec.ts`.
 
 ### Take the captures again
 

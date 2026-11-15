@@ -7,7 +7,26 @@ import { createPreparedGame } from '@/support/preparedGame';
 import { test } from '@/support/test';
 
 const HUDS = ['fantasy', 'parchment', 'neon', 'sci-fi', 'arcade-blocks', 'wood'];
-const BATTLEFIELDS: string[] = [];
+const BATTLEFIELDS = [
+    'arcade-blocks-beach',
+    'arcade-blocks-castle',
+    'arcade-blocks-desert',
+    'arcade-blocks-sky-island',
+    'arcade-blocks-snow',
+    'arcade-blocks-volcano',
+    'fantasy-arcane-altar',
+    'fantasy-crypt',
+    'fantasy-throne-hall',
+    'neon-circuit-board',
+    'neon-dance-floor',
+    'neon-hexagons',
+    'parchment-star-chart',
+    'sci-fi-command-bridge',
+    'sci-fi-space-hangar',
+    'wood-dojo',
+    'wood-river-raft',
+    'wood-tavern-table'
+];
 /** Run from frontend/, so the captures land next to the README of each skin. */
 const OUTPUT = path.resolve(process.cwd(), '../docs/skins');
 const AWAY = { x: 1450, y: 860 };
