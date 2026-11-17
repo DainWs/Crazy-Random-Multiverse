@@ -3,7 +3,7 @@
 What every player sees when the turn or the round changes. The durations and curves are in `MOTION-BASE.md`. Decided with the product owner on 2026-11-14.
 
 - **VIEW-15** A brief notice announces each turn change, with "Tu turno" or the name of the player whose turn starts, and each new round, with "Ronda N".
-  - **Look.** A notice is a text on a dark panel, centered horizontally and a fifth of the screen height below its top edge, so it does not hide the leader of the rival at the top.
+  - **Look.** A notice is a text on a dark panel, centered horizontally and vertically on the screen, over the center of the table, so it does not hide the zone of the rival at the top. Decided with the product owner on 2026-11-17, after the recordings of 2026-11-14 showed that a fifth of the screen height below its top edge covered part of that zone.
   - **Timing.** It fades in, in its place and without moving, in 250 ms, slowing down at the end; it stays for 1000 ms; and it fades out in 250 ms, speeding up (`VIEW-30`, `VIEW-31`). A notice lasts 1.5 s.
   - When the round and the turn change together, the round is announced first and then the turn.
   - It is one more animation of the queue of `CON-12`, so the first turn and round of a game are announced too, and entering a game in progress (`LOAD-6`) announces nothing.
