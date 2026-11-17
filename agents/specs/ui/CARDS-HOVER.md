@@ -11,7 +11,7 @@ What the local player sees when the pointer is over a card: the enlargement, the
     - It closes without the wait when the hovered card disappears, for example when its owner is eliminated (`ELIM-3`), and when a drag starts (`VIEW-32`).
     - **[Post-MVP]** A card back (`VIEW-3`) shows no panel, because the card is private (`HAND-3`).
   - **Equipment.** The equipment of a combatant is stacked behind it: at rest, each piece shows a strip of 10% of the width of the card on the left of the card, turned with its zone (`VIEW-1`), the first piece nearest to the card. While the pointer is over the combatant, every piece slides out towards the left of the card in 250 ms, slowing down at the end, until each one shows whole, side by side. When the pointer leaves it, they slide back in 250 ms, slowing down at the end.
-  - **Effects** (`UI-26`). The enlargement, the panel and the equipment sliding out are essential: they show which card is under the pointer and what it is. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The enlargement, the panel and the equipment sliding out are essential: they show which card is under the pointer and what it is. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

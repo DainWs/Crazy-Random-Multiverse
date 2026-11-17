@@ -9,7 +9,7 @@ What every player sees in the zone of a player who is eliminated (`ELIM-1`, `ELI
   - **Timing.** The elimination lasts 4200 ms and is one more animation of the queue of `CON-12`: gameplay stays disabled until it ends (`UI-4`), and a turn or round notice that follows waits for it. It plays once, when its event is applied: a board drawn again afterwards shows the zone with its veil and label, without playing it again. The durations of 800 ms and 1000 ms are an exception to the scale of `VIEW-30`, kept by the product owner and the client.
   - **End of the game.** When the elimination ends the game (`WIN-1`), only the veil plays, without the notice, and then the result is shown (`VIEW-23`, `WIN-4`): the result already says who won.
   - Entering a game in progress (`LOAD-6`) or restoring it from `GAME_SYNC` shows the zone of an eliminated player with its veil and label at once, without animation and without notice.
-  - **Effects** (`UI-26`). The veil and the notice are essential: they show which player was eliminated. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The veil and the notice are essential: they show which player was eliminated. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

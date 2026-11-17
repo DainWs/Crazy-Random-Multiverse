@@ -8,7 +8,7 @@ What the local player sees when a card is dealt to their hand (`PLAYER_RECEIVE_C
   - **The hand.** It does not rise nor fold for the arrival: it stays as the pointer leaves it (`VIEW-16`).
   - **Several cards.** When several cards are dealt to the local player one after the other, each one starts 150 ms after the previous one, so two cards take 400 ms.
   - Cards restored from `GAME_SYNC` are not animated. The cards dealt to a rival have no animation, because rival hands are not shown (`UI-7`). **[Post-MVP]** The back of the card a rival receives is animated too (`VIEW-3`). The arrival of the first cards waits for the placement of the leaders (`VIEW-12`).
-  - **Effects** (`UI-26`). The arrival is essential: it shows that the hand has a new card. **[OPEN] [Post-MVP]** Its versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The arrival is essential: it shows that the hand has a new card. **[Post-MVP]** It has no low quality version (`UI-28`), and its reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

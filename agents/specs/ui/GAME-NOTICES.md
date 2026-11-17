@@ -7,7 +7,7 @@ What every player sees when the turn or the round changes. The durations and cur
   - **Timing.** It fades in, in its place and without moving, in 250 ms, slowing down at the end; it stays for 1000 ms; and it fades out in 250 ms, speeding up (`VIEW-30`, `VIEW-31`). A notice lasts 1.5 s.
   - When the round and the turn change together, the round is announced first and then the turn.
   - It is one more animation of the queue of `CON-12`, so the first turn and round of a game are announced too, and entering a game in progress (`LOAD-6`) announces nothing.
-  - **Effects** (`UI-26`). It is essential: it shows whose turn starts and which round. **[OPEN] [Post-MVP]** Its versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). It is essential: it shows whose turn starts and which round. **[Post-MVP]** It has no low quality version (`UI-28`), and its reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

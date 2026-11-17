@@ -7,7 +7,7 @@ How the hand of the local player is laid out, rises, folds and moves its cards. 
   - **The card under the pointer.** It shows whole, because the cards after it slide aside, in 250 ms, slowing down at the end. When the pointer leaves it, they slide back in the same way.
   - **Effects** (`UI-26`). The rise, the fold and the sliding aside are essential: they show the cards the player can play.
 - **VIEW-25** The hand is centered horizontally on the screen according to the cards it holds, not according to the space it could take. Its width follows the number of cards, so when one arrives or leaves, the cards move to their new slots in 250 ms, slowing down at the end. It is essential (`UI-26`): it shows that the hand changed.
-- **[OPEN] [Post-MVP]** The versions of `VIEW-16` and `VIEW-25` for low quality (`UI-28`) and reduced motion (`UI-29`).
+- **[Post-MVP]** `VIEW-16` and `VIEW-25` have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

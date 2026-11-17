@@ -12,7 +12,7 @@ What every player sees on the target when its armor or health changes with an at
 
     N is `healthDamage` or `armorDamage`. The red and the steel grey are those of the flash of `VIEW-5`. The text and the icon have a black outline, like the label of `VIEW-11`, and the icon is as tall as the text. The text is 40% as tall as the long side of the target as drawn on the screen, and never less than 24 px on the screen with the window at 1920 by 1080, scaled with the window as the camera (`VIEW-24`). It is drawn flat, without the perspective of the slot (`VIEW-1`), and above every card of the board. It appears centered horizontally on the target as drawn on the screen, with its bottom edge at the highest point of the target on the screen, whatever the rotation of its zone.
   - **Floating text, motion.** The text rises 40 px on the screen in 400 ms, slowing down at the end, and then fades out in 250 ms, speeding up (`VIEW-30`, `VIEW-31`). The 40 px are measured with the window at 1920 by 1080 and scale with the window as the size of the text. The whole text lasts 650 ms from the impact, and gameplay stays disabled until it ends (`UI-4`).
-  - **Effects** (`UI-26`). The count and the floating text are essential: they show what the target lost, also when the values of the card are too small to read. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The count and the floating text are essential: they show what the target lost, also when the values of the card are too small to read. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

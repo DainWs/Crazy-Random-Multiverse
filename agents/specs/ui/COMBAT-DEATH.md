@@ -8,7 +8,7 @@ What every player sees when an attack kills its target (`targetDead`, `CON-21`, 
     - **Freeze.** At the impact, every animation of `VIEW-5`, `VIEW-6` and `VIEW-7` stops for 150 ms, with the flash of `VIEW-5` on the leader, and then goes on from where it stopped. The pulses of `VIEW-17` and `VIEW-20` do not stop.
     - When the shake of `VIEW-5` ends, the leader is tinted at once a dark grey, darker than the steel grey of `VIEW-5`, and stays still for 400 ms. Then it shrinks towards its center until it disappears while it fades out, in 400 ms, speeding up. It ends 1200 ms after the impact. The exact dark grey is chosen with the colors of Phase 11.5.
     - The camera does not move.
-  - **Effects** (`UI-26`). The death of a card and the death of a leader are essential: they show that the card left the board. The freeze is non-essential. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The death of a card and the death of a leader are essential: they show that the card left the board. The freeze is non-essential. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 - **VIEW-18** The equipment of a combatant is part of its card (`VIEW-14`): when the card dies (`EQUIP-8`), the equipment stacked behind it shrinks and fades out together with it, as one, and has no animation of its own. The board drawn afterwards has neither.
 - **VIEW-33** Gameplay stays disabled until the last animation of an attack ends (`UI-4`). From the moment its event is applied, an attack lasts:
   - Without a death: 900 ms, 250 ms of the lunge and 650 ms of the floating text of `VIEW-6`.

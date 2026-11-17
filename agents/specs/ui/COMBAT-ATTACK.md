@@ -23,7 +23,7 @@ How the local player chooses an attacker and its target. The behavior of the int
   - **Attacking.** After the click on a valid target, the attacker and the target stay lifted, the target with its green frame, while the request is pending (`UI-4`). When the event of the attack is applied, both go back to their rest size as `VIEW-5` says. If another event of the queue (`CON-12`) is applied first, or the request is rejected, both lower, and a rejection shows the message of `UI-6`.
   - **[OPEN]** The color and the opacity of the shadows, and the size of the icon on the screen, decided with the product owner looking at them.
   - **Attack applied.** The lunge and the hit are in `VIEW-5`.
-  - **Effects** (`UI-26`). The lifts, the frames and the icon are essential: they show which card is selected and whether a card can be attacked. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The lifts, the frames and the icon are essential: they show which card is selected and whether a card can be attacked. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

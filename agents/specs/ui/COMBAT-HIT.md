@@ -10,7 +10,8 @@ What every player sees when an attack is applied (`PLAYER_ATTACK_CARD`). Only th
     - The attacker starts its trip back.
     - The changes of the values (`VIEW-6`) and, if the target died, its death (`VIEW-7`) start.
   - The camera does not move.
-  - **Effects** (`UI-26`). The lunge is essential: it shows who attacked whom, also to the players who did not choose the attack. The shake and the flash are non-essential: what the target lost is shown by `VIEW-6`.
+  - **Effects** (`UI-26`). The lunge is essential: it shows who attacked whom, also to the players who did not choose the attack. The shake and the flash are non-essential: what the target lost is shown by `VIEW-6`. **[Post-MVP]** The lunge has no low quality version (`UI-28`).
+  - **[Post-MVP] Reduced motion** (`UI-29`). The attacker does not travel: the attacker gets the cyan frame of `VIEW-17` and the target the green frame of `VIEW-4`, both drawn like the marks of `VIEW-32`. Both frames fade in at the same time in 150 ms, slowing down at the end; stay 400 ms; and fade out in 150 ms, speeding up. The impact is the end of the fade in: the changes of the values (`VIEW-6`) and the death (`VIEW-7`) start then. A lifted attacker or target (`VIEW-4`) goes back to its rest size, in the general form of `UI-29`, when the frames start. Decided by the product owner on 2026-11-17.
 
 ## Scenarios
 

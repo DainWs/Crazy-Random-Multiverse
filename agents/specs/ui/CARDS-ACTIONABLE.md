@@ -7,7 +7,7 @@ How an own card of the board that can attack now reacts to the pointer, so that 
   - The pointer shows the hand that points, which says that the card can be clicked (`VIEW-4`).
   - The card gets the enlargement and the side panel of `VIEW-14` as any other card.
   - A card that can only be moved (`BOARD-7`) has no reaction of its own, because on the turn of its owner almost every warrior can be moved, to a free slot or in a swap, so the reaction would tell nothing apart: it only gets `VIEW-14`.
-  - **Effects** (`UI-26`). It is essential: it shows that a click on the card selects it to attack. **[OPEN] [Post-MVP]** Its versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). It is essential: it shows that a click on the card selects it to attack. **[Post-MVP]** It has no low quality version (`UI-28`), and its reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 

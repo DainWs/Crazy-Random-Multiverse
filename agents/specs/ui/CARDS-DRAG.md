@@ -7,11 +7,11 @@ How the local player drags a card from the hand or from the board, and what is s
   - **The dragged card.** It follows the pointer, centered on it, at 70% of the size of a card of the board, 140 by 210 board units, so it grows and shrinks with the zoom (`VIEW-19`). It is flat (`VIEW-1`), without a tilt nor a shadow, opaque, and drawn above everything.
   - **Marks.** The slot under it is marked in green if the card can go there (`UI-5`), and the slot it comes from, if it comes from the board, in red. A mark is a solid frame drawn over the card and over the border of its slot, as thick as that border, so it stays visible.
   - **Preview in a slot.** Over a slot where a warrior can go, the card stops following the pointer and takes the place, the size and the rotation of the slot in 150 ms, slowing down at the end, without the deformation of its perspective. When the pointer leaves that slot, the card follows the pointer again at once, at 70%. A piece of equipment has no preview: the slot only gets its green mark.
-  - **Effects** (`UI-26`). The dragged card, its preview, the marks and the hiding of the hand are essential: they show where the card goes and leave the own zone in view. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). The dragged card, its preview, the marks and the hiding of the hand are essential: they show where the card goes and leave the own zone in view. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 - **VIEW-34** When the card is dropped:
   - **While the server answers** (`UI-6`). A warrior dropped on a valid slot is drawn in it at once, with its perspective (`VIEW-1`), like any card of the board, until its event is applied (`HAND-2`). In a swap (`BOARD-7`), the other warrior is drawn at once in the slot the card left. A piece of equipment disappears from the screen until the server answers.
   - **Return.** When the server rejects the action (`UI-6`), or the interface refuses the drop (`UI-25`), the cards are back at once where they were, in the hand or in their slots, and the message is shown.
-  - **Effects** (`UI-26`). Both are essential: they show the action the player made and whether it was undone. **[OPEN] [Post-MVP]** Their versions for low quality (`UI-28`) and reduced motion (`UI-29`).
+  - **Effects** (`UI-26`). Both are essential: they show the action the player made and whether it was undone. **[Post-MVP]** They have no low quality version (`UI-28`), and their reduced motion version is the general one of `UI-29`.
 
 ## Scenarios
 
