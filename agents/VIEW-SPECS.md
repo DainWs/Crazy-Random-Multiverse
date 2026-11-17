@@ -33,7 +33,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The arrival of a card in the hand (`VIEW-8`) is in `specs/ui/HAND-ARRIVAL.md`.
 - **VIEW-9** **[Post-MVP]** Sounds exist for placement, attack, death, turn and round changes, victory and defeat, and for a click refused while attacking (`VIEW-4`).
 - **VIEW-21** **[Post-MVP]** The rarer a card, the more audio variants each of its actions has: for example 1 for placing a Common card and 2 or 3 for a Mythic one.
-- **VIEW-22** **[OPEN]** How many variants each rarity has for each action, and how many leaders and equipment have.
+- **VIEW-22** **[Post-MVP]** Leaders have one variant for each action, like a Common warrior. A piece of equipment has the variants of the rarity of the warrior it is attached to, and one while it has none (`FX-16`). Decided by the product owner on 2026-11-17. **[OPEN]** How many variants each rarity has for each action.
 - **VIEW-10** **[Post-MVP]** Particles, special effects, a color-blind palette chosen in a settings screen (`UI-13`), the graphics quality and reduced motion options (`UI-27`), and responsive and touch layouts.
 - The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
 - The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.

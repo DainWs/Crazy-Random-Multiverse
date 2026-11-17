@@ -14,15 +14,15 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 ## Heartbeat
 
 - **FX-4** **[Post-MVP]** Heartbeat: the screen dims with a slow pulse, darker towards the edges, while something important is going on. It is a pulse of the dimming, not of the cards.
-- **FX-5** **[Post-MVP]** The heartbeat plays when a card of a rarity that has this effect attacks. It starts with the `PLAYER_ATTACK_CARD` event, not with the click of the player, and ends when the animations of the attack (`VIEW-5`, `VIEW-6`) end.
-- **FX-6** **[OPEN]** Whether the heartbeat is also used while choosing a target (the old targeting overlay), for the attacker only or for everyone, and from which rarity it applies.
+- **FX-5** **[Post-MVP]** The heartbeat plays when a Legendary or Mythic warrior attacks, for every player. It starts with the `PLAYER_ATTACK_CARD` event, not with the click of the player, and ends when the animations of the attack (`VIEW-5`, `VIEW-6`) end.
+- **FX-6** **[Post-MVP]** The heartbeat also plays while the local player has a Legendary or Mythic warrior selected to attack (`VIEW-4`), only for that player: the selection is not in the contract and the other players do not see it. It starts when the warrior is selected and ends with the selection; if the attack follows, it goes on without restarting into the heartbeat of `FX-5`. Decided by the product owner on 2026-11-17.
 
 ## Card border glow
 
 - **FX-7** **[Post-MVP]** Glowing border: a card of a rarity that has this effect shows a light around its frame while it is on the board and in the hand. The color and the strength depend on the rarity.
 - **FX-8** **[Post-MVP]** The glow grows briefly when the card attacks or is hit, and goes back to its level afterwards. It does not hide the statistics of the card (`VIEW-2`).
-- **FX-9** **[OPEN]** Which rarities glow and how: only Rare and above, or every rarity with a different strength.
-- **FX-16** **[OPEN]** Which effects leaders and equipment have: `FX-1` and `FX-7` depend on the rarity, and only warriors have one (`CARD-4`). It is the same question as `VIEW-22` for the audio.
+- **FX-9** **[Post-MVP]** Only Epic, Legendary and Mythic warriors glow, stronger the rarer they are. Common, Uncommon and Rare warriors do not glow. Decided by the product owner on 2026-11-17.
+- **FX-16** **[Post-MVP]** Only warriors have a rarity (`CARD-4`). A piece of equipment attached to a warrior plays the effects of the rarity of that warrior; in the hand, with no warrior, it has none. Leaders have no effects of rarity: their gold frame (`VIEW-20`) already marks them. The audio follows the same rule (`VIEW-22`). Decided by the product owner on 2026-11-17.
 
 ## Interface skins
 
