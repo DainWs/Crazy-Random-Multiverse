@@ -10,6 +10,7 @@ import DamageTextLayout from '@/game/cards/DamageTextLayout';
 import type { GameScene } from '@/scenes/Game';
 import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
 import * as Constants from '@/core/Constants';
+import { paletteFill, paletteText } from '@/game/utils/Palette';
 
 type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
 
@@ -48,7 +49,7 @@ async function playAttack(scene: GameScene, attackerSlot: ZoneSlotView, targetSl
     await pulse(scene, attacker);
   }
 
-  const reactions = [targetSlot.flash(Constants.HIT_FLASH_COLOR), showDamageTexts(scene, targetSlot, combat)];
+  const reactions = [targetSlot.flash(paletteFill('HIT_FLASH')), showDamageTexts(scene, targetSlot, combat)];
   if (target) {
     reactions.push(shake(scene, target, Constants.HIT_SHAKE_REPEATS));
     reactions.push(countDown(scene, target, 'Armor', combat.armorDamage));
@@ -133,7 +134,7 @@ async function showDamageTexts(scene: GameScene, slot: ZoneSlotView, combat: Com
   const { tx, ty } = slot.getWorldTransformMatrix();
   const layout = new DamageTextLayout({ x: tx, y: ty });
   const rises = toDamageTexts(combat).map(({ text, color }, index) => {
-    const style = { fontSize: Constants.DAMAGE_TEXT_FONT_SIZE, color, stroke: Constants.DAMAGE_TEXT_STROKE_COLOR, strokeThickness: Constants.DAMAGE_TEXT_STROKE_WIDTH };
+    const style = { fontSize: Constants.DAMAGE_TEXT_FONT_SIZE, color, stroke: paletteText('TEXT_OUTLINE'), strokeThickness: Constants.DAMAGE_TEXT_STROKE_WIDTH };
     const start = layout.startPosition(index);
     const damageText = scene.add.text(start.x, start.y, text, style);
     damageText.setOrigin(0.5, 0.5);

@@ -6,6 +6,7 @@ import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectM
 import CardView from "@/game/cards/CardView";
 import AttackArrowLayout from "@/game/perspectives/AttackArrowLayout";
 import * as Constants from "@/core/Constants";
+import { paletteFill } from "@/game/utils/Palette";
 
 const CANCEL_KEY_EVENT = "keydown-ESC";
 
@@ -87,7 +88,7 @@ class AttackTargetingPerspective implements Perspective {
         const origin = this.sourceSlot.getWorldTransformMatrix();
         const hoveredSlot = getTopGameObjectAtCursor(this.scene, "ZoneSlotView") as ZoneSlotView | undefined;
         const target = hoveredSlot && this.sourceSlot.canAttack(hoveredSlot) ? hoveredSlot : undefined;
-        const color = target ? Constants.ATTACK_ARROW_VALID_COLOR : Constants.ATTACK_ARROW_INVALID_COLOR;
+        const color = target ? paletteFill('MARK_VALID') : paletteFill('MARK_INVALID');
 
         const layout = new AttackArrowLayout({ x: origin.tx, y: origin.ty });
         const tip = layout.tip({ x: pointer.worldX, y: pointer.worldY }, target && this.targetOf(target));

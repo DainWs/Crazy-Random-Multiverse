@@ -3,6 +3,7 @@ import BattlefieldSkin from "@/domain/BattlefieldSkin";
 import BattlefieldViewStrategy from "@/game/battlefield/BattlefieldViewStrategy";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { Corner, Corners, Point, Point2D } from "@/domain/Geometry";
+import { paletteFill } from "@/game/utils/Palette";
 
 type Graphics = Phaser.GameObjects.Graphics
 
@@ -18,8 +19,8 @@ class TableViewStrategy implements BattlefieldViewStrategy {
 
     // table thickness sides
     graphics.setAlpha(1);
-    graphics.fillStyle(battlefield.skin.backgroundColor);
-    graphics.lineStyle(2, battlefield.skin.borderColor);
+    graphics.fillStyle(paletteFill(battlefield.skin.backgroundColor));
+    graphics.lineStyle(2, paletteFill(battlefield.skin.borderColor));
     this.renderSide(graphics, corners.tl, corners.bl, battlefield.skin.thickness);
     this.renderSide(graphics, corners.tr, corners.br, battlefield.skin.thickness);
     this.renderSide(graphics, corners.tl, corners.tr, battlefield.skin.thickness / 2);
@@ -42,7 +43,7 @@ class TableViewStrategy implements BattlefieldViewStrategy {
   }
 
   private renderTableSurface(graphics: Graphics, corners: Corners, skin: BattlefieldSkin) {
-    graphics.fillStyle(skin.backgroundColor, skin.borderAlpha);
+    graphics.fillStyle(paletteFill(skin.backgroundColor), skin.borderAlpha);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);
@@ -57,7 +58,7 @@ class TableViewStrategy implements BattlefieldViewStrategy {
     const corners = battlefield.getCorners();
 
     // Without a path of its own the stroke would draw the table surface and the earlier lines again, piling up their alpha
-    graphics.lineStyle(GRID_LINE_WIDTH, battlefield.skin.gridColor, battlefield.skin.gridAlpha);
+    graphics.lineStyle(GRID_LINE_WIDTH, paletteFill(battlefield.skin.gridColor), battlefield.skin.gridAlpha);
     graphics.beginPath();
     for (let x = corners.tl.x; x <= corners.tr.x; x += step) {
       this.addGridLine(graphics, { x, y: corners.bl.y }, { x, y: corners.tl.y });
@@ -78,7 +79,7 @@ class TableViewStrategy implements BattlefieldViewStrategy {
   }
 
   private renderTableOutline(graphics: Graphics, corners: Corners, skin: BattlefieldSkin) {
-    graphics.lineStyle(2, skin.borderColor, skin.borderAlpha);
+    graphics.lineStyle(2, paletteFill(skin.borderColor), skin.borderAlpha);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);
@@ -107,13 +108,13 @@ class TableViewStrategy implements BattlefieldViewStrategy {
     }
 
     // body of the leg
-    graphics.lineStyle(legThickness, skin.backgroundColor, 1);
+    graphics.lineStyle(legThickness, paletteFill(skin.backgroundColor), 1);
     graphics.lineBetween(
       point.x + offset / 2, point.y + legThickness, 
       point.x + offset / 2, point.y + TABLE_LEG_HEIGHT);
 
     // outline of the leg
-    graphics.lineStyle(2, skin.borderColor, skin.borderAlpha);
+    graphics.lineStyle(2, paletteFill(skin.borderColor), skin.borderAlpha);
     graphics.lineBetween(point.x, point.y + legThickness, point.x, point.y + legThickness + TABLE_LEG_HEIGHT);
     graphics.lineBetween(point.x + offset, point.y + legThickness, point.x + offset, point.y + legThickness + TABLE_LEG_HEIGHT);
   }

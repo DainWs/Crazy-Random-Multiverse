@@ -1,13 +1,15 @@
+import type { PaletteColor } from '@/game/utils/Palette';
+
 type BattlefieldType = 'table' | '2v2';
 
 interface BattlefieldSkin {
   name: string;
   battlefieldType: BattlefieldType;
-  backgroundColor: number;
+  backgroundColor: PaletteColor;
   backgroundAlpha: number;
-  borderColor: number;
+  borderColor: PaletteColor;
   borderAlpha: number;
-  gridColor: number;
+  gridColor: PaletteColor;
   gridAlpha: number;
   thickness: number;
   gridStep: number;
@@ -17,11 +19,11 @@ const BATTLEFIELD_SKINS: Record<string, BattlefieldSkin> = {
   classic: {
     name: 'Classic',
     battlefieldType: 'table',
-    backgroundColor: 0x1a1a2e,
+    backgroundColor: 'TABLE_CLASSIC_BACKGROUND',
     backgroundAlpha: 0.85,
-    borderColor: 0x4488cc,
+    borderColor: 'TABLE_CLASSIC_BORDER',
     borderAlpha: 0.8,
-    gridColor: 0x3355aa,
+    gridColor: 'TABLE_CLASSIC_GRID',
     gridAlpha: 0.3,
     thickness: 80,
     gridStep: 100
@@ -29,11 +31,11 @@ const BATTLEFIELD_SKINS: Record<string, BattlefieldSkin> = {
   emerald: {
     name: 'Emerald City',
     battlefieldType: 'table',
-    backgroundColor: 0x062c1e,
+    backgroundColor: 'TABLE_EMERALD_BACKGROUND',
     backgroundAlpha: 1,
-    borderColor: 0x2ecc71,
+    borderColor: 'TABLE_EMERALD_BORDER',
     borderAlpha: 0.6,
-    gridColor: 0x27ae60,
+    gridColor: 'TABLE_EMERALD_GRID',
     gridAlpha: 0.2,
     thickness: 60,
     gridStep: 80
@@ -41,11 +43,11 @@ const BATTLEFIELD_SKINS: Record<string, BattlefieldSkin> = {
   lava: {
     name: 'Volcanic',
     battlefieldType: 'table',
-    backgroundColor: 0x2c0606,
+    backgroundColor: 'TABLE_LAVA_BACKGROUND',
     backgroundAlpha: 1,
-    borderColor: 0xe67e22,
+    borderColor: 'TABLE_LAVA_BORDER',
     borderAlpha: 0.7,
-    gridColor: 0xc0392b,
+    gridColor: 'TABLE_LAVA_GRID',
     gridAlpha: 0.3,
     thickness: 100,
     gridStep: 120

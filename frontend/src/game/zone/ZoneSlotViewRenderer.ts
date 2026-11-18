@@ -1,15 +1,12 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import {
-  ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_COLOR, ELIMINATED_VEIL_BORDER_WIDTH, ELIMINATED_VEIL_COLOR, SLOT_BORDER_WIDTH
-} from "@/core/Constants";
+import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
+import { paletteFill } from "@/game/utils/Palette";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
 
 const BACKGROUND_ALPHA = 0.45;
-const BACKGROUND_COLOR = 0xffffff;
-const BACKGROUND_BORDER_COLOR = 0x4488cc;
 const BACKGROUND_BORDER_ALPHA = 0.8;
 
 class ZoneSlotViewRenderer {
@@ -19,7 +16,12 @@ class ZoneSlotViewRenderer {
     this.renderMark(mark, zoneSlotView);
   }
 
-  public static renderBackground(graphics: Graphics, corners: Corners3D, backgroundColor = BACKGROUND_COLOR, borderColor = BACKGROUND_BORDER_COLOR) {
+  public static renderBackground(
+    graphics: Graphics,
+    corners: Corners3D,
+    backgroundColor = paletteFill('SLOT_FILL'),
+    borderColor = paletteFill('SLOT_BORDER')
+  ) {
     graphics.clear();
     graphics.fillStyle(backgroundColor, BACKGROUND_ALPHA);
     graphics.lineStyle(SLOT_BORDER_WIDTH, borderColor, BACKGROUND_BORDER_ALPHA);
@@ -36,8 +38,8 @@ class ZoneSlotViewRenderer {
   /** Tints the slot of an eliminated player's zone a dark red, with a dark border that tells the slots apart (VIEW-11). */
   public static renderVeil(graphics: Graphics, corners: Corners3D) {
     graphics.clear();
-    graphics.fillStyle(ELIMINATED_VEIL_COLOR, ELIMINATED_VEIL_ALPHA);
-    graphics.lineStyle(ELIMINATED_VEIL_BORDER_WIDTH, ELIMINATED_VEIL_BORDER_COLOR, 1);
+    graphics.fillStyle(paletteFill('ELIMINATED_VEIL'), ELIMINATED_VEIL_ALPHA);
+    graphics.lineStyle(ELIMINATED_VEIL_BORDER_WIDTH, paletteFill('ELIMINATED_VEIL_BORDER'), 1);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);

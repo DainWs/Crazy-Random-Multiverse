@@ -10,10 +10,10 @@ import { isFinalRejection, planLoad } from '@/core/GameLoadPlanner';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
 import GameLoadLayout from '@/scenes/GameLoadLayout';
 import * as Constants from '@/core/Constants';
+import { paletteFill, paletteText } from '@/game/utils/Palette';
 
 const BAR_FILL_MIN_WIDTH = 4;
 const BAR_STROKE_WIDTH = 1;
-const TEXT_COLOR = '#ffffff';
 const STATUS_TEXT_SIZE = '20px';
 const RETRY_TEXT_SIZE = '24px';
 
@@ -50,24 +50,24 @@ class GameLoadScene extends Scene {
 
     /** The panel, the bar and the texts are centered on the window and follow its size (VIEW-29). */
     private createLoadingView() {
-        this.panel = this.add.rectangle(0, 0, 0, 0, Constants.LOAD_PANEL_COLOR);
-        this.panel.setStrokeStyle(Constants.LOAD_PANEL_BORDER_WIDTH, Constants.LOAD_PANEL_BORDER_COLOR);
+        this.panel = this.add.rectangle(0, 0, 0, 0, paletteFill('PANEL_FILL'));
+        this.panel.setStrokeStyle(Constants.LOAD_PANEL_BORDER_WIDTH, paletteFill('PANEL_BORDER'));
 
-        this.barFrame = this.add.rectangle(0, 0, 0, 0).setStrokeStyle(BAR_STROKE_WIDTH, Constants.LOAD_PANEL_BORDER_COLOR);
-        this.progressBar = this.add.rectangle(0, 0, BAR_FILL_MIN_WIDTH, 0, Constants.LOAD_BAR_FILL_COLOR);
+        this.barFrame = this.add.rectangle(0, 0, 0, 0).setStrokeStyle(BAR_STROKE_WIDTH, paletteFill('PANEL_BORDER'));
+        this.progressBar = this.add.rectangle(0, 0, BAR_FILL_MIN_WIDTH, 0, paletteFill('LOAD_BAR_FILL'));
         this.progressBar.setOrigin(0, 0.5);
 
-        this.statusText = this.add.text(0, 0, '', { fontSize: STATUS_TEXT_SIZE, color: TEXT_COLOR });
+        this.statusText = this.add.text(0, 0, '', { fontSize: STATUS_TEXT_SIZE, color: paletteText('LOAD_TEXT') });
         this.statusText.setOrigin(0.5, 0.5);
 
-        this.retryButton = this.add.text(0, 0, getText('ui.game_load.retry'), { fontSize: RETRY_TEXT_SIZE, color: TEXT_COLOR });
-        this.retryButton.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND);
+        this.retryButton = this.add.text(0, 0, getText('ui.game_load.retry'), { fontSize: RETRY_TEXT_SIZE, color: paletteText('LOAD_TEXT') });
+        this.retryButton.setBackgroundColor(paletteText('HUD_BUTTON'));
         this.retryButton.setPadding(Constants.HUD_BUTTON_PADDING);
         this.retryButton.setOrigin(0.5, 0.5);
         this.retryButton.setInteractive({ useHandCursor: true });
         this.retryButton.on('pointerdown', () => void this.run());
-        this.retryButton.on('pointerover', () => this.retryButton.setBackgroundColor(Constants.HUD_BUTTON_HOVER_BACKGROUND));
-        this.retryButton.on('pointerout', () => this.retryButton.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND));
+        this.retryButton.on('pointerover', () => this.retryButton.setBackgroundColor(paletteText('HUD_BUTTON_HOVER')));
+        this.retryButton.on('pointerout', () => this.retryButton.setBackgroundColor(paletteText('HUD_BUTTON')));
         this.retryButton.setVisible(false);
 
         this.placeLoadingView();

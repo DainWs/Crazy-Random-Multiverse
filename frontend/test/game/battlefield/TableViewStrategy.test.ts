@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import type Battlefield from '@/domain/Battlefield';
 import { DEFAULT_SKIN } from '@/domain/BattlefieldSkin';
+import { paletteFill } from '@/game/utils/Palette';
 import ProjectionSystem from '@/core/ProjectionSystem';
 import TableViewStrategy, { GRID_LINE_WIDTH } from '@/game/battlefield/TableViewStrategy';
 
@@ -25,7 +26,7 @@ function createRecordingGraphics() {
 
 /** The calls from the line style of the grid up to the stroke that draws it. */
 function callsOfGrid(calls: GraphicsCall[]): GraphicsCall[] {
-  const start = calls.findIndex((call) => call.method === 'lineStyle' && call.args[1] === DEFAULT_SKIN.gridColor);
+  const start = calls.findIndex((call) => call.method === 'lineStyle' && call.args[1] === paletteFill(DEFAULT_SKIN.gridColor));
   const end = calls.findIndex((call, index) => index > start && call.method === 'strokePath');
   return calls.slice(start, end + 1);
 }
@@ -49,7 +50,7 @@ describe('TableViewStrategy', () => {
 
       strategy.render(graphics, battlefield);
 
-      expect(callsOfGrid(calls)[0].args).toEqual([GRID_LINE_WIDTH, DEFAULT_SKIN.gridColor, DEFAULT_SKIN.gridAlpha]);
+      expect(callsOfGrid(calls)[0].args).toEqual([GRID_LINE_WIDTH, paletteFill(DEFAULT_SKIN.gridColor), DEFAULT_SKIN.gridAlpha]);
     });
 
     // VIEW-26

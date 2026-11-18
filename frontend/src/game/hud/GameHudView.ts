@@ -5,6 +5,7 @@ import GameHudLayout from '@/game/hud/GameHudLayout';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import * as Constants from '@/core/Constants';
+import { paletteFill, paletteText } from '@/game/utils/Palette';
 
 type HudCallbacks = {
     onPassTurn: () => void;
@@ -59,7 +60,7 @@ class GameHudView {
         this.leaveButton.setVisible(false);
 
         this.spectatorLabel = this.createText(this.layout.spectatorLabelAnchor(this.leaveButton.height), getText('ui.game.spectating'));
-        this.spectatorLabel.setColor(Constants.HUD_SPECTATOR_COLOR);
+        this.spectatorLabel.setColor(paletteText('HUD_SPECTATOR_TEXT'));
         this.spectatorLabel.setOrigin(1, 1);
         this.spectatorLabel.setVisible(false);
 
@@ -181,7 +182,7 @@ class GameHudView {
         const turnLabel = this.turnLabel(playerWithTurn, isOwnTurn);
 
         this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(Constants.HUD_TURN_SEPARATOR));
-        this.turnText.setColor(isOwnTurn ? Constants.HUD_OWN_TURN_COLOR : Constants.HUD_COLOR);
+        this.turnText.setColor(isOwnTurn ? paletteText('HUD_TEXT_LOCAL_TURN') : paletteText('HUD_TEXT'));
     }
 
     private turnLabel(playerWithTurn: Player | undefined, isOwnTurn: boolean): string {
@@ -204,13 +205,13 @@ class GameHudView {
 
     private createButton(anchor: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
         const button = this.createText(anchor, label);
-        button.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND);
+        button.setBackgroundColor(paletteText('HUD_BUTTON'));
         button.setPadding(Constants.HUD_BUTTON_PADDING);
         button.setOrigin(1, 1);
         button.setInteractive({ useHandCursor: true });
         button.on('pointerup', onClick);
-        button.on('pointerover', () => button.setBackgroundColor(Constants.HUD_BUTTON_HOVER_BACKGROUND));
-        button.on('pointerout', () => button.setBackgroundColor(Constants.HUD_BUTTON_BACKGROUND));
+        button.on('pointerover', () => button.setBackgroundColor(paletteText('HUD_BUTTON_HOVER')));
+        button.on('pointerout', () => button.setBackgroundColor(paletteText('HUD_BUTTON')));
         return button;
     }
 
@@ -230,15 +231,15 @@ class GameHudView {
         const dialog = this.layout.confirmDialog();
         const { veil, panel } = dialog;
 
-        const veilColor = Constants.CONFIRM_VEIL_COLOR;
+        const veilColor = paletteFill('SCREEN_VEIL');
         const veilAlpha = Constants.CONFIRM_VEIL_ALPHA;
         const veilShape = this.scene.add.rectangle(0, 0, veil.width, veil.height, veilColor, veilAlpha);
         veilShape.setOrigin(0, 0);
         veilShape.setInteractive();
 
-        const panelColor = Constants.CONFIRM_DIALOG_BACKGROUND;
+        const panelColor = paletteFill('PANEL_FILL');
         const panelShape = this.scene.add.rectangle(panel.x, panel.y, panel.width, panel.height, panelColor);
-        panelShape.setStrokeStyle(Constants.CONFIRM_DIALOG_BORDER_WIDTH, Constants.CONFIRM_DIALOG_BORDER_COLOR);
+        panelShape.setStrokeStyle(Constants.CONFIRM_DIALOG_BORDER_WIDTH, paletteFill('PANEL_BORDER'));
 
         const question = this.createText(dialog.question, getText(textKey));
         question.setOrigin(0.5);
@@ -271,7 +272,7 @@ class GameHudView {
     }
 
     private textStyle(): Phaser.Types.GameObjects.Text.TextStyle {
-        return { fontSize: Constants.HUD_FONT_SIZE, color: Constants.HUD_COLOR };
+        return { fontSize: Constants.HUD_FONT_SIZE, color: paletteText('HUD_TEXT') };
     }
 }
 

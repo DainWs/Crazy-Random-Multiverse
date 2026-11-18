@@ -1,6 +1,7 @@
 import type { CardRender } from "@/game/cards/renders/CardRender";
 import * as TextUtils from "@/game/utils/TextUtils";
 import SpellView from "@/game/cards/SpellView";
+import { paletteText } from "@/game/utils/Palette";
 
 const render = (scene: Phaser.Scene, cardView: SpellView, width: number, height: number) => {
   return [
@@ -17,7 +18,7 @@ function defineDescriptionStat(scene: Phaser.Scene, totalWidth: number, totalHei
 
   const gameObjects: Phaser.GameObjects.GameObject[] = [];
   const descriptionText = scene.add.text(0, 0, description);
-  descriptionText.setColor('#000');
+  descriptionText.setColor(paletteText('CARD_TEXT'));
   descriptionText.setWordWrapWidth(width, true);
   descriptionText.setFixedSize(width, height);
   descriptionText.setOrigin(0.5, 0.5);

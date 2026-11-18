@@ -11,9 +11,8 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import {
-  HIT_FLASH_DURATION_MS, OWN_SLOT_BORDER_COLOR, OWN_SLOT_COLOR, SLOT_MARKER_READY_COLOR, TURN_GLOW_COLOR, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS
-} from "@/core/Constants";
+import { HIT_FLASH_DURATION_MS, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS } from "@/core/Constants";
+import { paletteFill } from "@/game/utils/Palette";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
@@ -80,9 +79,9 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   /** The slots of the local player's zone are tinted, so their cards are told apart from the rivals' (VIEW-27). */
   public restoreBackground() {
     if (this.zone.isPlayerOwner(StoreSystem.getPlayer())) {
-      this.setBackgroundColor(OWN_SLOT_COLOR, OWN_SLOT_BORDER_COLOR);
+      this.setBackgroundColor(paletteFill('SLOT_OWN_TINT'), paletteFill('SLOT_OWN_BORDER'));
     } else {
-      this.setBackgroundColor(0xffffff);
+      this.setBackgroundColor(paletteFill('SLOT_FILL'));
     }
   }
 
@@ -187,7 +186,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   /** Frames this slot, for the player with the turn, over its own border and under its card, with a pulse that follows the clock of the scene (VIEW-20). */
   public showTurnGlow() {
     this.glowGraphics = this.scene.add.graphics();
-    ZoneSlotViewRenderer.renderMarker(this.glowGraphics, this.corners, TURN_GLOW_COLOR);
+    ZoneSlotViewRenderer.renderMarker(this.glowGraphics, this.corners, paletteFill('MARK_TURN_GLOW'));
     this.add(this.glowGraphics);
 
     this.turnFramePulses = !prefersReducedMotion();
@@ -218,7 +217,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   /** Frames an own card that can attack now with a pulse, under the frames of `showMarker` (VIEW-17). */
   public showReadyMark() {
     this.readyGraphics ??= this.scene.add.graphics();
-    ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, SLOT_MARKER_READY_COLOR);
+    ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, paletteFill('MARK_READY'));
     this.add(this.readyGraphics);
     this.bringToTop(this.readyGraphics);
 

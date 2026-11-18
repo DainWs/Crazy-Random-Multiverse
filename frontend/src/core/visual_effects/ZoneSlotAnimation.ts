@@ -1,5 +1,5 @@
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { SLOT_MARKER_SOURCE_COLOR, SLOT_MARKER_VALID_COLOR } from "@/core/Constants";
+import { paletteFill } from "@/game/utils/Palette";
 
 type ZoneSlotAnimation = 'highlight_as_source' | 'highlight_as_target' | 'unhighlight';
 type ZoneSlotAnimationProvider = (zoneSlot: ZoneSlotView) => void;
@@ -7,13 +7,13 @@ type ZoneSlotAnimationProvider = (zoneSlot: ZoneSlotView) => void;
 function noneAnimation() {};
 
 function highlightAsSource(zoneSlot: ZoneSlotView): void {
-  zoneSlot.setBackgroundColor(0xD40000);
-  zoneSlot.showMarker(SLOT_MARKER_SOURCE_COLOR);
+  zoneSlot.setBackgroundColor(paletteFill('SLOT_SOURCE_FILL'));
+  zoneSlot.showMarker(paletteFill('MARK_SOURCE'));
 }
 
 function highlightAsTarget(zoneSlot: ZoneSlotView): void {
-  zoneSlot.setBackgroundColor(0xAAFFAA);
-  zoneSlot.showMarker(SLOT_MARKER_VALID_COLOR);
+  zoneSlot.setBackgroundColor(paletteFill('SLOT_VALID_FILL'));
+  zoneSlot.showMarker(paletteFill('MARK_VALID'));
 }
 
 function unhighlight(zoneSlot: ZoneSlotView): void {

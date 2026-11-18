@@ -1,6 +1,7 @@
 import { Statistic } from "@/domain/Statistics";
 import * as TextUtils from "@/game/utils/TextUtils";
 import Phaser from 'phaser';
+import { paletteText } from '@/game/utils/Palette';
 
 type IconPosition = 'left' | 'right' | 'top' | 'bottom';
 
@@ -61,9 +62,9 @@ class CardStatisticView extends Phaser.GameObjects.Container {
   }
 
   private getTextColor() {
-    if (this.affectedAmount > 0) return '#00b800ff';
-    if (this.affectedAmount < 0) return '#e30000ff';
-    return '#000000';
+    if (this.affectedAmount > 0) return paletteText('CARD_VALUE_POSITIVE');
+    if (this.affectedAmount < 0) return paletteText('CARD_VALUE_NEGATIVE');
+    return paletteText('CARD_TEXT');
   }
 
   private getIconPosition(iconSize: number, gap: number) {

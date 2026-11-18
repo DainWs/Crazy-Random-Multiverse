@@ -1,6 +1,7 @@
 import { UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
 import resolveTween from '@/core/visual_effects/OverlayTweens';
 import Phaser from 'phaser';
+import { paletteRgba } from '@/game/utils/Palette';
 
 type TargetArea = {
   x: number,
@@ -91,9 +92,9 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
       center, center, initialRadius,
       center, center, endRadius
     );
-    gradient.addColorStop(0, 'rgba(255, 0, 0, 0)')
-    gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0)')
-    gradient.addColorStop(1, 'rgb(26, 97, 155)')
+    gradient.addColorStop(0, paletteRgba('TARGETING_VIGNETTE_CLEAR', 0))
+    gradient.addColorStop(0.5, paletteRgba('TARGETING_VIGNETTE_CLEAR', 0))
+    gradient.addColorStop(1, paletteRgba('TARGETING_VIGNETTE_EDGE', 1))
 
     context.fillStyle = gradient
     context.fillRect(0, 0, baseSize, baseSize)

@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 import { getText } from "@/core/Texts";
+import { paletteFill, paletteText } from "@/game/utils/Palette";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 
 const SCALE_FACTOR = 1.6;
@@ -18,17 +19,10 @@ const SHADOW_OFFSET = 15;
 const SHADOW_ALPHA = 0.8;
 const PADDING = 20;
 
-const COLOR_BACKGROUND = 0x000000;
-const COLOR_NAME = '#ffd700';
-const COLOR_DESCRIPTION = '#eeeeee';
-const COLOR_STROKE = '#000000';
-const COLOR_POSITIVE = '#00ff00';
-const COLOR_NEGATIVE = '#ff0000';
-const COLOR_EQUIPMENT_NAME = '#aaaaaa';
 
 const NAME_SHADOW: Phaser.Types.GameObjects.Text.TextShadow = { 
   offsetX: 2, offsetY: 2, 
-  color: COLOR_STROKE, 
+  color: paletteText('TEXT_OUTLINE'), 
   blur: 2, 
   stroke: true, 
   fill: true 
@@ -72,7 +66,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private initBackground() {
-    this.background = this.scene.add.rectangle(0, 0, 100, 100, COLOR_BACKGROUND, 0.9);
+    this.background = this.scene.add.rectangle(0, 0, 100, 100, paletteFill('TOOLTIP_FILL'), 0.9);
     this.background.setOrigin(0.5, 0.5);
   }
 
@@ -83,10 +77,10 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private initDescriptionContainer() {
     this.descriptionContainer = this.scene.add.container(0, 0);
 
-    this.nameText = this.createText(28, COLOR_NAME, 'bold', NAME_SHADOW);
-    this.nameText.setStroke(COLOR_STROKE, 5);
+    this.nameText = this.createText(28, paletteText('TOOLTIP_NAME'), 'bold', NAME_SHADOW);
+    this.nameText.setStroke(paletteText('TEXT_OUTLINE'), 5);
 
-    this.descriptionText = this.createText(20, COLOR_DESCRIPTION, 'normal');
+    this.descriptionText = this.createText(20, paletteText('TOOLTIP_DESCRIPTION'), 'normal');
     this.descriptionText.setLineSpacing(6);
 
     this.descriptionContainer.add([this.nameText, this.descriptionText]);
@@ -169,7 +163,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private addCardShadow() {
-    const shadow = this.scene.add.rectangle(0, 0, WIDTH, HEIGHT, COLOR_BACKGROUND, SHADOW_ALPHA);
+    const shadow = this.scene.add.rectangle(0, 0, WIDTH, HEIGHT, paletteFill('TOOLTIP_FILL'), SHADOW_ALPHA);
     shadow.setOrigin(0.5, 0.5);
     shadow.setPosition(SHADOW_OFFSET, SHADOW_OFFSET);
     shadow.setInteractive(); // Prevent clicks falling through
@@ -228,19 +222,19 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private renderEquipmentName(equipmentName: string, startYPosition: number): number {
-    const equipmentNameText = this.createText(22, COLOR_EQUIPMENT_NAME, 'italic');
+    const equipmentNameText = this.createText(22, paletteText('TOOLTIP_EQUIPMENT_NAME'), 'italic');
     equipmentNameText.setText(`${getText('ui.card.equipment')} ${equipmentName}`);
-    equipmentNameText.setStroke(COLOR_STROKE, 2);
+    equipmentNameText.setStroke(paletteText('TEXT_OUTLINE'), 2);
     equipmentNameText.setPosition(0, startYPosition);
     this.addEquipmentText(equipmentNameText);
     return startYPosition + equipmentNameText.height + 6;
   }
 
   private renderEquipmentStat(line: EquipmentValueLine, startYPosition: number): number {
-    const statColor = line.value >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE;
+    const statColor = line.value >= 0 ? paletteText('TOOLTIP_POSITIVE') : paletteText('TOOLTIP_NEGATIVE');
     const statTextElement = this.createText(20, statColor, 'bold');
     statTextElement.setText(line.text);
-    statTextElement.setStroke(COLOR_STROKE, 3);
+    statTextElement.setStroke(paletteText('TEXT_OUTLINE'), 3);
     statTextElement.setPosition(0, startYPosition);
     this.addEquipmentText(statTextElement);
     return startYPosition + statTextElement.height + 2;

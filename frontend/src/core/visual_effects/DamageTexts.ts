@@ -1,5 +1,5 @@
 import type { CombatResult } from '@/domain/CombatResult';
-import * as Constants from '@/core/Constants';
+import { paletteText } from '@/game/utils/Palette';
 
 type DamageText = {
   text: string;
@@ -11,11 +11,11 @@ function toDamageTexts(combat: CombatResult): DamageText[] {
   const texts: DamageText[] = [];
 
   if (combat.armorDamage > 0) {
-    texts.push({ text: `-${combat.armorDamage}`, color: Constants.ARMOR_DAMAGE_TEXT_COLOR });
+    texts.push({ text: `-${combat.armorDamage}`, color: paletteText('DAMAGE_TEXT_ARMOR') });
   }
 
   if (combat.healthDamage > 0) {
-    texts.push({ text: `-${combat.healthDamage}`, color: Constants.HEALTH_DAMAGE_TEXT_COLOR });
+    texts.push({ text: `-${combat.healthDamage}`, color: paletteText('DAMAGE_TEXT_HEALTH') });
   }
 
   return texts;

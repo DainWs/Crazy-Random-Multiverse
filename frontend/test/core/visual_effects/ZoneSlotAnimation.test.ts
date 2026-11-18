@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import applyAnimation, { ZoneSlotAnimation } from '@/core/visual_effects/ZoneSlotAnimation';
 import ZoneSlotView from '@/game/zone/ZoneSlotView';
-import * as Constants from '@/core/Constants';
+import { paletteFill } from '@/game/utils/Palette';
 
 describe('ZoneSlotAnimation', () => {
   const createMockZoneSlot = () => {
@@ -23,7 +23,7 @@ describe('ZoneSlotAnimation', () => {
   it('frames the slot in red for highlight_as_source', () => {
     const slot = createMockZoneSlot();
     applyAnimation(slot, 'highlight_as_source');
-    expect(slot.showMarker).toHaveBeenCalledWith(Constants.SLOT_MARKER_SOURCE_COLOR);
+    expect(slot.showMarker).toHaveBeenCalledWith(paletteFill('MARK_SOURCE'));
   });
 
   it('sets light green background color for highlight_as_target', () => {
@@ -36,7 +36,7 @@ describe('ZoneSlotAnimation', () => {
   it('frames the slot in green for highlight_as_target', () => {
     const slot = createMockZoneSlot();
     applyAnimation(slot, 'highlight_as_target');
-    expect(slot.showMarker).toHaveBeenCalledWith(Constants.SLOT_MARKER_VALID_COLOR);
+    expect(slot.showMarker).toHaveBeenCalledWith(paletteFill('MARK_VALID'));
   });
 
   it('restores the background of the slot for unhighlight', () => {

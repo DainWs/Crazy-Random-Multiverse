@@ -1,7 +1,7 @@
 import 'phaser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ZoneSlotView from '@/game/zone/ZoneSlotView';
-import { OWN_SLOT_BORDER_COLOR, OWN_SLOT_COLOR } from '@/core/Constants';
+import { paletteFill } from '@/game/utils/Palette';
 import Player from '@/domain/Player';
 
 const localPlayer = new Player('p-1', 'One');
@@ -26,7 +26,7 @@ describe('ZoneSlotView background', () => {
 
   // VIEW-27
   it('tints the slots of the zone of the local player', () => {
-    expect(restoreBackgroundOf(localPlayer)).toHaveBeenCalledWith(OWN_SLOT_COLOR, OWN_SLOT_BORDER_COLOR);
+    expect(restoreBackgroundOf(localPlayer)).toHaveBeenCalledWith(paletteFill('SLOT_OWN_TINT'), paletteFill('SLOT_OWN_BORDER'));
   });
 
   // VIEW-27

@@ -26,6 +26,7 @@ import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
 import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
 import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { paletteText } from '@/game/utils/Palette';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -224,7 +225,7 @@ class GameScene extends Scene {
         const { x, y, scale } = calculateScreenFixedTransform(this.scale.width, this.scale.height, this.cameraSystem.getCamera().zoom);
         const centerX = x + (this.scale.width / 2) * scale;
         const message = getText(key);
-        const style = { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: Constants.REJECTION_MESSAGE_COLOR };
+        const style = { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: paletteText('REJECTION_TEXT') };
         const rejectionText = this.add.text(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale, message, style);
         rejectionText.setOrigin(0.5, 0.5);
         rejectionText.setScale(scale);

@@ -6,12 +6,10 @@ import * as TextUtils from "@/game/utils/TextUtils";
 import { getText } from "@/core/Texts";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 import EquipmentCardLayout from "@/game/cards/EquipmentCardLayout";
+import { paletteText } from "@/game/utils/Palette";
 
 const NAME_FONT_SIZE_RATIO = 0.08;
 const VALUE_FONT_SIZE_RATIO = 0.07;
-const NAME_COLOR = '#000';
-const POSITIVE_COLOR = '#00b800';
-const NEGATIVE_COLOR = '#e30000';
 
 const render = (scene: Phaser.Scene, view: EquipmentView, width: number, height: number) => {
   const layout = new EquipmentCardLayout(width, height);
@@ -28,7 +26,7 @@ const render = (scene: Phaser.Scene, view: EquipmentView, width: number, height:
 function createName(scene: Phaser.Scene, area: TextArea, name: string, fontSize: number): Phaser.GameObjects.Text {
   const nameText = scene.add.text(area.x, area.y, name);
   nameText.setOrigin(0.5, 0.5);
-  nameText.setColor(NAME_COLOR);
+  nameText.setColor(paletteText('CARD_TEXT'));
   nameText.setFontSize(fontSize);
   TextUtils.fitText(nameText, area.width, area.height);
 
@@ -38,7 +36,7 @@ function createName(scene: Phaser.Scene, area: TextArea, name: string, fontSize:
 function createValue(scene: Phaser.Scene, area: TextArea, line: EquipmentValueLine, fontSize: number): Phaser.GameObjects.Text {
   const valueText = scene.add.text(area.x, area.y, line.text);
   valueText.setOrigin(0.5, 0.5);
-  valueText.setColor(line.value > 0 ? POSITIVE_COLOR : NEGATIVE_COLOR);
+  valueText.setColor(line.value > 0 ? paletteText('CARD_VALUE_POSITIVE') : paletteText('CARD_VALUE_NEGATIVE'));
   valueText.setFontSize(fontSize);
   TextUtils.fitText(valueText, area.width, area.height);
 

@@ -34,9 +34,6 @@ export const REJECTION_MESSAGE_TOP_OFFSET = 60;
 /** Font size of the message about a rejected action. */
 export const REJECTION_MESSAGE_FONT_SIZE = '28px';
 
-/** Color of the message about a rejected action. */
-export const REJECTION_MESSAGE_COLOR = '#ff6b6b';
-
 /** Depth of the message about a rejected action: above the cards. */
 export const REJECTION_MESSAGE_DEPTH = 20000;
 
@@ -52,23 +49,11 @@ export const TURN_NOTICE_TOP_RATIO = 0.2;
 /** Font size of the notice of a new round or turn (VIEW-15). */
 export const TURN_NOTICE_FONT_SIZE = '40px';
 
-/** Color of the text of the notice of a new round or turn (VIEW-15). */
-export const TURN_NOTICE_COLOR = '#ffffff';
-
-/** Color of the panel behind the notice of a new round or turn (VIEW-15). */
-export const TURN_NOTICE_BACKGROUND = '#1b2631';
-
 /** Padding in pixels between the text of the notice of a new round or turn and its panel (VIEW-15). */
 export const TURN_NOTICE_PADDING = { x: 28, y: 12 };
 
 /** Depth of the notice of a new round or turn: above the cards. */
 export const TURN_NOTICE_DEPTH = 20000;
-
-/** Color of the attack arrow while the pointer is over a target the attack can reach (UI-5, VIEW-4). */
-export const ATTACK_ARROW_VALID_COLOR = 0x2ecc71;
-
-/** Color of the attack arrow while the pointer is not over a target the attack can reach (UI-5, VIEW-4). */
-export const ATTACK_ARROW_INVALID_COLOR = 0xe74c3c;
 
 /** Thickness in pixels of the attack arrow line. */
 export const ATTACK_ARROW_LINE_WIDTH = 8;
@@ -82,26 +67,11 @@ export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
 /** Distance in board-space units between the tip of the attack arrow and the card of the valid target it points at (UI-5). */
 export const ATTACK_ARROW_TARGET_GAP = 8;
 
-/** Color of the frame of a valid target or drop slot, the green of the arrow (UI-5, VIEW-4). */
-export const SLOT_MARKER_VALID_COLOR = ATTACK_ARROW_VALID_COLOR;
-
-/** Color of the frame of the slot of the attacker or the origin of a drag, the red of the arrow (UI-5, VIEW-4). */
-export const SLOT_MARKER_SOURCE_COLOR = ATTACK_ARROW_INVALID_COLOR;
-
-/** Color of the frame of an own card that can attack now (VIEW-17). */
-export const SLOT_MARKER_READY_COLOR = 0x00e5ff;
-
 /** Duration in milliseconds of one pulse of the frame of an own card that can attack now (VIEW-17). */
 export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 1600;
 
 /** Lowest alpha of the pulse of the frame of an own card that can attack now, between 0 and 1 (VIEW-17). */
 export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
-
-/** Fill color of the slots of the zone of the local player, at rest (VIEW-27). */
-export const OWN_SLOT_COLOR = 0x9fd8ff;
-
-/** Border color of the slots of the zone of the local player, at rest (VIEW-27). */
-export const OWN_SLOT_BORDER_COLOR = 0x3d9bff;
 
 /** Depth of the attack arrow, above the cards and the hand. */
 export const ATTACK_ARROW_DEPTH = 20000;
@@ -112,12 +82,6 @@ export const HUD_MARGIN = 24;
 
 /** Font size of the turn indicator and the buttons of the game HUD. */
 export const HUD_FONT_SIZE = '24px';
-
-/** Text color of the game HUD. */
-export const HUD_COLOR = '#ffffff';
-
-/** Text color of the turn indicator while it is the turn of the local player (UI-3). */
-export const HUD_OWN_TURN_COLOR = '#2ecc71';
 
 /** Separator between the round and the turn in the turn indicator of the game HUD (UI-3). */
 export const HUD_TURN_SEPARATOR = ' · ';
@@ -152,12 +116,6 @@ export const GAME_RESULT_DETAIL_FONT_SIZE = '28px';
 /** Vertical distance in pixels between two lines of the result. */
 export const GAME_RESULT_LINE_GAP = 48;
 
-/** Text color of the title of a victory. */
-export const GAME_RESULT_VICTORY_COLOR = '#2ecc71';
-
-/** Text color of the title of a defeat. */
-export const GAME_RESULT_DEFEAT_COLOR = '#e74c3c';
-
 /** Alpha of the veil that covers the board while the result is shown (WIN-4). */
 export const GAME_RESULT_VEIL_ALPHA = 0.7;
 
@@ -173,15 +131,6 @@ export const HUD_BUTTON_GAP = 16;
 /** Padding in pixels around the text of a HUD button. */
 export const HUD_BUTTON_PADDING = { x: 12, y: 6 };
 
-/** Background color of a HUD button. */
-export const HUD_BUTTON_BACKGROUND = '#34495e';
-
-/** Background color of a HUD button under the pointer. */
-export const HUD_BUTTON_HOVER_BACKGROUND = '#46627f';
-
-/** Text color of the label that tells a spectator they are only watching (VIEW-28). */
-export const HUD_SPECTATOR_COLOR = '#bdc3c7';
-
 /** Depth of the game HUD: above the cards and below the messages about rejected actions. */
 export const HUD_DEPTH = 15000;
 
@@ -191,15 +140,8 @@ export const GAME_RESULT_DEPTH = HUD_DEPTH + 10;
 /** Width and height in pixels of the dialog that asks for confirmation (UI-15). */
 export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };
 
-/** Background color of the dialog that asks for confirmation. */
-export const CONFIRM_DIALOG_BACKGROUND = 0x1b2631;
-
-/** Width in pixels and color of the border of the confirmation dialog. */
+/** Width in pixels of the border of the confirmation dialog. */
 export const CONFIRM_DIALOG_BORDER_WIDTH = 2;
-export const CONFIRM_DIALOG_BORDER_COLOR = 0x34495e;
-
-/** Color of the veil that covers the game behind the dialog that asks for confirmation. */
-export const CONFIRM_VEIL_COLOR = 0x000000;
 
 /** Alpha of the veil that covers the game behind the dialog that asks for confirmation. */
 export const CONFIRM_VEIL_ALPHA = 0.6;
@@ -220,26 +162,14 @@ export const HIT_SHAKE_DURATION_MS = 50;
 /** Times the shake of a card hit by an attack goes back and forth (VIEW-5). */
 export const HIT_SHAKE_REPEATS = 3;
 
-/** Color of the flash over the slot of a card hit by an attack (VIEW-5). */
-export const HIT_FLASH_COLOR = 0xff0000;
-
 /** Milliseconds the flash over a hit card takes to fade out (VIEW-5). */
 export const HIT_FLASH_DURATION_MS = 350;
 
 /** Font size of the floating text with the damage a card received (VIEW-6). */
 export const DAMAGE_TEXT_FONT_SIZE = '48px';
 
-/** Color of the floating text with the armor a card lost (VIEW-6). */
-export const ARMOR_DAMAGE_TEXT_COLOR = '#5dade2';
-
-/** Color of the floating text with the health a card lost (VIEW-6). */
-export const HEALTH_DAMAGE_TEXT_COLOR = '#e74c3c';
-
 /** Milliseconds the armor and the health of a card take to count down to their new values (VIEW-6). */
 export const STATISTIC_COUNT_DURATION_MS = 500;
-
-/** Color of the outline of the floating text with the damage, so it reads over any card (VIEW-6). */
-export const DAMAGE_TEXT_STROKE_COLOR = '#000000';
 
 /** Width in pixels of the outline of the floating text with the damage (VIEW-6). */
 export const DAMAGE_TEXT_STROKE_WIDTH = 6;
@@ -271,9 +201,6 @@ export const LEADER_DEATH_SCALE = 0.3;
 /** Times a dead leader shakes back and forth before it fades out (VIEW-7). */
 export const LEADER_DEATH_SHAKE_REPEATS = 8;
 
-/** Color of the frame around the leader of the player with the turn (VIEW-20). */
-export const TURN_GLOW_COLOR = 0xf1c40f;
-
 /** Width in board-space units of the border that every slot draws around itself, and of every frame that covers it: the marks of an attack and a drop, of the cards that can attack and of the leader with the turn (VIEW-4, VIEW-17, VIEW-20). */
 export const SLOT_BORDER_WIDTH = 2;
 
@@ -283,26 +210,14 @@ export const TURN_GLOW_MIN_ALPHA = 0.45;
 /** Duration in milliseconds of one pulse of the frame around the leader of the player with the turn (VIEW-20). */
 export const TURN_GLOW_PULSE_PERIOD_MS = 2400;
 
-/** Color of the veil over each slot of the zone of an eliminated player: a dark red (VIEW-11). */
-export const ELIMINATED_VEIL_COLOR = 0x3b0a0a;
-
 /** Alpha of the veil over each slot of the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_VEIL_ALPHA = 0.8;
-
-/** Color of the border drawn around each veiled slot of the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_VEIL_BORDER_COLOR = 0x1a0000;
 
 /** Width in board-space units of the border around each veiled slot of the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_VEIL_BORDER_WIDTH = 3;
 
 /** Font size in board-space units of the label "Eliminado" over the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_LABEL_FONT_SIZE = '72px';
-
-/** Color of the label over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_LABEL_COLOR = '#ff5a4d';
-
-/** Color of the outline of the label over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_LABEL_STROKE_COLOR = '#000000';
 
 /** Thickness in board-space units of the outline of the label over the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_LABEL_STROKE_WIDTH = 10;
@@ -322,17 +237,12 @@ export const WARP_PADDING = 8;
 /** Size in pixels of the panel behind the bar and the texts of the loading screen (VIEW-29). */
 export const LOAD_PANEL_SIZE = { width: 560, height: 220 };
 
-/** Fill, border and corner radius of the panel of the loading screen, in the palette of the HUD (VIEW-29). */
-export const LOAD_PANEL_COLOR = 0x1b2631;
-export const LOAD_PANEL_BORDER_COLOR = 0x34495e;
+/** Width in pixels of the border of the panel of the loading screen (VIEW-29). */
 export const LOAD_PANEL_BORDER_WIDTH = 2;
 
 /** Width and height in pixels of the frame of the progress bar of the loading screen, and the room left around its fill (VIEW-29). */
 export const LOAD_BAR_SIZE = { width: 468, height: 32 };
 export const LOAD_BAR_FILL_MARGIN = 4;
-
-/** Color of the fill of the progress bar of the loading screen (VIEW-29). */
-export const LOAD_BAR_FILL_COLOR = 0x2ecc71;
 
 /** Distance in pixels from the vertical center of the window to the center of the bar, and from the bar to the status text and to the retry button of the loading screen (VIEW-29). */
 export const LOAD_BAR_OFFSET_Y = 0;
