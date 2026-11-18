@@ -38,3 +38,4 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
 - The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
+- The second signal of the marks of the board (`VIEW-39`) is in `specs/ui/MARKS-SECOND-SIGNAL.md`.

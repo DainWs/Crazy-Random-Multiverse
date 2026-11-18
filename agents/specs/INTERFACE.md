@@ -31,7 +31,8 @@ How the interface behaves. Its appearance is in `../VIEW-SPECS.md`.
   - A fade, a frame, a count or a text that does not move plays as with reduced motion off.
 
   An essential effect whose rule writes its own reduced motion version plays that one instead. Decided by the product owner on 2026-11-17.
-- **UI-30** The MVP has no settings: every effect plays as in normal quality and without reduced motion, and the reduced motion option of the operating system is not followed. The one exception are the pulses of `VIEW-17`, `VIEW-20` and `VIEW-38`, which do not pulse when the operating system asks for reduced motion. The interface is built so that adding the settings of `UI-27` only adds the screen and its options, without changing the rules of the effects.
+- **UI-30** The MVP has no settings: every effect plays as in normal quality and without reduced motion, and the reduced motion option of the operating system is not followed. The one exception are the pulses of `VIEW-17`, `VIEW-20` and `VIEW-38`, which do not pulse when the operating system asks for reduced motion. The parameter of `UI-31` is the other exception. The interface is built so that adding the settings of `UI-27` only adds the screen and its options, without changing the rules of the effects.
+- **UI-31** The extra signals of the marks of the board (`VIEW-39`) are turned on with the parameter `extraMarks=1` in the address of the page, read when the page loads. Without it, or with any other value, they are off. It is not kept between visits, it is not part of the game state nor of the contract, and it is not a setting: the MVP still has no settings screen (`UI-13`, `UI-30`). Decided by the product owner on 2026-11-18.
 
 ## Connection and failures
 
