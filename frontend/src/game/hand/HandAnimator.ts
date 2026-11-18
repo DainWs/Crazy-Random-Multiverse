@@ -3,26 +3,29 @@ import type CardView from "@/game/cards/CardView";
 import type HandView from "@/game/hand/HandView";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
 import { MOVE_TO_DURATION } from "@/core/visual_effects/CardTweens";
+import type { MotionSpeed } from "@/core/visual_effects/Motion";
+import { playMotion } from "@/core/visual_effects/Motion";
 
 type OnCompleteCallback = () => void;
 const NoneCallback = () => { };
 
-/** Time the hand takes to rise or sink when hovered, in ms. */
-const HAND_EXPANSION_DURATION = 250;
-/** Time the hand takes to sink while a card is dragged, in ms. */
+/** Time the hand takes to sink while a card is dragged, in ms. Not in the scale of `VIEW-30`: Phase 11.4 changes it to 150 (`VIEW-32`). */
 const HAND_HIDE_DURATION = 100;
+
+/** Ease of the hand rising and sinking. Not one of the four curves: Phase 11.4 changes it (`VIEW-31`). */
+const HAND_EXPANSION_EASE = { ease: 'Cubic.easeOut' };
 
 class HandAnimator {
 
   /** Always starts from where the hand is, so the last request wins and a collapse is never dropped. */
-  public animateHandExpansion(handView: HandView, targetHiddenRatio: number, duration: number = HAND_EXPANSION_DURATION) {
+  public animateHandExpansion(handView: HandView, targetHiddenRatio: number, duration: MotionSpeed | number = 'MEDIUM') {
     handView.scene.tweens.killTweensOf(handView);
-    handView.scene.tweens.add({
+    void playMotion(handView.scene, {
       targets: handView,
-      hiddenRatio: targetHiddenRatio,
+      to: { hiddenRatio: targetHiddenRatio },
       duration,
-      ease: 'Cubic.easeOut',
-      persist: false
+      curve: HAND_EXPANSION_EASE,
+      kind: 'ESSENTIAL'
     });
   }
 

@@ -104,7 +104,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 
 - Phaser objects are created in the scene (`create`) or in the view; views expose a method to destroy them, and whoever creates them destroys them.
 - Listeners (`scene.events.on`, `input.on`) are unsubscribed in `destroy`/`shutdown`. Every `on` without its `off` is a bug.
-- Tweens are created in `core/visual_effects` or in the view's animation module; they are not mixed with rules logic.
+- A tween is created only by `playMotion` (`core/visual_effects/Motion.ts`), never with `scene.tweens.add`. It takes one of the three speeds (`FAST`, `MEDIUM`, `SLOW`) or, for a named exception of the effect, the milliseconds as a constant; one of the four curves (`ENTER`, `LEAVE`, `TRAVEL`, `STRIKE`) or an ease kept as a constant; and the kind of effect (`ESSENTIAL`, `NON_ESSENTIAL`), which `EffectSettings` asks before playing. It resolves when the tween ends or the scene shuts down. Motions are described in `core/visual_effects` or in the view's animation module; they are not mixed with rules logic.
 - `update` does not allocate new objects nor create closures per frame.
 - `setScrollFactor(0)` keeps the HUD, the dialogs and the result in place when the camera pans, but does not undo the zoom, so their layout compensates it (`GameHudLayout`). The player's hand does not use it: `HandView` follows the camera on every `prerender` and is scaled by `1 / zoom` (`PHASER4-SPECS.md`). A card that leaves the hand gets a scroll factor of `1`.
 - All interaction goes through `core/interactions` (`CardInputManager`, `DragAndDrop`, `CardClickHandler`); a view does not register mouse handlers on its own.

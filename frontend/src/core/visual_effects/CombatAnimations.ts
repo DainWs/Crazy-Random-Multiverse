@@ -9,16 +9,10 @@ import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import DamageTextLayout from '@/game/cards/DamageTextLayout';
 import type { GameScene } from '@/scenes/Game';
 import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
+import type { Motion } from '@/core/visual_effects/Motion';
+import { playMotion } from '@/core/visual_effects/Motion';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
-
-type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
-
-function playTween(scene: GameScene, config: TweenConfig): Promise<void> {
-  return new Promise((resolve) => {
-    scene.tweens.add({ ...config, onComplete: () => resolve() });
-  });
-}
 
 /** The attack plays on the board as it was before it, which is the one drawn while its step runs (VIEW-5, VIEW-7). */
 async function playCombat(scene: GameScene, combat: CombatResult): Promise<void> {
@@ -51,7 +45,7 @@ async function playAttack(scene: GameScene, attackerSlot: ZoneSlotView, targetSl
 
   const reactions = [targetSlot.flash(paletteFill('HIT_FLASH')), showDamageTexts(scene, targetSlot, combat)];
   if (target) {
-    reactions.push(shake(scene, target, Constants.HIT_SHAKE_REPEATS));
+    reactions.push(shake(scene, target, Constants.HIT_SHAKE_REPEATS, 'NON_ESSENTIAL'));
     reactions.push(countDown(scene, target, 'Armor', combat.armorDamage));
     reactions.push(countDown(scene, target, 'Health', combat.healthDamage));
   }
@@ -70,13 +64,13 @@ async function playDeath(scene: GameScene, slot: ZoneSlotView): Promise<void> {
 }
 
 function pulse(scene: GameScene, view: CombatantView): Promise<void> {
-  return playTween(scene, {
+  return playMotion(scene, {
     targets: view,
-    scaleX: view.scaleX * Constants.ATTACK_PULSE_SCALE,
-    scaleY: view.scaleY * Constants.ATTACK_PULSE_SCALE,
+    to: { scaleX: view.scaleX * Constants.ATTACK_PULSE_SCALE, scaleY: view.scaleY * Constants.ATTACK_PULSE_SCALE },
     duration: Constants.ATTACK_PULSE_DURATION_MS,
-    yoyo: true,
-    ease: 'Power1'
+    curve: Constants.ATTACK_PULSE_EASE,
+    kind: 'ESSENTIAL',
+    yoyo: true
   });
 }
 
@@ -92,22 +86,25 @@ function countDown(scene: GameScene, view: CombatantView, type: StatisticType, d
   const counter = { value: statistic.value };
   const showCounter = () => statisticView.update(withValue(statistic, Math.round(counter.value)), equipmentValue);
 
-  return playTween(scene, {
+  return playMotion(scene, {
     targets: counter,
-    value: valueAfterDamage(statistic, damage),
+    to: { value: valueAfterDamage(statistic, damage) },
     duration: Constants.STATISTIC_COUNT_DURATION_MS,
+    curve: Constants.STATISTIC_COUNT_EASE,
+    kind: 'ESSENTIAL',
     onUpdate: showCounter
   });
 }
 
-function shake(scene: GameScene, view: CombatantView, repeats: number): Promise<void> {
-  return playTween(scene, {
+function shake(scene: GameScene, view: CombatantView, repeats: number, kind: Motion['kind']): Promise<void> {
+  return playMotion(scene, {
     targets: view,
-    x: view.x + Constants.HIT_SHAKE_DISTANCE,
+    to: { x: view.x + Constants.HIT_SHAKE_DISTANCE },
     duration: Constants.HIT_SHAKE_DURATION_MS,
+    curve: Constants.HIT_SHAKE_EASE,
+    kind,
     yoyo: true,
-    repeat: repeats,
-    ease: 'Linear'
+    repeat: repeats
   });
 }
 
@@ -116,16 +113,15 @@ async function fadeOut(scene: GameScene, view: CombatantView, isLeader: boolean)
   const duration = isLeader ? Constants.LEADER_DEATH_DURATION_MS : Constants.DEATH_DURATION_MS;
 
   if (isLeader) {
-    await shake(scene, view, Constants.LEADER_DEATH_SHAKE_REPEATS);
+    await shake(scene, view, Constants.LEADER_DEATH_SHAKE_REPEATS, 'ESSENTIAL');
   }
 
-  await playTween(scene, {
+  await playMotion(scene, {
     targets: view,
-    alpha: 0,
-    scaleX: view.scaleX * shrink,
-    scaleY: view.scaleY * shrink,
+    to: { alpha: 0, scaleX: view.scaleX * shrink, scaleY: view.scaleY * shrink },
     duration,
-    ease: 'Power1'
+    curve: Constants.DEATH_EASE,
+    kind: 'ESSENTIAL'
   });
 }
 
@@ -147,12 +143,12 @@ async function showDamageTexts(scene: GameScene, slot: ZoneSlotView, combat: Com
 }
 
 async function rise(scene: GameScene, damageText: Phaser.GameObjects.Text, targetY: number): Promise<void> {
-  await playTween(scene, {
+  await playMotion(scene, {
     targets: damageText,
-    y: targetY,
-    alpha: 0,
+    to: { y: targetY, alpha: 0 },
     duration: Constants.DAMAGE_TEXT_DURATION_MS,
-    ease: 'Power1'
+    curve: Constants.DAMAGE_TEXT_EASE,
+    kind: 'ESSENTIAL'
   });
 
   damageText.destroy();

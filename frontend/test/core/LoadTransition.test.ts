@@ -23,6 +23,7 @@ describe('playLoadTransition', () => {
     loading = { alpha: 1 };
     scene = {
       cameras: { main: board },
+      events: { once: () => {}, off: () => {} },
       tweens: { add: (tween: Tween) => tweens.push(tween) },
       scene: {
         isActive: (key: string) => key === LOAD_SCENE_KEY && loadingIsActive,
@@ -42,10 +43,11 @@ describe('playLoadTransition', () => {
     expect([board.alpha, tweens.map((tween) => [tween.targets === board, tween.targets === loading, tween.alpha, tween.duration])]).toEqual([0, [[true, false, 1, LOAD_TRANSITION_MS], [false, true, 0, LOAD_TRANSITION_MS]]]);
   });
 
-  it('removes the loading screen when it has faded out', () => {
+  it('removes the loading screen when it has faded out', async () => {
     playLoadTransition(scene);
 
     tweens[1].onComplete?.();
+    await Promise.resolve();
 
     expect(stopped).toEqual([LOAD_SCENE_KEY]);
   });

@@ -82,7 +82,7 @@ describe('LeaderIntro', () => {
     beforeEach(() => {
       placed = [];
       scene = {
-        events: { once: vi.fn() },
+        events: { once: vi.fn(), off: vi.fn() },
         tweens: {
           add: (config: { targets: FakeLeader; onComplete: () => void }) => {
             placed.push(config.targets.name);
@@ -104,7 +104,7 @@ describe('LeaderIntro', () => {
     it('waits for a leader to be placed before the next one', async () => {
       const completions: (() => void)[] = [];
       scene = {
-        events: { once: vi.fn() },
+        events: { once: vi.fn(), off: vi.fn() },
         tweens: { add: (config: { onComplete: () => void }) => completions.push(config.onComplete) }
       } as unknown as GameScene;
       const leaders = [createLeader('first'), createLeader('second')] as unknown as CombatantView[];

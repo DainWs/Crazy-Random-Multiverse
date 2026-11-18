@@ -12,7 +12,8 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import { HIT_FLASH_DURATION_MS, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS } from "@/core/Constants";
+import { HIT_FLASH_DURATION_MS, HIT_FLASH_EASE, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS } from "@/core/Constants";
+import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill } from "@/game/utils/Palette";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
@@ -166,22 +167,20 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   }
 
   /** Covers the slot with a color that fades out, for the hit of an attack (VIEW-5). */
-  public flash(color: number): Promise<void> {
+  public async flash(color: number): Promise<void> {
     const flashGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderBackground(flashGraphics, this.corners, color, color);
     this.add(flashGraphics);
 
-    return new Promise((resolve) => {
-      this.scene.tweens.add({
-        targets: flashGraphics,
-        alpha: 0,
-        duration: HIT_FLASH_DURATION_MS,
-        onComplete: () => {
-          flashGraphics.destroy();
-          resolve();
-        }
-      });
+    await playMotion(this.scene, {
+      targets: flashGraphics,
+      to: { alpha: 0 },
+      duration: HIT_FLASH_DURATION_MS,
+      curve: HIT_FLASH_EASE,
+      kind: 'NON_ESSENTIAL'
     });
+
+    flashGraphics.destroy();
   }
 
   /** Frames this slot, for the player with the turn, over its own border and under its card, with a pulse that follows the clock of the scene (VIEW-20). */

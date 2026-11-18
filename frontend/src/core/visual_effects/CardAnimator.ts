@@ -4,6 +4,7 @@ import type { CardAnimation, CardAnimationApplier } from "@/core/visual_effects/
 import * as Tweens from "@/core/visual_effects/CardTweens";
 import * as Animations from "@/core/visual_effects/CardAnimations";
 import { GameScene } from "@/scenes/Game";
+import { playMotion } from "@/core/visual_effects/Motion";
 
 const cardTweens = new Map<CardTween, CardTweenProvider>();
 cardTweens.set('hover', Tweens.hoverTween);
@@ -16,10 +17,10 @@ const cardAnimations = new Map<CardAnimation, CardAnimationApplier>();
 cardAnimations.set('startDrag', Animations.startDragAnimation);
 cardAnimations.set('endDrag', Animations.endDragAnimation);
 
-function playTween(card: CardView, tween: CardTween, ...args: unknown[]): Phaser.Tweens.Tween {
+function playTween(card: CardView, tween: CardTween, ...args: unknown[]): Promise<void> {
   const provider = cardTweens.get(tween) ?? Tweens.noneTween;
-  const tweenConfig = provider(card, args);
-  return card.scene.tweens.add(tweenConfig);
+
+  return playMotion(card.scene, provider(card, args));
 }
 
 function playAnimation(scene: GameScene, card: CardView, animation: CardAnimation): void {

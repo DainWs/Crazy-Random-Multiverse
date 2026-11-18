@@ -7,34 +7,35 @@ describe('OverlayTweens', () => {
   it('generates appear tween with fade-in alpha', () => {
     const config = resolveTween(mockOverlay, 'appear');
     expect(config.targets).toBe(mockOverlay);
-    expect(config.alpha).toEqual({ from: 0, to: 0.6 });
+    expect(config.to.alpha).toEqual({ from: 0, to: 0.6 });
     expect(config.duration).toBe(200);
-    expect(config.ease).toBe('Power1');
+    expect(config.curve).toBe('ENTER');
   });
 
   it('generates disappear tween with alpha 0', () => {
     const config = resolveTween(mockOverlay, 'disappear');
     expect(config.targets).toBe(mockOverlay);
-    expect(config.alpha).toBe(0);
+    expect(config.to.alpha).toBe(0);
     expect(config.duration).toBe(500);
   });
 
   it('generates hover tween with 1.035 scale', () => {
     const config = resolveTween(mockOverlay, 'hover');
-    expect(config.scale).toBe(1.035);
-    expect(config.duration).toBe(150);
+    expect(config.to.scale).toBe(1.035);
+    expect(config.duration).toBe('FAST');
   });
 
   it('generates unhover tween with 1.0 scale', () => {
     const config = resolveTween(mockOverlay, 'unhover');
-    expect(config.scale).toBe(1);
-    expect(config.duration).toBe(150);
+    expect(config.to.scale).toBe(1);
+    expect(config.duration).toBe('FAST');
   });
 
   it('generates heartbeat tween with yoyo and infinite loop', () => {
     const config = resolveTween(mockOverlay, 'heartbeat');
-    expect(config.alpha).toBe(1);
+    expect(config.to.alpha).toBe(1);
     expect(config.yoyo).toBe(true);
+    expect(config.kind).toBe('NON_ESSENTIAL');
     expect(config.loop).toBe(Number.MAX_VALUE);
     expect(config.duration).toBe(2000);
   });
@@ -42,8 +43,8 @@ describe('OverlayTweens', () => {
   it('falls back to noneTween when unknown tween type is given', () => {
     const config = resolveTween(mockOverlay, 'unknown' as OverlayTween);
     expect(config.targets).toBe(mockOverlay);
-    expect(config.scale).toBe(1);
+    expect(config.to.scale).toBe(1);
     expect(config.duration).toBe(0);
-    expect(config.ease).toBe('Linear');
+    expect(config.curve).toEqual({ ease: 'Linear' });
   });
 });

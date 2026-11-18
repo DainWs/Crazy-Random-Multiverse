@@ -43,6 +43,9 @@ export const TURN_NOTICE_FADE_MS = 200;
 /** Time in milliseconds a notice of a new round or turn stays fully visible (VIEW-15). */
 export const TURN_NOTICE_HOLD_MS = 1100;
 
+/** Ease of the fade of a notice of a new round or turn. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const TURN_NOTICE_EASE = { ease: 'Linear' };
+
 /** Distance from the top edge of the screen to the notice of a new round or turn, as a fraction of the screen height (VIEW-15). */
 export const TURN_NOTICE_TOP_RATIO = 0.2;
 
@@ -88,6 +91,9 @@ export const HUD_TURN_SEPARATOR = ' · ';
 
 /** Alpha of a HUD button that cannot be used now (UI-4). */
 export const HUD_DISABLED_ALPHA = 0.4;
+
+/** Ease of the placement of a leader. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const LEADER_INTRO_EASE = { ease: 'Quad.easeIn' };
 
 /** Total milliseconds the leaders take to be placed when the board is first shown (VIEW-12). */
 export const LEADER_INTRO_TOTAL_MS = 2000;
@@ -153,6 +159,9 @@ export const ATTACK_PULSE_SCALE = 1.25;
 /** Milliseconds the attacker takes to grow to its attack scale; shrinking back takes the same (VIEW-5). */
 export const ATTACK_PULSE_DURATION_MS = 180;
 
+/** Ease of the growing of the attacker. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const ATTACK_PULSE_EASE = { ease: 'Power1' };
+
 /** Distance in pixels a card hit by an attack moves to each side while it shakes (VIEW-5). */
 export const HIT_SHAKE_DISTANCE = 10;
 
@@ -162,6 +171,12 @@ export const HIT_SHAKE_DURATION_MS = 50;
 /** Times the shake of a card hit by an attack goes back and forth (VIEW-5). */
 export const HIT_SHAKE_REPEATS = 3;
 
+/** Ease of the shake of a card. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const HIT_SHAKE_EASE = { ease: 'Linear' };
+
+/** Ease of the flash over a hit card. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const HIT_FLASH_EASE = { ease: 'Linear' };
+
 /** Milliseconds the flash over a hit card takes to fade out (VIEW-5). */
 export const HIT_FLASH_DURATION_MS = 350;
 
@@ -170,6 +185,12 @@ export const DAMAGE_TEXT_FONT_SIZE = '48px';
 
 /** Milliseconds the armor and the health of a card take to count down to their new values (VIEW-6). */
 export const STATISTIC_COUNT_DURATION_MS = 500;
+
+/** Ease of the count of the armor and the health. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const STATISTIC_COUNT_EASE = { ease: 'Linear' };
+
+/** Ease of the rising of the floating text with the damage. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const DAMAGE_TEXT_EASE = { ease: 'Power1' };
 
 /** Width in pixels of the outline of the floating text with the damage (VIEW-6). */
 export const DAMAGE_TEXT_STROKE_WIDTH = 6;
@@ -185,6 +206,9 @@ export const DAMAGE_TEXT_DURATION_MS = 900;
 
 /** Depth of the floating text with the damage: above the cards and below the messages about rejected actions. */
 export const DAMAGE_TEXT_DEPTH = 14000;
+
+/** Ease of the shrinking and fading out of a dead card or leader. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const DEATH_EASE = { ease: 'Power1' };
 
 /** Milliseconds a dead card takes to shrink and fade out (VIEW-7). */
 export const DEATH_DURATION_MS = 500;
@@ -254,6 +278,9 @@ export const LOAD_PANEL_OFFSET_Y = 40;
 
 /** Duration in milliseconds of the board fading in over the loading screen, which fades out at the same time (VIEW-29). */
 export const LOAD_TRANSITION_MS = 400;
+
+/** Ease of the fades from the loading screen to the board. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
+export const LOAD_TRANSITION_EASE = { ease: 'Linear' };
 
 /** Key of the scene of the loading screen. */
 export const LOAD_SCENE_KEY = 'GameLoad';

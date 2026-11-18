@@ -1,9 +1,9 @@
 import type Player from '@/domain/Player';
 import type { PlayerCode } from '@/domain/Player';
 import type { GameScene } from '@/scenes/Game';
-import Phaser from 'phaser';
 import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
+import { playMotion } from '@/core/visual_effects/Motion';
 import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 import { paletteText } from '@/game/utils/Palette';
 
@@ -40,25 +40,15 @@ function playNotice(scene: GameScene, text: string): Promise<void> {
   label.setDepth(Constants.TURN_NOTICE_DEPTH);
   label.setAlpha(0);
 
-  return new Promise((resolve) => {
-    const finish = () => {
-      label.destroy();
-      resolve();
-    };
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, finish);
-
-    scene.tweens.add({
-      targets: label,
-      alpha: 1,
-      duration: Constants.TURN_NOTICE_FADE_MS,
-      hold: Constants.TURN_NOTICE_HOLD_MS,
-      yoyo: true,
-      onComplete: () => {
-        scene.events.off(Phaser.Scenes.Events.SHUTDOWN, finish);
-        finish();
-      }
-    });
-  });
+  return playMotion(scene, {
+    targets: label,
+    to: { alpha: 1 },
+    duration: Constants.TURN_NOTICE_FADE_MS,
+    curve: Constants.TURN_NOTICE_EASE,
+    kind: 'ESSENTIAL',
+    hold: Constants.TURN_NOTICE_HOLD_MS,
+    yoyo: true
+  }).then(() => label.destroy());
 }
 
 export type { BoardTurn };

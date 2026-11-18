@@ -1,92 +1,100 @@
 import type CardView from "@/game/cards/CardView";
-
-type TweenConfig = Phaser.Types.Tweens.TweenBuilderConfig;
+import type { Motion } from "@/core/visual_effects/Motion";
 
 type CardTween = 'hover' | 'unhover' | 'horizontal_slide' | 'move_to_hand' | 'preview_in_zone_slot';
-type CardTweenProvider = (card: CardView, args: unknown[]) => TweenConfig;
+type CardTweenProvider = (card: CardView, args: unknown[]) => Motion;
 
-function noneTween(card: CardView) {
+/** How much a card under the pointer grows, relative to its own scale. */
+const HOVER_SCALE = 1.035;
+
+/** Duration in ms of a card that arrives in the hand. Not in the scale of `VIEW-30`: Phase 11.4 changes it (`VIEW-8`). */
+const MOVE_TO_DURATION = 500;
+
+/** Wait in ms after a card has arrived in the hand, before the tween ends. Phase 11.4 changes it (`VIEW-8`). */
+const MOVE_TO_COMPLETE_DELAY = 100;
+
+/** Duration in ms of the preview of a card in a slot. Not in the scale of `VIEW-30`: Phase 11.4 changes it to 150 (`VIEW-32`). */
+const PREVIEW_IN_ZONE_SLOT_DURATION = 200;
+
+/** Ease of the cards that slide inside the hand and the stacks. Not one of the four curves: Phase 11.4 changes it (`VIEW-31`). */
+const SLIDE_EASE = { ease: 'Power1' };
+
+const NONE_EASE = { ease: 'Linear' };
+
+function noneTween(card: CardView): Motion {
   const originalScale = card.getOriginalScale();
+
   return {
     targets: card,
-    scaleX: originalScale.scaleX,
-    scaleY: originalScale.scaleY,
+    to: { scaleX: originalScale.scaleX, scaleY: originalScale.scaleY },
     duration: 0,
-    ease: 'Linear',
-    persist: false
+    curve: NONE_EASE,
+    kind: 'ESSENTIAL'
   };
-};
+}
 
-const HOVER_DURATION = 150;
-function hoverTween(card: CardView): TweenConfig {
+function hoverTween(card: CardView): Motion {
   const originalScale = card.getOriginalScale();
   const scaleX = originalScale.scaleX;
   const scaleY = originalScale.scaleY ?? scaleX;
+
   return {
     targets: card,
-    scaleX: scaleX * 1.035,
-    scaleY: scaleY * 1.035,
-    duration: HOVER_DURATION,
-    ease: 'Power1',
-    persist: false
+    to: { scaleX: scaleX * HOVER_SCALE, scaleY: scaleY * HOVER_SCALE },
+    duration: 'FAST',
+    curve: 'ENTER',
+    kind: 'ESSENTIAL'
   };
 }
 
-const UNHOVER_DURATION = 150;
-function unhoverTween(card: CardView): TweenConfig {
+function unhoverTween(card: CardView): Motion {
   const originalScale = card.getOriginalScale();
-  return {
-    targets: card,
-    scaleX: originalScale.scaleX,
-    scaleY: originalScale.scaleY,
-    duration: UNHOVER_DURATION,
-    ease: 'Power1',
-    persist: false
-  }
-}
 
-const SLIDE_TO_DURATION = 250;
-function slideToTween(card: CardView, [x, y]: unknown[]): TweenConfig {
   return {
     targets: card,
-    x, y,
-    duration: SLIDE_TO_DURATION,
-    ease: 'Power1',
-    persist: false
+    to: { scaleX: originalScale.scaleX, scaleY: originalScale.scaleY },
+    duration: 'FAST',
+    curve: 'ENTER',
+    kind: 'ESSENTIAL'
   };
 }
 
-const MOVE_TO_DURATION = 500;
-function moveToTween(card: CardView, [x, y, delay]: unknown[]): TweenConfig {
+function slideToTween(card: CardView, [x, y]: unknown[]): Motion {
   return {
     targets: card,
-    x, y, 
-    delay: delay as number, 
+    to: { x, y },
+    duration: 'MEDIUM',
+    curve: SLIDE_EASE,
+    kind: 'ESSENTIAL'
+  };
+}
+
+function moveToTween(card: CardView, [x, y, delay]: unknown[]): Motion {
+  return {
+    targets: card,
+    to: { x, y },
+    delay: delay as number,
     duration: MOVE_TO_DURATION,
-    completeDelay: 100,
-    ease: 'Power1',
-    persist: false
+    completeDelay: MOVE_TO_COMPLETE_DELAY,
+    curve: 'ENTER',
+    kind: 'ESSENTIAL'
   };
 }
 
-const PREVIEW_IN_ZONE_SLOT_DURATION = 200;
-function previewInZoneSlotTween(card: CardView, [x, y, scale, rotation]: unknown[]): TweenConfig {
+function previewInZoneSlotTween(card: CardView, [x, y, scale, rotation]: unknown[]): Motion {
   const targetScale = typeof scale === 'number' ?
     { x: scale, y: scale } :
     scale as { x: number, y: number };
 
   return {
     targets: card,
-    x, y,
-    scaleX: targetScale.x,
-    scaleY: targetScale.y,
-    angle: rotation,
+    to: { x, y, scaleX: targetScale.x, scaleY: targetScale.y, angle: rotation },
     duration: PREVIEW_IN_ZONE_SLOT_DURATION,
-    ease: 'Power1',
-    persist: false
+    curve: 'ENTER',
+    kind: 'ESSENTIAL'
   };
 }
 
-export { SLIDE_TO_DURATION, MOVE_TO_DURATION, PREVIEW_IN_ZONE_SLOT_DURATION };
+export { MOVE_TO_DURATION, PREVIEW_IN_ZONE_SLOT_DURATION };
 export { noneTween,  hoverTween, unhoverTween, slideToTween, moveToTween, previewInZoneSlotTween };
 export type { CardTween, CardTweenProvider };

@@ -6,7 +6,6 @@ import {
   slideToTween,
   moveToTween,
   previewInZoneSlotTween,
-  SLIDE_TO_DURATION,
   MOVE_TO_DURATION,
   PREVIEW_IN_ZONE_SLOT_DURATION
 } from '@/core/visual_effects/CardTweens';
@@ -25,10 +24,10 @@ describe('CardTweens', () => {
       const tween = noneTween(card);
 
       expect(tween.targets).toBe(card);
-      expect(tween.scaleX).toBe(1.5);
-      expect(tween.scaleY).toBe(2.0);
+      expect(tween.to.scaleX).toBe(1.5);
+      expect(tween.to.scaleY).toBe(2.0);
       expect(tween.duration).toBe(0);
-      expect(tween.ease).toBe('Linear');
+      expect(tween.curve).toEqual({ ease: 'Linear' });
     });
   });
 
@@ -38,10 +37,10 @@ describe('CardTweens', () => {
       const tween = hoverTween(card);
 
       expect(tween.targets).toBe(card);
-      expect(tween.scaleX).toBeCloseTo(1.035, 5);
-      expect(tween.scaleY).toBeCloseTo(1.035, 5);
-      expect(tween.duration).toBe(150);
-      expect(tween.ease).toBe('Power1');
+      expect(tween.to.scaleX).toBeCloseTo(1.035, 5);
+      expect(tween.to.scaleY).toBeCloseTo(1.035, 5);
+      expect(tween.duration).toBe('FAST');
+      expect(tween.curve).toBe('ENTER');
     });
 
     it('handles uniform scale fallback if scaleY is missing', () => {
@@ -50,8 +49,8 @@ describe('CardTweens', () => {
       } as unknown as CardView;
       const tween = hoverTween(card);
 
-      expect(tween.scaleX).toBeCloseTo(2.07, 5);
-      expect(tween.scaleY).toBeCloseTo(2.07, 5);
+      expect(tween.to.scaleX).toBeCloseTo(2.07, 5);
+      expect(tween.to.scaleY).toBeCloseTo(2.07, 5);
     });
   });
 
@@ -61,9 +60,9 @@ describe('CardTweens', () => {
       const tween = unhoverTween(card);
 
       expect(tween.targets).toBe(card);
-      expect(tween.scaleX).toBe(1.2);
-      expect(tween.scaleY).toBe(1.4);
-      expect(tween.duration).toBe(150);
+      expect(tween.to.scaleX).toBe(1.2);
+      expect(tween.to.scaleY).toBe(1.4);
+      expect(tween.duration).toBe('FAST');
     });
   });
 
@@ -73,10 +72,10 @@ describe('CardTweens', () => {
       const tween = slideToTween(card, [100, 250]);
 
       expect(tween.targets).toBe(card);
-      expect(tween.x).toBe(100);
-      expect(tween.y).toBe(250);
-      expect(tween.duration).toBe(SLIDE_TO_DURATION);
-      expect(tween.ease).toBe('Power1');
+      expect(tween.to.x).toBe(100);
+      expect(tween.to.y).toBe(250);
+      expect(tween.duration).toBe('MEDIUM');
+      expect(tween.curve).toEqual({ ease: 'Power1' });
     });
   });
 
@@ -86,8 +85,8 @@ describe('CardTweens', () => {
       const tween = moveToTween(card, [300, 400, 50]);
 
       expect(tween.targets).toBe(card);
-      expect(tween.x).toBe(300);
-      expect(tween.y).toBe(400);
+      expect(tween.to.x).toBe(300);
+      expect(tween.to.y).toBe(400);
       expect(tween.delay).toBe(50);
       expect(tween.duration).toBe(MOVE_TO_DURATION);
       expect(tween.completeDelay).toBe(100);
@@ -100,11 +99,11 @@ describe('CardTweens', () => {
       const tween = previewInZoneSlotTween(card, [50, 80, 0.6, 15]);
 
       expect(tween.targets).toBe(card);
-      expect(tween.x).toBe(50);
-      expect(tween.y).toBe(80);
-      expect(tween.scaleX).toBe(0.6);
-      expect(tween.scaleY).toBe(0.6);
-      expect(tween.angle).toBe(15);
+      expect(tween.to.x).toBe(50);
+      expect(tween.to.y).toBe(80);
+      expect(tween.to.scaleX).toBe(0.6);
+      expect(tween.to.scaleY).toBe(0.6);
+      expect(tween.to.angle).toBe(15);
       expect(tween.duration).toBe(PREVIEW_IN_ZONE_SLOT_DURATION);
     });
 
@@ -112,9 +111,9 @@ describe('CardTweens', () => {
       const card = createMockCard();
       const tween = previewInZoneSlotTween(card, [120, 220, { x: 0.7, y: 0.8 }, 0]);
 
-      expect(tween.scaleX).toBe(0.7);
-      expect(tween.scaleY).toBe(0.8);
-      expect(tween.angle).toBe(0);
+      expect(tween.to.scaleX).toBe(0.7);
+      expect(tween.to.scaleY).toBe(0.8);
+      expect(tween.to.angle).toBe(0);
     });
   });
 });

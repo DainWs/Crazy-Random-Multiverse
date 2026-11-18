@@ -1,5 +1,6 @@
 import { UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
-import resolveTween from '@/core/visual_effects/OverlayTweens';
+import resolveTween, { APPEAR_DURATION } from '@/core/visual_effects/OverlayTweens';
+import { playMotion } from '@/core/visual_effects/Motion';
 import Phaser from 'phaser';
 import { paletteRgba } from '@/game/utils/Palette';
 
@@ -17,8 +18,6 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
   private collector: TargetAreaCollector;
   private targetImages: Phaser.GameObjects.Image[];
 
-  private tween: Phaser.Tweens.Tween;
-
   constructor(scene: Phaser.Scene, collector: TargetAreaCollector) {
     super(scene, 0, 0, KEY);
     this.setDisplaySize(scene.cameras.main.width, scene.cameras.main.height);
@@ -33,20 +32,19 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
   public activate(): void {
     this.setVisible(true);
   
-    const appearTween = resolveTween(this, 'appear');
-    const heartbeatTween = resolveTween(this, 'heartbeat');
-    heartbeatTween.delay = appearTween.duration;
+    const appearMotion = resolveTween(this, 'appear');
+    const heartbeatMotion = { ...resolveTween(this, 'heartbeat'), delay: APPEAR_DURATION };
 
-    this.tween = this.scene.tweens.addMultiple([appearTween, heartbeatTween])[1];
+    void playMotion(this.scene, appearMotion);
+    void playMotion(this.scene, heartbeatMotion);
     this.drawTargets();
   }
 
   public deactivate(): void {
     this.setVisible(false);
 
-    const disappearTween = resolveTween(this, 'disappear');
-    this.scene.tweens.remove(this.tween);
-    this.scene.tweens.add(disappearTween);
+    this.scene.tweens.killTweensOf(this);
+    void playMotion(this.scene, resolveTween(this, 'disappear'));
 
     for (const targetImage of this.targetImages) {
       targetImage.destroy(false);
@@ -68,13 +66,11 @@ class CalmTargetingOverlay extends Phaser.GameObjects.Image{
   }
 
   private onTargetHover(targetImage: Phaser.GameObjects.Image) {
-    const tween = resolveTween(targetImage, 'hover');
-    this.scene.tweens.add(tween);
+    void playMotion(this.scene, resolveTween(targetImage, 'hover'));
   }
 
   private onTargetUnhover(targetImage: Phaser.GameObjects.Image) {
-    const tween = resolveTween(targetImage, 'unhover');
-    this.scene.tweens.add(tween);
+    void playMotion(this.scene, resolveTween(targetImage, 'unhover'));
   }
 
   public static generateTexture(scene: Phaser.Scene) {

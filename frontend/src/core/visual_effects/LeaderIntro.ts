@@ -2,7 +2,7 @@ import type { PlayerCode } from '@/domain/Player';
 import type CombatantView from '@/game/cards/CombatantView';
 import type ZoneView from '@/game/zone/ZoneView';
 import type { GameScene } from '@/scenes/Game';
-import Phaser from 'phaser';
+import { playMotion } from '@/core/visual_effects/Motion';
 import * as Constants from '@/core/Constants';
 
 /** Shortens the placement of each leader as there are more, so the start stays brief (VIEW-12). */
@@ -43,24 +43,17 @@ async function playLeaderIntro(scene: GameScene, leaders: CombatantView[]): Prom
   }
 }
 
-/** It also ends when the scene shuts down, because its tweens are then dropped without completing and the queue would wait for ever. */
 function placeLeader(scene: GameScene, leader: CombatantView, duration: number): Promise<void> {
   const { scaleX, scaleY } = leader.getOriginalScale();
   const startScale = Constants.LEADER_INTRO_START_SCALE;
+  leader.setScale(scaleX * startScale, (scaleY ?? scaleX) * startScale);
 
-  return new Promise((resolve) => {
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, resolve);
-    leader.setScale(scaleX * startScale, (scaleY ?? scaleX) * startScale);
-
-    scene.tweens.add({
-      targets: leader,
-      alpha: 1,
-      scaleX,
-      scaleY: scaleY ?? scaleX,
-      duration,
-      ease: 'Quad.easeIn',
-      onComplete: () => resolve()
-    });
+  return playMotion(scene, {
+    targets: leader,
+    to: { alpha: 1, scaleX, scaleY: scaleY ?? scaleX },
+    duration,
+    curve: Constants.LEADER_INTRO_EASE,
+    kind: 'NON_ESSENTIAL'
   });
 }
 

@@ -3,6 +3,7 @@ import type Perspective from "@/game/perspectives/Perspective";
 import type ZoneView from "@/game/zone/ZoneView";
 import type { TargetArea } from "@/game/perspectives/overlays/CalmTargetingOverlay";
 import CalmTargetingOverlay from "@/game/perspectives/overlays/CalmTargetingOverlay";
+import { playMotion } from "@/core/visual_effects/Motion";
 
 type SelectedCard = CardView
 type TargetZone = ZoneView;
@@ -11,10 +12,11 @@ const PerspectiveOptions = {
     card: {
         topPadding: 0,
         leftPadding: 150,
+        // Not in the scale of VIEW-30 nor one of the four curves of VIEW-31: Phase 11.4 changes them.
         moveInDuration: 300,
-        moveInEase: 'Cubic.easeOut',
+        moveInEase: { ease: 'Cubic.easeOut' },
         moveOutDuration: 200,
-        moveOutEase: 'Cubic.easeIn'
+        moveOutEase: { ease: 'Cubic.easeIn' }
     }
 }
 
@@ -75,35 +77,27 @@ class CardActionPerspective implements Perspective {
             (this.scene.cameras.main.height / 2);
 
         this.selectedCard.setDepth(10000);
-        this.scene.tweens.add({
+        await playMotion(this.scene, {
           targets: this.selectedCard,
-          x, y,
+          to: { x, y },
           duration: PerspectiveOptions.card.moveInDuration,
-          ease: PerspectiveOptions.card.moveInEase,
-          persist: false
-        })
-
-        await sleep(PerspectiveOptions.card.moveInDuration);
+          curve: PerspectiveOptions.card.moveInEase,
+          kind: 'ESSENTIAL'
+        });
     }
 
     private async moveCardToOrigin(): Promise<void> {
         const { x, y } = this.selectedCard.getOriginalPosition();
     
-        this.scene.tweens.add({
+        await playMotion(this.scene, {
             targets: this.selectedCard,
-            x, y,
+            to: { x, y },
             duration: PerspectiveOptions.card.moveOutDuration,
-            ease: PerspectiveOptions.card.moveOutEase,
-            persist: false
+            curve: PerspectiveOptions.card.moveOutEase,
+            kind: 'ESSENTIAL'
         });
-
-        await sleep(PerspectiveOptions.card.moveOutDuration);
         this.selectedCard.resetDepth();
     }
-}
-
-async function sleep(miliseconds: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
 
 export default CardActionPerspective;

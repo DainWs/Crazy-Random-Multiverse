@@ -10,7 +10,7 @@ describe('HandAnimator', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     tweens = { add: vi.fn(), killTweensOf: vi.fn() };
-    handView = { scene: { tweens } } as unknown as HandView;
+    handView = { scene: { tweens, events: { once: vi.fn(), off: vi.fn() } } } as unknown as HandView;
     animator = new HandAnimator();
   });
 
