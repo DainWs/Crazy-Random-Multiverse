@@ -1,6 +1,6 @@
 # Skins
 
-Proposals of skins chosen by the product owner. They are reference material to recreate each skin later, not specification: nothing here is a rule. The rules are `FX-10` to `FX-15` in `agents/specs/VISUAL-EFFECTS.md`, and every skin is **[Post-MVP]**.
+Proposals of skins chosen by the product owner. They are reference material to recreate each skin later, not specification: nothing here is a rule. The rules are `FX-10` to `FX-21` in `agents/specs/VISUAL-EFFECTS.md`, and every skin is **[Post-MVP]**.
 
 ## Skins by element
 

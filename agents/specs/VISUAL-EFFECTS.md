@@ -39,8 +39,12 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 - **FX-11** **[Post-MVP]** Each element has its own catalog of skins, each one with a name. A skin replaces the look of its element as a whole. What it does not define of its element falls back to the default look of that element, so a skin can change a single thing.
 - **FX-12** **[Post-MVP]** The player chooses one skin for each element in the settings screen, each one on its own: any skin of the HUD goes with any skin of the battlefield. An element without a skin chosen keeps its default look. The choices are a preference of that player only, the other players do not see them, and they are not part of the game state or of the contract with the backend.
 - **FX-13** **[Post-MVP]** The effects of this file follow the settings of `UI-27`: being non-essential, they do not happen with low quality (`UI-28`) or with reduced motion (`UI-29`). Without them the game must be fully readable: no information is carried only by an effect of this file.
-- **FX-14** **[OPEN]** Whether the skins are part of the game or can be added by the players, and whether a skin may replace the audio.
-- **FX-15** **[OPEN]** Whether a skin may also change the effects of `FX-7` and `FX-4` or only the base look.
+- **FX-14** **[Post-MVP]** Only developers add skins, in the repository, as a change reviewed like any other. The players choose among the skins of the game (`FX-12`) and cannot load their own. A skin does not replace the audio. Decided by the product owner on 2026-11-18.
+- **FX-15** **[Post-MVP]** A skin only changes the base look. It does not change the effects of `FX-7` and `FX-4`, which follow the rarity of the card and the settings of `UI-27`. Decided by the product owner on 2026-11-18.
+- **FX-18** **[Post-MVP]** A skin is described by data: the value of every piece of `FX-17` (colors, alphas, sizes, fonts, frames and the reaction of the buttons under the pointer) is written in the skin itself, not in a list shared by all the skins. A piece whose shape data cannot describe, such as cut corners or a double border, may also carry the code that draws it. That code is only added by developers (`FX-14`), receives the same inputs as a piece made of data, and draws only inside the area it receives, so it does not change the layout (`FX-10`). The parts of the HUD that are Vue panels (`FX-10`) take the same values as the rest of the HUD. Decided by the product owner on 2026-11-18.
+- **FX-19** **[Post-MVP]** Adding a skin adds its own files and lists it in the catalog of its element (`FX-11`). No other file of the game changes: the colors of a skin are not added to a list shared with the other skins. Every catalog has the default skin of its element, which is the look of `VIEW-SPECS.md`, and every skin has a name, shown in the settings screen.
+- **FX-20** **[Post-MVP]** Every skin keeps the readability of the interface: the minimum contrasts and the minimum text size that Phase 11.1 writes in new `VIEW` rules apply to the texts of every skin of the HUD, and to the marks of the board (`VIEW-4`, `VIEW-11`, `VIEW-17`, `VIEW-20`, `VIEW-27`, `VIEW-32`) over every skin of the battlefield. A skin that does not keep them is not added to the catalog.
+- **FX-21** **[Post-MVP]** A skin that cannot be used, because a resource of it fails to load or a value is missing, does not stop the game: its element shows the default look (`FX-19`) and the other element keeps its own skin (`FX-12`). If only some resources are missing, `FX-11` applies.
 
 ## Scenarios
 
@@ -58,6 +62,16 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 - Given a skin of the battlefield that only defines its surface
 - When the player selects it
 - Then the battlefield shows that surface and the rest of the battlefield keeps its default look, and the HUD keeps the skin chosen for it
+
+**A skin that fails to load** **[Post-MVP]**
+- Given a skin of the HUD with a resource that fails to load
+- When the game starts with that skin chosen
+- Then the HUD shows the default look, the game goes on, and the battlefield keeps the skin chosen for it
+
+**A skin added by a developer** **[Post-MVP]**
+- Given a developer who adds a skin of the battlefield with its own files and lists it in the catalog
+- When the game is built
+- Then the skin can be chosen in the settings screen, and no other file of the game has changed
 
 **A HUD and a battlefield chosen apart** **[Post-MVP]**
 - Given a player who chose a skin for the battlefield and a skin for the HUD that were made apart

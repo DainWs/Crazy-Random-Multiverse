@@ -4,7 +4,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 **MVP goal:** a complete game loop: deal -> placement -> combat -> victory/defeat.
 
-**MVP scope:** Phases 1 to 13 (including 2.5, 2.6, 5.5 and 11.1 to 11.7). Phase 14 and the Post-MVP section are out of it.
+**MVP scope:** Phases 1 to 13 (including 2.5, 2.6, 5.5 and 11.1 to 11.7). Phases 14 and 15 and the Post-MVP section are out of it.
 
 ## Closed decisions
 
@@ -107,6 +107,19 @@ The AI is rethought around an LLM, starting from nothing. The current implementa
 
 - [ ] Discuss the specifications of the LLM model
 
+## Phase 15 — Skins
+
+**[Post-MVP]** Skins of the HUD and of the battlefield (`FX-10` to `FX-21`). It needs Phase 11.1 (the minimum contrasts and text size of `FX-20`), Phase 11.5 (the default look, which is the default skin of `FX-19`) and the settings screen (`UI-13`, `UI-27`).
+
+- [ ] Make `HudSkin` hold the value of every piece in the skin itself, with the optional code that draws a piece (`FX-18`), and let a skin define only part of them, taking the rest from the default skin (`FX-11`). Today it only has data and cannot describe the cut corners or the double border of `docs/skins/huds/fantasy/`
+- [ ] Take the colors of the battlefield out of `PaletteColor` and into `BattlefieldSkin` (`FX-19`): today a new battlefield means editing `Palette.ts`, and `BattlefieldSkin` has only three colors, while the proposals of `docs/skins/battlefields/` are scenes. Decide with the product owner which parts of a battlefield a skin defines, and write it in `FX-10`
+- [ ] Add a catalog for each element and choose the skin from it (`FX-11`, `FX-12`), instead of the fixed `DEFAULT_SKIN` of `GameDto`. The choice is read from the settings of the player (`UI-27`). A skin that cannot be used shows the default look (`FX-21`)
+- [ ] Give the Vue panels (`FX-10`) the values of the skin of the HUD, and take the `rgba` of `App.vue` out of the CSS
+- [ ] Load the resources of a skin, such as images and fonts, when it is chosen. A new font file is a new asset: ask before adding it
+- [ ] Check in a test, for every skin of the catalog, the minimum contrasts and text size of `FX-20`, so a skin that does not keep them cannot be added
+- [ ] Write in `FRONTEND-CODESTYLE.md` how to add a skin (`FX-19`), with one skin of the repository as the example
+- [ ] Port the skins of `docs/skins/`, one skin per commit, with a reference image of each. Which ones are ported first is decided with the product owner
+
 ## Pending tasks
 
 Not tied to a phase.
@@ -160,5 +173,5 @@ Not tied to a phase.
 - Cursor animations
 - Centralized audio and sounds for placement, attack, death, turn and round changes, victory and defeat, and a click refused while attacking (`VIEW-9`), with more variants for rarer cards once `VIEW-22` is resolved (`VIEW-21`)
 - Advanced trolling cards, green/red indicators, center-table behavior
-- Skins of the HUD and of the battlefield, each one chosen on its own by each player, and turning the effects off by group (`FX-10` to `FX-17`). The HUD skins are built from base pieces (`FX-17`). Their last parts, after the turn panel, the buttons and the dialog: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session, which are Vue panels
+- Skins of the HUD and of the battlefield, each one chosen on its own by each player, and turning the effects off by group (`FX-10` to `FX-21`, Phase 15). The HUD skins are built from base pieces (`FX-17`). Their last parts, after the turn panel, the buttons and the dialog: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session, which are Vue panels
 - Settings screen, with the graphics quality and reduced motion options (`UI-27` to `UI-29`), audio settings, a color-blind palette chosen in the settings, responsive and touch layouts. The accessibility of the MVP is Phase 11.1
