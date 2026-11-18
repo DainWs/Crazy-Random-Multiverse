@@ -4,6 +4,8 @@ import type { GameScene } from '@/scenes/Game';
 import GameHudLayout from '@/game/hud/GameHudLayout';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
+import type { ButtonRole } from '@/game/hud/HudSkin';
+import { accentAlpha, accentColor, createButton, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 
@@ -38,29 +40,33 @@ class GameHudView {
         this.layout = new GameHudLayout(scene.scale, this.zoom);
         this.callbacks = callbacks;
 
-        this.turnText = this.createText(this.layout.turnTextPosition(), '');
+        this.turnText = this.createLabel(this.layout.turnTextPosition(), '');
 
-        this.passTurnButton = this.createButton(
+        this.passTurnButton = this.createHudButton(
+            'PRIMARY',
             this.layout.passTurnButtonAnchor(),
             getText('ui.game.end_turn'),
             () => this.whenEnabled(callbacks.onPassTurn)
         );
 
-        this.surrenderButton = this.createButton(
+        this.surrenderButton = this.createHudButton(
+            'DESTRUCTIVE',
             this.layout.surrenderButtonAnchor(this.passTurnButton.height),
             getText('ui.game.surrender'),
             () => this.whenEnabled(this.askToSurrender.bind(this))
         );
 
-        this.leaveButton = this.createButton(
+        this.leaveButton = this.createHudButton(
+            'NEUTRAL',
             this.layout.passTurnButtonAnchor(),
             getText('ui.game.leave'),
             this.askToLeave.bind(this)
         );
         this.leaveButton.setVisible(false);
 
-        this.spectatorLabel = this.createText(this.layout.spectatorLabelAnchor(this.leaveButton.height), getText('ui.game.spectating'));
-        this.spectatorLabel.setColor(paletteText('HUD_SPECTATOR_TEXT'));
+        const spectatorAnchor = this.layout.spectatorLabelAnchor(this.leaveButton.height);
+        this.spectatorLabel = createText(this.scene, 'LABEL', {}, getText('ui.game.spectating'));
+        this.spectatorLabel.setPosition(spectatorAnchor.x, spectatorAnchor.y);
         this.spectatorLabel.setOrigin(1, 1);
         this.spectatorLabel.setVisible(false);
 
@@ -142,7 +148,7 @@ class GameHudView {
 
         this.enabled = canAct;
         for (const button of [this.passTurnButton, this.surrenderButton]) {
-            button.setAlpha(canAct ? 1 : Constants.HUD_DISABLED_ALPHA);
+            button.setAlpha(canAct ? 1 : accentAlpha('DISABLED'));
         }
         if (!canAct && !this.spectator) {
             this.closeConfirmDialog();
@@ -182,7 +188,7 @@ class GameHudView {
         const turnLabel = this.turnLabel(playerWithTurn, isOwnTurn);
 
         this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(Constants.HUD_TURN_SEPARATOR));
-        this.turnText.setColor(isOwnTurn ? paletteText('HUD_TEXT_LOCAL_TURN') : paletteText('HUD_TEXT'));
+        this.turnText.setColor(isOwnTurn ? accentColor('LOCAL_TURN') : paletteText('HUD_TEXT'));
     }
 
     private turnLabel(playerWithTurn: Player | undefined, isOwnTurn: boolean): string {
@@ -199,19 +205,19 @@ class GameHudView {
         }
     }
 
-    private createText(position: Point2D, text: string): Phaser.GameObjects.Text {
-        return this.scene.add.text(position.x, position.y, text, this.textStyle());
+    private createLabel(position: Point2D, text: string): Phaser.GameObjects.Text {
+        const label = createText(this.scene, 'BODY', {}, text);
+        label.setPosition(position.x, position.y);
+
+        return label;
     }
 
-    private createButton(anchor: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
-        const button = this.createText(anchor, label);
-        button.setBackgroundColor(paletteText('HUD_BUTTON'));
-        button.setPadding(Constants.HUD_BUTTON_PADDING);
+    private createHudButton(role: ButtonRole, anchor: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
+        const button = createButton(this.scene, role, label);
+        button.setPosition(anchor.x, anchor.y);
         button.setOrigin(1, 1);
-        button.setInteractive({ useHandCursor: true });
         button.on('pointerup', onClick);
-        button.on('pointerover', () => button.setBackgroundColor(paletteText('HUD_BUTTON_HOVER')));
-        button.on('pointerout', () => button.setBackgroundColor(paletteText('HUD_BUTTON')));
+
         return button;
     }
 
@@ -237,11 +243,11 @@ class GameHudView {
         veilShape.setOrigin(0, 0);
         veilShape.setInteractive();
 
-        const panelColor = paletteFill('PANEL_FILL');
-        const panelShape = this.scene.add.rectangle(panel.x, panel.y, panel.width, panel.height, panelColor);
-        panelShape.setStrokeStyle(Constants.CONFIRM_DIALOG_BORDER_WIDTH, paletteFill('PANEL_BORDER'));
+        const panelShape = createPanel(this.scene, 'HUD');
+        panelShape.setPosition(panel.x, panel.y);
+        panelShape.setSize(panel.width, panel.height);
 
-        const question = this.createText(dialog.question, getText(textKey));
+        const question = this.createLabel(dialog.question, getText(textKey));
         question.setOrigin(0.5);
 
         const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), () => this.confirm(onYes));
@@ -260,7 +266,7 @@ class GameHudView {
     }
 
     private createDialogButton(position: Point2D, label: string, onClick: () => void): Phaser.GameObjects.Text {
-        const button = this.createButton(position, label, onClick);
+        const button = this.createHudButton('NEUTRAL', position, label, onClick);
         button.setOrigin(0.5);
         button.setScrollFactor(0);
         return button;
@@ -269,10 +275,6 @@ class GameHudView {
     private closeConfirmDialog() {
         this.confirmDialog?.destroy();
         this.confirmDialog = null;
-    }
-
-    private textStyle(): Phaser.Types.GameObjects.Text.TextStyle {
-        return { fontSize: Constants.HUD_FONT_SIZE, color: paletteText('HUD_TEXT') };
     }
 }
 

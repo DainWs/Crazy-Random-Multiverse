@@ -6,9 +6,11 @@ import GameResultLayout from '@/game/result/GameResultLayout';
 import { summarizeResult } from '@/game/result/GameResultSummary';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
+import type { TextLevel } from '@/game/hud/HudSkin';
+import { accentColor, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
-import { paletteFill, paletteText } from '@/game/utils/Palette';
+import { paletteFill } from '@/game/utils/Palette';
 
 /** Shows over the board whether the local player won or lost, who won and the seconds left until the party (WIN-4). */
 class GameResultView {
@@ -38,11 +40,13 @@ class GameResultView {
         this.veilShape.setInteractive();
 
         const { panel } = positions;
-        this.panelShape = scene.add.rectangle(panel.x, panel.y, panel.width, panel.height, paletteFill('PANEL_FILL'), Constants.GAME_RESULT_PANEL_ALPHA);
+        this.panelShape = createPanel(scene, 'NOTICE');
+        this.panelShape.setPosition(panel.x, panel.y);
+        this.panelShape.setSize(panel.width, panel.height);
 
-        this.title = this.createText(positions.title, Constants.GAME_RESULT_TITLE_FONT_SIZE);
-        this.winner = this.createText(positions.winner, Constants.GAME_RESULT_DETAIL_FONT_SIZE);
-        this.countdown = this.createText(positions.countdown, Constants.GAME_RESULT_DETAIL_FONT_SIZE);
+        this.title = this.createLine(positions.title, 'TITLE');
+        this.winner = this.createLine(positions.winner, 'NUMBERS');
+        this.countdown = this.createLine(positions.countdown, 'NUMBERS');
 
         this.container = scene.add.container(0, 0, [this.veilShape, this.panelShape, this.title, this.winner, this.countdown]);
         this.container.setScrollFactor(0);
@@ -64,7 +68,7 @@ class GameResultView {
         const summary = summarizeResult(result, StoreSystem.getPlayer().code);
 
         this.title.setText(this.titleOf(summary));
-        this.title.setColor(summary.isVictory ? paletteText('RESULT_VICTORY') : paletteText('RESULT_DEFEAT'));
+        this.title.setColor(accentColor(summary.isVictory ? 'POSITIVE' : 'NEGATIVE'));
         this.winner.setText(summary.winnerName ? `${getText('ui.game.winner')} ${summary.winnerName}` : '');
         this.refreshCountdown();
     }
@@ -117,8 +121,9 @@ class GameResultView {
         this.countdown.setText(`${getText('ui.game.returning')} ${this.remainingSeconds}`);
     }
 
-    private createText(position: Point2D, fontSize: string): Phaser.GameObjects.Text {
-        const text = this.scene.add.text(position.x, position.y, '', { fontSize, color: paletteText('HUD_TEXT') });
+    private createLine(position: Point2D, level: TextLevel): Phaser.GameObjects.Text {
+        const text = createText(this.scene, level);
+        text.setPosition(position.x, position.y);
         text.setOrigin(0.5);
         return text;
     }

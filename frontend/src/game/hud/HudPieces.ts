@@ -1,0 +1,72 @@
+import type { AccentRole, ButtonRole, HudSkin, PanelRole, TextLevel } from '@/game/hud/HudSkin';
+import type { PaletteColor } from '@/game/utils/Palette';
+import * as Constants from '@/core/Constants';
+import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
+import { paletteFill, paletteText } from '@/game/utils/Palette';
+
+/** What a view changes of a text of a level: the size and the color of the few that do not follow the level yet. */
+type TextOverrides = {
+  fontSize?: string;
+  color?: PaletteColor;
+};
+
+/** A panel of the skin, not placed nor sized: its place is in the layout of the view that uses it. */
+function createPanel(scene: Phaser.Scene, role: PanelRole, skin: HudSkin = DEFAULT_HUD_SKIN): Phaser.GameObjects.Rectangle {
+  const look = skin.panels.get(role)!;
+  const panel = scene.add.rectangle(0, 0, 0, 0, paletteFill(look.fill), look.fillAlpha);
+
+  if (look.border) {
+    panel.setStrokeStyle(look.borderWidth, paletteFill(look.border));
+  }
+
+  return panel;
+}
+
+/** The fill of a panel as `#rrggbb`, for the texts that draw it as their own background. */
+function panelBackground(role: PanelRole, skin: HudSkin = DEFAULT_HUD_SKIN): string {
+  return paletteText(skin.panels.get(role)!.fill);
+}
+
+/** A text button of the skin with its look under the pointer, not placed: the view sets its origin, place and click. */
+function createButton(scene: Phaser.Scene, role: ButtonRole, label: string, skin: HudSkin = DEFAULT_HUD_SKIN): Phaser.GameObjects.Text {
+  const look = skin.buttons.get(role)!;
+  const button = createText(scene, 'BODY', { color: look.text }, label, skin);
+  button.setBackgroundColor(paletteText(look.fill));
+  button.setPadding(Constants.HUD_BUTTON_PADDING);
+  button.setInteractive({ useHandCursor: true });
+  button.on('pointerover', () => button.setBackgroundColor(paletteText(look.fillUnderPointer)));
+  button.on('pointerout', () => button.setBackgroundColor(paletteText(look.fill)));
+
+  return button;
+}
+
+/** A text of a level of the skin, not placed. */
+function createText(
+  scene: Phaser.Scene,
+  level: TextLevel,
+  overrides: TextOverrides = {},
+  text: string = '',
+  skin: HudSkin = DEFAULT_HUD_SKIN
+): Phaser.GameObjects.Text {
+  const look = skin.texts.get(level)!;
+  const style = {
+    fontFamily: look.fontFamily,
+    fontSize: overrides.fontSize ?? look.fontSize,
+    color: paletteText(overrides.color ?? look.color)
+  };
+
+  return scene.add.text(0, 0, text, style);
+}
+
+/** The color of an accent as `#rrggbb`. */
+function accentColor(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): string {
+  return paletteText(skin.accents.get(role)!.color);
+}
+
+/** The alpha of an accent: below 1 for what cannot be used. */
+function accentAlpha(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): number {
+  return skin.accents.get(role)!.alpha;
+}
+
+export type { TextOverrides };
+export { accentAlpha, accentColor, createButton, createPanel, createText, panelBackground };

@@ -94,6 +94,7 @@ this.cameras.main.setZoom(CAMERA_MIN_ZOOM);
 
 - Interaction, camera, card dimension and animation timing constants: `src/core/Constants.ts` or the module constant of their folder (`CardDimensions.ts`). Each constant with meaning carries a one-sentence TSDoc comment with its unit (px, ms).
 - Texture, audio and scene keys: constants, not repeated loose strings.
+- The panels, buttons, texts and accents of the HUD, the notices, the result, the dialogs and the rejection message are created with `game/hud/HudPieces.ts` from the active `HudSkin` (`game/hud/HudSkin.ts`), never with `scene.add.text` or `scene.add.rectangle` and a style written in the view. The view only places them.
 - Colors: a name in `PaletteColor` (`game/utils/Palette.ts`) that says its meaning, read with `paletteFill` (numbers), `paletteText` (`#rrggbb`) or `paletteRgba` (canvas gradients). No hexadecimal is written outside it.
 - Environment configuration (server URL, debug flags): `src/env.ts` / `import.meta.env`. `isDevelopment` controls what only exists in development.
 - `.env.local.*` stays out of the repository.

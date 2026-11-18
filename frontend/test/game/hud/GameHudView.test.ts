@@ -57,6 +57,8 @@ class FakeText {
 
 class FakeShape {
   public setStrokeStyle() { return this; }
+  public setPosition() { return this; }
+  public setSize() { return this; }
   public setOrigin() { return this; }
   public setInteractive() { return this; }
 }

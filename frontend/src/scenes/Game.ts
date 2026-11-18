@@ -15,6 +15,7 @@ import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import Phaser, { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
+import { createText } from '@/game/hud/HudPieces';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import GameResultView from '@/game/result/GameResultView';
@@ -26,7 +27,6 @@ import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
 import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
 import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
-import { paletteText } from '@/game/utils/Palette';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -225,8 +225,8 @@ class GameScene extends Scene {
         const { x, y, scale } = calculateScreenFixedTransform(this.scale.width, this.scale.height, this.cameraSystem.getCamera().zoom);
         const centerX = x + (this.scale.width / 2) * scale;
         const message = getText(key);
-        const style = { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: paletteText('REJECTION_TEXT') };
-        const rejectionText = this.add.text(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale, message, style);
+        const rejectionText = createText(this, 'BODY', { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: 'REJECTION_TEXT' }, message);
+        rejectionText.setPosition(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale);
         rejectionText.setOrigin(0.5, 0.5);
         rejectionText.setScale(scale);
         rejectionText.setScrollFactor(0);
