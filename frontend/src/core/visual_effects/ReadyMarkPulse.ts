@@ -15,9 +15,4 @@ function pulseWave(timeMs: number, periodMs: number): number {
   return (1 + Math.sin(2 * Math.PI * phase)) / 2;
 }
 
-/** The pulse stays at full alpha for who asks for less motion (VIEW-17). */
-function prefersReducedMotion(): boolean {
-  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
-}
-
-export { prefersReducedMotion, pulseWave, readyMarkAlpha };
+export { pulseWave, readyMarkAlpha };

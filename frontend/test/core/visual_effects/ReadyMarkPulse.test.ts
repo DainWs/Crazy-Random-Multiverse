@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { prefersReducedMotion, pulseWave, readyMarkAlpha } from '@/core/visual_effects/ReadyMarkPulse';
+import { describe, expect, it } from 'vitest';
+import { pulseWave, readyMarkAlpha } from '@/core/visual_effects/ReadyMarkPulse';
 import { SLOT_MARKER_READY_MIN_ALPHA, SLOT_MARKER_READY_PULSE_PERIOD_MS } from '@/core/Constants';
 
 describe('readyMarkAlpha', () => {
@@ -19,30 +19,6 @@ describe('readyMarkAlpha', () => {
   // VIEW-17
   it('repeats the same alpha one period later, so a frame drawn again continues in phase', () => {
     expect(readyMarkAlpha(250 + SLOT_MARKER_READY_PULSE_PERIOD_MS)).toBeCloseTo(readyMarkAlpha(250));
-  });
-});
-
-describe('prefersReducedMotion', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('is true when the system asks for reduced motion', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: true }));
-
-    expect(prefersReducedMotion()).toBe(true);
-  });
-
-  it('is false when the system does not ask for it', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: false }));
-
-    expect(prefersReducedMotion()).toBe(false);
-  });
-
-  it('is false when the browser cannot tell', () => {
-    vi.stubGlobal('matchMedia', undefined);
-
-    expect(prefersReducedMotion()).toBe(false);
   });
 });
 

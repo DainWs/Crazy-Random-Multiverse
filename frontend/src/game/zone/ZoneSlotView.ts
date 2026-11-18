@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import applyAnimation from "@/core/visual_effects/ZoneSlotAnimation";
-import { prefersReducedMotion, pulseWave, readyMarkAlpha } from "@/core/visual_effects/ReadyMarkPulse";
+import { pulseWave, readyMarkAlpha } from "@/core/visual_effects/ReadyMarkPulse";
+import EffectSettings from "@/core/EffectSettings";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import { ZoneSlotAnimations } from "@/core/visual_effects/ZoneSlotAnimation";
 import type Card from "@/domain/Card";
@@ -189,7 +190,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     ZoneSlotViewRenderer.renderMarker(this.glowGraphics, this.corners, paletteFill('MARK_TURN_GLOW'));
     this.add(this.glowGraphics);
 
-    this.turnFramePulses = !prefersReducedMotion();
+    this.turnFramePulses = !EffectSettings.pulsesAreStill();
     this.pulseTurnGlow();
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
   }
@@ -221,7 +222,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.add(this.readyGraphics);
     this.bringToTop(this.readyGraphics);
 
-    if (prefersReducedMotion()) {
+    if (EffectSettings.pulsesAreStill()) {
       return;
     }
 

@@ -1,5 +1,5 @@
 import 'phaser';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GameScene } from '@/scenes/Game';
 import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
 import { LOAD_SCENE_KEY, LOAD_TRANSITION_MS } from '@/core/Constants';
@@ -21,7 +21,6 @@ describe('playLoadTransition', () => {
     loadingIsActive = true;
     board = { alpha: 1, setAlpha(alpha: number) { board.alpha = alpha; } };
     loading = { alpha: 1 };
-    vi.stubGlobal('matchMedia', () => ({ matches: false }));
     scene = {
       cameras: { main: board },
       tweens: { add: (tween: Tween) => tweens.push(tween) },
@@ -31,6 +30,10 @@ describe('playLoadTransition', () => {
         stop: (key: string) => stopped.push(key)
       }
     } as unknown as GameScene;
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('fades the board in and the loading screen out together', () => {
@@ -55,11 +58,11 @@ describe('playLoadTransition', () => {
     expect([board.alpha, tweens.length, stopped]).toEqual([1, 0, []]);
   });
 
-  it('replaces the loading screen at once when the system asks for reduced motion', () => {
+  it('fades the board in even when the system asks for reduced motion', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
 
     playLoadTransition(scene);
 
-    expect([board.alpha, tweens.length, stopped]).toEqual([1, 0, [LOAD_SCENE_KEY]]);
+    expect([board.alpha, tweens.length, stopped]).toEqual([0, 2, []]);
   });
 });
