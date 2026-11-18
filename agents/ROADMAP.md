@@ -27,6 +27,8 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 11.0 — UX/UI: foundations of the view
 
+Started at: `19c689a`
+
 The base that the effects, the animations and the skins of Phases 11.1 to 11.7 and of the Post-MVP build on, so that none of them is done twice. It changes nothing on the screen: the look and the timing stay as they are, and the reference images do not change. Each module is written in `FRONTEND-CODESTYLE.md` in the same commit that creates it. None of them is an interface nor an `enum`: the closed sets are literal unions, the values tied to them are a `Map` keyed by the union, as `ZoneSlotAnimation` and `CardAnimator` do, and the rest are plain data objects and functions.
 
 - [ ] **Motion.** `core/visual_effects/Motion.ts`, with the union `MotionSpeed` (`'FAST'`, `'MEDIUM'`, `'SLOW'`) and a map to the durations of `VIEW-30` (150, 250 and 400 ms), and the union `MotionCurve` (`'ENTER'`, slows down at the end; `'LEAVE'`, starts slowly and speeds up; `'TRAVEL'`, slow at both ends; `'STRIKE'`, speeds up until it stops) and a map to the eases of Phaser (`VIEW-31`). `playMotion(scene, motion)` is the only function that creates a tween: it takes the targets, the final values, the speed or the duration of a named exception, the curve and the kind of effect, and returns a promise that resolves when the tween ends or the scene shuts down. The exceptions kept by the product owner (`VIEW-12`, `VIEW-11`, `VIEW-23`) are named constants of their own effect. Every tween of `core/visual_effects/` and of the animators of `game/` goes through `playMotion`, and a tween whose current values are not in the scale keeps them as a named constant of its effect, marked to be changed by Phase 11.4
