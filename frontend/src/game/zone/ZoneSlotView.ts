@@ -12,13 +12,22 @@ import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
 import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
-import { HIT_FLASH_DURATION_MS, HIT_FLASH_EASE, TURN_GLOW_MIN_ALPHA, TURN_GLOW_PULSE_PERIOD_MS } from "@/core/Constants";
+import {
+  EXTRA_MARK_FRAME_WIDTH,
+  HIT_FLASH_DURATION_MS,
+  HIT_FLASH_EASE,
+  OWN_ZONE_LINE_WIDTH,
+  TURN_GLOW_MIN_ALPHA,
+  TURN_GLOW_PULSE_PERIOD_MS
+} from "@/core/Constants";
 import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill } from "@/game/utils/Palette";
+import { ownZoneLines, readyCorners, sourceDashes } from "@/game/zone/SlotMarkLayout";
 
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
+  private ownZoneLinesGraphics?: Phaser.GameObjects.Graphics;
   private markerGraphics?: Phaser.GameObjects.Graphics;
   private readyGraphics?: Phaser.GameObjects.Graphics;
   private glowGraphics?: Phaser.GameObjects.Graphics;
@@ -82,9 +91,23 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   public restoreBackground() {
     if (this.zone.isPlayerOwner(StoreSystem.getPlayer())) {
       this.setBackgroundColor(paletteFill('SLOT_OWN_TINT'), paletteFill('SLOT_OWN_BORDER'));
+      this.showOwnZoneLines();
     } else {
       this.setBackgroundColor(paletteFill('SLOT_FILL'));
     }
+  }
+
+  /** With the extra marks on, the diagonal lines tell the own zone apart without color, under the cards (VIEW-39). */
+  private showOwnZoneLines() {
+    if (!EffectSettings.extraMarksAreOn() || this.ownZoneLinesGraphics) {
+      return;
+    }
+
+    this.ownZoneLinesGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderPaths(
+      this.ownZoneLinesGraphics, ownZoneLines(this.corners), paletteFill('SLOT_OWN_BORDER'), OWN_ZONE_LINE_WIDTH
+    );
+    this.addAt(this.ownZoneLinesGraphics, 1);
   }
 
   public canReceive(card: Card): boolean {
@@ -206,10 +229,16 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.add(veilGraphics);
   }
 
-  /** Frames the slot over its card (UI-5, VIEW-4). */
-  public showMarker(color: number) {
+  /** Frames the slot over its card, with dashes instead of a solid line when `dashed` (UI-5, VIEW-4, VIEW-39). */
+  public showMarker(color: number, dashed = false) {
     this.markerGraphics ??= this.scene.add.graphics();
-    ZoneSlotViewRenderer.renderMarker(this.markerGraphics, this.corners, color);
+
+    if (dashed) {
+      ZoneSlotViewRenderer.renderPaths(this.markerGraphics, sourceDashes(this.corners), color, EXTRA_MARK_FRAME_WIDTH);
+    } else {
+      ZoneSlotViewRenderer.renderMarker(this.markerGraphics, this.corners, color);
+    }
+
     this.add(this.markerGraphics);
     this.bringToTop(this.markerGraphics);
   }
@@ -217,7 +246,15 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   /** Frames an own card that can attack now with a pulse, under the frames of `showMarker` (VIEW-17). */
   public showReadyMark() {
     this.readyGraphics ??= this.scene.add.graphics();
-    ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, paletteFill('MARK_READY'));
+
+    if (EffectSettings.extraMarksAreOn()) {
+      ZoneSlotViewRenderer.renderPaths(
+        this.readyGraphics, readyCorners(this.corners), paletteFill('MARK_READY'), EXTRA_MARK_FRAME_WIDTH
+      );
+    } else {
+      ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, paletteFill('MARK_READY'));
+    }
+
     this.add(this.readyGraphics);
     this.bringToTop(this.readyGraphics);
 
@@ -240,8 +277,8 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.markerGraphics = undefined;
   }
 
-  public setBackgroundColor(color: number, borderColor?: number): void {
-    ZoneSlotViewRenderer.renderBackground(this.backgroundGraphics, this.corners, color, borderColor);
+  public setBackgroundColor(color: number, borderColor?: number, alpha?: number): void {
+    ZoneSlotViewRenderer.renderBackground(this.backgroundGraphics, this.corners, color, borderColor, alpha);
   }
 
   public applyAnimation(animation: ZoneSlotAnimations) {

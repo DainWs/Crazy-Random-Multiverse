@@ -2,6 +2,7 @@ import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
 import { paletteFill } from "@/game/utils/Palette";
+import type { MarkPath } from "@/game/zone/SlotMarkLayout";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
@@ -20,10 +21,11 @@ class ZoneSlotViewRenderer {
     graphics: Graphics,
     corners: Corners3D,
     backgroundColor = paletteFill('SLOT_FILL'),
-    borderColor = paletteFill('SLOT_BORDER')
+    borderColor = paletteFill('SLOT_BORDER'),
+    backgroundAlpha = BACKGROUND_ALPHA
   ) {
     graphics.clear();
-    graphics.fillStyle(backgroundColor, BACKGROUND_ALPHA);
+    graphics.fillStyle(backgroundColor, backgroundAlpha);
     graphics.lineStyle(SLOT_BORDER_WIDTH, borderColor, BACKGROUND_BORDER_ALPHA);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
@@ -61,6 +63,23 @@ class ZoneSlotViewRenderer {
     graphics.lineTo(corners.bl.x, corners.bl.y);
     graphics.closePath();
     graphics.strokePath();
+  }
+
+  /** Strokes separate lines of the second signal of the marks, so they are told apart without color (VIEW-39). */
+  public static renderPaths(graphics: Graphics, paths: MarkPath[], color: number, width: number) {
+    graphics.clear();
+    graphics.lineStyle(width, color, 1);
+
+    for (const path of paths) {
+      graphics.beginPath();
+      graphics.moveTo(path[0].x, path[0].y);
+
+      for (const point of path.slice(1)) {
+        graphics.lineTo(point.x, point.y);
+      }
+
+      graphics.strokePath();
+    }
   }
 
   private static renderMark(mark: Image, zoneSlotView: ZoneSlotView) {
