@@ -440,6 +440,15 @@ describe('GameHudView', () => {
       expect(focusFrame().x).toBe(dialogButton('Sí').x);
     });
 
+    it('handles the same event of the browser once', () => {
+      const event = { code: 'Tab', repeat: false, preventDefault: vi.fn() };
+
+      keydown?.(event);
+      keydown?.(event);
+
+      expect(focusFrame().x).toBe(dialogButton('Sí').x);
+    });
+
     it('moves the focus back to the button to decline on a second Tab', () => {
       press('Tab');
       press('Tab');

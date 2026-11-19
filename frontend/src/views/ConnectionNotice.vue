@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import SessionSystem from '@/core/SessionSystem';
+import { createFocusTrapRef } from '@/core/FocusTrap';
 import { getText } from '@/core/Texts';
 
 const noticeKey = SessionSystem.connectionNoticeKey;
+const trapFocus = createFocusTrapRef();
 </script>
 
 <template>
-    <div v-if="noticeKey" class="connection-notice" role="alert">
+    <div v-if="noticeKey" :ref="trapFocus" class="connection-notice" role="alert">
         <p class="connection-notice__panel">{{ getText(noticeKey) }}</p>
     </div>
 </template>
@@ -21,6 +23,7 @@ const noticeKey = SessionSystem.connectionNoticeKey;
     justify-content: center;
     background: var(--veil-background);
     color: var(--text-color);
+    outline: none;
 }
 
 .connection-notice__panel {

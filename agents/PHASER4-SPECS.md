@@ -56,6 +56,12 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Likely cause:** `ZoneView` and its `ZoneSlotView` are built again every time the board is drawn, and the board is drawn again right after `PLAYER_DIE`. A tween of the old zone keeps running on destroyed objects, and an animation started when the zone is drawn starts again with every draw.
 - **Where to look:** start the animation when its event is applied, and keep its start time outside the view, so a zone drawn again goes on from the same moment. A listener on `UPDATE` of a slot is removed in its `preDestroy`, or it reads `this.scene` of a destroyed slot: the pending task of the gold pulse of `ROADMAP.md`.
 
+## A key is handled twice
+
+- **Symptom:** a key of the keyboard does its action twice: in the confirmation dialog, one Tab moves the focus to the other button and back, and Enter acts on the button it should not. Seen on 2026-11-19 in the browser tests, where the same Tab reached the handler up to three times.
+- **Likely cause:** the events of the browser queue up in the keyboard manager and the plugin of a scene emits them in its update. The same event, with the same `timeStamp`, can be emitted more than once to the same listener, and the duplicate check of the plugin only catches two equal events in a row.
+- **Where to look:** a handler of `input.keyboard` that is not idempotent remembers the events it has handled in a `WeakSet` and ignores the repeated ones (`GameHudView.onKeyDown`). A handler that is idempotent, such as the cancel with Escape of `AttackTargetingPerspective`, does not need it.
+
 ## Fades look instant in a recorded video
 
 - **Symptom:** in a video recorded by Playwright, fades of 250 to 400 ms look like a jump, and the animations look faster than in a real browser.

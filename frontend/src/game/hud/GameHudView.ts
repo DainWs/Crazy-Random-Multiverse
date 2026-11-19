@@ -39,6 +39,7 @@ class GameHudView {
     private dialogActions = new Map<DialogButton, () => void>();
     private focusFrame: Phaser.GameObjects.Rectangle | null = null;
     private focusedButton: DialogButton = 'NO';
+    private readonly handledKeys = new WeakSet<KeyboardEvent>();
     private stopListening: () => void = () => undefined;
     private enabled = false;
     private spectator = false;
@@ -215,8 +216,14 @@ class GameHudView {
         return isOwnTurn ? getText('ui.game.your_turn') : `${getText('ui.game.turn_of')} ${playerWithTurn.name}`;
     }
 
-    /** The keys of the HUD: Space ends the turn, and the dialog takes every key while it is open (UI-32). */
+    /** The keys of the HUD: Space ends the turn, and the dialog takes every key while it is open (UI-32). Phaser can deliver
+     * the same event of the browser more than once, so each one is handled once (`PHASER4-SPECS.md`). */
     private onKeyDown(event: KeyboardEvent) {
+        if (this.handledKeys.has(event)) {
+            return;
+        }
+
+        this.handledKeys.add(event);
         if (this.confirmDialog) {
             this.onDialogKey(event);
             return;

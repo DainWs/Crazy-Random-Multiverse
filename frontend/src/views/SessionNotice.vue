@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import SessionSystem from '@/core/SessionSystem';
+import { createFocusTrapRef } from '@/core/FocusTrap';
 import { getText } from '@/core/Texts';
 
 const notice = SessionSystem.notice;
+const trapFocus = createFocusTrapRef();
 </script>
 
 <template>
-    <p v-if="notice" class="notice" role="alert">
+    <p v-if="notice" :ref="trapFocus" class="notice" role="alert">
         <span>{{ getText(notice.key) }}</span>
         <button type="button" @click="SessionSystem.dismissNotice()">{{ getText('ui.notice.dismiss') }}</button>
     </p>

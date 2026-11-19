@@ -108,4 +108,16 @@ test.describe('server unreachable at startup', () => {
         await expect(page.getByRole('button', { name: 'Crear party' })).toBeVisible();
         await expect(page.getByRole('alert')).toContainText('Recarga la página');
     });
+
+    // UI-32
+    test('puts the focus on the button of the notice and keeps it there', async ({ page, backend }) => {
+        backend.makeUnreachable();
+
+        await page.goto('/');
+        const dismiss = page.getByRole('button', { name: 'Entendido' });
+        await expect(dismiss).toBeFocused();
+        await page.keyboard.press('Tab');
+
+        await expect(dismiss).toBeFocused();
+    });
 });
