@@ -284,3 +284,24 @@ export const LOAD_TRANSITION_EASE = { ease: 'Linear' };
 
 /** Key of the scene of the loading screen. */
 export const LOAD_SCENE_KEY = 'GameLoad';
+
+/** Diagonal lines drawn over each slot of the own zone while the extra marks are on (VIEW-39). */
+export const OWN_ZONE_LINES_PER_SLOT = 9;
+
+/** Width in board-space units of the diagonal lines of the own zone while the extra marks are on (VIEW-39). */
+export const OWN_ZONE_LINE_WIDTH = 4;
+
+/** Length of each arm of the L's of a card that can attack, as a fraction of the edge it follows (VIEW-39). */
+export const READY_CORNER_ARM_FRACTION = 0.3;
+
+/** Width in board-space units of the L's of a card that can attack and of the dashes of the source slot (VIEW-39). */
+export const EXTRA_MARK_FRAME_WIDTH = 8;
+
+/** Dashes on each horizontal edge of the frame of the slot a dragged card comes from (VIEW-39). */
+export const SOURCE_DASHES_PER_HORIZONTAL_EDGE = 5;
+
+/** Dashes on each vertical edge of the frame of the slot a dragged card comes from (VIEW-39). */
+export const SOURCE_DASHES_PER_VERTICAL_EDGE = 7;
+
+/** Fraction of each stretch of an edge that its dash covers, centered in the stretch (VIEW-39). */
+export const SOURCE_DASH_FRACTION = 0.6;
