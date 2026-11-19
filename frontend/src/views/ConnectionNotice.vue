@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SessionSystem from '@/core/SessionSystem';
-import { createFocusTrapRef } from '@/core/FocusTrap';
+import { createFocusTrapRef } from '@/views/FocusTrap';
 import { getText } from '@/core/Texts';
 
 const noticeKey = SessionSystem.connectionNoticeKey;

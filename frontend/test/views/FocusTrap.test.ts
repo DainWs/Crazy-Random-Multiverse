@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createFocusTrapRef, trapFocus } from '@/core/FocusTrap';
+import { createFocusTrapRef, trapFocus } from '@/views/FocusTrap';
 
 // UI-32
 describe('FocusTrap', () => {
