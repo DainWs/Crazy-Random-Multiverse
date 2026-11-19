@@ -65,7 +65,16 @@ describe('HudPieces', () => {
     it('draws the fill of the button and its label', () => {
       const button = createButton(scene, 'PRIMARY', 'Fin de turno') as unknown as FakeText;
 
-      expect([button.text, button.background, button.interactive]).toEqual(['Fin de turno', '#34495e', { useHandCursor: true }]);
+      expect([button.text, button.background, button.interactive]).toEqual(['Fin de turno', '#1a5fa8', { useHandCursor: true }]);
+    });
+
+    // VIEW-43
+    it('turns the surrender button red under the pointer', () => {
+      const button = createButton(scene, 'DESTRUCTIVE', 'Rendirse') as unknown as FakeText;
+
+      button.listeners.get('pointerover')!();
+
+      expect([button.background, button.style.color]).toEqual(['#c0392b', '#ffffff']);
     });
 
     it('changes the fill under the pointer and back when it leaves', () => {

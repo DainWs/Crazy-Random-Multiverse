@@ -45,7 +45,10 @@ describe('Palette contrast', () => {
     { text: 'HUD_TEXT_LOCAL_TURN', background: 'PANEL_FILL' },
     { text: 'HUD_SPECTATOR_TEXT', background: 'PANEL_FILL' },
     { text: 'HUD_TEXT', background: 'HUD_BUTTON' },
-    { text: 'HUD_TEXT', background: 'HUD_BUTTON_HOVER' }
+    { text: 'HUD_TEXT', background: 'HUD_BUTTON_HOVER' },
+    { text: 'HUD_TEXT', background: 'HUD_BUTTON_PRIMARY' },
+    { text: 'HUD_TEXT', background: 'HUD_BUTTON_PRIMARY_HOVER' },
+    { text: 'HUD_TEXT', background: 'HUD_BUTTON_DESTRUCTIVE_HOVER' }
   ] as const)('reaches 4.5:1 for $text on $background', ({ text, background }) => {
     expect(contrast(toRgb(text), toRgb(background))).toBeGreaterThanOrEqual(TEXT_MINIMUM);
   });

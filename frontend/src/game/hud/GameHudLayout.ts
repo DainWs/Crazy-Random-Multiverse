@@ -43,18 +43,18 @@ class GameHudLayout {
         return this.place(this.passTurnScreenAnchor());
     }
 
-    /** Anchor of the bottom right corner of the surrender button, above the one that passes the turn. `buttonHeight` is the height of the button on the screen. */
-    public surrenderButtonAnchor(buttonHeight: number): Point2D {
-        const passTurn = this.passTurnScreenAnchor();
-        return this.place({ 
-            x: passTurn.x, 
-            y: passTurn.y - buttonHeight - Constants.HUD_BUTTON_GAP 
-        });
+    /** Anchor of the bottom left corner of the surrender button, at the other end of the screen from the one that passes the turn (VIEW-43). */
+    public surrenderButtonAnchor(): Point2D {
+        return this.place({ x: Constants.HUD_MARGIN, y: this.screen.height - Constants.HUD_MARGIN });
     }
 
     /** Anchor of the bottom right corner of the label of a spectator, above the button to leave. `buttonHeight` is the height of the button on the screen. */
     public spectatorLabelAnchor(buttonHeight: number): Point2D {
-        return this.surrenderButtonAnchor(buttonHeight);
+        const passTurn = this.passTurnScreenAnchor();
+        return this.place({
+            x: passTurn.x,
+            y: passTurn.y - buttonHeight - Constants.HUD_BUTTON_GAP
+        });
     }
 
     private passTurnScreenAnchor(): Point2D {

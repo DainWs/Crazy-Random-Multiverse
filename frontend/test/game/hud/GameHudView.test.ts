@@ -540,7 +540,7 @@ describe('GameHudView', () => {
     const hovered = passTurnButton().background;
     passTurnButton().unhover();
 
-    expect([hovered, passTurnButton().background]).toEqual(['#46627f', '#34495e']);
+    expect([hovered, passTurnButton().background]).toEqual(['#2674c4', '#1a5fa8']);
   });
 
   // UI-8

@@ -2,7 +2,7 @@ import { openGame } from '@/support/board';
 import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
-const SURRENDER_BUTTON = { x: 1825, y: 987 };
+const SURRENDER_BUTTON = { x: 80, y: 1036 };
 const ACTION_WAIT_MS = 1000;
 
 // UI-32

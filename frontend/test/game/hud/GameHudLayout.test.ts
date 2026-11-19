@@ -15,16 +15,17 @@ describe('GameHudLayout', () => {
     expect(layout.passTurnButtonAnchor()).toEqual(expected);
   });
 
-  it('anchors the surrender button above the pass turn button, with a gap', () => {
-    const anchor = layout.surrenderButtonAnchor(30);
-
-    const expectedY = 800 - Constants.HUD_MARGIN - 30 - Constants.HUD_BUTTON_GAP;
-    expect(anchor).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: expectedY });
+  // VIEW-43
+  it('anchors the surrender button at the bottom left corner, inside the margin', () => {
+    expect(layout.surrenderButtonAnchor()).toEqual({ x: Constants.HUD_MARGIN, y: 800 - Constants.HUD_MARGIN });
   });
 
   // VIEW-28
   it('anchors the spectator label above the button to leave, with a gap', () => {
-    expect(layout.spectatorLabelAnchor(30)).toEqual(layout.surrenderButtonAnchor(30));
+    const anchor = layout.spectatorLabelAnchor(30);
+
+    const expectedY = 800 - Constants.HUD_MARGIN - 30 - Constants.HUD_BUTTON_GAP;
+    expect(anchor).toEqual({ x: 1000 - Constants.HUD_MARGIN, y: expectedY });
   });
 
   // UI-3
@@ -46,8 +47,8 @@ describe('GameHudLayout', () => {
       expect(zoomed.passTurnButtonAnchor()).toEqual({ x: 500 + (corner.x - 500) / 2, y: 400 + (corner.y - 400) / 2 });
     });
 
-    it('keeps the gap between the buttons on the screen', () => {
-      const gap = zoomed.passTurnButtonAnchor().y - zoomed.surrenderButtonAnchor(30).y;
+    it('keeps the gap between the button to leave and the label of a spectator on the screen', () => {
+      const gap = zoomed.passTurnButtonAnchor().y - zoomed.spectatorLabelAnchor(30).y;
 
       expect(gap).toBe((30 + Constants.HUD_BUTTON_GAP) / 2);
     });

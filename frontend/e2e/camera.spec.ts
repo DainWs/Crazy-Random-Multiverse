@@ -38,6 +38,7 @@ const LONG_PAN_TEST_TIMEOUT_MS = 180000;
 
 const TURN_TEXT_AREA: Area = { x: 0, y: 0, width: 560, height: 80 };
 const BUTTONS_AREA: Area = { x: 1600, y: 930, width: 320, height: 150 };
+const SURRENDER_AREA: Area = { x: 0, y: 930, width: 320, height: 150 };
 
 test.describe('panning the camera', () => {
     test.beforeEach(async ({ page, backend }) => {
@@ -143,6 +144,7 @@ test.describe('the HUD while zooming', () => {
             await zoomOut(page, wheelSteps);
 
             await expect(page).toHaveScreenshot(`hud-buttons-zoom-${zoom}.png`, { clip: BUTTONS_AREA, maxDiffPixels: 0 });
+            await expect(page).toHaveScreenshot(`hud-surrender-zoom-${zoom}.png`, { clip: SURRENDER_AREA, maxDiffPixels: 0 });
         });
     }
 });

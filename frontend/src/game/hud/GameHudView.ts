@@ -66,10 +66,11 @@ class GameHudView {
 
         this.surrenderButton = this.createHudButton(
             'DESTRUCTIVE',
-            this.layout.surrenderButtonAnchor(this.passTurnButton.height),
+            this.layout.surrenderButtonAnchor(),
             getText('ui.game.surrender'),
             () => this.whenEnabled(this.askToSurrender.bind(this))
         );
+        this.surrenderButton.setOrigin(0, 1);
 
         this.leaveButton = this.createHudButton(
             'NEUTRAL',
@@ -136,7 +137,7 @@ class GameHudView {
         const scale = this.layout.scale();
         const turnPosition = this.layout.turnTextPosition();
         const passTurnPosition = this.layout.passTurnButtonAnchor();
-        const surrenderPosition = this.layout.surrenderButtonAnchor(this.passTurnButton.height);
+        const surrenderPosition = this.layout.surrenderButtonAnchor();
         const spectatorLabelPosition = this.layout.spectatorLabelAnchor(this.leaveButton.height);
 
         this.turnText.setScale(scale).setPosition(turnPosition.x, turnPosition.y);

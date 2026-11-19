@@ -42,7 +42,9 @@ type HudSkin = {
 /** The font Phaser draws a text with when none is set. Phase 11.5 chooses the typeface. */
 const DEFAULT_FONT_FAMILY = 'Courier';
 
-const BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON', fillUnderPointer: 'HUD_BUTTON_HOVER', border: null, text: 'HUD_TEXT' };
+const NEUTRAL_BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON', fillUnderPointer: 'HUD_BUTTON_HOVER', border: null, text: 'HUD_TEXT' };
+const PRIMARY_BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON_PRIMARY', fillUnderPointer: 'HUD_BUTTON_PRIMARY_HOVER', border: null, text: 'HUD_TEXT' };
+const DESTRUCTIVE_BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON', fillUnderPointer: 'HUD_BUTTON_DESTRUCTIVE_HOVER', border: null, text: 'HUD_TEXT' };
 
 const DEFAULT_HUD_SKIN: HudSkin = {
   panels: new Map<PanelRole, PanelLook>([
@@ -50,9 +52,9 @@ const DEFAULT_HUD_SKIN: HudSkin = {
     ['NOTICE', { fill: 'PANEL_FILL', fillAlpha: Constants.GAME_RESULT_PANEL_ALPHA, border: null, borderWidth: 0 }]
   ]),
   buttons: new Map<ButtonRole, ButtonLook>([
-    ['PRIMARY', BUTTON_LOOK],
-    ['DESTRUCTIVE', BUTTON_LOOK],
-    ['NEUTRAL', BUTTON_LOOK]
+    ['PRIMARY', PRIMARY_BUTTON_LOOK],
+    ['DESTRUCTIVE', DESTRUCTIVE_BUTTON_LOOK],
+    ['NEUTRAL', NEUTRAL_BUTTON_LOOK]
   ]),
   texts: new Map<TextLevel, TextLook>([
     ['TITLE', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.GAME_RESULT_TITLE_FONT_SIZE, color: 'HUD_TEXT' }],
