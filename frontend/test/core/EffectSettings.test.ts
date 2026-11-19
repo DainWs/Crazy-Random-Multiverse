@@ -34,4 +34,24 @@ describe('EffectSettings', () => {
       expect(EffectSettings.pulsesAreStill()).toBe(false);
     });
   });
+
+  // UI-31
+  describe('extraMarksAreOn', () => {
+    afterEach(() => {
+      window.history.replaceState(null, '', '/');
+    });
+
+    it.each([
+      { search: '?extraMarks=1', expected: true },
+      { search: '?a=b&extraMarks=1', expected: true },
+      { search: '', expected: false },
+      { search: '?extraMarks=0', expected: false },
+      { search: '?extraMarks=true', expected: false },
+      { search: '?extraMarks=', expected: false }
+    ])('is $expected for "$search"', ({ search, expected }) => {
+      window.history.replaceState(null, '', `/${search}`);
+
+      expect(EffectSettings.extraMarksAreOn()).toBe(expected);
+    });
+  });
 });
