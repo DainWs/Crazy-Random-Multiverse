@@ -25,15 +25,6 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Settings screen | Post-MVP, with the graphics quality and reduced motion options (`UI-27`). The MVP is built so that adding it only adds the screen and its options, without changing the effects (`UI-30`) |
 | Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
-## Phase 11.2 — UX/UI: HUD hierarchy
-
-Started at: be65f59
-
-- [x] Give the end turn button the style of the primary action and the surrender button a different, destructive style, and stop them from being next to each other: today both have the same style and the surrender button is right above the end turn one (`VIEW-28`). The styles and the new place of the surrender button are decided with the product owner and written in a new `VIEW` rule. Surrendering keeps its confirmation (`UI-15`)
-- [x] Put the round and the turn on a panel in the palette of `VIEW-28`, at the top left corner where the text is today. The turn says "Tu turno" when it is the local player's and the name of the player otherwise, as the notices of `VIEW-15`. It follows the board being shown (`UI-3`). Write it in a new `VIEW` rule
-- [x] Implement the pulse of the end turn button of `specs/ui/GAME-PULSES.md` (`VIEW-38`), written on 2026-11-14, while it is the local player's turn and they have nothing left to do
-- [x] Lower the visual weight of the background around the table so that the board stands out over it. Whether by lowering its saturation, darkening it or adding a vignette is decided with the product owner and written in a new `VIEW` rule
-
 ## Phase 11.3 — UX/UI: board legibility
 
 - [ ] Show the name of each player in a label next to their zone, with "Tú" instead of the name in the local player's zone: today the turn notice names the player (`VIEW-15`), but nothing on the board says which zone is theirs (`VIEW-13`). The label never covers a slot, and keeps the size on screen of the minimum text of Phase 11.1 at any zoom. Its place is decided with the product owner and written in a new `VIEW` rule
