@@ -2,13 +2,15 @@ import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
 import { paletteFill } from "@/game/utils/Palette";
-import type { MarkPath } from "@/game/zone/SlotMarkLayout";
+import { crownPath, type MarkPath } from "@/game/zone/SlotMarkLayout";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
 
 const BACKGROUND_ALPHA = 0.45;
 const BACKGROUND_BORDER_ALPHA = 0.8;
+/** Thickness of the gold ring of the crown disc, as a fraction of its radius. */
+const CROWN_RING_FRACTION = 0.08;
 
 class ZoneSlotViewRenderer {
 
@@ -80,6 +82,29 @@ class ZoneSlotViewRenderer {
 
       graphics.strokePath();
     }
+  }
+
+  /** Draws the crown of the leader with the turn: gold on a dark disc with a gold ring, centered on the origin (VIEW-39). */
+  public static renderCrown(graphics: Graphics, radius: number) {
+    const gold = paletteFill('MARK_TURN_GLOW');
+
+    graphics.clear();
+    graphics.fillStyle(paletteFill('TURN_CROWN_DISC'), 1);
+    graphics.fillCircle(0, 0, radius);
+    graphics.lineStyle(radius * CROWN_RING_FRACTION, gold, 1);
+    graphics.strokeCircle(0, 0, radius);
+    graphics.fillStyle(gold, 1);
+
+    const [first, ...rest] = crownPath(radius);
+    graphics.beginPath();
+    graphics.moveTo(first.x, first.y);
+
+    for (const point of rest) {
+      graphics.lineTo(point.x, point.y);
+    }
+
+    graphics.closePath();
+    graphics.fillPath();
   }
 
   private static renderMark(mark: Image, zoneSlotView: ZoneSlotView) {

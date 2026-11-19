@@ -17,6 +17,7 @@ import {
   HIT_FLASH_DURATION_MS,
   HIT_FLASH_EASE,
   OWN_ZONE_LINE_WIDTH,
+  TURN_CROWN_DIAMETER,
   TURN_GLOW_MIN_ALPHA,
   TURN_GLOW_PULSE_PERIOD_MS
 } from "@/core/Constants";
@@ -27,6 +28,7 @@ import { ownZoneLines, readyCorners, sourceDashes } from "@/game/zone/SlotMarkLa
 class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantViewHolder {
   private backgroundGraphics: Phaser.GameObjects.Graphics;
   private mark: Phaser.GameObjects.Image;
+  private crownGraphics?: Phaser.GameObjects.Graphics;
   private ownZoneLinesGraphics?: Phaser.GameObjects.Graphics;
   private markerGraphics?: Phaser.GameObjects.Graphics;
   private readyGraphics?: Phaser.GameObjects.Graphics;
@@ -134,6 +136,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   public holdCard(combatantView: CombatantView) {
     this.cardView = combatantView;
     this.add(this.cardView);
+    this.keepCrownOnTop();
 
     zoneSlotCardHelper.applyCardTransformations(this, combatantView);
   }
@@ -153,6 +156,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.zoneSlot.combatant = combatantView.combatant;
     this.cardView = combatantView;
     this.add(this.cardView);
+    this.keepCrownOnTop();
 
     zoneSlotCardHelper.applyCardTransformations(this, combatantView);
   }
@@ -211,10 +215,32 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.glowGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderMarker(this.glowGraphics, this.corners, paletteFill('MARK_TURN_GLOW'));
     this.add(this.glowGraphics);
+    this.showTurnCrown();
 
     this.turnFramePulses = !EffectSettings.pulsesAreStill();
     this.pulseTurnGlow();
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
+  }
+
+  /** With the extra marks on, a crown at the top of the leader's slot, flat and horizontal on the screen, over its card (VIEW-39). */
+  private showTurnCrown() {
+    if (!EffectSettings.extraMarksAreOn()) {
+      return;
+    }
+
+    const world = this.getWorldTransformMatrix();
+    this.crownGraphics = this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderCrown(this.crownGraphics, TURN_CROWN_DIAMETER / 2);
+    this.crownGraphics.setPosition((this.corners.tl.x + this.corners.tr.x) / 2, (this.corners.tl.y + this.corners.tr.y) / 2);
+    this.crownGraphics.setRotation(-world.rotation);
+    this.crownGraphics.setScale(1 / world.scaleX);
+    this.add(this.crownGraphics);
+  }
+
+  private keepCrownOnTop() {
+    if (this.crownGraphics) {
+      this.bringToTop(this.crownGraphics);
+    }
   }
 
   private pulseTurnGlow = () => {

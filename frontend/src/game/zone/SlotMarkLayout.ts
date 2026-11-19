@@ -66,5 +66,21 @@ function sourceDashes(corners: Corners3D): MarkPath[] {
   return dashes;
 }
 
+/** The crown as a fraction of the radius of its disc, from the bottom left corner clockwise: three peaks over a flat base (VIEW-39). */
+const CROWN_SHAPE: Point2D[] = [
+  { x: -0.55, y: 0.4 },
+  { x: -0.55, y: -0.35 },
+  { x: -0.28, y: 0 },
+  { x: 0, y: -0.5 },
+  { x: 0.28, y: 0 },
+  { x: 0.55, y: -0.35 },
+  { x: 0.55, y: 0.4 }
+];
+
+/** The crown for a disc of this radius, centered on the center of the disc (VIEW-39). */
+function crownPath(radius: number): MarkPath {
+  return CROWN_SHAPE.map((point) => ({ x: point.x * radius, y: point.y * radius }));
+}
+
 export type { MarkPath };
-export { ownZoneLines, readyCorners, sourceDashes };
+export { crownPath, ownZoneLines, readyCorners, sourceDashes };

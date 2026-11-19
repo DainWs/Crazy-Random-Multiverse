@@ -305,3 +305,6 @@ export const SOURCE_DASHES_PER_VERTICAL_EDGE = 7;
 
 /** Fraction of each stretch of an edge that its dash covers, centered in the stretch (VIEW-39). */
 export const SOURCE_DASH_FRACTION = 0.6;
+
+/** Diameter in board-space units of the dark disc of the crown of the leader with the turn, chosen by the product owner on 2026-11-19 (VIEW-39). */
+export const TURN_CROWN_DIAMETER = 44;

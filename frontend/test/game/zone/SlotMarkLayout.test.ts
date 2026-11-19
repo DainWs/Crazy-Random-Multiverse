@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Corners3D } from '@/domain/Geometry';
-import { ownZoneLines, readyCorners, sourceDashes } from '@/game/zone/SlotMarkLayout';
+import { crownPath, ownZoneLines, readyCorners, sourceDashes } from '@/game/zone/SlotMarkLayout';
 
 // VIEW-39
 describe('SlotMarkLayout', () => {
@@ -42,6 +42,22 @@ describe('SlotMarkLayout', () => {
 
     it('draws the bottom right L ending at the bottom right corner', () => {
       expect(readyCorners(slot)[3][1]).toEqual({ x: 100, y: 200 });
+    });
+  });
+
+  describe('crownPath', () => {
+    it('returns the seven points of the crown', () => {
+      expect(crownPath(22)).toHaveLength(7);
+    });
+
+    it('scales the top peak with the radius', () => {
+      expect(crownPath(20)[3]).toEqual({ x: 0, y: -10 });
+    });
+
+    it('keeps the crown inside its disc', () => {
+      const farthest = Math.max(...crownPath(22).map((point) => Math.hypot(point.x, point.y)));
+
+      expect(farthest).toBeLessThan(22);
     });
   });
 
