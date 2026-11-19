@@ -34,7 +34,7 @@ const notice = SessionSystem.notice;
     border-radius: 4px;
     background: var(--button-background);
     color: var(--text-color);
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
 }
 

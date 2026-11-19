@@ -39,4 +39,4 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
 - The second signal of the marks of the board (`VIEW-39`) is in `specs/ui/MARKS-SECOND-SIGNAL.md`.
-- The minimum contrasts of the texts and of the marks (`VIEW-40`) are in `specs/ui/CONTRAST-MINIMUMS.md`.
+- The minimum contrasts of the texts and of the marks (`VIEW-40`) are in `specs/ui/CONTRAST-MINIMUMS.md`, and the minimum size of the texts (`VIEW-41`) in `specs/ui/TEXT-MINIMUM-SIZE.md`.
