@@ -1,6 +1,6 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
+import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, MARK_EDGE_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
 import { paletteFill } from "@/game/utils/Palette";
 import { crownPath, type MarkPath } from "@/game/zone/SlotMarkLayout";
 
@@ -54,33 +54,44 @@ class ZoneSlotViewRenderer {
     graphics.strokePath();
   }
 
-  /** Frames the slot with a solid line, to be drawn over its card so the mark stays visible (UI-5, VIEW-4). */
+  /** Frames the slot with a solid line with a dark edge, to be drawn over its card so the mark stays visible (UI-5, VIEW-4, VIEW-40). */
   public static renderMarker(graphics: Graphics, corners: Corners3D, color: number) {
     graphics.clear();
-    graphics.lineStyle(SLOT_BORDER_WIDTH, color, 1);
-    graphics.beginPath();
-    graphics.moveTo(corners.tl.x, corners.tl.y);
-    graphics.lineTo(corners.tr.x, corners.tr.y);
-    graphics.lineTo(corners.br.x, corners.br.y);
-    graphics.lineTo(corners.bl.x, corners.bl.y);
-    graphics.closePath();
-    graphics.strokePath();
+
+    for (const [width, lineColor] of this.edgedLines(SLOT_BORDER_WIDTH, color)) {
+      graphics.lineStyle(width, lineColor, 1);
+      graphics.beginPath();
+      graphics.moveTo(corners.tl.x, corners.tl.y);
+      graphics.lineTo(corners.tr.x, corners.tr.y);
+      graphics.lineTo(corners.br.x, corners.br.y);
+      graphics.lineTo(corners.bl.x, corners.bl.y);
+      graphics.closePath();
+      graphics.strokePath();
+    }
   }
 
-  /** Strokes separate lines of the second signal of the marks, so they are told apart without color (VIEW-39). */
-  public static renderPaths(graphics: Graphics, paths: MarkPath[], color: number, width: number) {
+  /** The dark edge goes first and is wider on each side, so the colored line is drawn over it (VIEW-40). */
+  private static edgedLines(width: number, color: number): Array<[number, number]> {
+    return [[width + 2 * MARK_EDGE_WIDTH, paletteFill('MARK_EDGE')], [width, color]];
+  }
+
+  /** Strokes separate lines of the second signal of the marks, so they are told apart without color, with the dark edge of `VIEW-40` when `edged` (VIEW-39). */
+  public static renderPaths(graphics: Graphics, paths: MarkPath[], color: number, width: number, edged = false) {
     graphics.clear();
-    graphics.lineStyle(width, color, 1);
 
-    for (const path of paths) {
-      graphics.beginPath();
-      graphics.moveTo(path[0].x, path[0].y);
+    for (const [lineWidth, lineColor] of edged ? this.edgedLines(width, color) : [[width, color]]) {
+      graphics.lineStyle(lineWidth, lineColor, 1);
 
-      for (const point of path.slice(1)) {
-        graphics.lineTo(point.x, point.y);
+      for (const path of paths) {
+        graphics.beginPath();
+        graphics.moveTo(path[0].x, path[0].y);
+
+        for (const point of path.slice(1)) {
+          graphics.lineTo(point.x, point.y);
+        }
+
+        graphics.strokePath();
       }
-
-      graphics.strokePath();
     }
   }
 

@@ -12,6 +12,8 @@ type PaletteColor =
   | 'MARK_READY'
   | 'MARK_TURN_GLOW'
   | 'TURN_CROWN_DISC'
+  | 'MARK_EDGE'
+  | 'OWN_ZONE_LINES'
   | 'SLOT_FILL'
   | 'SLOT_BORDER'
   | 'SLOT_OWN_TINT'
@@ -68,10 +70,12 @@ const PALETTE = new Map<PaletteColor, number>([
   ['MARK_READY', 0x00e5ff],
   ['MARK_TURN_GLOW', 0xf1c40f],
   ['TURN_CROWN_DISC', 0x111111],
+  ['MARK_EDGE', 0x000000],
+  ['OWN_ZONE_LINES', 0x3d9bff],
   ['SLOT_FILL', 0xffffff],
   ['SLOT_BORDER', 0x4488cc],
-  ['SLOT_OWN_TINT', 0x9fd8ff],
-  ['SLOT_OWN_BORDER', 0x3d9bff],
+  ['SLOT_OWN_TINT', 0x1a4f95],
+  ['SLOT_OWN_BORDER', 0x061a3a],
   ['SLOT_SOURCE_FILL', 0xd40000],
   ['SLOT_VALID_FILL', 0xaaffaa],
   ['HUD_TEXT', 0xffffff],
@@ -85,7 +89,7 @@ const PALETTE = new Map<PaletteColor, number>([
   ['DAMAGE_TEXT_ARMOR', 0x5dade2],
   ['DAMAGE_TEXT_HEALTH', 0xe74c3c],
   ['ELIMINATED_VEIL', 0x3b0a0a],
-  ['ELIMINATED_VEIL_BORDER', 0x1a0000],
+  ['ELIMINATED_VEIL_BORDER', 0xc04545],
   ['ELIMINATED_LABEL', 0xff5a4d],
   ['LOAD_TEXT', 0xffffff],
   ['LOAD_BAR_FILL', 0x2ecc71],

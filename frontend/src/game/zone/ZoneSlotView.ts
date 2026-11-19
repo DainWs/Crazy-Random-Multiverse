@@ -107,7 +107,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
     this.ownZoneLinesGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderPaths(
-      this.ownZoneLinesGraphics, ownZoneLines(this.corners), paletteFill('SLOT_OWN_BORDER'), OWN_ZONE_LINE_WIDTH
+      this.ownZoneLinesGraphics, ownZoneLines(this.corners), paletteFill('OWN_ZONE_LINES'), OWN_ZONE_LINE_WIDTH
     );
     this.addAt(this.ownZoneLinesGraphics, 1);
   }
@@ -260,7 +260,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.markerGraphics ??= this.scene.add.graphics();
 
     if (dashed) {
-      ZoneSlotViewRenderer.renderPaths(this.markerGraphics, sourceDashes(this.corners), color, EXTRA_MARK_FRAME_WIDTH);
+      ZoneSlotViewRenderer.renderPaths(this.markerGraphics, sourceDashes(this.corners), color, EXTRA_MARK_FRAME_WIDTH, true);
     } else {
       ZoneSlotViewRenderer.renderMarker(this.markerGraphics, this.corners, color);
     }
@@ -275,7 +275,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
     if (EffectSettings.extraMarksAreOn()) {
       ZoneSlotViewRenderer.renderPaths(
-        this.readyGraphics, readyCorners(this.corners), paletteFill('MARK_READY'), EXTRA_MARK_FRAME_WIDTH
+        this.readyGraphics, readyCorners(this.corners), paletteFill('MARK_READY'), EXTRA_MARK_FRAME_WIDTH, true
       );
     } else {
       ZoneSlotViewRenderer.renderMarker(this.readyGraphics, this.corners, paletteFill('MARK_READY'));

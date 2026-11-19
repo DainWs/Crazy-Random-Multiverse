@@ -5,7 +5,7 @@ import GameHudLayout from '@/game/hud/GameHudLayout';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, createButton, createPanel, createText } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, createButton, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 
@@ -41,6 +41,8 @@ class GameHudView {
         this.callbacks = callbacks;
 
         this.turnText = this.createLabel(this.layout.turnTextPosition(), '');
+        this.turnText.setBackgroundColor(panelBackground('HUD'));
+        this.turnText.setPadding(Constants.HUD_BUTTON_PADDING);
 
         this.passTurnButton = this.createHudButton(
             'PRIMARY',

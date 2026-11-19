@@ -228,6 +228,9 @@ export const LEADER_DEATH_SHAKE_REPEATS = 8;
 /** Width in board-space units of the border that every slot draws around itself, and of every frame that covers it: the marks of an attack and a drop, of the cards that can attack and of the leader with the turn (VIEW-4, VIEW-17, VIEW-20). */
 export const SLOT_BORDER_WIDTH = 2;
 
+/** Width in board-space units of the near black edge on each side of a colored mark, so it is seen against any slot or card (VIEW-40). */
+export const MARK_EDGE_WIDTH = 2;
+
 /** Alpha of the frame at the low point of its pulse, between 0 and 1 (VIEW-20). */
 export const TURN_GLOW_MIN_ALPHA = 0.45;
 

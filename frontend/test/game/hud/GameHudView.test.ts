@@ -132,6 +132,11 @@ describe('GameHudView', () => {
 
   // UI-3
   describe('turn indicator', () => {
+    // VIEW-40
+    it('draws the round and the turn on the fill of the panel of the HUD', () => {
+      expect(turnText().background).toBe('#1b2631');
+    });
+
     it('shows the round and that it is the turn of the local player', () => {
       store.playerWithTurn = { code: 'p1', name: 'One' };
 
