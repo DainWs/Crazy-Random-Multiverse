@@ -4,7 +4,7 @@ import * as Constants from '@/core/Constants';
 type PanelRole = 'HUD' | 'NOTICE';
 type ButtonRole = 'PRIMARY' | 'DESTRUCTIVE' | 'NEUTRAL';
 type TextLevel = 'TITLE' | 'BODY' | 'LABEL' | 'NUMBERS';
-type AccentRole = 'LOCAL_TURN' | 'POSITIVE' | 'NEGATIVE' | 'DISABLED';
+type AccentRole = 'LOCAL_TURN' | 'POSITIVE' | 'NEGATIVE' | 'DISABLED' | 'FOCUS';
 
 type PanelLook = {
   fill: PaletteColor;
@@ -64,7 +64,8 @@ const DEFAULT_HUD_SKIN: HudSkin = {
     ['LOCAL_TURN', { color: 'HUD_TEXT_LOCAL_TURN', alpha: 1 }],
     ['POSITIVE', { color: 'RESULT_VICTORY', alpha: 1 }],
     ['NEGATIVE', { color: 'RESULT_DEFEAT', alpha: 1 }],
-    ['DISABLED', { color: 'HUD_TEXT', alpha: Constants.HUD_DISABLED_ALPHA }]
+    ['DISABLED', { color: 'HUD_TEXT', alpha: Constants.HUD_DISABLED_ALPHA }],
+    ['FOCUS', { color: 'HUD_FOCUS', alpha: 1 }]
   ])
 };
 

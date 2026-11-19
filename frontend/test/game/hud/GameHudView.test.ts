@@ -9,6 +9,12 @@ const store = vi.hoisted(() => ({
   spectator: false
 }));
 
+const session = vi.hoisted(() => ({ connectionNotice: undefined as string | undefined }));
+
+vi.mock('@/core/SessionSystem', () => ({
+  default: { connectionNoticeKey: { get value() { return session.connectionNotice; } } }
+}));
+
 vi.mock('@/core/StoreSystem', () => ({
   default: {
     getRound: () => store.round,
@@ -26,6 +32,7 @@ class FakeText {
   public alpha = 1;
   public visible = true;
   public height = 30;
+  public width = 100;
   public y: number;
   public destroyed = false;
   private readonly listeners = new Map<string, () => void>();
@@ -56,9 +63,13 @@ class FakeText {
 }
 
 class FakeShape {
+  public x = 0;
+  public y = 0;
+  public width = 0;
+  public height = 0;
   public setStrokeStyle() { return this; }
-  public setPosition() { return this; }
-  public setSize() { return this; }
+  public setPosition(x: number, y: number) { this.x = x; this.y = y; return this; }
+  public setSize(width: number, height: number) { this.width = width; this.height = height; return this; }
   public setOrigin() { return this; }
   public setInteractive() { return this; }
 }
@@ -86,6 +97,8 @@ describe('GameHudView', () => {
   let zoom: number;
   let screen: { width: number; height: number };
   let prerender: (() => void) | undefined;
+  let keydown: ((event: unknown) => void) | undefined;
+  let shapes: FakeShape[];
 
   const turnText = () => texts[0];
   const passTurnButton = () => texts[1];
@@ -93,6 +106,13 @@ describe('GameHudView', () => {
   const leaveButton = () => texts[3];
   const spectatorLabel = () => texts[4];
   const dialogButton = (label: string) => texts.find((text) => text.text === label)!;
+  const press = (code: string, repeat = false) => {
+    const event = { code, repeat, preventDefault: vi.fn() };
+    keydown?.(event);
+
+    return event;
+  };
+  const focusFrame = () => shapes[shapes.length - 1];
 
   beforeEach(() => {
     texts = [];
@@ -106,9 +126,18 @@ describe('GameHudView', () => {
     zoom = 1;
     screen = { width: 1000, height: 800 };
     prerender = undefined;
+    keydown = undefined;
+    shapes = [];
+    session.connectionNotice = undefined;
     const scene = {
       scale: screen,
       cameraSystem: { getCamera: () => ({ zoom }) },
+      input: {
+        keyboard: {
+          on: (_event: string, listener: (event: unknown) => void, context: object) => { keydown = listener.bind(context); },
+          off: () => { keydown = undefined; }
+        }
+      },
       events: {
         on: (_event: string, listener: () => void) => { prerender = listener; },
         off: () => { prerender = undefined; }
@@ -119,7 +148,11 @@ describe('GameHudView', () => {
           texts.push(fake);
           return fake;
         },
-        rectangle: () => new FakeShape(),
+        rectangle: () => {
+          const fake = new FakeShape();
+          shapes.push(fake);
+          return fake;
+        },
         container: (_x: number, _y: number, children: unknown[]) => {
           const fake = new FakeContainer(children);
           containers.push(fake);
@@ -305,6 +338,141 @@ describe('GameHudView', () => {
       hud.refresh(false);
 
       expect(containers[0].destroyed).toBe(true);
+    });
+  });
+
+  // UI-32
+  describe('end turn key', () => {
+    it('passes the turn when the player can act', () => {
+      hud.refresh(true);
+
+      press('Space');
+
+      expect(onPassTurn).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing while the button is disabled', () => {
+      hud.refresh(false);
+
+      press('Space');
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while the key repeats', () => {
+      hud.refresh(true);
+
+      press('Space', true);
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while the confirmation dialog is open', () => {
+      hud.refresh(true);
+      surrenderButton().click();
+
+      press('Space');
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while the notice of the connection is shown', () => {
+      hud.refresh(true);
+      session.connectionNotice = 'ui.notice.connection_lost';
+
+      press('Space');
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('does nothing for a spectator', () => {
+      store.spectator = true;
+      hud.refresh(true);
+
+      press('Space');
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('prevents the scroll of the page', () => {
+      hud.refresh(true);
+
+      expect(press('Space').preventDefault).toHaveBeenCalled();
+    });
+
+    it('ignores the other keys', () => {
+      hud.refresh(true);
+
+      press('Enter');
+
+      expect(onPassTurn).not.toHaveBeenCalled();
+    });
+
+    it('stops listening when the HUD is destroyed', () => {
+      hud.destroy();
+
+      expect(keydown).toBeUndefined();
+    });
+  });
+
+  // UI-32, VIEW-42
+  describe('keyboard in the confirmation dialog', () => {
+    beforeEach(() => {
+      hud.refresh(true);
+      surrenderButton().click();
+    });
+
+    it('puts the focus frame on the button to decline when it opens', () => {
+      const no = dialogButton('No');
+
+      expect([focusFrame().x, focusFrame().y, focusFrame().width, focusFrame().height]).toEqual([no.x, no.y, 108, 38]);
+    });
+
+    it('closes the dialog without surrendering on Enter', () => {
+      press('Enter');
+
+      expect([containers[0].destroyed, onSurrender.mock.calls.length]).toEqual([true, 0]);
+    });
+
+    it('moves the focus frame to the button to confirm on Tab', () => {
+      press('Tab');
+
+      expect(focusFrame().x).toBe(dialogButton('Sí').x);
+    });
+
+    it('moves the focus back to the button to decline on a second Tab', () => {
+      press('Tab');
+      press('Tab');
+
+      expect(focusFrame().x).toBe(dialogButton('No').x);
+    });
+
+    it.each([{ code: 'ArrowLeft' }, { code: 'ArrowRight' }])('moves the focus on $code', ({ code }) => {
+      press(code);
+
+      expect(focusFrame().x).toBe(dialogButton('Sí').x);
+    });
+
+    it('surrenders on Enter after moving the focus to the button to confirm', () => {
+      press('Tab');
+
+      press('Enter');
+
+      expect(onSurrender).toHaveBeenCalledTimes(1);
+    });
+
+    it('closes the dialog without surrendering on Escape with the focus on the button to confirm', () => {
+      press('Tab');
+
+      press('Escape');
+
+      expect([containers[0].destroyed, onSurrender.mock.calls.length]).toEqual([true, 0]);
+    });
+
+    it('does nothing on other keys', () => {
+      press('KeyA');
+
+      expect([containers[0].destroyed, onSurrender.mock.calls.length]).toEqual([false, 0]);
     });
   });
 

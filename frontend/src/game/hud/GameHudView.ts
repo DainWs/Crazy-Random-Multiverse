@@ -2,12 +2,20 @@ import type Player from '@/domain/Player';
 import type { Point2D, Size2D } from '@/domain/Geometry';
 import type { GameScene } from '@/scenes/Game';
 import GameHudLayout from '@/game/hud/GameHudLayout';
+import SessionSystem from '@/core/SessionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, createButton, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
+
+type DialogButton = 'YES' | 'NO';
+
+/** The keys that move the focus between the buttons of the confirmation dialog (UI-32). */
+const DIALOG_FOCUS_KEYS = new Set(['Tab', 'ArrowLeft', 'ArrowRight']);
+const DIALOG_PRESS_KEYS = new Set(['Enter', 'NumpadEnter']);
+const DIALOG_CANCEL_KEY = 'Escape';
 
 type HudCallbacks = {
     onPassTurn: () => void;
@@ -27,6 +35,10 @@ class GameHudView {
     private readonly leaveButton: Phaser.GameObjects.Text;
     private readonly spectatorLabel: Phaser.GameObjects.Text;
     private confirmDialog: Phaser.GameObjects.Container | null = null;
+    private dialogButtons = new Map<DialogButton, Phaser.GameObjects.Text>();
+    private dialogActions = new Map<DialogButton, () => void>();
+    private focusFrame: Phaser.GameObjects.Rectangle | null = null;
+    private focusedButton: DialogButton = 'NO';
     private stopListening: () => void = () => undefined;
     private enabled = false;
     private spectator = false;
@@ -80,6 +92,7 @@ class GameHudView {
         this.leaveButton.setDepth(Constants.LEAVE_BUTTON_DEPTH);
         this.applyZoom();
         this.listenToPreRender();
+        this.scene.input.keyboard?.on('keydown', this.onKeyDown, this);
     }
 
     private cameraZoom(): number {
@@ -159,6 +172,7 @@ class GameHudView {
 
     public destroy() {
         this.stopListening();
+        this.scene.input.keyboard?.off('keydown', this.onKeyDown, this);
         this.closeConfirmDialog();
         this.turnText.destroy();
         this.passTurnButton.destroy();
@@ -199,6 +213,47 @@ class GameHudView {
         }
 
         return isOwnTurn ? getText('ui.game.your_turn') : `${getText('ui.game.turn_of')} ${playerWithTurn.name}`;
+    }
+
+    /** The keys of the HUD: Space ends the turn, and the dialog takes every key while it is open (UI-32). */
+    private onKeyDown(event: KeyboardEvent) {
+        if (this.confirmDialog) {
+            this.onDialogKey(event);
+            return;
+        }
+
+        if (event.code !== Constants.END_TURN_KEY_CODE) {
+            return;
+        }
+
+        event.preventDefault();
+        if (event.repeat || this.spectator || SessionSystem.connectionNoticeKey.value) {
+            return;
+        }
+
+        this.whenEnabled(this.callbacks.onPassTurn);
+    }
+
+    private onDialogKey(event: KeyboardEvent) {
+        if (DIALOG_FOCUS_KEYS.has(event.code)) {
+            event.preventDefault();
+            this.focusDialogButton(this.focusedButton === 'NO' ? 'YES' : 'NO');
+        } else if (DIALOG_PRESS_KEYS.has(event.code)) {
+            event.preventDefault();
+            this.dialogActions.get(this.focusedButton)?.();
+        } else if (event.code === DIALOG_CANCEL_KEY) {
+            event.preventDefault();
+            this.dialogActions.get('NO')?.();
+        }
+    }
+
+    private focusDialogButton(button: DialogButton) {
+        const target = this.dialogButtons.get(button)!;
+        const margin = 2 * Constants.FOCUS_FRAME_MARGIN;
+
+        this.focusedButton = button;
+        this.focusFrame?.setPosition(target.x, target.y);
+        this.focusFrame?.setSize(target.width + margin, target.height + margin);
     }
 
     private whenEnabled(onClick: () => void) {
@@ -252,13 +307,23 @@ class GameHudView {
         const question = this.createLabel(dialog.question, getText(textKey));
         question.setOrigin(0.5);
 
-        const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), () => this.confirm(onYes));
+        this.dialogActions = new Map<DialogButton, () => void>([
+            ['YES', () => this.confirm(onYes)],
+            ['NO', () => this.closeConfirmDialog()]
+        ]);
 
-        const no = this.createDialogButton(dialog.no, getText('ui.game.confirm_no'), () => this.closeConfirmDialog());
+        const yes = this.createDialogButton(dialog.yes, getText('ui.game.confirm_yes'), this.dialogActions.get('YES')!);
 
-        this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no]);
+        const no = this.createDialogButton(dialog.no, getText('ui.game.confirm_no'), this.dialogActions.get('NO')!);
+
+        this.dialogButtons = new Map<DialogButton, Phaser.GameObjects.Text>([['YES', yes], ['NO', no]]);
+
+        this.focusFrame = createFocusFrame(this.scene);
+
+        this.confirmDialog = this.scene.add.container(0, 0, [veilShape, panelShape, question, yes, no, this.focusFrame]);
         this.confirmDialog.setScrollFactor(0);
         this.confirmDialog.setDepth(Constants.CONFIRM_DIALOG_DEPTH);
+        this.focusDialogButton('NO');
         this.applyDialogZoom();
     }
 
@@ -277,6 +342,7 @@ class GameHudView {
     private closeConfirmDialog() {
         this.confirmDialog?.destroy();
         this.confirmDialog = null;
+        this.focusFrame = null;
     }
 }
 

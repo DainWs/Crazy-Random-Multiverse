@@ -311,3 +311,12 @@ export const SOURCE_DASH_FRACTION = 0.6;
 
 /** Diameter in board-space units of the dark disc of the crown of the leader with the turn, chosen by the product owner on 2026-11-19 (VIEW-39). */
 export const TURN_CROWN_DIAMETER = 44;
+
+/** Width in board-space units of the frame of the button of the confirmation dialog that has the keyboard focus (VIEW-42). */
+export const FOCUS_FRAME_WIDTH = 3;
+
+/** Units between the button that has the keyboard focus and its frame (VIEW-42). */
+export const FOCUS_FRAME_MARGIN = 4;
+
+/** Code of the key that ends the turn (UI-32). */
+export const END_TURN_KEY_CODE = 'Space';

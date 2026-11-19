@@ -58,6 +58,15 @@ function createText(
   return scene.add.text(0, 0, text, style);
 }
 
+/** The frame that shows which button has the keyboard focus, not placed nor sized (VIEW-42). */
+function createFocusFrame(scene: Phaser.Scene, skin: HudSkin = DEFAULT_HUD_SKIN): Phaser.GameObjects.Rectangle {
+  const look = skin.accents.get('FOCUS')!;
+  const frame = scene.add.rectangle(0, 0, 0, 0);
+  frame.setStrokeStyle(Constants.FOCUS_FRAME_WIDTH, paletteFill(look.color), look.alpha);
+
+  return frame;
+}
+
 /** The color of an accent as `#rrggbb`. */
 function accentColor(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): string {
   return paletteText(skin.accents.get(role)!.color);
@@ -69,4 +78,4 @@ function accentAlpha(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): number
 }
 
 export type { TextOverrides };
-export { accentAlpha, accentColor, createButton, createPanel, createText, panelBackground };
+export { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText, panelBackground };

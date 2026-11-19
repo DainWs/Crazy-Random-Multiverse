@@ -25,6 +25,7 @@ type PaletteColor =
   | 'HUD_SPECTATOR_TEXT'
   | 'HUD_BUTTON'
   | 'HUD_BUTTON_HOVER'
+  | 'HUD_FOCUS'
   | 'RESULT_VICTORY'
   | 'RESULT_DEFEAT'
   | 'HIT_FLASH'
@@ -83,6 +84,7 @@ const PALETTE = new Map<PaletteColor, number>([
   ['HUD_SPECTATOR_TEXT', 0xbdc3c7],
   ['HUD_BUTTON', 0x34495e],
   ['HUD_BUTTON_HOVER', 0x46627f],
+  ['HUD_FOCUS', 0xffffff],
   ['RESULT_VICTORY', 0x2ecc71],
   ['RESULT_DEFEAT', 0xe74c3c],
   ['HIT_FLASH', 0xff0000],
