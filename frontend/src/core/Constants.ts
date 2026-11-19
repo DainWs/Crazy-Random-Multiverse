@@ -155,6 +155,9 @@ export const CONFIRM_DIALOG_SIZE = { width: 520, height: 200 };
 /** Width in pixels of the border of the confirmation dialog. */
 export const CONFIRM_DIALOG_BORDER_WIDTH = 2;
 
+/** Opacity of the black layer between the background of the window and the board, so the board stands out over it (VIEW-45). */
+export const GAME_BACKGROUND_DIM_ALPHA = 0.55;
+
 /** Alpha of the veil that covers the game behind the dialog that asks for confirmation. */
 export const CONFIRM_VEIL_ALPHA = 0.6;
 

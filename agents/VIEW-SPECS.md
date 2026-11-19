@@ -19,6 +19,7 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The loading screen and its change to the board (`VIEW-29`) are in `specs/ui/GAME-LOADING.md`.
 - The drag of a card, its marks and the dropped card while the server answers (`VIEW-32`, `VIEW-34`) are in `specs/ui/CARDS-DRAG.md`, a card that settles in a slot from an event (`VIEW-35`) in `specs/ui/CARDS-SETTLE.md`, and the equipment attached to a card (`VIEW-36`) in `specs/ui/CARDS-EQUIP.md`.
 - **VIEW-26** The grid of the table is discreet, so it does not compete with the cards: thin, translucent lines, drawn once as a single path so that their transparency does not pile up.
+- **VIEW-45** The background of the window around the table is darkened in the game, so the board stands out over it: a black layer at 55% opacity between the background and the board, covering the whole window. The table is translucent, so it is seen a little darker too, but no color of the table, the HUD or the cards changes. It is only in the game, not in the loading screen, the menu or the party. Decided with the product owner on 2026-11-19.
 
 ## Combat
 
