@@ -6,7 +6,7 @@ import SessionSystem from '@/core/SessionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 
@@ -29,6 +29,7 @@ class GameHudView {
     private readonly scene: GameScene;
     private layout: GameHudLayout;
     private readonly callbacks: HudCallbacks;
+    private readonly turnPanel: Phaser.GameObjects.Rectangle;
     private readonly turnText: Phaser.GameObjects.Text;
     private readonly passTurnButton: Phaser.GameObjects.Text;
     private readonly surrenderButton: Phaser.GameObjects.Text;
@@ -53,8 +54,9 @@ class GameHudView {
         this.layout = new GameHudLayout(scene.scale, this.zoom);
         this.callbacks = callbacks;
 
+        this.turnPanel = createPanel(scene, 'HUD');
+        this.turnPanel.setOrigin(0, 0);
         this.turnText = this.createLabel(this.layout.turnTextPosition(), '');
-        this.turnText.setBackgroundColor(panelBackground('HUD'));
         this.turnText.setPadding(Constants.HUD_BUTTON_PADDING);
 
         this.passTurnButton = this.createHudButton(
@@ -86,7 +88,7 @@ class GameHudView {
         this.spectatorLabel.setOrigin(1, 1);
         this.spectatorLabel.setVisible(false);
 
-        for (const element of [this.turnText, this.passTurnButton, this.surrenderButton, this.spectatorLabel]) {
+        for (const element of [this.turnPanel, this.turnText, this.passTurnButton, this.surrenderButton, this.spectatorLabel]) {
             element.setScrollFactor(0);
             element.setDepth(Constants.HUD_DEPTH);
         }
@@ -140,6 +142,7 @@ class GameHudView {
         const surrenderPosition = this.layout.surrenderButtonAnchor();
         const spectatorLabelPosition = this.layout.spectatorLabelAnchor(this.leaveButton.height);
 
+        this.turnPanel.setScale(scale).setPosition(turnPosition.x, turnPosition.y);
         this.turnText.setScale(scale).setPosition(turnPosition.x, turnPosition.y);
         this.passTurnButton.setScale(scale).setPosition(passTurnPosition.x, passTurnPosition.y);
         this.surrenderButton.setScale(scale).setPosition(surrenderPosition.x, surrenderPosition.y);
@@ -176,6 +179,7 @@ class GameHudView {
         this.stopListening();
         this.scene.input.keyboard?.off('keydown', this.onKeyDown, this);
         this.closeConfirmDialog();
+        this.turnPanel.destroy();
         this.turnText.destroy();
         this.passTurnButton.destroy();
         this.surrenderButton.destroy();
@@ -206,6 +210,7 @@ class GameHudView {
         const turnLabel = this.turnLabel(playerWithTurn, isOwnTurn);
 
         this.turnText.setText([roundLabel, turnLabel].filter(Boolean).join(Constants.HUD_TURN_SEPARATOR));
+        this.turnPanel.setSize(this.turnText.width, this.turnText.height);
         this.turnText.setColor(isOwnTurn ? accentColor('LOCAL_TURN') : paletteText('HUD_TEXT'));
     }
 

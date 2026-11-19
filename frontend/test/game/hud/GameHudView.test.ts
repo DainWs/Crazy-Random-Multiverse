@@ -70,8 +70,13 @@ class FakeShape {
   public setStrokeStyle() { return this; }
   public setPosition(x: number, y: number) { this.x = x; this.y = y; return this; }
   public setSize(width: number, height: number) { this.width = width; this.height = height; return this; }
+  public scale = 1;
   public setOrigin() { return this; }
+  public setScale(scale: number) { this.scale = scale; return this; }
+  public setScrollFactor() { return this; }
+  public setDepth() { return this; }
   public setInteractive() { return this; }
+  public destroy() { /* nothing to release */ }
 }
 
 class FakeContainer {
@@ -100,6 +105,7 @@ describe('GameHudView', () => {
   let keydown: ((event: unknown) => void) | undefined;
   let shapes: FakeShape[];
 
+  const turnPanel = () => shapes[0];
   const turnText = () => texts[0];
   const passTurnButton = () => texts[1];
   const surrenderButton = () => texts[2];
@@ -165,9 +171,11 @@ describe('GameHudView', () => {
 
   // UI-3
   describe('turn indicator', () => {
-    // VIEW-40
-    it('draws the round and the turn on the fill of the panel of the HUD', () => {
-      expect(turnText().background).toBe('#1b2631');
+    // VIEW-44
+    it('draws the round and the turn on a panel as big as the text, at its place', () => {
+      hud.refresh(false);
+
+      expect([turnPanel().width, turnPanel().height, turnPanel().x, turnPanel().y]).toEqual([turnText().width, turnText().height, turnText().x, turnText().y]);
     });
 
     it('shows the round and that it is the turn of the local player', () => {
@@ -218,7 +226,7 @@ describe('GameHudView', () => {
 
       prerender?.();
 
-      expect([turnText().scale, passTurnButton().scale, surrenderButton().scale]).toEqual([0.5, 0.5, 0.5]);
+      expect([turnPanel().scale, turnText().scale, passTurnButton().scale, surrenderButton().scale]).toEqual([0.5, 0.5, 0.5, 0.5]);
     });
 
     it('moves the turn text so that it keeps its place on the screen', () => {

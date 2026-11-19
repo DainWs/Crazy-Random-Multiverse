@@ -1,4 +1,4 @@
-# HUD: buttons and spectator label
+# HUD: buttons, spectator label and turn panel
 
 The buttons of the HUD and of the confirmation dialog (`UI-3`, `UI-15`), and what a spectator sees next to the button to leave (`UI-8`). The durations and curves are in `MOTION-BASE.md`. Decided with the product owner on 2026-11-15, from the videos `hud-hover-instantaneo.mp4` and `hud-hover-transicion-150ms.mp4`.
 
@@ -11,6 +11,7 @@ The buttons of the HUD and of the confirmation dialog (`UI-3`, `UI-15`), and wha
   - **Surrender.** Background `#34495e`, the one of the other buttons, white text. Under the pointer its background is red `#c0392b` and its text stays white. It is at the bottom left corner of the screen, `HUD_MARGIN` from each edge, so it is never next to the end turn button. Surrendering keeps its confirmation (`UI-15`).
   - The button to leave and the buttons of the confirmation dialog keep the background `#34495e` and `#46627f` under the pointer. The label of a spectator stays just above the button to leave, which is at the bottom right corner.
   - Every text reaches the contrast of `VIEW-40`: 4.5:1 for white on each of these backgrounds.
+- **VIEW-44** The round and the turn (`UI-3`) are on one line inside a panel at the top left corner of the screen, `HUD_MARGIN` from each edge. The panel has the fill and the border of the confirmation dialog (`#1b2631` and `#34495e`, 2 board units thick) and is as big as its text with the padding of the buttons. The line says "Ronda N · Tu turno" when it is the local player's turn and "Ronda N · Turno de <name>" otherwise, the same words as the notices of `VIEW-15`. Before the first round it says only the turn, and before the first turn only the round. It follows the board being shown (`UI-3`). Decided with the product owner on 2026-11-19.
   - **Effects** (`UI-26`). The label, the border and the background under the pointer are essential: they show that the player is watching, where the dialog is and which button a click acts on. The change in 150 ms is non-essential: without it, the background changes at once.
 
 ## Scenarios
