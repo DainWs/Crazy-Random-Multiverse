@@ -73,6 +73,11 @@ class Zone {
     return this.slots.some((row) => row.some((slot) => this.canPlaceCard(slot.position, card, player)));
   }
 
+  /** Whether any card of the zone can attack now, with the flag the server computed (CON-15). */
+  public hasCardReadyToAttack(): boolean {
+    return this.slots.some((row) => row.some((slot) => slot.combatant?.isAttackAvailable === true));
+  }
+
   /** A warrior moves inside the zone of the player to a free slot of an allowed row, checked with the card still in its origin, or swaps places with another warrior (BOARD-7). */
   public canMoveCard(source: ZoneSlot, target: ZoneSlot, player: Owner): boolean {
     return this.isPlayerOwner(player.code)

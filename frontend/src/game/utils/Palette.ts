@@ -147,5 +147,13 @@ function paletteRgba(color: PaletteColor, alpha: number): string {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
+/** The color as `#rrggbb` mixed with white: `whiteShare` is 0 for the color itself and 1 for white. */
+function paletteMixedWithWhite(color: PaletteColor, whiteShare: number): string {
+  const value = paletteFill(color);
+  const mixChannel = (shift: number) => Math.round(((value >> shift) & RGB_CHANNEL_MASK) * (1 - whiteShare) + RGB_CHANNEL_MASK * whiteShare);
+
+  return `#${[16, 8, 0].map((shift) => mixChannel(shift).toString(16).padStart(2, '0')).join('')}`;
+}
+
 export type { PaletteColor };
-export { paletteFill, paletteRgba, paletteText, PALETTE };
+export { paletteFill, paletteMixedWithWhite, paletteRgba, paletteText, PALETTE };

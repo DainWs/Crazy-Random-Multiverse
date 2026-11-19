@@ -35,7 +35,7 @@ class FakeText {
   public width = 100;
   public y: number;
   public destroyed = false;
-  private readonly listeners = new Map<string, () => void>();
+  private readonly listeners = new Map<string, (() => void)[]>();
 
   public constructor(public x: number, y: number, text: string | string[]) {
     this.y = y;
@@ -55,11 +55,11 @@ class FakeText {
   public setScale(scale: number) { this.scale = scale; return this; }
   public setPosition(x: number, y: number) { this.x = x; this.y = y; return this; }
   public setInteractive() { return this; }
-  public on(event: string, listener: () => void) { this.listeners.set(event, listener); return this; }
+  public on(event: string, listener: () => void) { this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]); return this; }
   public destroy() { this.destroyed = true; }
-  public click() { this.listeners.get('pointerup')?.(); }
-  public hover() { this.listeners.get('pointerover')?.(); }
-  public unhover() { this.listeners.get('pointerout')?.(); }
+  public click() { this.listeners.get('pointerup')?.forEach((listener) => listener()); }
+  public hover() { this.listeners.get('pointerover')?.forEach((listener) => listener()); }
+  public unhover() { this.listeners.get('pointerout')?.forEach((listener) => listener()); }
 }
 
 class FakeShape {
@@ -104,6 +104,7 @@ describe('GameHudView', () => {
   let prerender: (() => void) | undefined;
   let keydown: ((event: unknown) => void) | undefined;
   let shapes: FakeShape[];
+  let clock: number;
 
   const turnPanel = () => shapes[0];
   const turnText = () => texts[0];
@@ -134,9 +135,11 @@ describe('GameHudView', () => {
     prerender = undefined;
     keydown = undefined;
     shapes = [];
+    clock = 0;
     session.connectionNotice = undefined;
     const scene = {
       scale: screen,
+      time: { get now() { return clock; } },
       cameraSystem: { getCamera: () => ({ zoom }) },
       input: {
         keyboard: {
@@ -541,6 +544,91 @@ describe('GameHudView', () => {
     hud.refresh(true);
 
     expect(spectatorLabel().visible).toBe(false);
+  });
+
+  // VIEW-38
+  describe('pulse of the end turn button', () => {
+    const REST = '#1a5fa8';
+    const HIGH = '#487fb9';
+    const HOVER = '#2674c4';
+
+    it('does not pulse while something is left to do', () => {
+      hud.refresh(true, false);
+
+      expect(passTurnButton().background).toBe(REST);
+    });
+
+    it('mixes its background with white at the top of the wave', () => {
+      clock = 400;
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().background).toBe(HIGH);
+    });
+
+    it('goes back to its color at the bottom of the wave', () => {
+      clock = 1200;
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().background).toBe(REST);
+    });
+
+    it('repeats the wave every 1600 ms', () => {
+      clock = 400 + 1600;
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().background).toBe(HIGH);
+    });
+
+    it('leaves the text as it is', () => {
+      clock = 400;
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().color).toBe('');
+    });
+
+    it('stops and restores its color when something is left to do again', () => {
+      clock = 400;
+      hud.refresh(true, true);
+
+      hud.refresh(true, false);
+
+      expect(passTurnButton().background).toBe(REST);
+    });
+
+    it('shows the background of the pointer instead of the pulse while the pointer is over it', () => {
+      clock = 400;
+      passTurnButton().hover();
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().background).toBe(HOVER);
+    });
+
+    it('goes on with the pulse from the clock when the pointer leaves', () => {
+      passTurnButton().hover();
+      hud.refresh(true, true);
+      passTurnButton().unhover();
+      clock = 400;
+
+      hud.refresh(true, true);
+
+      expect(passTurnButton().background).toBe(HIGH);
+    });
+
+    // UI-30
+    it('does not pulse when the operating system asks for reduced motion', () => {
+      vi.stubGlobal('matchMedia', () => ({ matches: true }));
+      clock = 400;
+
+      hud.refresh(true, true);
+      vi.unstubAllGlobals();
+
+      expect(passTurnButton().background).toBe(REST);
+    });
   });
 
   it('lights a button under the pointer and restores it when the pointer leaves', () => {

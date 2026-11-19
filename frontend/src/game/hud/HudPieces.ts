@@ -2,7 +2,7 @@ import type { AccentRole, ButtonRole, HudSkin, PanelRole, TextLevel } from '@/ga
 import type { PaletteColor } from '@/game/utils/Palette';
 import * as Constants from '@/core/Constants';
 import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
-import { paletteFill, paletteText } from '@/game/utils/Palette';
+import { paletteFill, paletteMixedWithWhite, paletteText } from '@/game/utils/Palette';
 
 /** What a view changes of a text of a level: the size and the color of the few that do not follow the level yet. */
 type TextOverrides = {
@@ -38,6 +38,11 @@ function createButton(scene: Phaser.Scene, role: ButtonRole, label: string, skin
   button.on('pointerout', () => button.setBackgroundColor(paletteText(look.fill)));
 
   return button;
+}
+
+/** The fill of a button of the skin as `#rrggbb`, mixed with white by `whiteShare` (0 to 1), for what pulses over it. */
+function buttonFill(role: ButtonRole, whiteShare: number, skin: HudSkin = DEFAULT_HUD_SKIN): string {
+  return paletteMixedWithWhite(skin.buttons.get(role)!.fill, whiteShare);
 }
 
 /** A text of a level of the skin, not placed. */
@@ -78,4 +83,4 @@ function accentAlpha(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): number
 }
 
 export type { TextOverrides };
-export { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText, panelBackground };
+export { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText, panelBackground };

@@ -131,6 +131,12 @@ export const GAME_RESULT_PANEL_SIZE = { width: 760, height: 240 };
 /** Alpha of the panel behind the texts of the result of the game, high enough for the slots not to show through (VIEW-23). */
 export const GAME_RESULT_PANEL_ALPHA = 0.95;
 
+/** Duration in milliseconds of one pulse of the end turn button when nothing is left to do (VIEW-38). */
+export const END_TURN_PULSE_PERIOD_MS = 1600;
+
+/** Share of white the background of the end turn button is mixed with at the high point of its pulse, between 0 and 1 (VIEW-38). */
+export const END_TURN_PULSE_WHITE_SHARE = 0.2;
+
 /** Distance in pixels between two HUD buttons. */
 export const HUD_BUTTON_GAP = 16;
 

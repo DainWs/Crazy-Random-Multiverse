@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { HudSkin } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, createButton, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, buttonFill, createButton, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
 import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
 
 type Listener = () => void;
@@ -96,6 +96,13 @@ describe('HudPieces', () => {
       const button = createButton(scene, 'DESTRUCTIVE', 'Rendirse', skin) as unknown as FakeText;
 
       expect(button.background).toBe('#e74c3c');
+    });
+  });
+
+  describe('buttonFill', () => {
+    // VIEW-38
+    it('mixes the fill of the role with white', () => {
+      expect([buttonFill('PRIMARY', 0), buttonFill('PRIMARY', 0.2)]).toEqual(['#1a5fa8', '#487fb9']);
     });
   });
 

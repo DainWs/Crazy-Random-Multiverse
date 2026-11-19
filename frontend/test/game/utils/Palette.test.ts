@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PALETTE, paletteFill, paletteRgba, paletteText } from '@/game/utils/Palette';
+import { PALETTE, paletteFill, paletteMixedWithWhite, paletteRgba, paletteText } from '@/game/utils/Palette';
 
 describe('Palette', () => {
   describe('paletteFill', () => {
@@ -15,6 +15,21 @@ describe('Palette', () => {
 
     it('pads the colors with leading zeros to six digits', () => {
       expect(paletteText('TEXT_OUTLINE')).toBe('#000000');
+    });
+  });
+
+  describe('paletteMixedWithWhite', () => {
+    it('returns the color itself with no white', () => {
+      expect(paletteMixedWithWhite('HUD_BUTTON_PRIMARY', 0)).toBe('#1a5fa8');
+    });
+
+    it('mixes each channel with white by the share', () => {
+      // 0x1a5fa8 is 26, 95, 168
+      expect(paletteMixedWithWhite('HUD_BUTTON_PRIMARY', 0.2)).toBe('#487fb9');
+    });
+
+    it('returns white with all white', () => {
+      expect(paletteMixedWithWhite('HUD_BUTTON_PRIMARY', 1)).toBe('#ffffff');
     });
   });
 

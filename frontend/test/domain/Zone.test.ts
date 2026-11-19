@@ -127,6 +127,21 @@ describe('Zone', () => {
     });
   });
 
+  describe('hasCardReadyToAttack', () => {
+    it('accepts a zone with a card that can attack', () => {
+      zone = createZone(1, 0);
+      zone.slots[0][0].combatant!.isAttackAvailable = true;
+
+      expect(zone.hasCardReadyToAttack()).toBe(true);
+    });
+
+    it('rejects a zone where no card can attack', () => {
+      zone = createZone(1, 1);
+
+      expect(zone.hasCardReadyToAttack()).toBe(false);
+    });
+  });
+
   describe('canMoveCard', () => {
     // BOARD-7
     it('accepts a move to a free slot of a row whose previous row is filled', () => {

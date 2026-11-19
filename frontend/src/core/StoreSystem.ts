@@ -158,6 +158,16 @@ function canPlayerAct(): boolean {
   return !isPlayerSpectator() && !store.gameState?.result && store.gameState?.playerWithTurn === getPlayer().code;
 }
 
+/** Whether the local player, on their turn, has no card that can attack and none in the hand with a slot or a target. Moving a card already on the board does not count (VIEW-38). */
+function hasNothingLeftToDo(): boolean {
+  const player = getPlayer();
+  const ownZone = getBattlefield().myZone;
+
+  return canPlayerAct()
+    && !ownZone.hasCardReadyToAttack()
+    && !getPlayerHand().some((card) => ownZone.hasSlotFor(card, player));
+}
+
 /** The player who holds the turn, unknown until the first `TURN_CHANGE` (CON-32). */
 function getPlayerWithTurn(): Player | undefined {
   const code = store.gameState?.playerWithTurn;
@@ -255,6 +265,7 @@ const StoreSystem = {
   isPlayerSpectator,
   getPlayer,
   canPlayerAct,
+  hasNothingLeftToDo,
   getPlayerWithTurn,
   getPlayerZone,
   setPlayerZone,

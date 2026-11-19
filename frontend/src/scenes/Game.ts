@@ -196,7 +196,8 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
-        this.hudView.refresh(this.cardController.canAct());
+        const canAct = this.cardController.canAct();
+        this.hudView.refresh(canAct, canAct && StoreSystem.hasNothingLeftToDo());
     }
 
     /** Shows the result over the board, or updates it when the winner arrives (WIN-4). */

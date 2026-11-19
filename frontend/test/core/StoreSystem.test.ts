@@ -263,6 +263,46 @@ describe('StoreSystem', () => {
       expect(StoreSystem.canPlayerAct()).toBe(false);
     });
 
+    // VIEW-38
+    describe('with nothing left to do', () => {
+      const applyOwnZone = (overrides: Partial<GameSnapshot>, hasCardReadyToAttack: boolean, hasSlotForCards: boolean) => {
+        const myZone = { hasCardReadyToAttack: () => hasCardReadyToAttack, hasSlotFor: () => hasSlotForCards };
+        applyTurn({ battlefield: { myZone } as unknown as GameSnapshot['battlefield'], ...overrides });
+        StoreSystem.setPlayerHand(createHand());
+      };
+
+      it('is true when no card can attack and none of the hand has a slot', () => {
+        applyOwnZone({ playerWithTurn: 'p1' }, false, false);
+
+        expect(StoreSystem.hasNothingLeftToDo()).toBe(true);
+      });
+
+      it('is false while a card can attack', () => {
+        applyOwnZone({ playerWithTurn: 'p1' }, true, false);
+
+        expect(StoreSystem.hasNothingLeftToDo()).toBe(false);
+      });
+
+      it('is false while a card of the hand has a slot', () => {
+        applyOwnZone({ playerWithTurn: 'p1' }, false, true);
+
+        expect(StoreSystem.hasNothingLeftToDo()).toBe(false);
+      });
+
+      it('is true with an empty hand and no card that can attack', () => {
+        applyOwnZone({ playerWithTurn: 'p1' }, false, true);
+        StoreSystem.setPlayerHand([]);
+
+        expect(StoreSystem.hasNothingLeftToDo()).toBe(true);
+      });
+
+      it('is false on the turn of another player', () => {
+        applyOwnZone({ playerWithTurn: 'p2' }, false, false);
+
+        expect(StoreSystem.hasNothingLeftToDo()).toBe(false);
+      });
+    });
+
     // UI-8
     it('treats an eliminated player as a spectator', () => {
       applyTurn({ player: { ...alivePlayer, isAlive: false } as GameSnapshot['player'] });

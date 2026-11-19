@@ -6,9 +6,11 @@ import SessionSystem from '@/core/SessionSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, createButton, createFocusFrame, createPanel, createText } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
+import EffectSettings from '@/core/EffectSettings';
+import { pulseWave } from '@/core/visual_effects/ReadyMarkPulse';
 
 type DialogButton = 'YES' | 'NO';
 
@@ -43,6 +45,8 @@ class GameHudView {
     private readonly handledKeys = new WeakSet<KeyboardEvent>();
     private stopListening: () => void = () => undefined;
     private enabled = false;
+    private endTurnHovered = false;
+    private endTurnPulsing = false;
     private spectator = false;
     private zoom: number;
     private screenSize: Size2D;
@@ -73,6 +77,9 @@ class GameHudView {
             () => this.whenEnabled(this.askToSurrender.bind(this))
         );
         this.surrenderButton.setOrigin(0, 1);
+
+        this.passTurnButton.on('pointerover', () => { this.endTurnHovered = true; });
+        this.passTurnButton.on('pointerout', () => { this.endTurnHovered = false; });
 
         this.leaveButton = this.createHudButton(
             'NEUTRAL',
@@ -157,10 +164,11 @@ class GameHudView {
     }
 
     /** Draws the turn indicator and enables the buttons only when the player can act (UI-4). A spectator only gets
-     * the button to leave (UI-8). */
-    public refresh(canAct: boolean) {
+     * the button to leave (UI-8). The end turn button pulses when the player has nothing left to do (VIEW-38). */
+    public refresh(canAct: boolean, hasNothingLeftToDo = false) {
         this.refreshTurnText();
         this.refreshRole();
+        this.pulseEndTurnButton(hasNothingLeftToDo && !EffectSettings.pulsesAreStill());
 
         if (canAct === this.enabled) {
             return;
@@ -185,6 +193,21 @@ class GameHudView {
         this.surrenderButton.destroy();
         this.leaveButton.destroy();
         this.spectatorLabel.destroy();
+    }
+
+    /** The pulse depends only on the clock of the scene, so it goes on in phase after the pointer leaves the button (VIEW-38). */
+    private pulseEndTurnButton(pulses: boolean) {
+        if (!pulses && !this.endTurnPulsing) {
+            return;
+        }
+
+        this.endTurnPulsing = pulses;
+        if (this.endTurnHovered) {
+            return;
+        }
+
+        const whiteShare = pulses ? Constants.END_TURN_PULSE_WHITE_SHARE * pulseWave(this.scene.time.now, Constants.END_TURN_PULSE_PERIOD_MS) : 0;
+        this.passTurnButton.setBackgroundColor(buttonFill('PRIMARY', whiteShare));
     }
 
     private refreshRole() {
