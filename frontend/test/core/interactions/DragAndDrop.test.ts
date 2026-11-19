@@ -202,6 +202,18 @@ describe('CardDragAndDropManager', () => {
       expect(slot.stopPreviewingCard).toHaveBeenCalled();
       expect(slot.applyAnimation).toHaveBeenCalledWith('unhighlight');
     });
+
+    // VIEW-32
+    it('keeps the source slot highlighted when the card leaves it', () => {
+      const card = createMockCard(true);
+      const sourceSlot = createMockZoneSlot();
+      vi.mocked(getTopGameObjectAtCursor).mockReturnValue(sourceSlot);
+      dragAndDrop.onGrabCard(mockScene, card);
+
+      dragAndDrop.onDragLeave(mockScene, card, sourceSlot);
+
+      expect(sourceSlot.applyAnimation).not.toHaveBeenCalledWith('unhighlight');
+    });
   });
 
   describe('onDragCard', () => {

@@ -98,6 +98,8 @@ class CardDragAndDropManager {
   // Drag leave
 
   public onDragLeave(_1: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
+    if (targetGameObject === this.sourceGameObject) return;
+
     if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragLeave(cardView, targetGameObject);
     }
