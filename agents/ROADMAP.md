@@ -25,6 +25,19 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Settings screen | Post-MVP, with the graphics quality and reduced motion options (`UI-27`). The MVP is built so that adding it only adds the screen and its options, without changing the effects (`UI-30`) |
 | Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
+## Phase 11.1b — UX/UI: accessibility apart from the base game
+
+Started at: 6cb4e43
+
+Requested by the product owner on 2026-11-19: Phase 11.1 changed the default look and behavior of the game to make it accessible, with no settings to turn it off. The base game goes back to how it was before Phase 11.1, and what Phase 11.1 added is turned on with a parameter of the address, like `UI-31`. Phase 11.2 is not part of it.
+
+- [x] Write in the rules, and show it to the product owner before any code. Decided on 2026-11-20: the accessible mode, `accessible=1` (`UI-31`), turns on the extra signals (`VIEW-39`), the tint of the own zone, the border of the eliminated zone and the near black edge of the marks (`VIEW-40`), and the red mark of the source slot that stays while dragging (`VIEW-32`). Stay in the base game: the 18 px of the texts (`VIEW-41`), the panel of the round and the turn, the keyboard (`UI-32`, `VIEW-42`) and the focus of the notices. `extraMarks=1` stays as it is and turns on only the extra signals
+- [x] Find in the history what Phase 11.1 changed of the default look (`007a553` to `f4bdee4`) and record it in this bullet. It changed: the colors `SLOT_OWN_TINT` (`#9fd8ff` before, now `#1a4f95`), `SLOT_OWN_BORDER` (`#3d9bff`, now `#061a3a`) and `ELIMINATED_VEIL_BORDER` (`#1a0000`, now `#c04545`); the near black edge under every frame (`MARK_EDGE`, `ZoneSlotViewRenderer`); the round and turn text on a panel; the 16 px of the notice of the session (now 18 px); the keyboard of `UI-32` with its focus frame (`VIEW-42`) and the `FocusTrap` of the notices; and the red mark of the source slot, which stays while a card is dragged out of it (`DragAndDrop`)
+- [ ] Keep the base value and the accessible value of the three colors, and read the mode in `EffectSettings` only
+- [ ] Draw the near black edge and keep the source mark only in the accessible mode
+- [ ] Regenerate the reference images of the base game, and add the ones of the accessible mode
+- [ ] Run the tests of the contrasts of the marks on the accessible values
+
 ## Phase 11.3 — UX/UI: board legibility
 
 - [ ] Show the name of each player in a label next to their zone, with "Tú" instead of the name in the local player's zone: today the turn notice names the player (`VIEW-15`), but nothing on the board says which zone is theirs (`VIEW-13`). The label never covers a slot, and keeps the size on screen of the minimum text of Phase 11.1 at any zoom. Its place is decided with the product owner and written in a new `VIEW` rule
