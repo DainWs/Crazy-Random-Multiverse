@@ -2,6 +2,7 @@ import type { GameScene } from "@/scenes/Game";
 import type CardView from "@/game/cards/CardView";
 import { dispatchAction } from "@/core/interactions/CardInteractionDispatcher";
 import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
+import EffectSettings from "@/core/EffectSettings";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
 import CombatantView from "@/game/cards/CombatantView";
 import EquipmentView from "@/game/cards/EquipmentView";
@@ -98,7 +99,8 @@ class CardDragAndDropManager {
   // Drag leave
 
   public onDragLeave(_1: GameScene, cardView: CardView, targetGameObject: TargetGameObject) {
-    if (targetGameObject === this.sourceGameObject) return;
+    // The mark of the source slot stays while the card is dragged only in the accessible mode (VIEW-32)
+    if (EffectSettings.accessibleModeIsOn() && targetGameObject === this.sourceGameObject) return;
 
     if (cardView instanceof CombatantView && targetGameObject instanceof ZoneSlotView) {
       this.onZoneSlotDragLeave(cardView, targetGameObject);

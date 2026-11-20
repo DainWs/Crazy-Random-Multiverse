@@ -33,10 +33,10 @@ Requested by the product owner on 2026-11-19: Phase 11.1 changed the default loo
 
 - [x] Write in the rules, and show it to the product owner before any code. Decided on 2026-11-20: the accessible mode, `accessible=1` (`UI-31`), turns on the extra signals (`VIEW-39`), the tint of the own zone, the border of the eliminated zone and the near black edge of the marks (`VIEW-40`), and the red mark of the source slot that stays while dragging (`VIEW-32`). Stay in the base game: the 18 px of the texts (`VIEW-41`), the panel of the round and the turn, the keyboard (`UI-32`, `VIEW-42`) and the focus of the notices. `extraMarks=1` stays as it is and turns on only the extra signals
 - [x] Find in the history what Phase 11.1 changed of the default look (`007a553` to `f4bdee4`) and record it in this bullet. It changed: the colors `SLOT_OWN_TINT` (`#9fd8ff` before, now `#1a4f95`), `SLOT_OWN_BORDER` (`#3d9bff`, now `#061a3a`) and `ELIMINATED_VEIL_BORDER` (`#1a0000`, now `#c04545`); the near black edge under every frame (`MARK_EDGE`, `ZoneSlotViewRenderer`); the round and turn text on a panel; the 16 px of the notice of the session (now 18 px); the keyboard of `UI-32` with its focus frame (`VIEW-42`) and the `FocusTrap` of the notices; and the red mark of the source slot, which stays while a card is dragged out of it (`DragAndDrop`)
-- [ ] Keep the base value and the accessible value of the three colors, and read the mode in `EffectSettings` only
-- [ ] Draw the near black edge and keep the source mark only in the accessible mode
-- [ ] Regenerate the reference images of the base game, and add the ones of the accessible mode
-- [ ] Run the tests of the contrasts of the marks on the accessible values
+- [x] Keep the base value and the accessible value of the three colors, and read the mode in `EffectSettings` only
+- [x] Draw the near black edge and keep the source mark only in the accessible mode
+- [x] Regenerate the reference images of the base game, and add the ones of the accessible mode
+- [x] Run the tests of the contrasts of the marks on the accessible values
 
 ## Phase 11.3 — UX/UI: board legibility
 

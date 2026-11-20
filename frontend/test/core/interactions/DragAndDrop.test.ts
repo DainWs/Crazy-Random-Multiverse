@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import dragAndDrop from '@/core/interactions/DragAndDrop';
 import CardAnimator from '@/core/visual_effects/CardAnimator';
 import { dispatchAction } from '@/core/interactions/CardInteractionDispatcher';
@@ -203,16 +203,32 @@ describe('CardDragAndDropManager', () => {
       expect(slot.applyAnimation).toHaveBeenCalledWith('unhighlight');
     });
 
-    // VIEW-32
-    it('keeps the source slot highlighted when the card leaves it', () => {
-      const card = createMockCard(true);
-      const sourceSlot = createMockZoneSlot();
-      vi.mocked(getTopGameObjectAtCursor).mockReturnValue(sourceSlot);
-      dragAndDrop.onGrabCard(mockScene, card);
+    // VIEW-32, UI-31
+    describe('when the card leaves its source slot', () => {
+      const leaveSourceSlot = () => {
+        const card = createMockCard(true);
+        const sourceSlot = createMockZoneSlot();
+        vi.mocked(getTopGameObjectAtCursor).mockReturnValue(sourceSlot);
+        dragAndDrop.onGrabCard(mockScene, card);
 
-      dragAndDrop.onDragLeave(mockScene, card, sourceSlot);
+        dragAndDrop.onDragLeave(mockScene, card, sourceSlot);
 
-      expect(sourceSlot.applyAnimation).not.toHaveBeenCalledWith('unhighlight');
+        return sourceSlot;
+      };
+
+      afterEach(() => {
+        window.history.replaceState(null, '', '/');
+      });
+
+      it('keeps the source slot highlighted in the accessible mode', () => {
+        window.history.replaceState(null, '', '/?accessible=1');
+
+        expect(leaveSourceSlot().applyAnimation).not.toHaveBeenCalledWith('unhighlight');
+      });
+
+      it('unhighlights the source slot in the base game', () => {
+        expect(leaveSourceSlot().applyAnimation).toHaveBeenCalledWith('unhighlight');
+      });
     });
   });
 

@@ -1,9 +1,32 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { PALETTE, paletteFill, paletteMixedWithWhite, paletteRgba, paletteText } from '@/game/utils/Palette';
 
 describe('Palette', () => {
   describe('paletteFill', () => {
     it('returns the color as a number', () => {
+      expect(paletteFill('MARK_READY')).toBe(0x00e5ff);
+    });
+  });
+
+  // UI-31
+  describe('accessible mode', () => {
+    afterEach(() => {
+      window.history.replaceState(null, '', '/');
+    });
+
+    it('keeps the base colors of the own zone and of the eliminated zone without the parameter', () => {
+      expect([paletteFill('SLOT_OWN_TINT'), paletteFill('SLOT_OWN_BORDER'), paletteFill('ELIMINATED_VEIL_BORDER')]).toEqual([0x9fd8ff, 0x3d9bff, 0x1a0000]);
+    });
+
+    it('gives those colors the accessible values with accessible=1', () => {
+      window.history.replaceState(null, '', '/?accessible=1');
+
+      expect([paletteFill('SLOT_OWN_TINT'), paletteFill('SLOT_OWN_BORDER'), paletteFill('ELIMINATED_VEIL_BORDER')]).toEqual([0x1a4f95, 0x061a3a, 0xc04545]);
+    });
+
+    it('does not change any other color', () => {
+      window.history.replaceState(null, '', '/?accessible=1');
+
       expect(paletteFill('MARK_READY')).toBe(0x00e5ff);
     });
   });

@@ -20,13 +20,23 @@ function pulsesAreStill(): boolean {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 }
 
-/** Name and value of the address parameter that turns on the second signal of the marks (UI-31). */
+/** Names and value of the address parameters that turn on the accessible mode and the second signal of the marks (UI-31). */
+const ACCESSIBLE_PARAMETER = 'accessible';
 const EXTRA_MARKS_PARAMETER = 'extraMarks';
-const EXTRA_MARKS_ON_VALUE = '1';
+const PARAMETER_ON_VALUE = '1';
 
-/** Whether the page was opened with `extraMarks=1`; any other value, or none, leaves them off (UI-31). */
+function isParameterOn(name: string): boolean {
+  return new URLSearchParams(window.location.search).get(name) === PARAMETER_ON_VALUE;
+}
+
+/** Whether the page was opened with `accessible=1`; any other value, or none, is the base game (UI-31). */
+function accessibleModeIsOn(): boolean {
+  return isParameterOn(ACCESSIBLE_PARAMETER);
+}
+
+/** Whether the extra signals of the marks are on: with `extraMarks=1` or in the accessible mode (UI-31). */
 function extraMarksAreOn(): boolean {
-  return new URLSearchParams(window.location.search).get(EXTRA_MARKS_PARAMETER) === EXTRA_MARKS_ON_VALUE;
+  return isParameterOn(EXTRA_MARKS_PARAMETER) || accessibleModeIsOn();
 }
 
 const EffectSettings = {
@@ -36,6 +46,7 @@ const EffectSettings = {
   reducedMotion: false,
   plays,
   pulsesAreStill,
+  accessibleModeIsOn,
   extraMarksAreOn
 };
 

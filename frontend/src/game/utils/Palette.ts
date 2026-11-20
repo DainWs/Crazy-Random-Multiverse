@@ -1,4 +1,6 @@
-/** Every color of `game/`, `core/` and `scenes/`, named by what it means. The values live only in `PALETTE`. */
+import EffectSettings from '@/core/EffectSettings';
+
+/** Every color of `game/`, `core/` and `scenes/`, named by what it means. The values live only in `PALETTE` and `ACCESSIBLE_PALETTE`. */
 type PaletteColor =
   | 'REJECTION_TEXT'
   | 'NOTICE_TEXT'
@@ -78,8 +80,8 @@ const PALETTE = new Map<PaletteColor, number>([
   ['OWN_ZONE_LINES', 0x3d9bff],
   ['SLOT_FILL', 0xffffff],
   ['SLOT_BORDER', 0x4488cc],
-  ['SLOT_OWN_TINT', 0x1a4f95],
-  ['SLOT_OWN_BORDER', 0x061a3a],
+  ['SLOT_OWN_TINT', 0x9fd8ff],
+  ['SLOT_OWN_BORDER', 0x3d9bff],
   ['SLOT_SOURCE_FILL', 0xd40000],
   ['SLOT_VALID_FILL', 0xaaffaa],
   ['HUD_TEXT', 0xffffff],
@@ -97,7 +99,7 @@ const PALETTE = new Map<PaletteColor, number>([
   ['DAMAGE_TEXT_ARMOR', 0x5dade2],
   ['DAMAGE_TEXT_HEALTH', 0xe74c3c],
   ['ELIMINATED_VEIL', 0x3b0a0a],
-  ['ELIMINATED_VEIL_BORDER', 0xc04545],
+  ['ELIMINATED_VEIL_BORDER', 0x1a0000],
   ['ELIMINATED_LABEL', 0xff5a4d],
   ['LOAD_TEXT', 0xffffff],
   ['LOAD_BAR_FILL', 0x2ecc71],
@@ -124,12 +126,21 @@ const PALETTE = new Map<PaletteColor, number>([
   ['TABLE_LAVA_GRID', 0xc0392b]
 ]);
 
+/** The colors that change in the accessible mode, so the marks reach the minimum contrasts (VIEW-40, UI-31). The others do not change. */
+const ACCESSIBLE_PALETTE = new Map<PaletteColor, number>([
+  ['SLOT_OWN_TINT', 0x1a4f95],
+  ['SLOT_OWN_BORDER', 0x061a3a],
+  ['ELIMINATED_VEIL_BORDER', 0xc04545]
+]);
+
 const RGB_CHANNEL_MASK = 0xff;
 const HEX_DIGITS = 6;
 
 /** The color as a number, for the fills, the lines and the tints of Phaser. */
 function paletteFill(color: PaletteColor): number {
-  return PALETTE.get(color)!;
+  const accessible = EffectSettings.accessibleModeIsOn() ? ACCESSIBLE_PALETTE.get(color) : undefined;
+
+  return accessible ?? PALETTE.get(color)!;
 }
 
 /** The color as `#rrggbb`, for the texts and their backgrounds. */
@@ -156,4 +167,4 @@ function paletteMixedWithWhite(color: PaletteColor, whiteShare: number): string 
 }
 
 export type { PaletteColor };
-export { paletteFill, paletteMixedWithWhite, paletteRgba, paletteText, PALETTE };
+export { paletteFill, paletteMixedWithWhite, paletteRgba, paletteText, ACCESSIBLE_PALETTE, PALETTE };

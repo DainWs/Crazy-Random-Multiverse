@@ -1,6 +1,7 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, MARK_EDGE_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
+import EffectSettings from "@/core/EffectSettings";
 import { paletteFill } from "@/game/utils/Palette";
 import { crownPath, type MarkPath } from "@/game/zone/SlotMarkLayout";
 
@@ -70,8 +71,12 @@ class ZoneSlotViewRenderer {
     }
   }
 
-  /** The dark edge goes first and is wider on each side, so the colored line is drawn over it (VIEW-40). */
+  /** The dark edge goes first and is wider on each side, so the colored line is drawn over it, only in the accessible mode (VIEW-40, UI-31). */
   private static edgedLines(width: number, color: number): Array<[number, number]> {
+    if (!EffectSettings.accessibleModeIsOn()) {
+      return [[width, color]];
+    }
+
     return [[width + 2 * MARK_EDGE_WIDTH, paletteFill('MARK_EDGE')], [width, color]];
   }
 

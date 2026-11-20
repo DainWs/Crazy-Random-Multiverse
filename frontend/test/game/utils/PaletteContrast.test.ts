@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { PaletteColor } from '@/game/utils/Palette';
 import { paletteFill } from '@/game/utils/Palette';
 
@@ -34,11 +34,19 @@ function contrast(first: Rgb, second: Rgb): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// VIEW-40
+// VIEW-40: the colors of the marks are the accessible ones (UI-31)
 describe('Palette contrast', () => {
+  beforeEach(() => {
+    window.history.replaceState(null, '', '/?accessible=1');
+  });
+
+  afterEach(() => {
+    window.history.replaceState(null, '', '/');
+  });
+
   const table = toRgb('TABLE_CLASSIC_BACKGROUND');
-  const neutralSlot = over(toRgb('SLOT_FILL'), table, SLOT_FILL_ALPHA);
-  const ownSlot = over(toRgb('SLOT_OWN_TINT'), table, SLOT_FILL_ALPHA);
+  const neutralSlot = () => over(toRgb('SLOT_FILL'), table, SLOT_FILL_ALPHA);
+  const ownSlot = () => over(toRgb('SLOT_OWN_TINT'), table, SLOT_FILL_ALPHA);
 
   it.each([
     { text: 'HUD_TEXT', background: 'PANEL_FILL' },
@@ -63,15 +71,15 @@ describe('Palette contrast', () => {
   });
 
   it('reaches 3:1 for the edge of a mark against a light slot', () => {
-    expect(contrast(toRgb('MARK_EDGE'), neutralSlot)).toBeGreaterThanOrEqual(MARK_MINIMUM);
+    expect(contrast(toRgb('MARK_EDGE'), neutralSlot())).toBeGreaterThanOrEqual(MARK_MINIMUM);
   });
 
   it('reaches 3:1 for the tint of the own zone against a neutral slot', () => {
-    expect(contrast(ownSlot, neutralSlot)).toBeGreaterThanOrEqual(MARK_MINIMUM);
+    expect(contrast(ownSlot(), neutralSlot())).toBeGreaterThanOrEqual(MARK_MINIMUM);
   });
 
   it('reaches 3:1 for the lines of the own zone against its tint', () => {
-    expect(contrast(toRgb('OWN_ZONE_LINES'), ownSlot)).toBeGreaterThanOrEqual(MARK_MINIMUM);
+    expect(contrast(toRgb('OWN_ZONE_LINES'), ownSlot())).toBeGreaterThanOrEqual(MARK_MINIMUM);
   });
 
   it('reaches 3:1 for the border of an eliminated slot against its veil', () => {

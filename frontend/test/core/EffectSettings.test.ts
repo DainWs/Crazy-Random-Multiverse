@@ -36,6 +36,32 @@ describe('EffectSettings', () => {
   });
 
   // UI-31
+  describe('accessibleModeIsOn', () => {
+    afterEach(() => {
+      window.history.replaceState(null, '', '/');
+    });
+
+    it.each([
+      { search: '?accessible=1', expected: true },
+      { search: '?a=b&accessible=1', expected: true },
+      { search: '', expected: false },
+      { search: '?accessible=0', expected: false },
+      { search: '?accessible=true', expected: false },
+      { search: '?extraMarks=1', expected: false }
+    ])('is $expected for "$search"', ({ search, expected }) => {
+      window.history.replaceState(null, '', `/${search}`);
+
+      expect(EffectSettings.accessibleModeIsOn()).toBe(expected);
+    });
+
+    it('turns on the extra marks too', () => {
+      window.history.replaceState(null, '', '/?accessible=1');
+
+      expect(EffectSettings.extraMarksAreOn()).toBe(true);
+    });
+  });
+
+  // UI-31
   describe('extraMarksAreOn', () => {
     afterEach(() => {
       window.history.replaceState(null, '', '/');
