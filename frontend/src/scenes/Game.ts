@@ -14,6 +14,7 @@ import ResourceSystem from '@/core/ResourceSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import CardValueLabelsView from '@/game/zone/CardValueLabelsView';
+import ZoneLabelsView from '@/game/zone/ZoneLabelsView';
 import SettingsSystem, { CARD_VALUES } from '@/core/SettingsSystem';
 import Phaser, { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
@@ -50,6 +51,9 @@ class GameScene extends Scene {
     private queuedTurn: BoardTurn = {};
     private battlefieldContainer: Phaser.GameObjects.Container;
     private cardValueLabels?: CardValueLabelsView;
+    private zoneLabels?: ZoneLabelsView;
+    /** The turn of the board being shown, which the mark of who plays next follows (VIEW-51). */
+    private shownPlayerWithTurn?: PlayerCode;
     public zones: ZoneView[];
 
     private readonly storeChangeHandlers: Record<GameChange, (event: GameChangeEvent) => void> = {
@@ -127,10 +131,12 @@ class GameScene extends Scene {
 
         this.isLeaderIntroPending = true;
         this.showCardValueLabels();
+        this.showZoneLabels();
         AnimationSystem.enqueue(async () => {
             await playLeaderIntro(this, leaders);
             this.isLeaderIntroPending = false;
             this.showCardValueLabels();
+            this.showZoneLabels();
         });
     }
 
@@ -180,6 +186,8 @@ class GameScene extends Scene {
         CardClickHandler.cancelTargeting();
         this.zones = [];
         this.cardValueLabels = undefined;
+        this.zoneLabels = undefined;
+        this.shownPlayerWithTurn = playerWithTurn;
         this.battlefieldContainer.removeAll(true);
 
         const battlefieldView = new BattlefieldView(this, battlefield);
@@ -194,6 +202,17 @@ class GameScene extends Scene {
         }
 
         this.showCardValueLabels();
+        this.showZoneLabels();
+    }
+
+    /** The name of each zone, the health bar of its leader and who plays next are always drawn, around the zones (VIEW-49, VIEW-50, VIEW-51). */
+    private showZoneLabels() {
+        this.zoneLabels?.destroy();
+
+        const labels = new ZoneLabelsView(this, this.zones, this.shownPlayerWithTurn, !this.isLeaderIntroPending);
+        labels.applyScale(this.cardValueUnitsPerPixel());
+        this.battlefieldContainer.add(labels);
+        this.zoneLabels = labels;
     }
 
     /** The values the player turned on are drawn outside the cards, over the board (UI-33, VIEW-46). */
@@ -242,6 +261,10 @@ class GameScene extends Scene {
         const unitsPerPixel = this.cardValueUnitsPerPixel();
         if (this.cardValueLabels && this.cardValueLabels.getUnitsPerPixel() !== unitsPerPixel) {
             this.cardValueLabels.applyScale(unitsPerPixel);
+        }
+
+        if (this.zoneLabels && this.zoneLabels.getUnitsPerPixel() !== unitsPerPixel) {
+            this.zoneLabels.applyScale(unitsPerPixel);
         }
     }
 

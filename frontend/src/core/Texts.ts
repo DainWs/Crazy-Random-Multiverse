@@ -33,6 +33,7 @@ const TEXTS: Record<string, string> = {
   'ui.game.eliminated': 'Eliminado',
   'ui.game.round': 'Ronda',
   'ui.game.your_turn': 'Tu turno',
+  'ui.game.you': 'Tú',
   'ui.game.turn_of': 'Turno de',
   'ui.game.end_turn': 'Terminar turno',
   'ui.game.surrender': 'Rendirse',

@@ -11,8 +11,6 @@ import * as Constants from '@/core/Constants';
 import { createPanel, createText } from '@/game/hud/HudPieces';
 import CardValueLabelLayout from '@/game/zone/CardValueLabelLayout';
 
-const LEADER_POSITION = { row: 0, column: 0 };
-
 const STATISTIC_BY_CARD_VALUE = new Map<CardValue, StatisticType>([
   ['DAMAGE', 'Damage'],
   ['ARMOR', 'Armor'],
@@ -113,7 +111,7 @@ class CardValueLabelsView extends Phaser.GameObjects.Container {
   /** The leader slot of the local player's zone, which is what `VIEW-48` measures the distances from. */
   private leaderCenter(zoneViews: ZoneView[]): Point2D {
     const ownZoneView = zoneViews.find((zoneView) => zoneView.zone.isPlayerOwner(StoreSystem.getPlayer()));
-    const leaderSlot = ownZoneView?.getSlotAt(LEADER_POSITION);
+    const leaderSlot = ownZoneView?.getSlots().flat().find((slotView) => slotView.zoneSlot.allowedCombatant === 'LEADER');
 
     return ownZoneView && leaderSlot ? { x: ownZoneView.x + leaderSlot.x, y: ownZoneView.y + leaderSlot.y } : { x: 0, y: 0 };
   }

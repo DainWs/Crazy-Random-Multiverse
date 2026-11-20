@@ -344,3 +344,32 @@ export const CARD_VALUE_LABEL_PADDING = 6;
 
 /** How many pixels the game canvas draws for each pixel of the window, so what is shrunk by the perspective and the zoom stays sharp. The browser shrinks the canvas back to the size of the window. */
 export const RENDER_SCALE = 2;
+
+/** Font size in px on the screen of the label with the name of the player of a zone (VIEW-49). */
+export const ZONE_LABEL_FONT_SIZE = '18px';
+
+/** Widest a label with a name can be, in px on the screen: a longer name ends with an ellipsis (VIEW-49). */
+export const ZONE_NAME_MAX_WIDTH = 120;
+
+/** Units in px on the screen between the edge of a label of a zone and its text (VIEW-49). */
+export const ZONE_LABEL_PADDING = 6;
+
+/** Units in px on the screen between the zone and the health bar of its leader (VIEW-50). */
+export const ZONE_BAR_GAP = 8;
+
+/** Thickness in px on the screen of the health bar of a leader (VIEW-50). */
+export const ZONE_BAR_THICKNESS = 14;
+
+/** Width in px on the screen of the border of the health bar of a leader (VIEW-50). */
+export const ZONE_BAR_BORDER_WIDTH = 1;
+
+/** Units in px on the screen between the health bar of a leader and the label with the name of its zone (VIEW-49). */
+export const ZONE_NAME_GAP = 6;
+
+/** The bar is green above this share of the health of the leader, and yellow above the next one (VIEW-50). */
+export const ZONE_BAR_HIGH_ABOVE = 0.6;
+export const ZONE_BAR_MEDIUM_ABOVE = 0.3;
+
+/** What goes before the name of the player who plays next, and what ends a name that was cut (VIEW-51, VIEW-49). */
+export const ZONE_NEXT_MARK = '▶ ';
+export const ZONE_NAME_ELLIPSIS = '…';
