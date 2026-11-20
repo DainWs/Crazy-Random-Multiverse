@@ -7,6 +7,7 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** cards or texts look less sharp than expected, above all in rotated zones, in the hand or with the camera zoomed.
 - **Likely cause:** `pixelArt: true` in `App.vue` still sets `roundPixels` to `true` and `antialias` to `false`, but Phaser 4 only rounds objects that are axis-aligned and not scaled. The default `GameObject#vertexRoundMode` is `safeAuto`. The cards of the rotated zones and the hand, which is scaled by `1 / zoom`, do not qualify.
 - **Where to look:** the configuration in `App.vue` and `vertexRoundMode`. The `full` and `fullAuto` modes always round, and can make transformed objects wobble.
+- **Tried on 2026-11-20 without improvement:** `pixelArt: false` with `antialias: true` in `App.vue`, which makes Phaser use linear instead of nearest-neighbor filtering. The product owner compared the card of the local player with 6 and 10 players before and after and saw no improvement, so it was reverted. The text of the values of a card is drawn at a size that is then shrunk by the perspective of the zone and the zoom (`CardStatisticView`), and what is not tried yet is its resolution (`Text#setResolution`) and `vertexRoundMode`.
 
 ## Missing vertices in shapes
 
