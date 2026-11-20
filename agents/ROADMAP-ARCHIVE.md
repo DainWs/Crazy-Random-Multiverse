@@ -309,7 +309,7 @@ Started at: `be65f59` · Finished at: `cba41ce`
 - [x] Give the end turn button the style of the primary action and the surrender button a different, destructive style, and stop them from being next to each other: today both have the same style and the surrender button is right above the end turn one (`VIEW-28`). The styles and the new place of the surrender button are decided with the product owner and written in a new `VIEW` rule. Surrendering keeps its confirmation (`UI-15`)
 - [x] Put the round and the turn on a panel in the palette of `VIEW-28`, at the top left corner where the text is today. The turn says "Tu turno" when it is the local player's and the name of the player otherwise, as the notices of `VIEW-15`. It follows the board being shown (`UI-3`). Write it in a new `VIEW` rule
 - [x] Implement the pulse of the end turn button of `specs/ui/GAME-PULSES.md` (`VIEW-38`), written on 2026-11-14, while it is the local player's turn and they have nothing left to do
-- [x] Lower the visual weight of the background around the table so that the board stands out over it. Whether by lowering its saturation, darkening it or adding a vignette is decided with the product owner and written in a new `VIEW` rule
+- [x] Lower the visual weight of the background around the table so that the board stands out over it. Whether by lowering its saturation, darkening it or adding a vignette is decided with the product owner and written in a new `VIEW` rule Moved to the accessible mode (`UI-31`) on 2026-11-20, in Phase 11.1b, so the base game keeps its background
 
 ## Phase 11.1b — UX/UI: accessibility apart from the base game
 

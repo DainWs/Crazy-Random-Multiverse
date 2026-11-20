@@ -17,6 +17,7 @@ import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
 import { createText } from '@/game/hud/HudPieces';
 import { paletteRgba } from '@/game/utils/Palette';
+import EffectSettings from '@/core/EffectSettings';
 import CameraSystem from '@/core/CameraSystem';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import GameResultView from '@/game/result/GameResultView';
@@ -69,7 +70,9 @@ class GameScene extends Scene {
         this.cardTooltipView = new GlobalCardTooltipView(this);
 
         this.cameraSystem.initialize(this);
-        this.cameras.main.setBackgroundColor(paletteRgba('SCREEN_VEIL', Constants.GAME_BACKGROUND_DIM_ALPHA));
+        if (EffectSettings.accessibleModeIsOn()) {
+            this.cameras.main.setBackgroundColor(paletteRgba('SCREEN_VEIL', Constants.GAME_BACKGROUND_DIM_ALPHA));
+        }
         this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2, this.battlefieldContainer);
 
         this.handController.init();
