@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import GameHudView from '@/game/hud/GameHudView';
 import type { GameScene } from '@/scenes/Game';
-import { HUD_MARGIN } from '@/core/Constants';
+import { HUD_MARGIN, RENDER_SCALE } from '@/core/Constants';
 
 const store = vi.hoisted(() => ({
   round: 2 as number | undefined,
@@ -229,7 +229,7 @@ describe('GameHudView', () => {
 
       prerender?.();
 
-      expect([turnPanel().scale, turnText().scale, passTurnButton().scale, surrenderButton().scale]).toEqual([0.5, 0.5, 0.5, 0.5]);
+      expect([turnPanel().scale, turnText().scale, passTurnButton().scale, surrenderButton().scale]).toEqual([RENDER_SCALE / 2, RENDER_SCALE / 2, RENDER_SCALE / 2, RENDER_SCALE / 2]);
     });
 
     it('moves the turn text so that it keeps its place on the screen', () => {
@@ -237,8 +237,8 @@ describe('GameHudView', () => {
 
       prerender?.();
 
-      // center + (24 - center) / 2
-      expect([turnText().x, turnText().y]).toEqual([250 + 12, 200 + 12]);
+      // center + (the margin in the pixels of the canvas - center) / 2
+      expect([turnText().x, turnText().y]).toEqual([250 + (HUD_MARGIN * RENDER_SCALE) / 2, 200 + (HUD_MARGIN * RENDER_SCALE) / 2]);
     });
 
     it('keeps the HUD as it is while the zoom does not change', () => {
@@ -256,7 +256,7 @@ describe('GameHudView', () => {
 
       prerender?.();
 
-      expect([containers[0].scale, containers[0].x, containers[0].y]).toEqual([0.5, 250, 200]);
+      expect([containers[0].scale, containers[0].x, containers[0].y]).toEqual([RENDER_SCALE / 2, 250, 200]);
     });
 
     it('stops following the zoom when it is destroyed', () => {
@@ -274,8 +274,8 @@ describe('GameHudView', () => {
 
       prerender?.();
 
-      // the corner of the window minus the margin
-      expect([passTurnButton().x, passTurnButton().y]).toEqual([1400 - HUD_MARGIN, 600 - HUD_MARGIN]);
+      // the corner of the window minus the margin, in the pixels of the canvas
+      expect([passTurnButton().x, passTurnButton().y]).toEqual([1400 - HUD_MARGIN * RENDER_SCALE, 600 - HUD_MARGIN * RENDER_SCALE]);
     });
 
     it('closes the dialog when the window changes size', () => {

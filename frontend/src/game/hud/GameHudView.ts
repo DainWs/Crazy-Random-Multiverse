@@ -9,6 +9,7 @@ import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
 import { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
+import { toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 import EffectSettings from '@/core/EffectSettings';
 import { pulseWave } from '@/core/visual_effects/ReadyMarkPulse';
@@ -56,7 +57,7 @@ class GameHudView {
         this.scene = scene;
         this.zoom = this.cameraZoom();
         this.screenSize = this.currentScreenSize();
-        this.layout = new GameHudLayout(scene.scale, this.zoom);
+        this.layout = this.createLayout(this.zoom);
         this.callbacks = callbacks;
 
         this.turnPanel = createPanel(scene, 'HUD');
@@ -107,6 +108,10 @@ class GameHudView {
         this.scene.input.keyboard?.on('keydown', this.onKeyDown, this);
     }
 
+    private createLayout(zoom: number): GameHudLayout {
+        return new GameHudLayout(toLogicalScreen(this.scene.scale, Constants.RENDER_SCALE), zoom, Constants.RENDER_SCALE);
+    }
+
     private cameraZoom(): number {
         return this.scene.cameraSystem.getCamera().zoom;
     }
@@ -135,7 +140,7 @@ class GameHudView {
 
         this.zoom = zoom;
         this.screenSize = screenSize;
-        this.layout = new GameHudLayout(this.scene.scale, zoom);
+        this.layout = this.createLayout(zoom);
         this.applyZoom();
         if (hasSizeChanged) {
             this.closeConfirmDialog();

@@ -3,7 +3,7 @@ import { Game } from 'phaser';
 import { ref, watch } from 'vue';
 import { UNKNOWN_CARD_KEY } from '@/domain/ResourceKeys';
 import SessionSystem from '@/core/SessionSystem';
-import { LOAD_SCENE_KEY, PRELOADED_EVENT } from '@/core/Constants';
+import { LOAD_SCENE_KEY, PRELOADED_EVENT, RENDER_SCALE } from '@/core/Constants';
 
 const SCENE_BY_USER_STATE: Partial<Record<UserState, string>> = {
     GAME_LOADING: 'GameLoad',
@@ -43,10 +43,12 @@ function useAppController(config: Phaser.Types.Core.GameConfig) {
     const scene = ref();
     const game = ref();
     let stopWatching: (() => void) | null = null;
+    let stopFollowingWindow: (() => void) | null = null;
 
     const createGame = () => {
         const created = new Game(config);
         game.value = created;
+        stopFollowingWindow = followWindow(created);
 
         created.events.once(PRELOADED_EVENT, () => {
             stopWatching = watchScenes(created);
@@ -56,6 +58,8 @@ function useAppController(config: Phaser.Types.Core.GameConfig) {
     const destroyGame = () => {
         stopWatching?.();
         stopWatching = null;
+        stopFollowingWindow?.();
+        stopFollowingWindow = null;
 
         if (game.value) {
             game.value.destroy(true);
@@ -69,6 +73,14 @@ function useAppController(config: Phaser.Types.Core.GameConfig) {
         createGame,
         destroyGame
     };
+}
+
+/** The canvas has `RENDER_SCALE` pixels for each one of the window, and the scale manager does not follow the window in that mode. */
+function followWindow(game: Game): () => void {
+    const onResize = () => game.scale.resize(window.innerWidth * RENDER_SCALE, window.innerHeight * RENDER_SCALE);
+    window.addEventListener('resize', onResize);
+
+    return () => window.removeEventListener('resize', onResize);
 }
 
 function watchScenes(game: Game): () => void {

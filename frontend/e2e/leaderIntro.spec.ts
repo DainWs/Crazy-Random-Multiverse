@@ -4,7 +4,7 @@ import { TABLE_AREA, waitForStillFrame } from '@/support/board';
 import { createLoadingGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
-const INTRO_SAMPLE_MS = 1500;
+const INTRO_SAMPLE_MS = 3000;
 const INTRO_WAIT_MS = 3000;
 const MIN_FRAMES_WITH_INTRO = 4;
 

@@ -9,7 +9,7 @@ import { getText } from '@/core/Texts';
 import type { TextLevel } from '@/game/hud/HudSkin';
 import { accentColor, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
-import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { calculateScreenFixedTransform, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import { paletteFill } from '@/game/utils/Palette';
 
 /** Shows over the board whether the local player won or lost, who won and the seconds left until the party (WIN-4). */
@@ -30,7 +30,7 @@ class GameResultView {
 
     public constructor(scene: GameScene, result: GameResult) {
         this.scene = scene;
-        this.layout = new GameResultLayout(scene.scale);
+        this.layout = new GameResultLayout(toLogicalScreen(scene.scale, Constants.RENDER_SCALE));
 
         const positions = this.layout.positions();
         const { veil } = positions;
@@ -88,7 +88,10 @@ class GameResultView {
             this.placeToScreen();
         }
 
-        const { x, y, scale } = calculateScreenFixedTransform(width, height, this.scene.cameraSystem.getCamera().zoom);
+        const screen = toLogicalScreen({ width, height }, Constants.RENDER_SCALE);
+        const { x, y, scale } = calculateScreenFixedTransform(
+            screen.width, screen.height, this.scene.cameraSystem.getCamera().zoom, Constants.RENDER_SCALE
+        );
         this.container.setPosition(x, y).setScale(scale);
     }
 

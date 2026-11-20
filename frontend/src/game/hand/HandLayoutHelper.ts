@@ -1,6 +1,7 @@
 import type CameraSystem from "@/core/CameraSystem";
 import type { Point2D } from "@/domain/Geometry";
 import Phaser from "phaser";
+import { RENDER_SCALE } from "@/core/Constants";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import HandLayoutCalculator, { HAND_CARD_SCALE, SpaceBetweenCardOptions } from "@/game/hand/HandLayoutCalculator";
 
@@ -31,12 +32,12 @@ class HandLayoutHelper {
     this.handBounds.setPosition(x, y);
     this.handBounds.setSize(totalWidth, CARD_HEIGHT);
     this.handBounds.zoom = this.cameraSystem.getCamera().zoom;
-    this.handBounds.scale = HAND_CARD_SCALE / this.handBounds.zoom;
+    this.handBounds.scale = (HAND_CARD_SCALE * RENDER_SCALE) / this.handBounds.zoom;
   }
 
   private calculateHandPosition(): Point2D {
     const { width, height } = this.cameraSystem.getScale();
-    const basePosition = this.calculator.calculateHandBasePosition(CARD_HEIGHT * HAND_CARD_SCALE, width, height);
+    const basePosition = this.calculator.calculateHandBasePosition(CARD_HEIGHT * HAND_CARD_SCALE * RENDER_SCALE, width, height);
     return this.cameraSystem.getHUDPosition(basePosition.x, basePosition.y);
   }
 
@@ -54,7 +55,7 @@ class HandLayoutHelper {
   }
 
   public calculateHiddenOffset(hiddenRatio: number): number {
-    return this.calculator.calculateHiddenOffset(hiddenRatio, CARD_HEIGHT * HAND_CARD_SCALE, this.handBounds.zoom);
+    return this.calculator.calculateHiddenOffset(hiddenRatio, CARD_HEIGHT * HAND_CARD_SCALE * RENDER_SCALE, this.handBounds.zoom);
   }
 
   public getInteractiveBounds(): Phaser.Geom.Rectangle {

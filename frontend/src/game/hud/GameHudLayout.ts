@@ -19,9 +19,10 @@ class GameHudLayout {
     private readonly screen: Size2D;
     private readonly transform: ScreenFixedTransform;
 
-    public constructor(screen: Size2D, zoom: number = 1) {
+    /** `screen` is in the pixels of the window and `pixelRatio` is how many pixels the canvas draws for each one of them. */
+    public constructor(screen: Size2D, zoom: number = 1, pixelRatio: number = 1) {
         this.screen = screen;
-        this.transform = calculateScreenFixedTransform(screen.width, screen.height, zoom);
+        this.transform = calculateScreenFixedTransform(screen.width, screen.height, zoom, pixelRatio);
     }
 
     /** The scale of every element of the HUD. */

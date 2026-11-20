@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import type CameraSystem from '@/core/CameraSystem';
+import { RENDER_SCALE } from '@/core/Constants';
 import { CARD_WIDTH } from '@/game/cards/CardDimensions';
 import HandLayoutCalculator, { HAND_CARD_SCALE } from '@/game/hand/HandLayoutCalculator';
 import HandLayoutHelper from '@/game/hand/HandLayoutHelper';
@@ -39,7 +40,7 @@ describe('HandLayoutHelper', () => {
     it('compensates the zoom of the camera', () => {
       helper.updateBounds(1);
 
-      expect(helper.handBounds.scale).toBe(HAND_CARD_SCALE / 0.5);
+      expect(helper.handBounds.scale).toBe((HAND_CARD_SCALE * RENDER_SCALE) / 0.5);
     });
   });
 

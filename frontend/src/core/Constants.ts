@@ -341,3 +341,6 @@ export const CARD_VALUE_LABEL_CARD_GAP = 4;
 
 /** Units in px on the screen between the edge of a label of card values and its texts (VIEW-47). */
 export const CARD_VALUE_LABEL_PADDING = 6;
+
+/** How many pixels the game canvas draws for each pixel of the window, so what is shrunk by the perspective and the zoom stays sharp. The browser shrinks the canvas back to the size of the window. */
+export const RENDER_SCALE = 2;

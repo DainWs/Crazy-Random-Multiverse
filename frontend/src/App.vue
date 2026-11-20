@@ -6,6 +6,7 @@ import { GameLoad } from '@/scenes/GameLoad';
 import { GameScene } from '@/scenes/Game';
 import { Preloader } from '@/scenes/Preloader';
 import useAppController from '@/AppController';
+import { RENDER_SCALE } from '@/core/Constants';
 import SessionSystem from '@/core/SessionSystem';
 import MainMenuView from '@/views/MainMenuView.vue';
 import PartyView from '@/views/PartyView.vue';
@@ -16,12 +17,14 @@ import SettingsPanel from '@/views/SettingsPanel.vue';
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     scale: {
-        mode: Scale.RESIZE,
-        width: window.innerWidth,
-        height: window.innerHeight
+        mode: Scale.NONE,
+        zoom: 1 / RENDER_SCALE,
+        width: window.innerWidth * RENDER_SCALE,
+        height: window.innerHeight * RENDER_SCALE
     },
     parent: 'game-container',
-    pixelArt: true,
+    pixelArt: false,
+    antialias: true,
     transparent: true,
     scene: [
         Boot,

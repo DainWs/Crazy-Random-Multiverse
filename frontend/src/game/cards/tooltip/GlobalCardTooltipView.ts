@@ -7,6 +7,7 @@ import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 import { getText } from "@/core/Texts";
+import { RENDER_SCALE } from "@/core/Constants";
 import { paletteFill, paletteText } from "@/game/utils/Palette";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 
@@ -118,14 +119,15 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     const cameraSystem = (this.scene as GameScene).cameraSystem;
     const { width: screenWidth, height: screenHeight } = cameraSystem.getScale();
 
-    this.setScale(1 / cameraSystem.getCamera().zoom);
+    this.setScale(RENDER_SCALE / cameraSystem.getCamera().zoom);
 
-    this.currentWidth = screenWidth * SIDEBAR_WIDTH_RATIO;
-    this.currentHeight = screenHeight;
+    // The panel is written in the pixels of the window, and the canvas has RENDER_SCALE of its own for each one
+    this.currentWidth = (screenWidth * SIDEBAR_WIDTH_RATIO) / RENDER_SCALE;
+    this.currentHeight = screenHeight / RENDER_SCALE;
 
     this.background.setSize(this.currentWidth, this.currentHeight);
 
-    const x = screenWidth - (this.currentWidth / 2);
+    const x = screenWidth - (this.currentWidth * RENDER_SCALE) / 2;
     const y = screenHeight / 2;
     const position = cameraSystem.getHUDPosition(x, y);
     this.setPosition(position.x, position.y);

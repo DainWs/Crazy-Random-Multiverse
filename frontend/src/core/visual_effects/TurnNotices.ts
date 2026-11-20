@@ -5,7 +5,7 @@ import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
 import { playMotion } from '@/core/visual_effects/Motion';
 import { createText, panelBackground } from '@/game/hud/HudPieces';
-import { calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { calculateScreenFixedTransform, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 
 /** The round and the turn of a board, which is what a notice announces when it changes (VIEW-15). */
 type BoardTurn = { round?: number; playerWithTurn?: PlayerCode };
@@ -28,13 +28,14 @@ function describeNotices(shown: BoardTurn, next: BoardTurn, localPlayer: PlayerC
 
 /** Shows a text over the board for a moment and resolves when it has faded out. It also ends when the scene shuts down, which drops its tweens. */
 function playNotice(scene: GameScene, text: string): Promise<void> {
-  const { x, y, scale } = calculateScreenFixedTransform(scene.scale.width, scene.scale.height, scene.cameraSystem.getCamera().zoom);
+  const screen = toLogicalScreen(scene.scale, Constants.RENDER_SCALE);
+  const { x, y, scale } = calculateScreenFixedTransform(screen.width, screen.height, scene.cameraSystem.getCamera().zoom, Constants.RENDER_SCALE);
 
   const label = createText(scene, 'BODY', { fontSize: Constants.TURN_NOTICE_FONT_SIZE, color: 'NOTICE_TEXT' }, text);
   label.setOrigin(0.5, 0.5);
   label.setPadding(Constants.TURN_NOTICE_PADDING);
   label.setBackgroundColor(panelBackground('NOTICE'));
-  label.setPosition(x + (scene.scale.width / 2) * scale, y + scene.scale.height * Constants.TURN_NOTICE_TOP_RATIO * scale);
+  label.setPosition(x + (screen.width / 2) * scale, y + screen.height * Constants.TURN_NOTICE_TOP_RATIO * scale);
   label.setScale(scale);
   label.setScrollFactor(0);
   label.setDepth(Constants.TURN_NOTICE_DEPTH);

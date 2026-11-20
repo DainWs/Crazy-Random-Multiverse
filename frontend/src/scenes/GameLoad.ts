@@ -9,6 +9,7 @@ import { getText } from '@/core/Texts';
 import { isFinalRejection, planLoad } from '@/core/GameLoadPlanner';
 import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOverlay';
 import GameLoadLayout from '@/scenes/GameLoadLayout';
+import { calculateLogicalScroll, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import * as Constants from '@/core/Constants';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 
@@ -74,8 +75,13 @@ class GameLoadScene extends Scene {
         this.updateProgressBar(0);
     }
 
+    /** The loading screen is written in the pixels of the window, and the canvas has `RENDER_SCALE` of its own for each one. */
     private placeLoadingView() {
-        this.layout = new GameLoadLayout(this.scale);
+        this.cameras.main.setZoom(Constants.RENDER_SCALE);
+        const scroll = calculateLogicalScroll(this.scale, Constants.RENDER_SCALE);
+        this.cameras.main.setScroll(scroll.x, scroll.y);
+
+        this.layout = new GameLoadLayout(toLogicalScreen(this.scale, Constants.RENDER_SCALE));
         const panel = this.layout.panel();
         const barFrame = this.layout.barFrame();
         const barFill = this.layout.barFill();

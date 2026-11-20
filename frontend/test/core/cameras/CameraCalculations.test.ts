@@ -3,6 +3,8 @@ import {
   calculateHUDPosition,
   clampScrollToBounds,
   calculateScreenFixedTransform,
+  calculateLogicalScroll,
+  toLogicalScreen,
   calculateScreenFit,
   calculateBoundsOfPoints,
   resolveCameraConfiguration,
@@ -60,6 +62,39 @@ describe('CameraCalculations', () => {
       const { x, y, scale } = calculateScreenFixedTransform(1920, 1080, 0.65);
 
       expect([x + 960 * scale, y + 540 * scale].map((value) => Math.round(value))).toEqual([960, 540]);
+    });
+
+    it('draws what it places as big as the pixel ratio says', () => {
+      expect(calculateScreenFixedTransform(960, 540, 1, 2).scale).toBe(2);
+    });
+
+    it('shows a position of the window at the same place of a canvas with more pixels', () => {
+      const { x, scale } = calculateScreenFixedTransform(960, 540, 0.5, 2);
+      const canvasCenter = 960;
+      const zoom = 0.5;
+
+      // the canvas puts an object at the center plus its distance to the center times the zoom
+      expect(canvasCenter + (x + 100 * scale - canvasCenter) * zoom).toBe(200);
+    });
+  });
+
+  describe('toLogicalScreen', () => {
+    it('gives the size of the window for a canvas with more pixels', () => {
+      expect(toLogicalScreen({ width: 3840, height: 2160 }, 2)).toEqual({ width: 1920, height: 1080 });
+    });
+  });
+
+  describe('calculateLogicalScroll', () => {
+    it('does not move a camera that does not zoom for the pixels of the canvas', () => {
+      expect(calculateLogicalScroll({ width: 1920, height: 1080 }, 1)).toEqual({ x: 0, y: 0 });
+    });
+
+    it('puts the pixel 0 of the window at the corner of a canvas with twice the pixels', () => {
+      const scroll = calculateLogicalScroll({ width: 3840, height: 2160 }, 2);
+      const zoom = 2;
+
+      // the camera puts a point at the center plus its distance to the center times the zoom
+      expect((0 - scroll.x - 1920) * zoom + 1920).toBe(0);
     });
   });
 

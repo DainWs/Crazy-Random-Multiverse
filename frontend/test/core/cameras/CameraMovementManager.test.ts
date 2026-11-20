@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { RENDER_SCALE } from '@/core/Constants';
 import { calculateNewZoom, isDragging, DEFAULT_ZOOM_CONFIG } from '@/core/cameras/CameraMovementManager';
 
 describe('CameraMovementManager', () => {
@@ -16,21 +17,21 @@ describe('CameraMovementManager', () => {
   describe('calculateNewZoom', () => {
     it('zooms in (increases zoom) when deltaY is negative (scroll up)', () => {
       const result = calculateNewZoom(1.0, -1, DEFAULT_ZOOM_CONFIG);
-      expect(result).toBeCloseTo(1.15, 5);
+      expect(result).toBeCloseTo(1 + 0.15 * RENDER_SCALE, 5);
     });
 
     it('zooms out (decreases zoom) when deltaY is positive (scroll down)', () => {
       const result = calculateNewZoom(1.0, 1, DEFAULT_ZOOM_CONFIG);
-      expect(result).toBeCloseTo(0.85, 5);
+      expect(result).toBeCloseTo(1 - 0.15 * RENDER_SCALE, 5);
     });
 
     it('returns null when zoom would exceed max', () => {
-      const result = calculateNewZoom(1.5, -1, DEFAULT_ZOOM_CONFIG);
+      const result = calculateNewZoom(1.5 * RENDER_SCALE, -1, DEFAULT_ZOOM_CONFIG);
       expect(result).toBeNull();
     });
 
     it('returns null when zoom would go below min', () => {
-      const result = calculateNewZoom(0.2, 1, DEFAULT_ZOOM_CONFIG);
+      const result = calculateNewZoom(0.2 * RENDER_SCALE, 1, DEFAULT_ZOOM_CONFIG);
       expect(result).toBeNull();
     });
 

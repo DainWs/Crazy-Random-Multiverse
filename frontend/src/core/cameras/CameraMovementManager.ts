@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
 import { clampScrollToBounds } from '@/core/cameras/CameraCalculations';
 import type { Bounds2D } from '@/core/cameras/CameraCalculations';
+import { RENDER_SCALE } from '@/core/Constants';
 
 
-const ZOOM_STEP = 0.15;
-const MIN_ZOOM = 0.2;
-const MAX_ZOOM = 1.5;
+/** The zoom of the camera grows with the pixels the canvas draws for each one of the window, so its steps and its limits do too. */
+const ZOOM_STEP = 0.15 * RENDER_SCALE;
+const MIN_ZOOM = 0.2 * RENDER_SCALE;
+const MAX_ZOOM = 1.5 * RENDER_SCALE;
 const ZOOM_DURATION = 50;
 // Phaser drag states: 3 = the pointer meets the drag criteria, 4 = dragging, 5 = released
 const DRAG_STARTED_STATE = 3;

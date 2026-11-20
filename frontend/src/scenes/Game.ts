@@ -31,7 +31,7 @@ import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
 import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
 import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
-import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFit, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFit, calculateScreenFixedTransform, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -268,8 +268,9 @@ class GameScene extends Scene {
     public showRejection(key: string) {
         this.rejectionText?.destroy();
 
-        const { x, y, scale } = calculateScreenFixedTransform(this.scale.width, this.scale.height, this.cameraSystem.getCamera().zoom);
-        const centerX = x + (this.scale.width / 2) * scale;
+        const screen = toLogicalScreen(this.scale, Constants.RENDER_SCALE);
+        const { x, y, scale } = calculateScreenFixedTransform(screen.width, screen.height, this.cameraSystem.getCamera().zoom, Constants.RENDER_SCALE);
+        const centerX = x + (screen.width / 2) * scale;
         const message = getText(key);
         const rejectionText = createText(this, 'BODY', { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: 'REJECTION_TEXT' }, message);
         rejectionText.setPosition(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale);

@@ -58,14 +58,22 @@ interface ScreenFixedTransform {
  * An object with scroll factor 0 is not moved by the camera but is still scaled by its zoom around the center
  * of the screen. Placing it at `x + screenX * scale` with that scale makes it show at screenX, at its own size.
  */
-function calculateScreenFixedTransform(screenWidth: number, screenHeight: number, zoom: number): ScreenFixedTransform {
-  const scale = 1 / zoom;
-
-  return { 
-    x: (screenWidth / 2) * (1 - scale), 
-    y: (screenHeight / 2) * (1 - scale), 
-    scale
+function calculateScreenFixedTransform(screenWidth: number, screenHeight: number, zoom: number, pixelRatio = 1): ScreenFixedTransform {
+  return {
+    x: pixelRatio * (screenWidth / 2) * (1 - 1 / zoom),
+    y: pixelRatio * (screenHeight / 2) * (1 - 1 / zoom),
+    scale: pixelRatio / zoom
   };
+}
+
+/** The size of the screen in the pixels the interface is written in, which are those of the window: the canvas has `pixelRatio` of its own for each one. */
+function toLogicalScreen(screen: Size2D, pixelRatio: number): Size2D {
+  return { width: screen.width / pixelRatio, height: screen.height / pixelRatio };
+}
+
+/** The scroll with which a camera of zoom `pixelRatio` shows the pixel (0, 0) of the window at the corner of the canvas, so a scene can be written in the pixels of the window. */
+function calculateLogicalScroll(screen: Size2D, pixelRatio: number): Point2D {
+  return { x: (screen.width / 2) * (1 / pixelRatio - 1), y: (screen.height / 2) * (1 / pixelRatio - 1) };
 }
 
 /** The screen the board and the camera configurations are tuned for. */
@@ -97,4 +105,4 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
 }
 
 export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
-export { REFERENCE_SCREEN, BOARD_ORIGIN_HEIGHT_RATIO, calculateScreenFit, calculateHUDPosition, calculateScreenFixedTransform, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+export { REFERENCE_SCREEN, BOARD_ORIGIN_HEIGHT_RATIO, calculateScreenFit, calculateHUDPosition, calculateScreenFixedTransform, calculateLogicalScroll, toLogicalScreen, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
