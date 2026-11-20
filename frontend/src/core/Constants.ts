@@ -329,3 +329,15 @@ export const FOCUS_FRAME_MARGIN = 4;
 
 /** Code of the key that ends the turn (UI-32). */
 export const END_TURN_KEY_CODE = 'Space';
+
+/** Font size in px on the screen of the labels with the values of a card of the board (VIEW-46). */
+export const CARD_VALUE_LABEL_FONT_SIZE = '18px';
+
+/** Units in px on the screen between the texts of a label of card values, and between its edge and them (VIEW-47). */
+export const CARD_VALUE_LABEL_GAP = 8;
+
+/** Units in px on the screen between a card and the label of its values (VIEW-47). */
+export const CARD_VALUE_LABEL_CARD_GAP = 4;
+
+/** Units in px on the screen between the edge of a label of card values and its texts (VIEW-47). */
+export const CARD_VALUE_LABEL_PADDING = 6;

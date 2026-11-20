@@ -1,5 +1,6 @@
 import type { GameChange, GameChangeEvent } from '@/core/StoreSystem';
 import type Battlefield from '@/domain/Battlefield';
+import { watch } from 'vue';
 import type { PlayerCode } from '@/domain/Player';
 import CardController from '@/controllers/CardController';
 import CardViewFactory from '@/controllers/CardViewFactory';
@@ -12,6 +13,8 @@ import StoreSystem from '@/core/StoreSystem';
 import ResourceSystem from '@/core/ResourceSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
+import CardValueLabelsView from '@/game/zone/CardValueLabelsView';
+import SettingsSystem, { CARD_VALUES } from '@/core/SettingsSystem';
 import Phaser, { Scene } from 'phaser';
 import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
@@ -28,7 +31,7 @@ import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
 import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
 import SessionSystem from '@/core/SessionSystem';
 import { playLoadTransition } from '@/core/visual_effects/LoadTransition';
-import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
+import { BOARD_ORIGIN_HEIGHT_RATIO, REFERENCE_SCREEN, calculateScreenFit, calculateScreenFixedTransform } from '@/core/cameras/CameraCalculations';
 
 class GameScene extends Scene {
     public camera: Phaser.Cameras.Scene2D.Camera;
@@ -46,6 +49,7 @@ class GameScene extends Scene {
     /** The round and the turn of the last board queued, which is what the next one is compared with to announce a change (VIEW-15). */
     private queuedTurn: BoardTurn = {};
     private battlefieldContainer: Phaser.GameObjects.Container;
+    private cardValueLabels?: CardValueLabelsView;
     public zones: ZoneView[];
 
     private readonly storeChangeHandlers: Record<GameChange, (event: GameChangeEvent) => void> = {
@@ -104,6 +108,8 @@ class GameScene extends Scene {
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.scale.off(Phaser.Scale.Events.RESIZE, this.onResize, this));
 
         const stopListening = StoreSystem.onChange((event) => this.storeChangeHandlers[event.change](event));
+        const stopWatchingSettings = watch(SettingsSystem.cardValuesOn, () => this.showCardValueLabels());
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopWatchingSettings);
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => AnimationSystem.clear());
     }
@@ -120,9 +126,11 @@ class GameScene extends Scene {
         hideLeaders(leaders);
 
         this.isLeaderIntroPending = true;
+        this.showCardValueLabels();
         AnimationSystem.enqueue(async () => {
             await playLeaderIntro(this, leaders);
             this.isLeaderIntroPending = false;
+            this.showCardValueLabels();
         });
     }
 
@@ -171,6 +179,7 @@ class GameScene extends Scene {
     ) {
         CardClickHandler.cancelTargeting();
         this.zones = [];
+        this.cardValueLabels = undefined;
         this.battlefieldContainer.removeAll(true);
 
         const battlefieldView = new BattlefieldView(this, battlefield);
@@ -183,6 +192,29 @@ class GameScene extends Scene {
             this.battlefieldContainer.add(zoneView);
             this.showCombatants(zoneView);
         }
+
+        this.showCardValueLabels();
+    }
+
+    /** The values the player turned on are drawn outside the cards, over the board (UI-33, VIEW-46). */
+    private showCardValueLabels() {
+        this.cardValueLabels?.destroy();
+        this.cardValueLabels = undefined;
+
+        const values = CARD_VALUES.filter((cardValue) => SettingsSystem.isCardValueOn(cardValue));
+        if (values.length === 0) {
+            return;
+        }
+
+        const labels = new CardValueLabelsView(this, this.zones, values, this.isLeaderIntroPending);
+        labels.applyScale(this.cardValueUnitsPerPixel());
+        this.battlefieldContainer.add(labels);
+        this.cardValueLabels = labels;
+    }
+
+    /** A label is 18 px on the screen at the reference size, and the zoom of the camera shrinks or grows what it draws (VIEW-46, VIEW-24). */
+    private cardValueUnitsPerPixel(): number {
+        return calculateScreenFit(this.scale) / this.cameraSystem.getCamera().zoom;
     }
 
     private combatantsOf(zoneView: ZoneView) {
@@ -201,8 +233,16 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
+        this.updateCardValueLabels();
         const canAct = this.cardController.canAct();
         this.hudView.refresh(canAct, canAct && StoreSystem.hasNothingLeftToDo());
+    }
+
+    private updateCardValueLabels() {
+        const unitsPerPixel = this.cardValueUnitsPerPixel();
+        if (this.cardValueLabels && this.cardValueLabels.getUnitsPerPixel() !== unitsPerPixel) {
+            this.cardValueLabels.applyScale(unitsPerPixel);
+        }
     }
 
     /** Shows the result over the board, or updates it when the winner arrives (WIN-4). */
