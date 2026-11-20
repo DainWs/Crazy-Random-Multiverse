@@ -3,6 +3,7 @@ import type { Point2D, Size2D } from '@/domain/Geometry';
 import type { GameScene } from '@/scenes/Game';
 import GameHudLayout from '@/game/hud/GameHudLayout';
 import SessionSystem from '@/core/SessionSystem';
+import SettingsSystem from '@/core/SettingsSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
@@ -258,7 +259,7 @@ class GameHudView {
             return;
         }
 
-        if (event.code !== Constants.END_TURN_KEY_CODE) {
+        if (event.code !== Constants.END_TURN_KEY_CODE || SettingsSystem.panelOpen.value) {
             return;
         }
 
