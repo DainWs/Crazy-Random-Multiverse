@@ -304,9 +304,22 @@ What can be done without a settings screen, which stays **[Post-MVP]** (`UI-13`,
 
 ## Phase 11.2 — UX/UI: HUD hierarchy
 
-Started at: `be65f59` � Finished at: `cba41ce`
+Started at: `be65f59` · Finished at: `cba41ce`
 
 - [x] Give the end turn button the style of the primary action and the surrender button a different, destructive style, and stop them from being next to each other: today both have the same style and the surrender button is right above the end turn one (`VIEW-28`). The styles and the new place of the surrender button are decided with the product owner and written in a new `VIEW` rule. Surrendering keeps its confirmation (`UI-15`)
 - [x] Put the round and the turn on a panel in the palette of `VIEW-28`, at the top left corner where the text is today. The turn says "Tu turno" when it is the local player's and the name of the player otherwise, as the notices of `VIEW-15`. It follows the board being shown (`UI-3`). Write it in a new `VIEW` rule
 - [x] Implement the pulse of the end turn button of `specs/ui/GAME-PULSES.md` (`VIEW-38`), written on 2026-11-14, while it is the local player's turn and they have nothing left to do
 - [x] Lower the visual weight of the background around the table so that the board stands out over it. Whether by lowering its saturation, darkening it or adding a vignette is decided with the product owner and written in a new `VIEW` rule
+
+## Phase 11.1b — UX/UI: accessibility apart from the base game
+
+Started at: `6cb4e43` · Finished at: `2e0d82d`
+
+Requested by the product owner on 2026-11-19: Phase 11.1 changed the default look and behavior of the game to make it accessible, with no settings to turn it off. The base game goes back to how it was before Phase 11.1, and what Phase 11.1 added is turned on with a parameter of the address, like `UI-31`. Phase 11.2 is not part of it.
+
+- [x] Write in the rules, and show it to the product owner before any code. Decided on 2026-11-20: the accessible mode, `accessible=1` (`UI-31`), turns on the extra signals (`VIEW-39`), the tint of the own zone, the border of the eliminated zone and the near black edge of the marks (`VIEW-40`), and the red mark of the source slot that stays while dragging (`VIEW-32`). Stay in the base game: the 18 px of the texts (`VIEW-41`), the panel of the round and the turn, the keyboard (`UI-32`, `VIEW-42`) and the focus of the notices. `extraMarks=1` stays as it is and turns on only the extra signals
+- [x] Find in the history what Phase 11.1 changed of the default look (`007a553` to `f4bdee4`) and record it in this bullet. It changed: the colors `SLOT_OWN_TINT` (`#9fd8ff` before, now `#1a4f95`), `SLOT_OWN_BORDER` (`#3d9bff`, now `#061a3a`) and `ELIMINATED_VEIL_BORDER` (`#1a0000`, now `#c04545`); the near black edge under every frame (`MARK_EDGE`, `ZoneSlotViewRenderer`); the round and turn text on a panel; the 16 px of the notice of the session (now 18 px); the keyboard of `UI-32` with its focus frame (`VIEW-42`) and the `FocusTrap` of the notices; and the red mark of the source slot, which stays while a card is dragged out of it (`DragAndDrop`)
+- [x] Keep the base value and the accessible value of the three colors, and read the mode in `EffectSettings` only
+- [x] Draw the near black edge and keep the source mark only in the accessible mode
+- [x] Regenerate the reference images of the base game, and add the ones of the accessible mode
+- [x] Run the tests of the contrasts of the marks on the accessible values
