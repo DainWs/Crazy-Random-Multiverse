@@ -22,7 +22,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Accepted risk: load without limit | A player can block the start of the game (`LOAD-3`) |
 | Accepted risk: wrong hand | The hand can stay wrong until the next `GAME_SYNC` (`CON-12`) |
 | Accepted risk: request without response | A request that reaches the server and is never answered has no client time limit, so the client waits until the page is reloaded (`UI-24`, `LOAD-7`) |
-| Settings screen | In the MVP only with the card values section (`UI-33`), decided on 2026-11-20 in Phase 11.3. The graphics quality and reduced motion options stay Post-MVP (`UI-27`), and the MVP is built so that adding them only adds options to the screen, without changing the effects (`UI-30`) |
+| Settings screen | None in the MVP. The card values outside the cards and the settings screen that turned them on, added in Phase 11.3, were removed by the product owner on 2026-11-21, with its button. The graphics quality and reduced motion options stay Post-MVP and bring the screen back (`UI-27`), and the MVP is built so that adding them does not change the effects (`UI-30`) |
 | Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
 ## Phase 11.7 — UX/UI: learnability

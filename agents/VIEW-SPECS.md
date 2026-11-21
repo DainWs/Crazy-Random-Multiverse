@@ -17,7 +17,6 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - **VIEW-27** The slots of the local player's zone are tinted blue, fill and border, so their cards are told apart from the rivals', whose slots keep the neutral look. The tint is the resting look of the slot: the marks of `VIEW-32` and `VIEW-17` are drawn over it and the slot goes back to it when a mark ends. An eliminated player's zone (`VIEW-11`) keeps its tint under the veil.
 - The buttons of the HUD under the pointer, the border of the confirmation dialog, the label of a spectator (`VIEW-28`), the look and place of the end turn and surrender buttons (`VIEW-43`) and the panel of the round and the turn (`VIEW-44`) are in `specs/ui/HUD-BUTTONS.md`.
 - The loading screen and its change to the board (`VIEW-29`) are in `specs/ui/GAME-LOADING.md`.
-- The damage, armor and health of the cards of the board, outside the card (`VIEW-46`), are in `specs/ui/CARDS-VALUES.md`.
 - The name of each zone, the health bar of its leader and the mark of who plays next (`VIEW-49` to `VIEW-51`) are in `specs/ui/ZONES-LABELS.md`.
 - The drag of a card, its marks and the dropped card while the server answers (`VIEW-32`, `VIEW-34`) are in `specs/ui/CARDS-DRAG.md`, a card that settles in a slot from an event (`VIEW-35`) in `specs/ui/CARDS-SETTLE.md`, and the equipment attached to a card (`VIEW-36`) in `specs/ui/CARDS-EQUIP.md`.
 - **VIEW-26** The grid of the table is discreet, so it does not compete with the cards: thin, translucent lines, drawn once as a single path so that their transparency does not pile up.
@@ -41,6 +40,6 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
 - The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
-- The colors of the interface and their meanings (`VIEW-52`) are in `specs/ui/PALETTE.md`, what is drawn when two marks are on the same slot (`VIEW-53`) in `specs/ui/MARKS-PAIRS.md`, and the typefaces and the four sizes of the texts (`VIEW-54`, `VIEW-55`) in `specs/ui/TYPOGRAPHY.md`. The value labels of the cards are white (`VIEW-56`, in `specs/ui/CARDS-VALUES.md`).
+- The colors of the interface and their meanings (`VIEW-52`) are in `specs/ui/PALETTE.md`, what is drawn when two marks are on the same slot (`VIEW-53`) in `specs/ui/MARKS-PAIRS.md`, and the typefaces and the four sizes of the texts (`VIEW-54`, `VIEW-55`) in `specs/ui/TYPOGRAPHY.md`.
 - The second signal of the marks of the board (`VIEW-39`) is in `specs/ui/MARKS-SECOND-SIGNAL.md`.
 - The minimum contrasts of the texts and of the marks (`VIEW-40`) are in `specs/ui/CONTRAST-MINIMUMS.md`, and the minimum size of the texts (`VIEW-41`) in `specs/ui/TEXT-MINIMUM-SIZE.md`.

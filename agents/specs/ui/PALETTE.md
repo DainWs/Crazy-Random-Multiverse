@@ -24,7 +24,7 @@ The colors of the interface (Phase 11.5): what each one means, so the player lea
 | Button blue | `#1a5fa8`, `#2674c4` under the pointer | The action of the player that ends the turn | End turn button (`VIEW-43`) |
 | Steel grey | `#8a9aa5` | Armor lost | Flash of a card that lost armor (`VIEW-5`), "−N" of armor (`VIEW-6`) |
 | Dark grey | `#2b2b2b` | A dead leader | Tint of the leader that dies (`VIEW-7`) |
-| White | `#ffffff` | Text and frames over a dark background | Texts of the HUD, notices, dialogs, result, loading screen, side panel and values of the cards on the board; floating "0" (`VIEW-6`); the frame of the keyboard focus (`VIEW-42`) |
+| White | `#ffffff` | Text and frames over a dark background | Texts of the HUD, notices, dialogs, result, loading screen, and side panel; floating "0" (`VIEW-6`); the frame of the keyboard focus (`VIEW-42`) |
 | Light grey | `#bdc3c7` | Secondary text | Label of a spectator (`VIEW-28`), names of the equipment in the side panel (`VIEW-14`) |
 | Panel | `#1b2631` | Panels and dialogs | Result, round and turn panel, dialogs, loading screen |
 | Chrome | `#34495e`, `#46627f` under the pointer | Borders and resting buttons | Border of the panels, buttons of the HUD and of the dialogs (`VIEW-28`) |
@@ -35,7 +35,6 @@ The colors of the interface (Phase 11.5): what each one means, so the player lea
 ## What changed on 2026-11-21
 
 - The slot a dragged card comes from goes from red to orange, so red no longer means "where it comes from".
-- The value labels outside the cards (`VIEW-46`) go from orange, blue and green to white: the icon tells the value, and the three colors had another meaning each.
 - The name in the side panel goes from gold to white, and the bright green and red of its values to the green and the red on dark of the table.
 - The health bar is green at any share of the health: the length and the number tell how much is left (`VIEW-50`). The yellow and the red of its levels are gone.
 - The text of the round and the turn on the turn of the local player goes from green to gold.
