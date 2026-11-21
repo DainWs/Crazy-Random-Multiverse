@@ -1,25 +1,30 @@
 import type { CombatResult } from '@/domain/CombatResult';
-import { paletteText } from '@/game/utils/Palette';
+import type { ArmorType } from '@/domain/Statistics';
+import type { DamageIcon } from '@/game/cards/DamageIcons';
+import type { PaletteColor } from '@/game/utils/Palette';
 
 type DamageText = {
   text: string;
-  color: string;
+  icon: DamageIcon | null;
+  color: PaletteColor;
 };
 
-/** The floating texts of an attack: the armor lost and the health lost, only for what was lost (VIEW-6, CON-21). */
-function toDamageTexts(combat: CombatResult): DamageText[] {
-  const texts: DamageText[] = [];
+const MINUS_SIGN = '−';
+
+/** The floating text of an attack: what the target lost, or a plain 0 when it lost nothing (VIEW-6, CON-21). */
+function toDamageText(combat: CombatResult, armorType: ArmorType | undefined): DamageText {
+  if (combat.healthDamage > 0) {
+    return { text: `${MINUS_SIGN}${combat.healthDamage}`, icon: 'HEART', color: 'HIT_FLASH' };
+  }
 
   if (combat.armorDamage > 0) {
-    texts.push({ text: `-${combat.armorDamage}`, color: paletteText('DAMAGE_TEXT_ARMOR') });
+    const icon = armorType === 'MAGIC' ? 'MAGIC_SHIELD' : 'SHIELD';
+
+    return { text: `${MINUS_SIGN}${combat.armorDamage}`, icon, color: 'HIT_FLASH_ARMOR' };
   }
 
-  if (combat.healthDamage > 0) {
-    texts.push({ text: `-${combat.healthDamage}`, color: paletteText('DAMAGE_TEXT_HEALTH') });
-  }
-
-  return texts;
+  return { text: '0', icon: null, color: 'NOTICE_TEXT' };
 }
 
 export type { DamageText };
-export { toDamageTexts };
+export { toDamageText };

@@ -43,6 +43,23 @@ const MOTION_EASES = new Map<MotionCurve, string>([
   ['STRIKE', 'Cubic.easeIn']
 ]);
 
+/** Resolves after `milliseconds`, or at once when the effects of `kind` do not play, or when the scene shuts down. */
+function waitFor(scene: Phaser.Scene, milliseconds: number, kind: EffectKind): Promise<void> {
+  if (!EffectSettings.plays(kind)) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    const finish = () => {
+      scene.events.off(Phaser.Scenes.Events.SHUTDOWN, finish);
+      resolve();
+    };
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, finish);
+
+    scene.time.delayedCall(milliseconds, finish);
+  });
+}
+
 /** The milliseconds of a duration of a motion, from the scale or from the named exception. */
 function durationOf(duration: MotionSpeed | number): number {
   return typeof duration === 'number' ? duration : MOTION_DURATIONS_MS.get(duration)!;
@@ -126,4 +143,4 @@ function finalValues(to: Record<string, unknown>): Record<string, unknown> {
 }
 
 export type { ExceptionEase, Motion, MotionCurve, MotionSpeed };
-export { durationOf, MOTION_DURATIONS_MS, MOTION_EASES, playMotion };
+export { durationOf, MOTION_DURATIONS_MS, MOTION_EASES, playMotion, waitFor };

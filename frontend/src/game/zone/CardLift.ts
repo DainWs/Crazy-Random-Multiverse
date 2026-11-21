@@ -60,6 +60,27 @@ class CardLift {
     }
   }
 
+  /** Ends the lift at once, with the card at its rest size, for the attack that is applied (VIEW-5). */
+  public drop(): void {
+    this.dropShadow();
+    if (!this.slot.active) {
+      return;
+    }
+
+    this.slot.hideMarker();
+    const card = this.slot.getCombatant();
+    if (card) {
+      this.scene.tweens.killTweensOf(card);
+      card.resetScale();
+    }
+  }
+
+  /** The shadow stays where the card was, so it goes when the card leaves to attack (VIEW-5). */
+  public dropShadow(): void {
+    this.shadow?.destroy();
+    this.shadow = undefined;
+  }
+
   private scaleCard(card: CombatantView, factor: number): void {
     const rest = card.getOriginalScale();
     this.scene.tweens.killTweensOf(card);

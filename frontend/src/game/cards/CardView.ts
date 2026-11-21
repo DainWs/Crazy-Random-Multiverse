@@ -84,6 +84,12 @@ abstract class CardView extends Phaser.GameObjects.Container {
     this.content.focusFiltersOverride(undefined, undefined, width, height);
   }
 
+  /** Covers the card, warped with it, with a color (VIEW-7). */
+  public coverWith(color: number, alpha: number) {
+    const cover = this.scene.add.rectangle(0, 0, CARD_WIDTH, CARD_HEIGHT, color, alpha);
+    this.content.add(cover);
+  }
+
   public clearWarp() {
     this.warpQuad = null;
     this.content.filters?.internal.clear();

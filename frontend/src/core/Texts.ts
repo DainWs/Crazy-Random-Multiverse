@@ -31,6 +31,8 @@ const TEXTS: Record<string, string> = {
   'ui.card.armor': 'Armadura',
   'ui.card.health': 'Vida',
   'ui.game.eliminated': 'Eliminado',
+  'ui.game.player_eliminated': 'eliminado',
+  'ui.game.you_were_eliminated': 'Has sido eliminado',
   'ui.game.round': 'Ronda',
   'ui.game.your_turn': 'Tu turno',
   'ui.game.you': 'Tú',

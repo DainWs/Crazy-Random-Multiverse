@@ -2,7 +2,7 @@ import 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 import Player from '@/domain/Player';
 import type { GameScene } from '@/scenes/Game';
-import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
+import { describeNotices, ELIMINATION_NOTICE_TIMING, playNotice } from '@/core/visual_effects/TurnNotices';
 
 const local = new Player('p-1', 'One');
 const rival = new Player('p-2', 'Two');
@@ -70,11 +70,38 @@ describe('playNotice', () => {
     expect(label.destroy).toHaveBeenCalledOnce();
   });
 
-  it('fades in, holds and fades out with one tween', async () => {
+  it('fades in for 250 ms, slowing down at the end, and holds for 1000 ms', async () => {
     const { scene, tweens } = createScene();
 
     await playNotice(scene, 'Ronda 2');
 
-    expect(tweens.add).toHaveBeenCalledWith(expect.objectContaining({ alpha: 1, yoyo: true }));
+    expect(tweens.add).toHaveBeenNthCalledWith(1, expect.objectContaining({ alpha: 1, duration: 250, completeDelay: 1000, ease: 'Power1' }));
+  });
+
+  it('fades out for 250 ms, speeding up', async () => {
+    const { scene, tweens } = createScene();
+
+    await playNotice(scene, 'Ronda 2');
+
+    expect(tweens.add).toHaveBeenNthCalledWith(2, expect.objectContaining({ alpha: 0, duration: 250, ease: 'Quad.easeIn' }));
+  });
+
+  // VIEW-11
+  it('takes the times of the elimination, 1000 ms in, 1000 ms held and 1000 ms out', async () => {
+    const { scene, tweens } = createScene();
+
+    await playNotice(scene, 'Two eliminado', ELIMINATION_NOTICE_TIMING);
+
+    expect(tweens.add).toHaveBeenNthCalledWith(1, expect.objectContaining({ duration: 1000, completeDelay: 1000 }));
+    expect(tweens.add).toHaveBeenNthCalledWith(2, expect.objectContaining({ duration: 1000 }));
+  });
+
+  // VIEW-15
+  it('is centered on the screen', async () => {
+    const { label, scene } = createScene();
+
+    await playNotice(scene, 'Ronda 2');
+
+    expect(label.setPosition).toHaveBeenCalledWith(960, 540);
   });
 });

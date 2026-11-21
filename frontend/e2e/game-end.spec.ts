@@ -20,6 +20,9 @@ const BACKGROUND_PIXEL = { x: 200, y: 200, width: 1, height: 1 };
 const ANIMATIONS_MIN_DURATION_MS = 2000;
 const RESULT_TIMEOUT_MS = 15000;
 
+/** The veil, the wait and the notice of an elimination last 4200 ms (VIEW-11). */
+const ELIMINATION_DURATION_MS = 4500;
+
 /** The only thing protecting the rival leader is gone, so it can receive the last attack (PROT-2). */
 function createGameWithExposedLeader(): PreparedGame {
     const prepared = createPreparedGame(2);
@@ -110,6 +113,27 @@ test.describe('elimination of a rival in a game of three', () => {
         await waitForStillFrame(page, before);
 
         expect(await frameOf(page, TABLE_AREA)).not.toEqual(before);
+    });
+});
+
+// VIEW-11, VIEW-20: the pulse of the gold frame reads the clock of its slot, which a reduced motion run skips. The frame never stays still, so the board is not waited for
+test.describe('elimination of a rival with the animations on', () => {
+    test.use({ reducedMotion: 'no-preference' });
+    const prepared = createPreparedGame(3);
+
+    test('fades the zone in and shows the notice without errors', async ({ page, backend }) => {
+        const errors: string[] = [];
+        page.on('pageerror', (error) => errors.push(error.message));
+        backend.prepare(prepared);
+        await page.goto('/');
+        await backend.waitForBoardDrawn();
+        const eliminated = structuredClone(prepared.game);
+        eliminated.zones[RIVAL_ZONE].owner.isAlive = false;
+
+        backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[RIVAL_ZONE].owner });
+        await page.waitForTimeout(ELIMINATION_DURATION_MS);
+
+        expect(errors).toEqual([]);
     });
 });
 

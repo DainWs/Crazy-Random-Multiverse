@@ -8,6 +8,7 @@ import type { GameScene } from '@/scenes/Game';
 const mockEnter = vi.fn();
 const mockExit = vi.fn();
 const mockCommit = vi.fn();
+const mockDrop = vi.fn();
 const mockHover = vi.fn((_slot: unknown) => true);
 const mockUnhover = vi.fn((_slot: unknown) => true);
 let committed = false;
@@ -33,6 +34,10 @@ vi.mock('@/game/perspectives/AttackTargetingPerspective', () => {
       commit(targetSlot: unknown) {
         committed = true;
         mockCommit(targetSlot);
+      }
+
+      drop() {
+        mockDrop();
       }
 
       isCommitted() {
@@ -277,6 +282,26 @@ describe('CardClickHandler', () => {
       CardClickHandler.onPointerUp(scene, createCard(sourceSlot), clickInTime);
 
       expect(mockExit).not.toHaveBeenCalled();
+    });
+  });
+
+  // VIEW-5
+  describe('dropTargeting', () => {
+    it('drops the lifts of an attack that waits for the server', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(false)), clickInTime);
+
+      CardClickHandler.dropTargeting();
+
+      expect(mockDrop).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing for a selection that has not attacked', () => {
+      CardClickHandler.onPointerUp(scene, createCard(createSlot(true)), clickInTime);
+
+      CardClickHandler.dropTargeting();
+
+      expect(mockDrop).not.toHaveBeenCalled();
     });
   });
 

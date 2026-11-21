@@ -83,6 +83,13 @@ function attackFromSelected(scene: GameScene, sourceSlot: ZoneSlotView, targetSl
   }
 }
 
+/** The attack of the selection is applied, so its lifts end as `VIEW-5` says (VIEW-4). */
+function dropTargeting() {
+  if (targeting?.isCommitted()) {
+    targeting.drop();
+  }
+}
+
 /** The selection ends with a click elsewhere, Escape, a rejection and with every state change, such as a new turn (VIEW-4). */
 function cancelTargeting() {
   const perspective = targeting;
@@ -94,6 +101,7 @@ const CardClickHandler = {
   onPointerUp,
   onPointerOver,
   onPointerOut,
+  dropTargeting,
   cancelTargeting
 }
 

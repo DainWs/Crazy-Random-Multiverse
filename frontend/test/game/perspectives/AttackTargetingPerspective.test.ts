@@ -4,12 +4,14 @@ import * as Constants from '@/core/Constants';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
 
-const lifts: Array<{ slot: unknown; size: unknown; lift: () => void; frame: (isValid: boolean) => void; lower: () => void }> = [];
+const lifts: Array<{ slot: unknown; size: unknown; lift: () => void; frame: (isValid: boolean) => void; lower: () => void; drop: () => void; dropShadow: () => void }> = [];
 vi.mock('@/game/zone/CardLift', () => ({
   default: class MockCardLift {
     public readonly lift = vi.fn();
     public readonly frame = vi.fn();
     public readonly lower = vi.fn();
+    public readonly drop = vi.fn();
+    public readonly dropShadow = vi.fn();
 
     constructor(_scene: unknown, public readonly slot: unknown, public readonly size: unknown) {
       lifts.push(this as never);
@@ -141,6 +143,27 @@ describe('AttackTargetingPerspective', () => {
       perspective.unhover(sourceSlot);
 
       expect(liftOf(sourceSlot).lower).not.toHaveBeenCalled();
+    });
+  });
+
+  // VIEW-5
+  describe('drop', () => {
+    it('drops the shadow of the attacker and keeps it lifted', () => {
+      perspective.enter();
+
+      perspective.drop();
+
+      expect(liftOf(sourceSlot).dropShadow).toHaveBeenCalledTimes(1);
+      expect(liftOf(sourceSlot).lower).not.toHaveBeenCalled();
+    });
+
+    it('puts the target back at its rest size at once', () => {
+      const rival = createSlot(false);
+      perspective.hover(rival);
+
+      perspective.drop();
+
+      expect(liftOf(rival).drop).toHaveBeenCalledTimes(1);
     });
   });
 

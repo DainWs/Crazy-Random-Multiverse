@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CardMouseOver from '@/core/interactions/CardMouseOver';
 import CardAnimator from '@/core/visual_effects/CardAnimator';
 import type CardView from '@/game/cards/CardView';
+import ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
 
 vi.mock('@/core/visual_effects/CardAnimator', () => ({
@@ -81,6 +82,43 @@ describe('CardMouseOver', () => {
       CardMouseOver.onPointerOver(mockScene, card);
 
       expect(CardAnimator.playTween).not.toHaveBeenCalled();
+      expect(mockTooltipView.show).toHaveBeenCalledWith(card);
+    });
+  });
+
+  // VIEW-37
+  describe('a card that can attack', () => {
+    const createReadyCard = () => {
+      const slot = Object.create(ZoneSlotView.prototype) as ZoneSlotView;
+      slot.hasReadyMark = () => true;
+      slot.holdReadyMark = vi.fn();
+
+      return { slot, card: { canBeClicked: vi.fn(() => true), parentContainer: slot } as unknown as CardView };
+    };
+
+    it('shows the hand that points and keeps its frame fully opaque while the pointer is over it', () => {
+      const { slot, card } = createReadyCard();
+
+      CardMouseOver.onPointerOver(mockScene, card);
+
+      expect(canvasStyle.cursor).toBe('pointer');
+      expect(slot.holdReadyMark).toHaveBeenCalledWith(true);
+    });
+
+    it('lets its frame pulse again when the pointer leaves', () => {
+      const { slot, card } = createReadyCard();
+
+      CardMouseOver.onPointerOut(mockScene, card);
+
+      expect(slot.holdReadyMark).toHaveBeenCalledWith(false);
+    });
+
+    it('still gets the enlargement and the side panel', () => {
+      const { card } = createReadyCard();
+
+      CardMouseOver.onPointerOver(mockScene, card);
+
+      expect(CardAnimator.playTween).toHaveBeenCalledWith(card, 'hover');
       expect(mockTooltipView.show).toHaveBeenCalledWith(card);
     });
   });

@@ -6,8 +6,8 @@ import { expect, test } from '@/support/test';
 const RIVAL_ZONE = 1;
 const NEXT_ROUND = 2;
 
-/** The center of the screen, a fifth of its height below the top edge, where the notices are shown (VIEW-15). */
-const NOTICE_AREA: Area = { x: 660, y: 196, width: 600, height: 44 };
+/** The center of the screen, where the notices are shown (VIEW-15). */
+const NOTICE_AREA: Area = { x: 660, y: 518, width: 600, height: 44 };
 const NOTICE_TIMEOUT_MS = 5000;
 
 test.describe('notices of the turn and the round', () => {

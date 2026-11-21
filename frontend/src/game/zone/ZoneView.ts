@@ -7,7 +7,8 @@ import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
-import { ELIMINATED_LABEL_FONT_SIZE, ELIMINATED_LABEL_STROKE_WIDTH } from "@/core/Constants";
+import { ELIMINATED_LABEL_FONT_SIZE, ELIMINATED_LABEL_OUTLINE_FRACTION, ELIMINATED_LABEL_SIZE } from "@/core/Constants";
+import { boxOfSlot } from "@/game/cards/CombatLayout";
 import type { ZonePosition } from "@/domain/Position";
 import { paletteText } from "@/game/utils/Palette";
 
@@ -38,6 +39,8 @@ class ZoneView extends Phaser.GameObjects.Container {
   private readonly slots: ZoneSlotView[][];
   private readonly slotLayout: ZoneSlotLayout;
   private slotsAreRaised = false;
+  private readonly eliminatedMarks: Phaser.GameObjects.GameObject[] = [];
+  private eliminatedLabel?: Phaser.GameObjects.Text;
 
   public readonly zone: Zone;
 
@@ -99,21 +102,45 @@ class ZoneView extends Phaser.GameObjects.Container {
     }
   }
 
-  /** The label stays upright in every zone, so it is readable on the rotated ones (VIEW-11). */
+  /** The label is flat and horizontal on the screen, centered on the zone as drawn, so it is readable on the rotated ones (VIEW-11). */
   private showEliminated() {
     for (const slotView of this.slots.flat()) {
-      slotView.showEliminatedVeil();
+      this.eliminatedMarks.push(slotView.showEliminatedVeil());
     }
 
     const label = this.scene.add.text(0, 0, getText('ui.game.eliminated'), {
       fontSize: ELIMINATED_LABEL_FONT_SIZE,
       color: paletteText('ELIMINATED_LABEL'),
       stroke: paletteText('TEXT_OUTLINE'),
-      strokeThickness: ELIMINATED_LABEL_STROKE_WIDTH
+      strokeThickness: ELIMINATED_LABEL_SIZE * ELIMINATED_LABEL_OUTLINE_FRACTION
     });
+    const center = this.drawnCenter();
     label.setOrigin(0.5, 0.5);
-    label.setScale(ProjectionSystem.toPoint3D(this.options.position).scale);
+    label.setPosition(center.x, center.y);
     this.add(label);
+    this.eliminatedLabel = label;
+    this.eliminatedMarks.push(label);
+  }
+
+  /** The middle of the box that holds the slots as drawn, in the space of the zone. */
+  private drawnCenter(): Point2D {
+    const boxes = this.slots.flat().map((slotView) => boxOfSlot(slotView.corners, { x: slotView.x, y: slotView.y }));
+    const left = Math.min(...boxes.map((box) => box.center.x - box.width / 2));
+    const right = Math.max(...boxes.map((box) => box.center.x + box.width / 2));
+    const top = Math.min(...boxes.map((box) => box.center.y - box.height / 2));
+    const bottom = Math.max(...boxes.map((box) => box.center.y + box.height / 2));
+
+    return { x: (left + right) / 2, y: (top + bottom) / 2 };
+  }
+
+  /** The label measures the same on the screen whatever the window and the zoom (VIEW-11, VIEW-24, VIEW-19). */
+  public applyScale(unitsPerPixel: number) {
+    this.eliminatedLabel?.setScale(unitsPerPixel);
+  }
+
+  /** The veils and the label of an eliminated zone, which fade in when its player is eliminated (VIEW-11). */
+  public getEliminatedMarks(): Phaser.GameObjects.GameObject[] {
+    return this.eliminatedMarks;
   }
 
   /** The turn can name a player whose leader already died until the turn changes (CON-32): then there is nothing to light. */

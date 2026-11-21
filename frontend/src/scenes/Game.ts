@@ -28,6 +28,7 @@ import BattlefieldView from '@/game/battlefield/BattlefieldView';
 import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
+import { describeElimination, findNewlyEliminated, playElimination } from '@/core/visual_effects/Elimination';
 import { findLeaders, hideLeaders, playLeaderIntro } from '@/core/visual_effects/LeaderIntro';
 import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
 import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
@@ -164,7 +165,7 @@ class GameScene extends Scene {
             AnimationSystem.enqueue(() => playCombat(this, combat));
         }
 
-        AnimationSystem.enqueue(async () => this.renderZones(snapshot.battlefield, snapshot.playerWithTurn));
+        AnimationSystem.enqueue(() => this.renderAndAnnounceEliminations(snapshot.battlefield, snapshot.playerWithTurn));
 
         const next = { round: snapshot.round, playerWithTurn: snapshot.playerWithTurn };
         const players = snapshot.zones.map((zone) => zone.owner);
@@ -174,6 +175,22 @@ class GameScene extends Scene {
         this.queuedTurn = next;
     }
 
+
+    /** A zone eliminated by this board fades in its dark red when it is drawn, and its notice follows unless it ended the game (VIEW-11). */
+    private async renderAndAnnounceEliminations(battlefield: Battlefield, playerWithTurn: PlayerCode | undefined) {
+        const aliveBefore = this.zones.filter((zoneView) => zoneView.zone.owner.isAlive).map((zoneView) => zoneView.zone.owner.code);
+        this.renderZones(battlefield, playerWithTurn);
+
+        const eliminated = findNewlyEliminated(aliveBefore, this.zones);
+        if (eliminated.length === 0) {
+            return;
+        }
+
+        const endsTheGame = this.zones.filter((zoneView) => zoneView.zone.owner.isAlive).length <= 1;
+        const localPlayer = StoreSystem.getPlayer().code;
+        const notices = endsTheGame ? [] : eliminated.map((zoneView) => describeElimination(zoneView.zone.owner, localPlayer));
+        await playElimination(this, eliminated, notices);
+    }
 
     /** The result covers the board only after the last animation, so it does not hide it (WIN-4). */
     private queueResult() {
@@ -197,6 +214,7 @@ class GameScene extends Scene {
         const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield, playerWithTurn);
         ResourceSystem.trackBoard(zoneViews.flatMap((zoneView) => this.combatantsOf(zoneView)).map((combatant) => combatant.getImage()));
         for (const zoneView of zoneViews) {
+            zoneView.applyScale(this.cardValueUnitsPerPixel());
             this.zones.push(zoneView);
             this.battlefieldContainer.add(zoneView);
             this.showCombatants(zoneView);
@@ -233,7 +251,7 @@ class GameScene extends Scene {
     }
 
     /** A label is 18 px on the screen at the reference size, and the zoom of the camera shrinks or grows what it draws (VIEW-46, VIEW-24). */
-    private cardValueUnitsPerPixel(): number {
+    public cardValueUnitsPerPixel(): number {
         return calculateScreenFit(this.scale) / this.cameraSystem.getCamera().zoom;
     }
 
@@ -296,6 +314,10 @@ class GameScene extends Scene {
 
         if (this.zoneLabels && this.zoneLabels.getUnitsPerPixel() !== unitsPerPixel) {
             this.zoneLabels.applyScale(unitsPerPixel);
+        }
+
+        for (const zoneView of this.zones) {
+            zoneView.applyScale(unitsPerPixel);
         }
     }
 

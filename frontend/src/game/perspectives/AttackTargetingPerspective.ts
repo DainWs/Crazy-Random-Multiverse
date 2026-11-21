@@ -71,6 +71,13 @@ class AttackTargetingPerspective implements Perspective {
         }
     }
 
+    /** The attack is applied: the target goes back to its rest size at once, and the attacker travels lifted, without its shadow (VIEW-5). */
+    public drop(): void {
+        this.sourceLift.dropShadow();
+        this.target?.lift.drop();
+        this.target = undefined;
+    }
+
     /** Whether the hover of the card in `slot` is the lift of the attack and not the enlargement of `VIEW-14`. */
     public hover(slot: ZoneSlotView): boolean {
         if (this.committed || slot === this.sourceSlot || this.isOwn(slot)) {

@@ -15,14 +15,12 @@ import CombatantView from "@/game/cards/CombatantView";
 import {
   EXTRA_MARK_FRAME_WIDTH,
   FORBIDDEN_ICON_DIAMETER,
-  HIT_FLASH_DURATION_MS,
-  HIT_FLASH_EASE,
   OWN_ZONE_LINE_WIDTH,
   TURN_CROWN_DIAMETER,
   TURN_GLOW_MIN_ALPHA,
   TURN_GLOW_PULSE_PERIOD_MS
 } from "@/core/Constants";
-import { playMotion } from "@/core/visual_effects/Motion";
+import { playMotion, waitFor } from "@/core/visual_effects/Motion";
 import { paletteFill } from "@/game/utils/Palette";
 import { ownZoneLines, readyCorners, sourceDashes } from "@/game/zone/SlotMarkLayout";
 
@@ -36,6 +34,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   private glowGraphics?: Phaser.GameObjects.Graphics;
   private forbiddenGraphics?: Phaser.GameObjects.Graphics;
   private turnFramePulses = false;
+  private readyMarkIsHeld = false;
   private cardView: CombatantView | null;
 
   private previewedCardView?: CombatantView | null;
@@ -195,17 +194,18 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     return this.cardView;
   }
 
-  /** Covers the slot with a color that fades out, for the hit of an attack (VIEW-5). */
-  public async flash(color: number): Promise<void> {
+  /** Covers the slot with a color at once and fades it out, after `freezeMs` if the hit of a leader stops everything (VIEW-5, VIEW-7). */
+  public async flash(color: number, freezeMs = 0): Promise<void> {
     const flashGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderBackground(flashGraphics, this.corners, color, color);
     this.add(flashGraphics);
 
+    await waitFor(this.scene, freezeMs, 'NON_ESSENTIAL');
     await playMotion(this.scene, {
       targets: flashGraphics,
       to: { alpha: 0 },
-      duration: HIT_FLASH_DURATION_MS,
-      curve: HIT_FLASH_EASE,
+      duration: 'FAST',
+      curve: 'LEAVE',
       kind: 'NON_ESSENTIAL'
     });
 
@@ -251,10 +251,12 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   };
 
   /** Covers the slot with a dark veil, for the zone of an eliminated player (VIEW-11). */
-  public showEliminatedVeil() {
+  public showEliminatedVeil(): Phaser.GameObjects.Graphics {
     const veilGraphics = this.scene.add.graphics();
     ZoneSlotViewRenderer.renderVeil(veilGraphics, this.corners);
     this.add(veilGraphics);
+
+    return veilGraphics;
   }
 
   /** Frames the slot over its card, with dashes instead of a solid line when `dashed` (UI-5, VIEW-4, VIEW-39). */
@@ -292,13 +294,23 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
 
     this.pulseReadyMark();
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
   }
 
   private pulseReadyMark = () => {
-    this.readyGraphics?.setAlpha(readyMarkAlpha(this.scene.time.now));
+    this.readyGraphics?.setAlpha(this.readyMarkIsHeld ? 1 : readyMarkAlpha(this.scene.time.now));
   };
+
+  /** Whether the frame of a card that can attack is drawn (VIEW-17). */
+  public hasReadyMark(): boolean {
+    return this.readyGraphics?.visible === true;
+  }
+
+  /** While the pointer is over the card, its frame stops pulsing and is fully opaque; when it leaves, the pulse goes on from the clock (VIEW-37). */
+  public holdReadyMark(held: boolean) {
+    this.readyMarkIsHeld = held;
+    this.pulseReadyMark();
+  }
 
   /** Shows or hides the frame of a card that can attack, while the card is lifted as the attacker (VIEW-4). */
   public setReadyMarkVisible(visible: boolean) {
@@ -341,6 +353,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   protected preDestroy(): void {
     super.preDestroy();
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseReadyMark, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.pulseTurnGlow, this);
     InteractiveObjectManager.unregisterGameObject(this.scene, this);
 
     if (this.cardView) {

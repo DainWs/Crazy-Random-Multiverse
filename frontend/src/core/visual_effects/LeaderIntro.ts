@@ -52,7 +52,7 @@ function placeLeader(scene: GameScene, leader: CombatantView, duration: number):
     targets: leader,
     to: { alpha: 1, scaleX, scaleY: scaleY ?? scaleX },
     duration,
-    curve: Constants.LEADER_INTRO_EASE,
+    curve: 'ENTER',
     kind: 'NON_ESSENTIAL'
   });
 }

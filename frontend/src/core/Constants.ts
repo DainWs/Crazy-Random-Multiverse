@@ -37,17 +37,8 @@ export const REJECTION_MESSAGE_FONT_SIZE = '28px';
 /** Depth of the message about a rejected action: above the cards. */
 export const REJECTION_MESSAGE_DEPTH = 20000;
 
-/** Time in milliseconds a notice of a new round or turn takes to fade in, and again to fade out (VIEW-15). */
-export const TURN_NOTICE_FADE_MS = 200;
-
 /** Time in milliseconds a notice of a new round or turn stays fully visible (VIEW-15). */
-export const TURN_NOTICE_HOLD_MS = 1100;
-
-/** Ease of the fade of a notice of a new round or turn. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const TURN_NOTICE_EASE = { ease: 'Linear' };
-
-/** Distance from the top edge of the screen to the notice of a new round or turn, as a fraction of the screen height (VIEW-15). */
-export const TURN_NOTICE_TOP_RATIO = 0.2;
+export const TURN_NOTICE_HOLD_MS = 1000;
 
 /** Font size of the notice of a new round or turn (VIEW-15). */
 export const TURN_NOTICE_FONT_SIZE = '40px';
@@ -77,7 +68,7 @@ export const LIFT_SHADOW_ALPHA = 0.35;
 export const FORBIDDEN_ICON_DIAMETER = 32;
 
 /** Duration in milliseconds of one pulse of the frame of an own card that can attack now (VIEW-17). */
-export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 1600;
+export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 2400;
 
 /** Lowest alpha of the pulse of the frame of an own card that can attack now, between 0 and 1 (VIEW-17). */
 export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
@@ -95,9 +86,6 @@ export const HUD_TURN_SEPARATOR = ' · ';
 /** Alpha of a HUD button that cannot be used now (UI-4). */
 export const HUD_DISABLED_ALPHA = 0.4;
 
-/** Ease of the placement of a leader. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const LEADER_INTRO_EASE = { ease: 'Quad.easeIn' };
-
 /** Total milliseconds the leaders take to be placed when the board is first shown (VIEW-12). */
 export const LEADER_INTRO_TOTAL_MS = 2000;
 
@@ -108,7 +96,7 @@ export const LEADER_INTRO_MIN_MS = 120;
 export const LEADER_INTRO_MAX_MS = 500;
 
 /** How many times its size a leader starts at before shrinking into its slot (VIEW-12). */
-export const LEADER_INTRO_START_SCALE = 1.6;
+export const LEADER_INTRO_START_SCALE = 1.5;
 
 /** Seconds the result stays on screen before the party unlocks: the default of `crm.game.result-duration` (WIN-4, WIN-5). */
 export const GAME_RESULT_COUNTDOWN_SECONDS = 15;
@@ -165,77 +153,41 @@ export const GAME_BACKGROUND_DIM_ALPHA = 0.55;
 export const CONFIRM_VEIL_ALPHA = 0.6;
 
 
-/** Scale the attacker grows to while it attacks, relative to its own scale (VIEW-5). */
-export const ATTACK_PULSE_SCALE = 1.25;
+/** Amplitude in board units of the first swing of the shake of a card hit by an attack, which goes down to 0 (VIEW-5). */
+export const HIT_SHAKE_AMPLITUDE = 6;
 
-/** Milliseconds the attacker takes to grow to its attack scale; shrinking back takes the same (VIEW-5). */
-export const ATTACK_PULSE_DURATION_MS = 180;
+/** Times the shake of a card hit by an attack goes from side to side (VIEW-5). */
+export const HIT_SHAKE_SWINGS = 3;
 
-/** Ease of the growing of the attacker. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const ATTACK_PULSE_EASE = { ease: 'Power1' };
+/** Fraction of the long side of the card hit that the floating text with what it lost measures (VIEW-6). */
+export const DAMAGE_TEXT_SIZE_FRACTION = 0.4;
 
-/** Distance in pixels a card hit by an attack moves to each side while it shakes (VIEW-5). */
-export const HIT_SHAKE_DISTANCE = 10;
+/** Smallest height in pixels of the floating text, with the window at 1920 by 1080 (VIEW-6). */
+export const DAMAGE_TEXT_MIN_SIZE = 24;
 
-/** Milliseconds of each movement of the shake of a card hit by an attack (VIEW-5). */
-export const HIT_SHAKE_DURATION_MS = 50;
+/** Distance in pixels the floating text rises, with the window at 1920 by 1080 (VIEW-6). */
+export const DAMAGE_TEXT_RISE = 40;
 
-/** Times the shake of a card hit by an attack goes back and forth (VIEW-5). */
-export const HIT_SHAKE_REPEATS = 3;
+/** Width of the black outline of the floating text and its icon, as a fraction of the height of the text (VIEW-6). */
+export const DAMAGE_TEXT_OUTLINE_FRACTION = 0.15;
 
-/** Ease of the shake of a card. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const HIT_SHAKE_EASE = { ease: 'Linear' };
-
-/** Ease of the flash over a hit card. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const HIT_FLASH_EASE = { ease: 'Linear' };
-
-/** Milliseconds the flash over a hit card takes to fade out (VIEW-5). */
-export const HIT_FLASH_DURATION_MS = 350;
-
-/** Font size of the floating text with the damage a card received (VIEW-6). */
-export const DAMAGE_TEXT_FONT_SIZE = '48px';
-
-/** Milliseconds the armor and the health of a card take to count down to their new values (VIEW-6). */
-export const STATISTIC_COUNT_DURATION_MS = 500;
-
-/** Ease of the count of the armor and the health. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const STATISTIC_COUNT_EASE = { ease: 'Linear' };
-
-/** Ease of the rising of the floating text with the damage. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const DAMAGE_TEXT_EASE = { ease: 'Power1' };
-
-/** Width in pixels of the outline of the floating text with the damage (VIEW-6). */
-export const DAMAGE_TEXT_STROKE_WIDTH = 6;
-
-/** Distance in pixels the floating text with the damage rises (VIEW-6). */
-export const DAMAGE_TEXT_RISE = 120;
-
-/** Distance in pixels between the floating texts of the armor and the health lost by the same card (VIEW-6). */
-export const DAMAGE_TEXT_GAP = 60;
-
-/** Milliseconds the floating text with the damage takes to rise and fade out (VIEW-6). */
-export const DAMAGE_TEXT_DURATION_MS = 900;
+/** Space between the icon and the number of the floating text, as a fraction of the height of the text. */
+export const DAMAGE_TEXT_ICON_GAP_FRACTION = 0.25;
 
 /** Depth of the floating text with the damage: above the cards and below the messages about rejected actions. */
 export const DAMAGE_TEXT_DEPTH = 14000;
 
-/** Ease of the shrinking and fading out of a dead card or leader. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const DEATH_EASE = { ease: 'Power1' };
+/** Milliseconds every animation of the hit of a dead leader stops at the impact (VIEW-7). */
+export const LEADER_FREEZE_MS = 150;
 
-/** Milliseconds a dead card takes to shrink and fade out (VIEW-7). */
-export const DEATH_DURATION_MS = 500;
+/** Milliseconds a dead leader stays still and dark grey before it shrinks (VIEW-7). */
+export const LEADER_STILL_MS = 400;
 
-/** Scale a dead card shrinks to, relative to its own scale (VIEW-7). */
-export const DEATH_SCALE = 0.6;
+/** Opacity of the dark grey that covers a dead leader, between 0 and 1 (VIEW-7). */
+export const LEADER_DEATH_TINT_ALPHA = 0.85;
 
-/** Milliseconds a dead leader takes to shrink and fade out, after shaking: longer than a warrior (VIEW-7). */
-export const LEADER_DEATH_DURATION_MS = 1200;
-
-/** Scale a dead leader shrinks to, relative to its own scale (VIEW-7). */
-export const LEADER_DEATH_SCALE = 0.3;
-
-/** Times a dead leader shakes back and forth before it fades out (VIEW-7). */
-export const LEADER_DEATH_SHAKE_REPEATS = 8;
+/** Scale a dead card or leader shrinks to before it disappears, relative to its own scale; not 0 so its matrix stays valid (VIEW-7). */
+export const DEATH_END_SCALE = 0.01;
 
 /** Width in board-space units of the border that every slot draws around itself, and of every frame that covers it: the marks of an attack and a drop, of the cards that can attack and of the leader with the turn (VIEW-4, VIEW-17, VIEW-20). */
 export const SLOT_BORDER_WIDTH = 2;
@@ -255,11 +207,26 @@ export const ELIMINATED_VEIL_ALPHA = 0.8;
 /** Width in board-space units of the border around each veiled slot of the zone of an eliminated player (VIEW-11). */
 export const ELIMINATED_VEIL_BORDER_WIDTH = 3;
 
-/** Font size in board-space units of the label "Eliminado" over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_LABEL_FONT_SIZE = '72px';
+/** Height in pixels of the label "Eliminado" over the zone of an eliminated player, with the window at 1920 by 1080 and zoom 1 (VIEW-11). */
+export const ELIMINATED_LABEL_SIZE = 24;
 
-/** Thickness in board-space units of the outline of the label over the zone of an eliminated player (VIEW-11). */
-export const ELIMINATED_LABEL_STROKE_WIDTH = 10;
+/** Font size of the label "Eliminado" over the zone of an eliminated player (VIEW-11). */
+export const ELIMINATED_LABEL_FONT_SIZE = `${ELIMINATED_LABEL_SIZE}px`;
+
+/** Thickness of the black outline of the label "Eliminado", as a fraction of the height of the text (VIEW-11). */
+export const ELIMINATED_LABEL_OUTLINE_FRACTION = 0.14;
+
+/** Milliseconds the dark red and the label of an eliminated zone take to fade in; an exception to the scale of `VIEW-30` (VIEW-11). */
+export const ELIMINATION_VEIL_MS = 800;
+
+/** Milliseconds between the end of the veil and the start of the notice of the elimination (VIEW-11). */
+export const ELIMINATION_NOTICE_DELAY_MS = 400;
+
+/** Milliseconds the notice of the elimination takes to fade in, and again to fade out; an exception to the scale of `VIEW-30` (VIEW-11). */
+export const ELIMINATION_NOTICE_FADE_MS = 1000;
+
+/** Milliseconds the notice of the elimination stays fully visible (VIEW-11). */
+export const ELIMINATION_NOTICE_HOLD_MS = 1000;
 
 /** Depth of the button to leave the game: above the result, so a spectator can still leave while it is shown (UI-8). */
 export const LEAVE_BUTTON_DEPTH = GAME_RESULT_DEPTH + 1;

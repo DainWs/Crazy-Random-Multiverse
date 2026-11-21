@@ -1,33 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import type { CombatResult } from '@/domain/CombatResult';
-import { toDamageTexts } from '@/core/visual_effects/DamageTexts';
-import { paletteText } from '@/game/utils/Palette';
+import { toDamageText } from '@/core/visual_effects/DamageTexts';
 
-describe('toDamageTexts', () => {
+// VIEW-6
+describe('toDamageText', () => {
   const createCombat = (armorDamage: number, healthDamage: number) => ({ armorDamage, healthDamage }) as CombatResult;
 
-  it('shows the armor lost and then the health lost', () => {
-    const texts = toDamageTexts(createCombat(2, 3));
-
-    expect(texts).toEqual([
-      { text: '-2', color: paletteText('DAMAGE_TEXT_ARMOR') },
-      { text: '-3', color: paletteText('DAMAGE_TEXT_HEALTH') }
-    ]);
+  it('shows the health lost in red with a heart', () => {
+    expect(toDamageText(createCombat(0, 5), 'PHYSICAL')).toEqual({ text: '−5', icon: 'HEART', color: 'HIT_FLASH' });
   });
 
-  it('shows only the health when the armor held', () => {
-    const texts = toDamageTexts(createCombat(0, 5));
-
-    expect(texts).toEqual([{ text: '-5', color: paletteText('DAMAGE_TEXT_HEALTH') }]);
+  it('shows the physical armor lost in steel grey with a shield', () => {
+    expect(toDamageText(createCombat(4, 0), 'PHYSICAL')).toEqual({ text: '−4', icon: 'SHIELD', color: 'HIT_FLASH_ARMOR' });
   });
 
-  it('shows only the armor when it absorbed the whole attack', () => {
-    const texts = toDamageTexts(createCombat(4, 0));
-
-    expect(texts).toEqual([{ text: '-4', color: paletteText('DAMAGE_TEXT_ARMOR') }]);
+  it('shows the magic armor lost with the shield of magic armor', () => {
+    expect(toDamageText(createCombat(2, 0), 'MAGIC').icon).toBe('MAGIC_SHIELD');
   });
 
-  it('shows nothing when the attack did no damage', () => {
-    expect(toDamageTexts(createCombat(0, 0))).toEqual([]);
+  it('shows the plain shield when the card has no armor type', () => {
+    expect(toDamageText(createCombat(2, 0), undefined).icon).toBe('SHIELD');
+  });
+
+  it('shows a white 0 without icon when the attack took nothing', () => {
+    expect(toDamageText(createCombat(0, 0), 'PHYSICAL')).toEqual({ text: '0', icon: null, color: 'NOTICE_TEXT' });
   });
 });

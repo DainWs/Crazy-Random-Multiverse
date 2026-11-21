@@ -1,7 +1,7 @@
 import 'phaser';
 import { describe, expect, it, vi } from 'vitest';
 import ZoneView from '@/game/zone/ZoneView';
-import { ELIMINATED_LABEL_STROKE_WIDTH } from '@/core/Constants';
+import { ELIMINATED_LABEL_OUTLINE_FRACTION, ELIMINATED_LABEL_SIZE } from '@/core/Constants';
 import { paletteText } from '@/game/utils/Palette';
 
 /** Runs the private glow of a zone with the pieces it reads, without building a Phaser container. */
@@ -35,31 +35,63 @@ describe('ZoneView turn glow', () => {
 });
 
 describe('ZoneView eliminated mark', () => {
+  const fakeLabel = () => ({ setOrigin: vi.fn(), setPosition: vi.fn(), setScale: vi.fn(), text: '' });
+
+  /** A zone with the pieces `showEliminated` reads, without building a Phaser container. */
+  function createZoneView(slotViews: object[], label: ReturnType<typeof fakeLabel>, text: object = vi.fn(() => label)) {
+    return {
+      slots: [slotViews],
+      scene: { add: { text } },
+      add: vi.fn(),
+      eliminatedMarks: [] as unknown[],
+      drawnCenter: () => ({ x: 7, y: 9 })
+    };
+  }
+
+  const show = (zoneView: object) => (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
+
   // VIEW-11
   it('covers every slot with a veil and labels the zone as eliminated', () => {
-    const slotViews = [{ showEliminatedVeil: vi.fn() }, { showEliminatedVeil: vi.fn() }];
-    const label = { setOrigin: vi.fn(), setScale: vi.fn(), text: '' };
-    const zoneView = {
-      slots: [slotViews],
-      options: { position: { x: 0, y: 0 } },
-      scene: { add: { text: (_x: number, _y: number, text: string) => Object.assign(label, { text }) } },
-      add: vi.fn()
-    };
+    const slotViews = [{ showEliminatedVeil: vi.fn(() => ({})) }, { showEliminatedVeil: vi.fn(() => ({})) }];
+    const label = fakeLabel();
+    const text = vi.fn((_x: number, _y: number, content: string) => Object.assign(label, { text: content }));
 
-    (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
+    show(createZoneView(slotViews, label, text));
 
     expect([slotViews.map((view) => view.showEliminatedVeil.mock.calls.length), label.text]).toEqual([[1, 1], 'Eliminado']);
   });
 
   // VIEW-11
-  it('outlines the label in black, with no panel behind it', () => {
-    const label = { setOrigin: vi.fn(), setScale: vi.fn() };
+  it('outlines the label in black as thick as 14% of its height, with no panel behind it', () => {
+    const label = fakeLabel();
     const text = vi.fn(() => label);
-    const zoneView = { slots: [[]], options: { position: { x: 0, y: 0 } }, scene: { add: { text } }, add: vi.fn() };
 
-    (ZoneView.prototype as unknown as { showEliminated(): void }).showEliminated.call(zoneView);
+    show(createZoneView([], label, text));
 
-    expect(text).toHaveBeenCalledWith(0, 0, 'Eliminado', expect.objectContaining({ stroke: paletteText('TEXT_OUTLINE'), strokeThickness: ELIMINATED_LABEL_STROKE_WIDTH }));
+    expect(text).toHaveBeenCalledWith(0, 0, 'Eliminado', expect.objectContaining({
+      stroke: paletteText('TEXT_OUTLINE'),
+      strokeThickness: ELIMINATED_LABEL_SIZE * ELIMINATED_LABEL_OUTLINE_FRACTION
+    }));
+  });
+
+  // VIEW-11
+  it('centers the label on the zone as drawn', () => {
+    const label = fakeLabel();
+
+    show(createZoneView([], label));
+
+    expect(label.setPosition).toHaveBeenCalledWith(7, 9);
+  });
+
+  // VIEW-11
+  it('keeps the veils and the label to fade them in', () => {
+    const veil = {};
+    const zoneView = createZoneView([{ showEliminatedVeil: () => veil }], fakeLabel());
+
+    show(zoneView);
+
+    expect(zoneView.eliminatedMarks).toHaveLength(2);
+    expect(zoneView.eliminatedMarks[0]).toBe(veil);
   });
 });
 
