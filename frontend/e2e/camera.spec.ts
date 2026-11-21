@@ -1,4 +1,4 @@
-import type { Area, PanButton, Point } from '@/support/board';
+import type { PanButton, Point } from '@/support/board';
 import {
     EMPTY_TABLE,
     OWN_WARRIOR,
@@ -10,6 +10,7 @@ import {
     hover,
     openBoard,
     pan,
+    sameFrame,
     waitForStillFrame,
     zoomIn,
     zoomOut
@@ -35,15 +36,7 @@ const MIN_TABLE_SHARE = 0.05;
 /** Change of the dark share of the screen that is not a change of the zoom: a dragged card and its marks are a few small spots. */
 const TABLE_SHARE_NOISE = 0.01;
 const DRAG_STEPS = 12;
-const HUD_ZOOM_LEVELS = [
-    { zoom: 0.8, wheelSteps: 2 },
-    { zoom: 0.5, wheelSteps: 4 }
-];
 const LONG_PAN_TEST_TIMEOUT_MS = 120000;
-
-const TURN_TEXT_AREA: Area = { x: 0, y: 0, width: 560, height: 80 };
-const BUTTONS_AREA: Area = { x: 1600, y: 930, width: 320, height: 150 };
-const SURRENDER_AREA: Area = { x: 0, y: 930, width: 320, height: 150 };
 
 test.describe('panning the camera', () => {
     test.beforeEach(async ({ page, backend }) => {
@@ -58,7 +51,7 @@ test.describe('panning the camera', () => {
 
             await pan(page, button, EMPTY_TABLE, SHORT_PAN);
 
-            expect((await frameOf(page, TABLE_AREA)).equals(before)).toBe(false);
+            expect(await sameFrame(page, await frameOf(page, TABLE_AREA), before)).toBe(false);
         });
 
         // VIEW-19, VIEW-4
@@ -68,7 +61,7 @@ test.describe('panning the camera', () => {
             await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y, { button });
             await hover(page, EMPTY_TABLE);
 
-            expect((await page.screenshot()).equals(noSelection)).toBe(true);
+            expect(await sameFrame(page, await page.screenshot(), noSelection)).toBe(true);
         });
 
         // VIEW-19
@@ -101,7 +94,7 @@ test.describe('panning the camera', () => {
 
         await zoomOut(page, 1);
 
-        expect((await frameOf(page, TABLE_AREA)).equals(before)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, TABLE_AREA), before)).toBe(false);
     });
 
     // VIEW-19
@@ -133,26 +126,4 @@ test.describe('panning the camera', () => {
             expect(await darkShare(page)).toBeGreaterThan(MIN_TABLE_SHARE);
         }
     });
-});
-
-test.describe('the HUD while zooming', () => {
-    test.beforeEach(async ({ page, backend }) => {
-        await openBoard(page, backend);
-    });
-
-    // UI-3
-    for (const { zoom, wheelSteps } of HUD_ZOOM_LEVELS) {
-        test(`keeps the turn text at its place and size at zoom ${zoom}`, async ({ page }) => {
-            await zoomOut(page, wheelSteps);
-
-            await expect(page).toHaveScreenshot(`hud-turn-text-zoom-${zoom}.png`, { clip: TURN_TEXT_AREA, maxDiffPixels: 0 });
-        });
-
-        test(`keeps the buttons at their place and size at zoom ${zoom}`, async ({ page }) => {
-            await zoomOut(page, wheelSteps);
-
-            await expect(page).toHaveScreenshot(`hud-buttons-zoom-${zoom}.png`, { clip: BUTTONS_AREA, maxDiffPixels: 0 });
-            await expect(page).toHaveScreenshot(`hud-surrender-zoom-${zoom}.png`, { clip: SURRENDER_AREA, maxDiffPixels: 0 });
-        });
-    }
 });

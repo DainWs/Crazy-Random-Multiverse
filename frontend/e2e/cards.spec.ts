@@ -1,7 +1,7 @@
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
-import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openBoard, openGame, zoomIn } from '@/support/board';
+import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openBoard, openGame, sameFrame, zoomIn } from '@/support/board';
 import { createEquipment, createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -44,23 +44,15 @@ test.describe('equipment stacked behind its combatant', () => {
         await openGame(page, backend, withEquipmentOnOwnWarrior(createPreparedGame(2), pieces));
     });
 
-    test('shows a strip of every piece behind the card', async ({ page }) => {
-        await expect(page).toHaveScreenshot('stack-rest.png', { clip: STACK_AREA, maxDiffPixels: 0 });
-    });
-
-    test('slides every piece out while hovering', async ({ page }) => {
-        await hover(page, OWN_WARRIOR);
-
-        await expect(page).toHaveScreenshot('stack-hover.png', { clip: STACK_AREA, maxDiffPixels: 0 });
-    });
-
-    test('slides the pieces back after leaving', async ({ page }) => {
+    test('shows a strip of every piece behind the card, slides them out while hovering and back after leaving', async ({ page }) => {
         const atRest = await frameOf(page, STACK_AREA);
+        await expect.soft(page).toHaveScreenshot('stack-rest.png', { clip: STACK_AREA, maxDiffPixels: 0 });
+
         await hover(page, OWN_WARRIOR);
+        await expect.soft(page).toHaveScreenshot('stack-hover.png', { clip: STACK_AREA, maxDiffPixels: 0 });
 
         await hover(page, EMPTY_TABLE);
-
-        expect((await frameOf(page, STACK_AREA)).equals(atRest)).toBe(true);
+        expect(await sameFrame(page, await frameOf(page, STACK_AREA), atRest)).toBe(true);
     });
 });
 
@@ -83,14 +75,14 @@ test.describe('side panel of a card that disappears', () => {
         await openGame(page, backend, prepared);
         const noPanel = await frameOf(page, PANEL_CARD_AREA);
         await hover(page, HAND_CARD);
-        expect((await frameOf(page, PANEL_CARD_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, PANEL_CARD_AREA), noPanel)).toBe(false);
         const eliminated = structuredClone(prepared.game);
         eliminated.zones[OWN_ZONE].owner.isAlive = false;
         eliminated.zones[OWN_ZONE].owner.isSpectator = true;
 
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[OWN_ZONE].owner });
 
-        await expect.poll(async () => (await frameOf(page, PANEL_CARD_AREA)).equals(noPanel)).toBe(true);
+        await expect.poll(async () => sameFrame(page, await frameOf(page, PANEL_CARD_AREA), noPanel)).toBe(true);
     });
 });
 

@@ -1,13 +1,12 @@
+import type { Page } from '@playwright/test';
 import type { Area, Point } from '@/support/board';
 import {
     INITIAL_ZOOM,
     OWN_WARRIOR,
     RIVAL_WARRIOR,
-    SIDE_ZONE_AREA,
     TABLE_AREA,
     TOOLTIP_AREA,
     atZoom,
-    cardArea,
     edgeStrength,
     openBoard,
     waitForStillFrame,
@@ -42,25 +41,25 @@ function cardInterior(center: Point, zoom: number): Area {
 
 /** The limits are the noise measured over five runs, which was zero in every area. */
 const TABLE = { clip: TABLE_AREA, maxDiffPixels: 0 };
-const HAND = { clip: { x: 700, y: 1005, width: 520, height: 75 }, maxDiffPixels: 0 };
 const TOOLTIP = { clip: TOOLTIP_AREA, maxDiffPixels: 0 };
-const CARD_MAX_DIFF_PIXELS = 0;
-
-const SHARPNESS_THRESHOLD = 0.05;
-
 const ZOOM_LEVELS = [
-    { zoom: INITIAL_ZOOM, wheelSteps: 0 },
     { zoom: 0.8, wheelSteps: 2 },
     { zoom: 0.5, wheelSteps: 4 }
 ];
 
+/** Selects the own warrior and puts the pointer over the rival, which lifts both (VIEW-4). */
+async function liftAttack(page: Page, zoom: number): Promise<void> {
+    const attacker = atZoom(OWN_WARRIOR, zoom);
+    const target = atZoom(RIVAL_WARRIOR, zoom);
+
+    await page.mouse.click(attacker.x, attacker.y);
+    await page.mouse.move(target.x, target.y);
+    await waitForStillFrame(page);
+}
+
 test.describe('board appearance', () => {
     test.beforeEach(async ({ page, backend }) => {
         await openBoard(page, backend);
-    });
-
-    test('shows the hand', async ({ page }) => {
-        await expect(page).toHaveScreenshot('hand.png', HAND);
     });
 
     // VIEW-57
@@ -74,13 +73,6 @@ test.describe('board appearance', () => {
         expect(after).toBeGreaterThanOrEqual(before * (1 - EDGE_STRENGTH_NOISE));
     });
 
-    // VIEW-1
-    test('shows the cards of a rotated zone aligned with their slots', async ({ page, backend }) => {
-        await openBoard(page, backend, 3);
-
-        await expect(page).toHaveScreenshot('side-zone.png', { clip: SIDE_ZONE_AREA, maxDiffPixels: 0 });
-    });
-
     test('shows the tooltip of a hovered card', async ({ page }) => {
         await page.mouse.move(OWN_WARRIOR.x, OWN_WARRIOR.y);
         await waitForStillFrame(page);
@@ -88,34 +80,21 @@ test.describe('board appearance', () => {
         await expect(page).toHaveScreenshot('tooltip.png', TOOLTIP);
     });
 
+    // VIEW-19, UI-3: the board at the initial zoom, the hand and the HUD are in `layout-2-players` of `layouts.spec.ts`
+    test('keeps the shape of the lifted cards at the initial zoom', async ({ page }) => {
+        await liftAttack(page, INITIAL_ZOOM);
+
+        await expect(page).toHaveScreenshot('attack-zoom-initial.png', TABLE);
+    });
+
     for (const { zoom, wheelSteps } of ZOOM_LEVELS) {
-        test(`keeps the table shape at zoom ${zoom}`, async ({ page }) => {
+        // VIEW-19, UI-3: the table and its cards keep their shape, the HUD its place and size, and so do the lifted cards
+        test(`keeps the board, the HUD and the lifted cards at zoom ${zoom}`, async ({ page }) => {
             await zoomOut(page, wheelSteps);
 
-            await expect(page).toHaveScreenshot(`table-zoom-${zoom}.png`, TABLE);
-        });
-
-        test(`keeps the shape of the lifted cards at zoom ${zoom}`, async ({ page }) => {
-            const attacker = atZoom(OWN_WARRIOR, zoom);
-            const target = atZoom(RIVAL_WARRIOR, zoom);
-            await zoomOut(page, wheelSteps);
-
-            await page.mouse.click(attacker.x, attacker.y);
-            await page.mouse.move(target.x, target.y);
-            await waitForStillFrame(page);
-
-            await expect(page).toHaveScreenshot(`attack-zoom-${zoom}.png`, TABLE);
-        });
-
-        test(`keeps the card sharp at zoom ${zoom}`, async ({ page }) => {
-            const clip = cardArea(atZoom(OWN_WARRIOR, zoom));
-            await zoomOut(page, wheelSteps);
-
-            await expect(page).toHaveScreenshot(`card-zoom-${zoom}.png`, {
-                clip,
-                threshold: SHARPNESS_THRESHOLD,
-                maxDiffPixels: CARD_MAX_DIFF_PIXELS
-            });
+            await expect.soft(page).toHaveScreenshot(`board-zoom-${zoom}.png`, { maxDiffPixels: 0 });
+            await liftAttack(page, zoom);
+            await expect.soft(page).toHaveScreenshot(`attack-zoom-${zoom}.png`, TABLE);
         });
     }
 });

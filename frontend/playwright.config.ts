@@ -7,7 +7,7 @@ const VIEWPORT = { width: 1920, height: 1080 };
 export default defineConfig({
     testDir: './e2e',
     snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{testFilePath}/{arg}{ext}',
-    // Software WebGL uses the whole CPU, and a starved frame would change the screenshots.
+    // One browser at a time, so a starved frame does not change the screenshots.
     workers: 1,
     forbidOnly: true,
     reporter: 'list',
@@ -25,7 +25,8 @@ export default defineConfig({
                 viewport: VIEWPORT,
                 deviceScaleFactor: 1,
                 launchOptions: {
-                    args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']
+                    // The GPU of the developer's machine, so the reference images are their own and not committed (ROADMAP-TEST.md)
+                    args: ['--use-angle=default', '--enable-gpu', '--ignore-gpu-blocklist']
                 }
             }
         }

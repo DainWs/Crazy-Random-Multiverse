@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import type BackendDouble from '@/support/BackendDouble';
-import { openBoard, waitForStillFrame } from '@/support/board';
+import { openBoard, sameFrame, waitForStillFrame } from '@/support/board';
 import { createLoadingGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -34,7 +34,7 @@ test.describe('page reload', () => {
 
             await reloadDuringTheGame(page, backend);
 
-            expect((await page.screenshot()).equals(boardBeforeReload)).toBe(true);
+            expect(await sameFrame(page, await page.screenshot(), boardBeforeReload)).toBe(true);
         });
 
         // LOAD-6
@@ -68,7 +68,7 @@ test.describe('page reload', () => {
 
             await reloadDuringTheLoad(page, backend);
 
-            expect((await page.screenshot()).equals(loadingBeforeReload)).toBe(true);
+            expect(await sameFrame(page, await page.screenshot(), loadingBeforeReload)).toBe(true);
         });
 
         // LOAD-2

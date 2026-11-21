@@ -2,6 +2,8 @@
 node_modules
 /dist
 /test-results
+# Each developer generates the reference images of the browser tests with their own GPU (ROADMAP-TEST.md)
+/e2e/__screenshots__
 
 
 # local env files

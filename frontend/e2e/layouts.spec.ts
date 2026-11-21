@@ -1,5 +1,5 @@
 import type { Point } from '@/support/board';
-import { LEFT_TOOLTIP_AREA, TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard } from '@/support/board';
+import { LEFT_TOOLTIP_AREA, TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard, sameFrame } from '@/support/board';
 import { expect, test } from '@/support/test';
 import { BOARD_CAMERA_STORAGE_KEY } from '@/core/SettingsSystem';
 
@@ -12,7 +12,7 @@ const TEN_EMPTY_TABLE: Point = { x: 1100, y: 650 };
 const PLAYER_COUNTS = [2, 3, 4, 6, 10].map((playerCount) => ({ playerCount }));
 const TILTED_PLAYER_COUNTS = [2, 6, 10];
 
-// VIEW-2, VIEW-13
+// VIEW-2, VIEW-13, and the HUD, the hand at rest and the labels of the zones (UI-3, VIEW-16, VIEW-49 to VIEW-51)
 test.describe('layouts of the table', () => {
     for (const { playerCount } of PLAYER_COUNTS) {
         test(`shows the table of ${playerCount} players`, async ({ page, backend }) => {
@@ -50,7 +50,7 @@ test.describe('game of ten players', () => {
 
         await hover(page, TEN_TOP_RIVAL_WARRIOR);
 
-        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, LEFT_TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
     test('shows the side panel of a card of a rotated zone', async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe('game of ten players', () => {
 
         await hover(page, TEN_SIDE_RIVAL_WARRIOR);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
     test('frames in green a rival of the top side', async ({ page }) => {
@@ -85,6 +85,6 @@ test.describe('game of ten players', () => {
 
         await hover(page, TEN_EMPTY_TABLE);
 
-        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(true);
+        expect(await sameFrame(page, await frameOf(page, LEFT_TOOLTIP_AREA), noPanel)).toBe(true);
     });
 });

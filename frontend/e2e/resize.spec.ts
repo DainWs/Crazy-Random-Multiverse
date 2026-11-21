@@ -1,4 +1,4 @@
-import { hover, openBoard, waitForStillFrame } from '@/support/board';
+import { hover, openBoard, sameFrame, waitForStillFrame } from '@/support/board';
 import { expect, test } from '@/support/test';
 
 const INITIAL_SIZE = { width: 1920, height: 1080 };
@@ -35,7 +35,7 @@ test.describe('window resize', () => {
         await page.setViewportSize(INITIAL_SIZE);
         await waitForStillFrame(page);
 
-        expect((await page.screenshot()).equals(initial)).toBe(true);
+        expect(await sameFrame(page, await page.screenshot(), initial)).toBe(true);
     });
 });
 

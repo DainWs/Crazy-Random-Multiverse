@@ -8,11 +8,11 @@ import {
     EMPTY_TABLE,
     EXPANDED_HAND_AREA,
     HAND_CARD,
+    LEFT_TOOLTIP_AREA,
     OWN_SLOT_AREA,
     OWN_WARRIOR,
     RIVAL_WARRIOR,
     SIDE_RIVAL_WARRIOR,
-    LEFT_TOOLTIP_AREA,
     TOOLTIP_AREA,
     countFramePixels,
     dragTo,
@@ -20,6 +20,7 @@ import {
     hasFrameSince,
     hover,
     openBoard,
+    sameFrame,
     waitForStillFrame
 } from '@/support/board';
 import { createPreparedGame, withCombatant } from '@/support/preparedGame';
@@ -124,7 +125,7 @@ test.describe('game of two players', () => {
 
         await hover(page, HAND_CARD);
 
-        expect((await frameOf(page, EXPANDED_HAND_AREA)).equals(closedHand)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, EXPANDED_HAND_AREA), closedHand)).toBe(false);
     });
 
     // VIEW-14
@@ -133,7 +134,7 @@ test.describe('game of two players', () => {
 
         await hover(page, HAND_CARD);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
     // VIEW-14
@@ -143,7 +144,7 @@ test.describe('game of two players', () => {
 
         await hover(page, EMPTY_TABLE);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(true);
+        expect(await sameFrame(page, await frameOf(page, TOOLTIP_AREA), noPanel)).toBe(true);
     });
 
     // CON-14
@@ -177,7 +178,7 @@ test.describe('game of two players', () => {
         });
         await hover(page, EMPTY_TABLE);
 
-        expect((await frameOf(page, OWN_SLOT_AREA)).equals(emptySlot)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, OWN_SLOT_AREA), emptySlot)).toBe(false);
     });
 
     // VIEW-4, UI-5
@@ -197,7 +198,7 @@ test.describe('game of two players', () => {
 
         await hover(page, RIVAL_WARRIOR);
 
-        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, LEFT_TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
     // VIEW-4
@@ -225,7 +226,7 @@ test.describe('game of two players', () => {
         await attackRival(page, backend, game);
         await hover(page, RIVAL_WARRIOR);
 
-        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(panelBefore)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, LEFT_TOOLTIP_AREA), panelBefore)).toBe(false);
     });
 
     // COMBAT-11
@@ -251,7 +252,7 @@ test.describe('game of three players', () => {
 
         await hover(page, SIDE_RIVAL_WARRIOR);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
     // VIEW-2

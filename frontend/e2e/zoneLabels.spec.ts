@@ -1,25 +1,16 @@
 import type { Area } from '@/support/board';
-import { frameOf, openBoard, openGame, waitForStillFrame } from '@/support/board';
+import { frameOf, openBoard, openGame, sameFrame, waitForStillFrame } from '@/support/board';
 import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
-const PLAYER_COUNTS = [2, 6, 10].map((playerCount) => ({ playerCount }));
 const WHOLE_SCREEN: Area = { x: 0, y: 0, width: 1920, height: 1080 };
 const NEXT_RIVAL_ZONE = 1;
 const THIRD_ZONE = 2;
 /** The leader row of the contract (CON-14). */
 const LEADER_ROW = 0;
 
-// VIEW-49, VIEW-50, VIEW-51
+// VIEW-49, VIEW-50, VIEW-51: the labels of a board at rest are in the images of `layouts.spec.ts`
 test.describe('labels around the zones', () => {
-    for (const { playerCount } of PLAYER_COUNTS) {
-        test(`shows the name, the health bar and who plays next with ${playerCount} players`, async ({ page, backend }) => {
-            await openBoard(page, backend, playerCount);
-
-            await expect(page).toHaveScreenshot(`zone-labels-${playerCount}-players.png`, { maxDiffPixels: 0 });
-        });
-    }
-
     test('fills the bar by the health of the leader and colors it by how much is left', async ({ page, backend }) => {
         const prepared = createPreparedGame(4);
         const healthByZone = [30, 20, 12, 3];
@@ -40,7 +31,7 @@ test.describe('labels around the zones', () => {
         backend.emitGameEvent('TURN_CHANGE', { game: { ...prepared.game, playerWithTurn: prepared.game.zones[NEXT_RIVAL_ZONE].owner } });
         await waitForStillFrame(page);
 
-        expect((await frameOf(page, WHOLE_SCREEN)).equals(beforeTurnChange)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, WHOLE_SCREEN), beforeTurnChange)).toBe(false);
     });
 
     test('draws no health bar for the zone of an eliminated player', async ({ page, backend }) => {
@@ -56,6 +47,6 @@ test.describe('labels around the zones', () => {
         await waitForStillFrame(page);
 
         await expect(page).toHaveScreenshot('zone-labels-eliminated.png', { maxDiffPixels: 0 });
-        expect((await frameOf(page, WHOLE_SCREEN)).equals(withBars)).toBe(false);
+        expect(await sameFrame(page, await frameOf(page, WHOLE_SCREEN), withBars)).toBe(false);
     });
 });

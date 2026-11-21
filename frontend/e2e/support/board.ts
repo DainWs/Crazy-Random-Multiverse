@@ -22,7 +22,8 @@ const WHEEL_DOWN_DELTA = 100;
 const WHEEL_UP_DELTA = -100;
 const STILL_FRAME_TIMEOUT_MS = 20000;
 const DRAG_STEPS = 12;
-const STILL_FRAMES_REQUIRED = 2;
+/** Equal frames in a row after the first: with every effect ending at once (`instantMotion`), a change lasts one frame. */
+const STILL_FRAMES_REQUIRED = 1;
 
 /** The side panel waits 150 ms and then takes 250 ms to close (VIEW-14), and the frames of that wait are equal. */
 const TOOLTIP_CLOSE_MS = 450;
@@ -63,7 +64,7 @@ async function openGame(page: Page, backend: BackendDouble, prepared: PreparedGa
     await waitForStillFrame(page);
 }
 
-/** The canvas has no DOM to wait on, so two equal frames in a row mean that the animations have ended. */
+/** The canvas has no DOM to wait on, so two frames in a row equal but for the noise of the GPU mean that the animations ended. */
 async function waitForStillFrame(page: Page, differentFrom?: Buffer): Promise<void> {
     let previous: Buffer | undefined;
     let equalFrames = 0;
@@ -72,9 +73,11 @@ async function waitForStillFrame(page: Page, differentFrom?: Buffer): Promise<vo
         .poll(
             async () => {
                 const frame = await page.screenshot();
-                equalFrames = previous?.equals(frame) === true ? equalFrames + 1 : 0;
+                const still = previous !== undefined && (await sameFrame(page, previous, frame));
+                equalFrames = still ? equalFrames + 1 : 0;
                 previous = frame;
-                return equalFrames >= STILL_FRAMES_REQUIRED && differentFrom?.equals(frame) !== true;
+                const changed = differentFrom === undefined || !(await sameFrame(page, differentFrom, frame));
+                return equalFrames >= STILL_FRAMES_REQUIRED && changed;
             },
             { timeout: STILL_FRAME_TIMEOUT_MS }
         )
@@ -111,6 +114,42 @@ async function pan(page: Page, button: PanButton, from: Point, delta: Point): Pr
     await waitForStillFrame(page);
     await page.mouse.up({ button });
     await waitForStillFrame(page);
+}
+
+/** Largest step of a channel between two frames that is noise of the GPU and not a change: it rounds some pixels one level apart. */
+const FRAME_NOISE_LEVEL = 2;
+
+/** Whether two frames of the same area show the same: no pixel differs more than the noise of the GPU. */
+async function sameFrame(page: Page, first: Buffer, second: Buffer): Promise<boolean> {
+    if (first.equals(second)) {
+        return true;
+    }
+
+    return page.evaluate(compareFrames, { first: first.toString('base64'), second: second.toString('base64'), noise: FRAME_NOISE_LEVEL });
+}
+
+async function compareFrames({ first, second, noise }: { first: string; second: string; noise: number }): Promise<boolean> {
+    const decode = async (base64: string) => {
+        const image = new Image();
+        image.src = `data:image/png;base64,${base64}`;
+        await image.decode();
+        const context = new OffscreenCanvas(image.width, image.height).getContext('2d')!;
+        context.drawImage(image, 0, 0);
+        return context.getImageData(0, 0, image.width, image.height).data;
+    };
+
+    const [a, b] = await Promise.all([decode(first), decode(second)]);
+    if (a.length !== b.length) {
+        return false;
+    }
+
+    for (let index = 0; index < a.length; index++) {
+        if (Math.abs(a[index] - b[index]) > noise) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /** Share of the strongest steps of light between neighbor pixels that `edgeStrength` averages. */
@@ -293,6 +332,7 @@ export {
     openBoard,
     openGame,
     pan,
+    sameFrame,
     waitForStillFrame,
     zoomIn,
     zoomOut
