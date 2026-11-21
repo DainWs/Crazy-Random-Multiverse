@@ -41,5 +41,6 @@ Appearance of the interface: layout, animation and sound. Behavior is in `specs/
 - The zone of an eliminated player and its notice (`VIEW-11`) are in `specs/ui/GAME-ELIMINATION.md`.
 - The result of the game (`VIEW-23`) is in `specs/ui/GAME-RESULT.md`.
 - The turn and round notices (`VIEW-15`) are in `specs/ui/GAME-NOTICES.md`.
+- The colors of the interface and their meanings (`VIEW-52`) are in `specs/ui/PALETTE.md`, what is drawn when two marks are on the same slot (`VIEW-53`) in `specs/ui/MARKS-PAIRS.md`, and the typefaces and the four sizes of the texts (`VIEW-54`, `VIEW-55`) in `specs/ui/TYPOGRAPHY.md`. The value labels of the cards are white (`VIEW-56`, in `specs/ui/CARDS-VALUES.md`).
 - The second signal of the marks of the board (`VIEW-39`) is in `specs/ui/MARKS-SECOND-SIGNAL.md`.
 - The minimum contrasts of the texts and of the marks (`VIEW-40`) are in `specs/ui/CONTRAST-MINIMUMS.md`, and the minimum size of the texts (`VIEW-41`) in `specs/ui/TEXT-MINIMUM-SIZE.md`.

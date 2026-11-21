@@ -13,6 +13,13 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Tried on 2026-11-20 in an isolated page, with the configuration of `App.vue`, the sizes of `CombatantRender` and Chromium with a software renderer, without improvement:** the card without the Displacement filter, `Text#setResolution(2)` (it only helps a text that is enlarged, and these are shrunk), `RENDER_SCALE` 1 against 2 with linear filtering, and `mipmapFilter: 'LINEAR_MIPMAP_LINEAR'` with `mipmapRegeneration: true` at the size of 10 players. `pixelArt: true` breaks the strokes. The only change that improved it was the font: Arial in bold at the same sizes makes the damage and the health readable with 2 players. The name stays unreadable with every variant, and no value is readable with 10 players.
 - **Side effect of the render scale, found on 2026-11-20:** the texts fixed on the screen (the HUD, the notices, the result, the labels of `VIEW-46`) look a little blurrier than before the render scale. They are drawn at resolution 1 and scaled by `RENDER_SCALE` on the canvas before the browser shrinks it back, so they are enlarged twice and then shrunk. Where to look: the `resolution` of the style in `createText` (`HudPieces`), which should be `RENDER_SCALE` for a text that the canvas enlarges.
 
+## A text is drawn in the fallback font
+
+- **Symptom:** a text of the interface shows a different typeface from the rest, or the old one, until the scene is built again.
+- **Likely cause:** a text of the canvas is drawn once, with the font that the browser has at that moment. If a scene writes before the file of the font is downloaded, it keeps the fallback of its family (`VIEW-54`).
+- **Where to look:** `loadUiFonts` in `core/UiFonts.ts`, which `Preloader.create` waits for before the first scene starts, and `UI_FONT_FAMILY` in `Constants.ts`. The texts of the cards use Consolas, which is a font of the system and is not loaded: on a system without it they use `monospace`.
+- **Decided on 2026-11-21:** the texts made with `createText` have `resolution: RENDER_SCALE`, so the canvas draws them at the resolution of the canvas and they are not blurred by the shrinking of `RENDER_SCALE`.
+
 ## Missing vertices in shapes
 
 - **Symptom:** a shape drawn with `Graphics` loses detail or has odd corners.

@@ -14,7 +14,7 @@ The minimum contrast of the texts and of the marks of the board (Phase 11.1), so
 
 Against the colors that were then in the palette, at their opacity over the table of `TABLE_CLASSIC_BACKGROUND`. What did not reach the minimum is fixed by this rule.
 
-- Round and turn, green over the background of the window: 3.15:1 at the worst point, 3.3:1 the median. White, on a rival's turn: 6.6:1.
+- Round and turn, green over the background of the window (the text of the turn of the local player is gold since 2026-11-21, `PALETTE.md`): 3.15:1 at the worst point, 3.3:1 the median. White, on a rival's turn: 6.6:1.
 - Frames against the neutral slot: cyan 2.50, gold 2.32, green 1.83, red 1.01. Against a white card: cyan 1.54, gold 1.66, green 2.10, red 3.82.
 - Tint of the own zone against the neutral slot: 1.34 the border, 2.52 the fill. Border of the veil against the veil: 1.18.
 - Everything else was above its minimum: the lowest was the title of defeat, 4.05 for a minimum of 3, and the negative values of the side panel, 5.25 for 4.5.
