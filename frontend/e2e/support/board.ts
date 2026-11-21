@@ -26,6 +26,9 @@ const STILL_FRAMES_REQUIRED = 2;
 /** The side panel waits 150 ms and then takes 250 ms to close (VIEW-14), and the frames of that wait are equal. */
 const TOOLTIP_CLOSE_MS = 450;
 
+/** The veil, the wait and the notice of an elimination last 4200 ms (VIEW-11). The wait before the notice has equal frames. */
+const ELIMINATION_DURATION_MS = 4500;
+
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
 const OWN_WARRIOR: Point = { x: 872, y: 670 };
 const RIVAL_WARRIOR: Point = { x: 1029, y: 207 };
@@ -40,6 +43,8 @@ const EMPTY_SIDE_RIVAL_SLOT: Point = { x: 787, y: 412 };
 
 const TABLE_AREA: Area = { x: 370, y: 40, width: 1180, height: 970 };
 const TOOLTIP_AREA: Area = { x: 1440, y: 0, width: 480, height: 1080 };
+/** Where the side panel of a card in the right half of the screen opens (VIEW-14). */
+const LEFT_TOOLTIP_AREA: Area = { x: 0, y: 0, width: 480, height: 1080 };
 const EXPANDED_HAND_AREA: Area = { x: 700, y: 840, width: 520, height: 200 };
 const SIDE_ZONE_AREA: Area = { x: 540, y: 300, width: 320, height: 230 };
 const OWN_SLOT_AREA: Area = { x: 925, y: 622, width: 70, height: 100 };
@@ -219,6 +224,7 @@ function atZoom(point: Point, zoom: number): Point {
 
 export type { Area, PanButton, Point };
 export {
+    ELIMINATION_DURATION_MS,
     EMPTY_OWN_SLOT,
     EMPTY_SIDE_RIVAL_SLOT,
     EMPTY_TABLE,
@@ -227,6 +233,7 @@ export {
     HAND_CARD,
     SOLE_HAND_CARD,
     INITIAL_ZOOM,
+    LEFT_TOOLTIP_AREA,
     OWN_SLOT_AREA,
     OWN_WARRIOR,
     RIVAL_WARRIOR,

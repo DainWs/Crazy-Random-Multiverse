@@ -1,5 +1,5 @@
 import type { Area } from '@/support/board';
-import { frameOf, openBoard, openGame, waitForStillFrame } from '@/support/board';
+import { ELIMINATION_DURATION_MS, frameOf, openBoard, openGame, waitForStillFrame } from '@/support/board';
 import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -53,6 +53,7 @@ test.describe('labels around the zones', () => {
         eliminated.zones[THIRD_ZONE].owner.isSpectator = true;
         eliminated.zones[THIRD_ZONE].combatants[LEADER_ROW][0].combatant = undefined;
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[THIRD_ZONE].owner });
+        await page.waitForTimeout(ELIMINATION_DURATION_MS);
         await waitForStillFrame(page);
 
         await expect(page).toHaveScreenshot('zone-labels-eliminated.png', { maxDiffPixels: 0 });

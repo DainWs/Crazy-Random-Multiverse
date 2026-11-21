@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import type { GameDto } from '@/api/dtos/GameDto';
 import type BackendDouble from '@/support/BackendDouble';
 import type { PreparedGame } from '@/support/preparedGame';
-import { TABLE_AREA, frameOf, openGame, waitForStillFrame } from '@/support/board';
+import { ELIMINATION_DURATION_MS, TABLE_AREA, frameOf, openGame, waitForStillFrame } from '@/support/board';
 import { createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -19,9 +19,6 @@ const BACKGROUND_PIXEL = { x: 200, y: 200, width: 1, height: 1 };
 /** The attack and the death of a leader last at least 2.4 s, and a slow render only makes them longer. */
 const ANIMATIONS_MIN_DURATION_MS = 2000;
 const RESULT_TIMEOUT_MS = 15000;
-
-/** The veil, the wait and the notice of an elimination last 4200 ms (VIEW-11). */
-const ELIMINATION_DURATION_MS = 4500;
 
 /** The only thing protecting the rival leader is gone, so it can receive the last attack (PROT-2). */
 function createGameWithExposedLeader(): PreparedGame {

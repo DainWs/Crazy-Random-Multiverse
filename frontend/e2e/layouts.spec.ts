@@ -1,5 +1,5 @@
 import type { Point } from '@/support/board';
-import { TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard } from '@/support/board';
+import { LEFT_TOOLTIP_AREA, TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard } from '@/support/board';
 import { expect, test } from '@/support/test';
 
 /** Where the cards of the prepared game of ten players are drawn at its initial zoom. */
@@ -27,12 +27,13 @@ test.describe('game of ten players', () => {
         await openBoard(page, backend, 10);
     });
 
+    // VIEW-14: the card is in the right half of the screen, so its panel opens on the left side
     test('shows the side panel of a card of the top side', async ({ page }) => {
-        const noPanel = await frameOf(page, TOOLTIP_AREA);
+        const noPanel = await frameOf(page, LEFT_TOOLTIP_AREA);
 
         await hover(page, TEN_TOP_RIVAL_WARRIOR);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(false);
     });
 
     test('shows the side panel of a card of a rotated zone', async ({ page }) => {
@@ -62,11 +63,11 @@ test.describe('game of ten players', () => {
     });
 
     test('closes the side panel when leaving the card', async ({ page }) => {
-        const noPanel = await frameOf(page, TOOLTIP_AREA);
+        const noPanel = await frameOf(page, LEFT_TOOLTIP_AREA);
         await hover(page, TEN_TOP_RIVAL_WARRIOR);
 
         await hover(page, TEN_EMPTY_TABLE);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(true);
+        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(true);
     });
 });
