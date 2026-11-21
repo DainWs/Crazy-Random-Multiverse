@@ -11,8 +11,8 @@ const SAMPLE_COUNT = 16;
 const SAMPLE_INTERVAL_MS = 200;
 const MIN_PULSE_RANGE = 12;
 
-// The browser tests ask for reduced motion, which stops the pulses (UI-30)
-test.use({ reducedMotion: 'no-preference' });
+// The browser tests ask for reduced motion, which stops the pulses (UI-30), and jump to the end of every motion
+test.use({ reducedMotion: 'no-preference', instantMotion: false });
 
 /** The board never has a still frame here, because the pulses keep it moving, so the notices are waited out instead. */
 async function openPulsingGame(page: Page, backend: BackendDouble, prepared: PreparedGame): Promise<void> {

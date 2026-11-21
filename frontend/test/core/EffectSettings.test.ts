@@ -15,6 +15,18 @@ describe('EffectSettings', () => {
     expect([EffectSettings.plays('ESSENTIAL'), EffectSettings.plays('NON_ESSENTIAL')]).toEqual([true, true]);
   });
 
+  describe('instant motion of the browser tests', () => {
+    afterEach(() => {
+      delete window.crmInstantMotion;
+    });
+
+    it('plays no effect, so each one ends at once', () => {
+      window.crmInstantMotion = true;
+
+      expect([EffectSettings.plays('ESSENTIAL'), EffectSettings.plays('NON_ESSENTIAL')]).toEqual([false, false]);
+    });
+  });
+
   describe('pulsesAreStill', () => {
     it('is true when the system asks for reduced motion', () => {
       vi.stubGlobal('matchMedia', () => ({ matches: true }));

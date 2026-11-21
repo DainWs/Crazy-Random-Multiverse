@@ -1,3 +1,5 @@
+import { isDevelopment } from '@/env';
+
 /** How much the effects cost: with `LOW`, the non-essential ones are left out (UI-28). */
 type EffectQuality = 'NORMAL' | 'LOW';
 
@@ -10,9 +12,21 @@ const PLAYING_KINDS = new Map<EffectKind, boolean>([
   ['NON_ESSENTIAL', true]
 ]);
 
+declare global {
+  interface Window {
+    /** Set by the browser tests before the page loads, so every animation and wait of an effect ends at once. */
+    crmInstantMotion?: boolean;
+  }
+}
+
+/** Only in development: the browser tests jump to the end of every effect, and a player never gets it. */
+function instantMotionIsOn(): boolean {
+  return isDevelopment && window.crmInstantMotion === true;
+}
+
 /** Whether an effect of this kind plays. When it does not, whoever asks leaves its final state at once. */
 function plays(kind: EffectKind): boolean {
-  return PLAYING_KINDS.get(kind) === true;
+  return PLAYING_KINDS.get(kind) === true && !instantMotionIsOn();
 }
 
 /** The pulses of VIEW-17, VIEW-20 and VIEW-38 stay still for who asks the operating system for less motion (UI-30). */

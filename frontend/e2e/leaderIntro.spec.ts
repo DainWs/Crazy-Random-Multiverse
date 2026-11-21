@@ -5,7 +5,6 @@ import { createLoadingGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 const INTRO_SAMPLE_MS = 3000;
-const INTRO_WAIT_MS = 3000;
 const MIN_FRAMES_WITH_INTRO = 4;
 
 async function confirmReady(page: Page, readyCalls: () => number): Promise<void> {
@@ -37,19 +36,22 @@ test.describe('placement of the leaders', () => {
         backend.prepareLoading(prepared);
     });
 
-    test('animates the leaders when the board is first shown after confirming', async ({ page, backend }) => {
-        await confirmReady(page, () => backend.readyCalls);
+    test.describe('with the animations on', () => {
+        test.use({ instantMotion: false });
 
-        backend.emitGameEvent('GAME_START', { game: prepared.game });
+        test('animates the leaders when the board is first shown after confirming', async ({ page, backend }) => {
+            await confirmReady(page, () => backend.readyCalls);
 
-        expect(await collectDistinctFrames(page)).toBeGreaterThanOrEqual(MIN_FRAMES_WITH_INTRO);
+            backend.emitGameEvent('GAME_START', { game: prepared.game });
+
+            expect(await collectDistinctFrames(page)).toBeGreaterThanOrEqual(MIN_FRAMES_WITH_INTRO);
+        });
     });
 
     test('shows both leaders in their slots when it ends', async ({ page, backend }) => {
         await confirmReady(page, () => backend.readyCalls);
 
         backend.emitGameEvent('GAME_START', { game: prepared.game });
-        await page.waitForTimeout(INTRO_WAIT_MS);
         await waitForStillFrame(page);
 
         await expect(page).toHaveScreenshot('leaders-placed.png', { clip: TABLE_AREA, maxDiffPixels: 0 });

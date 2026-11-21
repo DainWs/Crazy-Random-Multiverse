@@ -77,13 +77,17 @@ test.describe('last attack of a game', () => {
         await openGame(page, backend, prepared);
     });
 
-    // UI-4, WIN-4
-    test('shows no result while the animations play', async ({ page, backend }) => {
-        const background = await frameOf(page, BACKGROUND_PIXEL);
+    test.describe('with the animations on', () => {
+        test.use({ instantMotion: false });
 
-        emitLastAttack(backend, prepared.game);
+        // UI-4, WIN-4
+        test('shows no result while the animations play', async ({ page, backend }) => {
+            const background = await frameOf(page, BACKGROUND_PIXEL);
 
-        expect(await isBackgroundCoveredWithin(page, background, ANIMATIONS_MIN_DURATION_MS)).toBe(false);
+            emitLastAttack(backend, prepared.game);
+
+            expect(await isBackgroundCoveredWithin(page, background, ANIMATIONS_MIN_DURATION_MS)).toBe(false);
+        });
     });
 
     // WIN-4, VIEW-12
@@ -115,7 +119,7 @@ test.describe('elimination of a rival in a game of three', () => {
 
 // VIEW-11, VIEW-20: the pulse of the gold frame reads the clock of its slot, which a reduced motion run skips. The frame never stays still, so the board is not waited for
 test.describe('elimination of a rival with the animations on', () => {
-    test.use({ reducedMotion: 'no-preference' });
+    test.use({ reducedMotion: 'no-preference', instantMotion: false });
     const prepared = createPreparedGame(3);
 
     test('fades the zone in and shows the notice without errors', async ({ page, backend }) => {
