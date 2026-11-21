@@ -2,10 +2,10 @@ import type { Area, PanButton, Point } from '@/support/board';
 import {
     EMPTY_TABLE,
     OWN_WARRIOR,
+    RIVAL_WARRIOR,
     TABLE_AREA,
     VIEW_CENTER,
     WHEEL_UP_DELTA,
-    cardArea,
     darkShare,
     frameOf,
     hover,
@@ -74,20 +74,19 @@ test.describe('panning the camera', () => {
         });
 
         // VIEW-19, VIEW-4
-        test(`keeps the selection of an attacker while panning with the ${button} button`, async ({ page }) => {
-            const atRest = await frameOf(page, cardArea(OWN_WARRIOR));
+        // The camera comes back to where it was, so the rival is clicked at the same point: an attack sent means the attacker stayed selected
+        test(`keeps the selection of an attacker while panning with the ${button} button`, async ({ page, backend }) => {
             await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
             await hover(page, EMPTY_TABLE);
-            const selected = await frameOf(page, cardArea(OWN_WARRIOR));
 
             await page.mouse.down({ button });
             await page.mouse.move(EMPTY_TABLE.x + SHORT_PAN.x, EMPTY_TABLE.y, { steps: DRAG_STEPS });
             await page.mouse.move(EMPTY_TABLE.x, EMPTY_TABLE.y, { steps: DRAG_STEPS });
             await page.mouse.up({ button });
             await waitForStillFrame(page);
+            await page.mouse.click(RIVAL_WARRIOR.x, RIVAL_WARRIOR.y);
 
-            expect(selected.equals(atRest)).toBe(false);
-            expect((await frameOf(page, cardArea(OWN_WARRIOR))).equals(selected)).toBe(true);
+            await expect.poll(() => backend.actions.map((action) => action.type)).toEqual(['ATTACK_ACTION']);
         });
     }
 

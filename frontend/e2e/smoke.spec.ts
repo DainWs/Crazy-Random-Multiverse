@@ -12,6 +12,7 @@ import {
     OWN_WARRIOR,
     RIVAL_WARRIOR,
     SIDE_RIVAL_WARRIOR,
+    LEFT_TOOLTIP_AREA,
     TOOLTIP_AREA,
     countFramePixels,
     dragTo,
@@ -189,14 +190,14 @@ test.describe('game of two players', () => {
         expect(await hasFrameSince(page, RIVAL_WARRIOR, 'green', before)).toBe(true);
     });
 
-    // VIEW-4
+    // VIEW-4, VIEW-14: the target is in the right half of the screen, so its panel opens on the left side
     test('shows the target in the side panel', async ({ page }) => {
-        const noPanel = await frameOf(page, TOOLTIP_AREA);
+        const noPanel = await frameOf(page, LEFT_TOOLTIP_AREA);
         await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
 
         await hover(page, RIVAL_WARRIOR);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
+        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(noPanel)).toBe(false);
     });
 
     // VIEW-4
@@ -218,13 +219,13 @@ test.describe('game of two players', () => {
     // VIEW-6: the panel shows the statistics, and no other mark of the attack reaches it
     test('lowers the health of the target', async ({ page, backend }) => {
         await hover(page, RIVAL_WARRIOR);
-        const panelBefore = await frameOf(page, TOOLTIP_AREA);
+        const panelBefore = await frameOf(page, LEFT_TOOLTIP_AREA);
         await hover(page, EMPTY_TABLE);
 
         await attackRival(page, backend, game);
         await hover(page, RIVAL_WARRIOR);
 
-        expect((await frameOf(page, TOOLTIP_AREA)).equals(panelBefore)).toBe(false);
+        expect((await frameOf(page, LEFT_TOOLTIP_AREA)).equals(panelBefore)).toBe(false);
     });
 
     // COMBAT-11
