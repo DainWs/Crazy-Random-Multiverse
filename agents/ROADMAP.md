@@ -109,6 +109,7 @@ Not tied to a phase.
 - [x] State in `SPEC-3` and `UI-8` that a spectator has a leave button, as an exception to the disabled interaction, and stops receiving the events of the game after leaving
 - [x] State in `INTERFACE.md` that surrendering asks for confirmation (`ELIM-2`)
 - [x] State in `USER-4` that spaces are trimmed before validating the length, and in `USER-2` that the default name follows `USER-4`
+- [ ] Review the performance of the game: frame rate and frame time of the board with 10 players, with the animations of Phase 11.4 running, and the cost of the full-screen effects. Measure first and record what is found; the browser tests take screenshots of the whole page on every poll, which is also slow
 
 ## Post-MVP
 
@@ -137,3 +138,4 @@ Not tied to a phase.
 - Advanced trolling cards, green/red indicators, center-table behavior
 - Skins of the HUD and of the battlefield, each one chosen on its own by each player, and turning the effects off by group (`FX-10` to `FX-21`, Phase 15). The HUD skins are built from base pieces (`FX-17`). Their last parts, after the turn panel, the buttons and the dialog: the notices, the result, the rejection message and the label of a spectator; the side panel of a card; and the loading screen and the notices of the session, which are Vue panels
 - Settings screen, with the graphics quality and reduced motion options (`UI-27` to `UI-29`), audio settings, a color-blind palette chosen in the settings, responsive and touch layouts. The accessibility of the MVP is Phase 11.1
+
