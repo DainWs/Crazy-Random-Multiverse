@@ -31,17 +31,11 @@ export const REJECTION_MESSAGE_DURATION_MS = 3000;
 /** Distance in pixels from the top of the screen to the message about a rejected action. */
 export const REJECTION_MESSAGE_TOP_OFFSET = 60;
 
-/** Font size of the message about a rejected action. */
-export const REJECTION_MESSAGE_FONT_SIZE = '28px';
-
 /** Depth of the message about a rejected action: above the cards. */
 export const REJECTION_MESSAGE_DEPTH = 20000;
 
 /** Time in milliseconds a notice of a new round or turn stays fully visible (VIEW-15). */
 export const TURN_NOTICE_HOLD_MS = 1000;
-
-/** Font size of the notice of a new round or turn (VIEW-15). */
-export const TURN_NOTICE_FONT_SIZE = '40px';
 
 /** Padding in pixels between the text of the notice of a new round or turn and its panel (VIEW-15). */
 export const TURN_NOTICE_PADDING = { x: 28, y: 12 };
@@ -77,8 +71,16 @@ export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
 /** Distance in pixels from the edges of the screen to the turn indicator and the buttons of the game HUD (UI-3). */
 export const HUD_MARGIN = 24;
 
-/** Font size of the turn indicator and the buttons of the game HUD. */
-export const HUD_FONT_SIZE = '24px';
+/** The font of every text of the interface that is not on a card, and the one of the texts of the cards (VIEW-54). */
+export const UI_FONT_FAMILY = '"Atkinson Hyperlegible", sans-serif';
+export const CARD_FONT_FAMILY = 'Consolas, monospace';
+export const CARD_TEXT_STYLE = { fontFamily: CARD_FONT_FAMILY, fontStyle: 'bold' };
+
+/** The four sizes of the text of the interface on the screen (VIEW-55). */
+export const TEXT_SIZE_TITLE = '40px';
+export const TEXT_SIZE_BODY = '24px';
+export const TEXT_SIZE_LABEL = '18px';
+export const TEXT_SIZE_NUMBERS = '24px';
 
 /** Separator between the round and the turn in the turn indicator of the game HUD (UI-3). */
 export const HUD_TURN_SEPARATOR = ' · ';
@@ -103,12 +105,6 @@ export const GAME_RESULT_COUNTDOWN_SECONDS = 15;
 
 /** Milliseconds between two ticks of the countdown of the result (WIN-4). */
 export const GAME_RESULT_TICK_MS = 1000;
-
-/** Font size of the title of the result (victory or defeat). */
-export const GAME_RESULT_TITLE_FONT_SIZE = '64px';
-
-/** Font size of the winner and the countdown of the result. */
-export const GAME_RESULT_DETAIL_FONT_SIZE = '28px';
 
 /** Vertical distance in pixels between two lines of the result. */
 export const GAME_RESULT_LINE_GAP = 48;
@@ -318,11 +314,12 @@ export const FOCUS_FRAME_MARGIN = 4;
 /** Code of the key that ends the turn (UI-32). */
 export const END_TURN_KEY_CODE = 'Space';
 
-/** Font size in px on the screen of the labels with the values of a card of the board (VIEW-46). */
-export const CARD_VALUE_LABEL_FONT_SIZE = '18px';
-
 /** Units in px on the screen between the texts of a label of card values, and between its edge and them (VIEW-47). */
 export const CARD_VALUE_LABEL_GAP = 8;
+
+/** Size in px on the screen of the icon of a value of a card, and the space between it and the number (VIEW-46, VIEW-56). */
+export const CARD_VALUE_LABEL_ICON_SIZE = 16;
+export const CARD_VALUE_LABEL_ICON_GAP = 4;
 
 /** Units in px on the screen between a card and the label of its values (VIEW-47). */
 export const CARD_VALUE_LABEL_CARD_GAP = 4;
@@ -332,9 +329,6 @@ export const CARD_VALUE_LABEL_PADDING = 6;
 
 /** How many pixels the game canvas draws for each pixel of the window, so what is shrunk by the perspective and the zoom stays sharp. The browser shrinks the canvas back to the size of the window. */
 export const RENDER_SCALE = 2;
-
-/** Font size in px on the screen of the label with the name of the player of a zone (VIEW-49). */
-export const ZONE_LABEL_FONT_SIZE = '18px';
 
 /** Widest a label with a name can be, in px on the screen: a longer name ends with an ellipsis (VIEW-49). */
 export const ZONE_NAME_MAX_WIDTH = 120;
@@ -353,10 +347,6 @@ export const ZONE_BAR_BORDER_WIDTH = 1;
 
 /** Units in px on the screen between the health bar of a leader and the label with the name of its zone (VIEW-49). */
 export const ZONE_NAME_GAP = 6;
-
-/** The bar is green above this share of the health of the leader, and yellow above the next one (VIEW-50). */
-export const ZONE_BAR_HIGH_ABOVE = 0.6;
-export const ZONE_BAR_MEDIUM_ABOVE = 0.3;
 
 /** What goes before the name of the player who plays next, and what ends a name that was cut (VIEW-51, VIEW-49). */
 export const ZONE_NEXT_MARK = '▶ ';

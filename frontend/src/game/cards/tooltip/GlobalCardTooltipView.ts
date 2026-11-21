@@ -11,6 +11,7 @@ import { RENDER_SCALE, TOOLTIP_CLOSE_WAIT_MS, TOOLTIP_SLIDE_DISTANCE } from "@/c
 import { calculateScreenFit } from "@/core/cameras/CameraCalculations";
 import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill, paletteText } from "@/game/utils/Palette";
+import { TEXT_SIZE_BODY, TEXT_SIZE_LABEL, TEXT_SIZE_NUMBERS, UI_FONT_FAMILY } from "@/core/Constants";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 
 const SCALE_FACTOR = 1.6;
@@ -85,18 +86,19 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private initDescriptionContainer() {
     this.descriptionContainer = this.scene.add.container(0, 0);
 
-    this.nameText = this.createText(28, paletteText('TOOLTIP_NAME'), 'bold', NAME_SHADOW);
+    this.nameText = this.createText(TEXT_SIZE_BODY, paletteText('TOOLTIP_NAME'), 'bold', NAME_SHADOW);
     this.nameText.setStroke(paletteText('TEXT_OUTLINE'), 5);
 
-    this.descriptionText = this.createText(20, paletteText('TOOLTIP_DESCRIPTION'), 'normal');
+    this.descriptionText = this.createText(TEXT_SIZE_LABEL, paletteText('TOOLTIP_DESCRIPTION'), 'normal');
     this.descriptionText.setLineSpacing(6);
 
     this.descriptionContainer.add([this.nameText, this.descriptionText]);
   }
 
-  private createText(fontSize: number, color: string, fontStyle: string, shadow?: Phaser.Types.GameObjects.Text.TextShadow) {
+  private createText(fontSize: string, color: string, fontStyle: string, shadow?: Phaser.Types.GameObjects.Text.TextShadow) {
     const text = this.scene.add.text(0, 0, "", {
-      fontSize: `${fontSize}px`,
+      fontFamily: UI_FONT_FAMILY,
+      fontSize,
       color,
       fontStyle,
       align: 'center',
@@ -295,7 +297,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   }
 
   private renderEquipmentName(equipmentName: string, startYPosition: number): number {
-    const equipmentNameText = this.createText(22, paletteText('TOOLTIP_EQUIPMENT_NAME'), 'italic');
+    const equipmentNameText = this.createText(TEXT_SIZE_LABEL, paletteText('TOOLTIP_EQUIPMENT_NAME'), 'normal');
     equipmentNameText.setText(`${getText('ui.card.equipment')} ${equipmentName}`);
     equipmentNameText.setStroke(paletteText('TEXT_OUTLINE'), 2);
     equipmentNameText.setPosition(0, startYPosition);
@@ -305,7 +307,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private renderEquipmentStat(line: EquipmentValueLine, startYPosition: number): number {
     const statColor = line.value >= 0 ? paletteText('TOOLTIP_POSITIVE') : paletteText('TOOLTIP_NEGATIVE');
-    const statTextElement = this.createText(20, statColor, 'bold');
+    const statTextElement = this.createText(TEXT_SIZE_NUMBERS, statColor, 'bold');
     statTextElement.setText(line.text);
     statTextElement.setStroke(paletteText('TEXT_OUTLINE'), 3);
     statTextElement.setPosition(0, startYPosition);

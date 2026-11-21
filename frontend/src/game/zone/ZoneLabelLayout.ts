@@ -14,7 +14,6 @@ interface Strip {
   size: Size2D;
 }
 
-type BarLevel = 'HIGH' | 'MEDIUM' | 'LOW';
 
 interface ZoneTurnOrderEntry {
   code: string;
@@ -63,14 +62,6 @@ class ZoneLabelLayout {
     const depth = this.isHorizontal(side) ? labelSize.height : labelSize.width;
 
     return this.outside(bounds, side, barEnd * unitsPerPixel, depth * unitsPerPixel);
-  }
-
-  public barLevel(ratio: number): BarLevel {
-    if (ratio > Constants.ZONE_BAR_HIGH_ABOVE) {
-      return 'HIGH';
-    }
-
-    return ratio > Constants.ZONE_BAR_MEDIUM_ABOVE ? 'MEDIUM' : 'LOW';
   }
 
   /** Cuts the name, ending it with an ellipsis, until `measure` says it fits in `maxWidth` (VIEW-49). */
@@ -126,5 +117,5 @@ class ZoneLabelLayout {
   }
 }
 
-export type { BarLevel, Strip, ZoneBounds, ZoneTurnOrderEntry };
+export type { Strip, ZoneBounds, ZoneTurnOrderEntry };
 export default ZoneLabelLayout;

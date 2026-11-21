@@ -7,7 +7,7 @@ import StoreSystem from "@/core/StoreSystem";
 import ProjectionSystem from "@/core/ProjectionSystem";
 import { getText } from "@/core/Texts";
 import { Point2D, Size2D, Rotation } from "@/domain/Geometry";
-import { ELIMINATED_LABEL_FONT_SIZE, ELIMINATED_LABEL_OUTLINE_FRACTION, ELIMINATED_LABEL_SIZE } from "@/core/Constants";
+import { ELIMINATED_LABEL_FONT_SIZE, ELIMINATED_LABEL_OUTLINE_FRACTION, ELIMINATED_LABEL_SIZE, UI_FONT_FAMILY } from "@/core/Constants";
 import { boxOfSlot } from "@/game/cards/CombatLayout";
 import type { ZonePosition } from "@/domain/Position";
 import { paletteText } from "@/game/utils/Palette";
@@ -109,6 +109,7 @@ class ZoneView extends Phaser.GameObjects.Container {
     }
 
     const label = this.scene.add.text(0, 0, getText('ui.game.eliminated'), {
+      fontFamily: UI_FONT_FAMILY,
       fontSize: ELIMINATED_LABEL_FONT_SIZE,
       color: paletteText('ELIMINATED_LABEL'),
       stroke: paletteText('TEXT_OUTLINE'),

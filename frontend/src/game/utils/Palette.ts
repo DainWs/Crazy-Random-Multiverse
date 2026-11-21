@@ -47,14 +47,9 @@ type PaletteColor =
   | 'CARD_TEXT'
   | 'CARD_VALUE_POSITIVE'
   | 'CARD_VALUE_NEGATIVE'
-  | 'CARD_VALUE_LABEL_DAMAGE'
-  | 'CARD_VALUE_LABEL_ARMOR'
-  | 'CARD_VALUE_LABEL_HEALTH'
   | 'ZONE_BAR_BACK'
   | 'ZONE_BAR_BORDER'
-  | 'ZONE_BAR_HIGH'
-  | 'ZONE_BAR_MEDIUM'
-  | 'ZONE_BAR_LOW'
+  | 'ZONE_BAR_FILL'
   | 'ZONE_NEXT_LABEL'
   | 'TOOLTIP_FILL'
   | 'TOOLTIP_NAME'
@@ -83,7 +78,7 @@ const PALETTE = new Map<PaletteColor, number>([
   ['TEXT_OUTLINE', 0x000000],
   ['MARK_VALID', 0x2ecc71],
   ['MARK_INVALID', 0xe74c3c],
-  ['MARK_SOURCE', 0xe74c3c],
+  ['MARK_SOURCE', 0xff9a3c],
   ['MARK_READY', 0x00e5ff],
   ['MARK_TURN_GLOW', 0xf1c40f],
   ['TURN_CROWN_DISC', 0x111111],
@@ -95,10 +90,10 @@ const PALETTE = new Map<PaletteColor, number>([
   ['SLOT_BORDER', 0x4488cc],
   ['SLOT_OWN_TINT', 0x9fd8ff],
   ['SLOT_OWN_BORDER', 0x3d9bff],
-  ['SLOT_SOURCE_FILL', 0xd40000],
+  ['SLOT_SOURCE_FILL', 0xff9a3c],
   ['SLOT_VALID_FILL', 0xaaffaa],
   ['HUD_TEXT', 0xffffff],
-  ['HUD_TEXT_LOCAL_TURN', 0x2ecc71],
+  ['HUD_TEXT_LOCAL_TURN', 0xf1c40f],
   ['HUD_SPECTATOR_TEXT', 0xbdc3c7],
   ['HUD_BUTTON', 0x34495e],
   ['HUD_BUTTON_HOVER', 0x46627f],
@@ -108,33 +103,28 @@ const PALETTE = new Map<PaletteColor, number>([
   ['HUD_FOCUS', 0xffffff],
   ['RESULT_VICTORY', 0x2ecc71],
   ['RESULT_DEFEAT', 0xe74c3c],
-  ['HIT_FLASH', 0xff0000],
+  ['HIT_FLASH', 0xe74c3c],
   ['HIT_FLASH_ARMOR', 0x8a9aa5],
   ['LEADER_DEATH_TINT', 0x2b2b2b],
   ['ELIMINATED_VEIL', 0x3b0a0a],
   ['ELIMINATED_VEIL_BORDER', 0x1a0000],
-  ['ELIMINATED_LABEL', 0xff5a4d],
+  ['ELIMINATED_LABEL', 0xff6b6b],
   ['LOAD_TEXT', 0xffffff],
   ['LOAD_BAR_FILL', 0x2ecc71],
   ['PRELOADER_BAR', 0xffffff],
   ['CARD_TEXT', 0x000000],
   ['CARD_VALUE_POSITIVE', 0x00b800],
   ['CARD_VALUE_NEGATIVE', 0xe30000],
-  ['CARD_VALUE_LABEL_DAMAGE', 0xff9a3c],
-  ['CARD_VALUE_LABEL_ARMOR', 0x6ab7ff],
-  ['CARD_VALUE_LABEL_HEALTH', 0x5fe08a],
   ['ZONE_BAR_BACK', 0x111111],
   ['ZONE_BAR_BORDER', 0xcccccc],
-  ['ZONE_BAR_HIGH', 0x2ecc71],
-  ['ZONE_BAR_MEDIUM', 0xf1c40f],
-  ['ZONE_BAR_LOW', 0xe74c3c],
+  ['ZONE_BAR_FILL', 0x2ecc71],
   ['ZONE_NEXT_LABEL', 0xf1c40f],
   ['TOOLTIP_FILL', 0x000000],
-  ['TOOLTIP_NAME', 0xffd700],
-  ['TOOLTIP_DESCRIPTION', 0xeeeeee],
-  ['TOOLTIP_POSITIVE', 0x00ff00],
-  ['TOOLTIP_NEGATIVE', 0xff0000],
-  ['TOOLTIP_EQUIPMENT_NAME', 0xaaaaaa],
+  ['TOOLTIP_NAME', 0xffffff],
+  ['TOOLTIP_DESCRIPTION', 0xffffff],
+  ['TOOLTIP_POSITIVE', 0x2ecc71],
+  ['TOOLTIP_NEGATIVE', 0xff6b6b],
+  ['TOOLTIP_EQUIPMENT_NAME', 0xbdc3c7],
   ['TARGETING_VIGNETTE_CLEAR', 0xff0000],
   ['TARGETING_VIGNETTE_EDGE', 0x1a619b],
   ['TABLE_CLASSIC_BACKGROUND', 0x1a1a2e],

@@ -5,7 +5,7 @@ import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 /** A point of the padding of the end turn button, which is drawn with its background and no text. */
-const BUTTON_PADDING_POINT = { x: 1675, y: 1040 };
+const BUTTON_PADDING_POINT = { x: 1722, y: 1040 };
 const NOTICES_WAIT_MS = 2500;
 const SAMPLE_COUNT = 16;
 const SAMPLE_INTERVAL_MS = 200;

@@ -43,7 +43,7 @@ function playNotice(scene: GameScene, text: string, timing: NoticeTiming = TURN_
   const screen = toLogicalScreen(scene.scale, Constants.RENDER_SCALE);
   const { x, y, scale } = calculateScreenFixedTransform(screen.width, screen.height, scene.cameraSystem.getCamera().zoom, Constants.RENDER_SCALE);
 
-  const label = createText(scene, 'BODY', { fontSize: Constants.TURN_NOTICE_FONT_SIZE, color: 'NOTICE_TEXT' }, text);
+  const label = createText(scene, 'TITLE', { color: 'NOTICE_TEXT' }, text);
   label.setOrigin(0.5, 0.5);
   label.setPadding(Constants.TURN_NOTICE_PADDING);
   label.setBackgroundColor(panelBackground('NOTICE'));

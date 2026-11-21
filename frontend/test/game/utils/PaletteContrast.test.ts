@@ -56,7 +56,10 @@ describe('Palette contrast', () => {
     { text: 'HUD_TEXT', background: 'HUD_BUTTON_HOVER' },
     { text: 'HUD_TEXT', background: 'HUD_BUTTON_PRIMARY' },
     { text: 'HUD_TEXT', background: 'HUD_BUTTON_PRIMARY_HOVER' },
-    { text: 'HUD_TEXT', background: 'HUD_BUTTON_DESTRUCTIVE_HOVER' }
+    { text: 'HUD_TEXT', background: 'HUD_BUTTON_DESTRUCTIVE_HOVER' },
+    { text: 'TOOLTIP_POSITIVE', background: 'TOOLTIP_FILL' },
+    { text: 'TOOLTIP_NEGATIVE', background: 'TOOLTIP_FILL' },
+    { text: 'TOOLTIP_EQUIPMENT_NAME', background: 'TOOLTIP_FILL' }
   ] as const)('reaches 4.5:1 for $text on $background', ({ text, background }) => {
     expect(contrast(toRgb(text), toRgb(background))).toBeGreaterThanOrEqual(TEXT_MINIMUM);
   });

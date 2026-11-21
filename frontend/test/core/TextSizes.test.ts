@@ -6,11 +6,10 @@ const MINIMUM_FONT_SIZE = 18;
 // VIEW-41
 describe('Text sizes', () => {
   it.each([
-    { name: 'HUD_FONT_SIZE', size: Constants.HUD_FONT_SIZE },
-    { name: 'TURN_NOTICE_FONT_SIZE', size: Constants.TURN_NOTICE_FONT_SIZE },
-    { name: 'REJECTION_MESSAGE_FONT_SIZE', size: Constants.REJECTION_MESSAGE_FONT_SIZE },
-    { name: 'GAME_RESULT_TITLE_FONT_SIZE', size: Constants.GAME_RESULT_TITLE_FONT_SIZE },
-    { name: 'GAME_RESULT_DETAIL_FONT_SIZE', size: Constants.GAME_RESULT_DETAIL_FONT_SIZE }
+    { name: 'TEXT_SIZE_TITLE', size: Constants.TEXT_SIZE_TITLE },
+    { name: 'TEXT_SIZE_BODY', size: Constants.TEXT_SIZE_BODY },
+    { name: 'TEXT_SIZE_LABEL', size: Constants.TEXT_SIZE_LABEL },
+    { name: 'TEXT_SIZE_NUMBERS', size: Constants.TEXT_SIZE_NUMBERS }
   ])('keeps $name at 18 px or more', ({ size }) => {
     expect(Number.parseInt(size, 10)).toBeGreaterThanOrEqual(MINIMUM_FONT_SIZE);
   });

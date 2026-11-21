@@ -87,6 +87,8 @@ function createText(
   const style = {
     fontFamily: look.fontFamily,
     fontSize: overrides.fontSize ?? look.fontSize,
+    fontStyle: look.fontStyle,
+    resolution: Constants.RENDER_SCALE,
     color: paletteText(overrides.color ?? look.color)
   };
 

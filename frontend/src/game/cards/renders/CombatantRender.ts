@@ -6,6 +6,7 @@ import CombatantView from "@/game/cards/CombatantView";
 import { CombatantCard } from "@/domain/Card";
 import { getText } from "@/core/Texts";
 import { paletteText } from "@/game/utils/Palette";
+import { CARD_TEXT_STYLE } from "@/core/Constants";
 
 const render = (scene: Phaser.Scene, view: CombatantView, width: number, height: number) => {
   const card = view.combatant;
@@ -27,7 +28,7 @@ function defineCardName(scene: Phaser.Scene, totalWidth: number, totalHeight: nu
   const fontSize = Math.floor(totalHeight * 0.08);
 
   const gameObjects = [];
-  const cardName = scene.add.text(x, y, name);
+  const cardName = scene.add.text(x, y, name, CARD_TEXT_STYLE);
   cardName.setOrigin(0.5, 0.5);
   cardName.setSize(width, height);
   cardName.setColor(paletteText('CARD_TEXT'));

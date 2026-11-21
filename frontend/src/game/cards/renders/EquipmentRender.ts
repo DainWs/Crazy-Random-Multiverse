@@ -7,6 +7,7 @@ import { getText } from "@/core/Texts";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 import EquipmentCardLayout from "@/game/cards/EquipmentCardLayout";
 import { paletteText } from "@/game/utils/Palette";
+import { CARD_TEXT_STYLE } from "@/core/Constants";
 
 const NAME_FONT_SIZE_RATIO = 0.08;
 const VALUE_FONT_SIZE_RATIO = 0.07;
@@ -24,7 +25,7 @@ const render = (scene: Phaser.Scene, view: EquipmentView, width: number, height:
 }
 
 function createName(scene: Phaser.Scene, area: TextArea, name: string, fontSize: number): Phaser.GameObjects.Text {
-  const nameText = scene.add.text(area.x, area.y, name);
+  const nameText = scene.add.text(area.x, area.y, name, CARD_TEXT_STYLE);
   nameText.setOrigin(0.5, 0.5);
   nameText.setColor(paletteText('CARD_TEXT'));
   nameText.setFontSize(fontSize);
@@ -34,7 +35,7 @@ function createName(scene: Phaser.Scene, area: TextArea, name: string, fontSize:
 }
 
 function createValue(scene: Phaser.Scene, area: TextArea, line: EquipmentValueLine, fontSize: number): Phaser.GameObjects.Text {
-  const valueText = scene.add.text(area.x, area.y, line.text);
+  const valueText = scene.add.text(area.x, area.y, line.text, CARD_TEXT_STYLE);
   valueText.setOrigin(0.5, 0.5);
   valueText.setColor(line.value > 0 ? paletteText('CARD_VALUE_POSITIVE') : paletteText('CARD_VALUE_NEGATIVE'));
   valueText.setFontSize(fontSize);

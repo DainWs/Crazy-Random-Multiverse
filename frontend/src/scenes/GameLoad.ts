@@ -11,12 +11,11 @@ import CalmTargetingOverlay from '@/game/perspectives/overlays/CalmTargetingOver
 import GameLoadLayout from '@/scenes/GameLoadLayout';
 import { calculateLogicalScroll, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import * as Constants from '@/core/Constants';
+import { createText } from '@/game/hud/HudPieces';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
 
 const BAR_FILL_MIN_WIDTH = 4;
 const BAR_STROKE_WIDTH = 1;
-const STATUS_TEXT_SIZE = '20px';
-const RETRY_TEXT_SIZE = '24px';
 
 /** The manifest URLs are relative to the server, not to a folder. */
 const MANIFEST_ASSETS_PATH = '';
@@ -58,10 +57,10 @@ class GameLoadScene extends Scene {
         this.progressBar = this.add.rectangle(0, 0, BAR_FILL_MIN_WIDTH, 0, paletteFill('LOAD_BAR_FILL'));
         this.progressBar.setOrigin(0, 0.5);
 
-        this.statusText = this.add.text(0, 0, '', { fontSize: STATUS_TEXT_SIZE, color: paletteText('LOAD_TEXT') });
+        this.statusText = createText(this, 'LABEL', { color: 'LOAD_TEXT' });
         this.statusText.setOrigin(0.5, 0.5);
 
-        this.retryButton = this.add.text(0, 0, getText('ui.game_load.retry'), { fontSize: RETRY_TEXT_SIZE, color: paletteText('LOAD_TEXT') });
+        this.retryButton = createText(this, 'BODY', { color: 'LOAD_TEXT' }, getText('ui.game_load.retry'));
         this.retryButton.setBackgroundColor(paletteText('HUD_BUTTON'));
         this.retryButton.setPadding(Constants.HUD_BUTTON_PADDING);
         this.retryButton.setOrigin(0.5, 0.5);

@@ -47,8 +47,8 @@ class GameResultView {
         this.panelShape.setSize(panel.width, panel.height);
 
         this.title = this.createLine(positions.title, 'TITLE');
-        this.winner = this.createLine(positions.winner, 'NUMBERS');
-        this.countdown = this.createLine(positions.countdown, 'NUMBERS');
+        this.winner = this.createLine(positions.winner, 'BODY');
+        this.countdown = this.createLine(positions.countdown, 'BODY');
 
         this.veilShape.setAlpha(0);
         this.panelGroup = [this.panelShape, this.title, this.winner, this.countdown];

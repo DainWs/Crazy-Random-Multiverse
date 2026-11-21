@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as Constants from '@/core/Constants';
 import type { HudSkin } from '@/game/hud/HudSkin';
 import { accentAlpha, accentColor, buttonFill, createButton, createPanel, createText, panelBackground } from '@/game/hud/HudPieces';
 import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
@@ -59,7 +60,10 @@ describe('HudPieces', () => {
     it('draws the text with the font, the size and the color of its level', () => {
       const text = createText(scene, 'TITLE', {}, 'Victoria') as unknown as FakeText;
 
-      expect([text.text, text.style]).toEqual(['Victoria', { fontFamily: 'Courier', fontSize: '64px', color: '#ffffff' }]);
+      expect([text.text, text.style]).toEqual([
+        'Victoria',
+        { fontFamily: Constants.UI_FONT_FAMILY, fontSize: '40px', fontStyle: 'bold', resolution: Constants.RENDER_SCALE, color: '#ffffff' }
+      ]);
     });
 
     it('takes the size and the color a view asks for instead of those of the level', () => {
@@ -178,7 +182,7 @@ describe('HudPieces', () => {
 
   describe('accents', () => {
     it('gives the color of each accent', () => {
-      expect([accentColor('LOCAL_TURN'), accentColor('POSITIVE'), accentColor('NEGATIVE')]).toEqual(['#2ecc71', '#2ecc71', '#e74c3c']);
+      expect([accentColor('LOCAL_TURN'), accentColor('POSITIVE'), accentColor('NEGATIVE')]).toEqual(['#f1c40f', '#2ecc71', '#e74c3c']);
     });
 
     it('dims what is disabled and leaves the rest as it is', () => {

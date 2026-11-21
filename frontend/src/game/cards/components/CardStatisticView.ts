@@ -2,6 +2,7 @@ import { Statistic } from "@/domain/Statistics";
 import * as TextUtils from "@/game/utils/TextUtils";
 import Phaser from 'phaser';
 import { paletteText } from '@/game/utils/Palette';
+import { CARD_TEXT_STYLE } from '@/core/Constants';
 
 type IconPosition = 'left' | 'right' | 'top' | 'bottom';
 
@@ -27,7 +28,7 @@ class CardStatisticView extends Phaser.GameObjects.Container {
     this.affectedAmount = affectedAmount;
 
     this.statisticIcon = this.scene.add.image(0, 0, this.statistic.icon());
-    this.statisticText = this.scene.add.text(0, 0, this.statistic.text());
+    this.statisticText = this.scene.add.text(0, 0, this.statistic.text(), CARD_TEXT_STYLE);
     this.add([this.statisticIcon, this.statisticText]);
 
     this.updateChildren();

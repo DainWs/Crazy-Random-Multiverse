@@ -1,6 +1,6 @@
 import type { PlayerCode } from '@/domain/Player';
 import type { Size2D } from '@/domain/Geometry';
-import type { BarLevel, Strip, ZoneBounds } from '@/game/zone/ZoneLabelLayout';
+import type { Strip, ZoneBounds } from '@/game/zone/ZoneLabelLayout';
 import type { LabelSide } from '@/game/zone/CardValueLabelLayout';
 import type { PaletteColor } from '@/game/utils/Palette';
 import type ZoneView from '@/game/zone/ZoneView';
@@ -12,12 +12,6 @@ import { createPanel, createText } from '@/game/hud/HudPieces';
 import { paletteFill } from '@/game/utils/Palette';
 import CardValueLabelLayout from '@/game/zone/CardValueLabelLayout';
 import ZoneLabelLayout from '@/game/zone/ZoneLabelLayout';
-
-const COLOR_BY_BAR_LEVEL = new Map<BarLevel, PaletteColor>([
-  ['HIGH', 'ZONE_BAR_HIGH'],
-  ['MEDIUM', 'ZONE_BAR_MEDIUM'],
-  ['LOW', 'ZONE_BAR_LOW']
-]);
 
 interface ZoneBar {
   back: Phaser.GameObjects.Rectangle;
@@ -99,7 +93,7 @@ class ZoneLabelsView extends Phaser.GameObjects.Container {
     const isLocal = owner.code === StoreSystem.getPlayer().code;
     const color: PaletteColor = isNext ? 'ZONE_NEXT_LABEL' : 'HUD_TEXT';
     const mark = isNext ? Constants.ZONE_NEXT_MARK : '';
-    const text = createText(this.scene, 'NUMBERS', { fontSize: Constants.ZONE_LABEL_FONT_SIZE, color });
+    const text = createText(this.scene, 'LABEL', { color });
     const padding = Constants.ZONE_LABEL_PADDING;
 
     const measure = (candidate: string) => {
@@ -119,7 +113,7 @@ class ZoneLabelsView extends Phaser.GameObjects.Container {
 
   private createBar(ratio: number): ZoneBar {
     const back = this.scene.add.rectangle(0, 0, 0, 0, paletteFill('ZONE_BAR_BACK'));
-    const fill = this.scene.add.rectangle(0, 0, 0, 0, paletteFill(COLOR_BY_BAR_LEVEL.get(this.layout.barLevel(ratio))!));
+    const fill = this.scene.add.rectangle(0, 0, 0, 0, paletteFill('ZONE_BAR_FILL'));
     this.add([back, fill]);
 
     return { back, fill, ratio };

@@ -365,7 +365,7 @@ class GameScene extends Scene {
         const { x, y, scale } = calculateScreenFixedTransform(screen.width, screen.height, this.cameraSystem.getCamera().zoom, Constants.RENDER_SCALE);
         const centerX = x + (screen.width / 2) * scale;
         const message = getText(key);
-        const rejectionText = createText(this, 'BODY', { fontSize: Constants.REJECTION_MESSAGE_FONT_SIZE, color: 'REJECTION_TEXT' }, message);
+        const rejectionText = createText(this, 'BODY', { color: 'REJECTION_TEXT' }, message);
         rejectionText.setPosition(centerX, y + Constants.REJECTION_MESSAGE_TOP_OFFSET * scale);
         rejectionText.setOrigin(0.5, 0.5);
         rejectionText.setScale(scale);

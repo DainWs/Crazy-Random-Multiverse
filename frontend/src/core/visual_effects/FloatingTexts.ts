@@ -54,6 +54,7 @@ async function rise(scene: GameScene, label: Phaser.GameObjects.Container, units
 function createLabel(scene: GameScene, content: FloatingText, size: number): Phaser.GameObjects.Container {
   const outline = size * Constants.DAMAGE_TEXT_OUTLINE_FRACTION;
   const text = scene.add.text(0, 0, content.text, {
+    fontFamily: Constants.UI_FONT_FAMILY,
     fontSize: `${size}px`,
     color: paletteText(content.color),
     stroke: paletteText('TEXT_OUTLINE'),

@@ -12,8 +12,8 @@ describe('Preloader', () => {
             fakeScene = { game: { events: { emit: vi.fn() } }, scene: { stop } } as unknown as Preloader;
         });
 
-        it('stops the scene after loading', () => {
-            Preloader.prototype.create.call(fakeScene);
+        it('stops the scene after loading', async () => {
+            await Preloader.prototype.create.call(fakeScene);
 
             expect(stop).toHaveBeenCalledOnce();
         });

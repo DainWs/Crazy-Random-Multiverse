@@ -18,14 +18,14 @@ describe('ZoneSlotAnimation', () => {
     vi.restoreAllMocks();
   });
 
-  it('sets red background color for highlight_as_source', () => {
+  it('sets orange background color for highlight_as_source', () => {
     const slot = createMockZoneSlot();
     applyAnimation(slot, 'highlight_as_source');
-    expect(slot.setBackgroundColor).toHaveBeenCalledWith(0xD40000);
+    expect(slot.setBackgroundColor).toHaveBeenCalledWith(0xFF9A3C);
   });
 
   // UI-5, VIEW-4
-  it('frames the slot in red for highlight_as_source', () => {
+  it('frames the slot in orange for highlight_as_source', () => {
     const slot = createMockZoneSlot();
     applyAnimation(slot, 'highlight_as_source');
     expect(slot.showMarker).toHaveBeenCalledWith(paletteFill('MARK_SOURCE'), false);

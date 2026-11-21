@@ -117,19 +117,6 @@ describe('ZoneLabelLayout', () => {
     });
   });
 
-  describe('barLevel', () => {
-    it.each([
-      { ratio: 1, level: 'HIGH' },
-      { ratio: 0.61, level: 'HIGH' },
-      { ratio: 0.6, level: 'MEDIUM' },
-      { ratio: 0.31, level: 'MEDIUM' },
-      { ratio: 0.3, level: 'LOW' },
-      { ratio: 0, level: 'LOW' }
-    ])('is $level with the share $ratio', ({ ratio, level }) => {
-      expect(layout.barLevel(ratio)).toBe(level);
-    });
-  });
-
   describe('truncateName', () => {
     const measure = (text: string) => text.length * 10;
 

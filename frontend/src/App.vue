@@ -68,10 +68,12 @@ defineExpose({ scene, game });
     --veil-background: rgba(0, 0, 0, 0.7);
     --button-background: #34495e;
     --button-hover-background: #46627f;
+    --ui-font: 'Atkinson Hyperlegible', sans-serif;
 }
 
 html,
 body {
+    font-family: var(--ui-font);
     background-image: url(assets/background_gold.png);
     background-position: center center;
 }

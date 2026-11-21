@@ -23,6 +23,7 @@ type ButtonLook = {
 type TextLook = {
   fontFamily: string;
   fontSize: string;
+  fontStyle?: string;
   color: PaletteColor;
 };
 
@@ -39,8 +40,7 @@ type HudSkin = {
   accents: Map<AccentRole, AccentLook>;
 };
 
-/** The font Phaser draws a text with when none is set. Phase 11.5 chooses the typeface. */
-const DEFAULT_FONT_FAMILY = 'Courier';
+const DEFAULT_FONT_FAMILY = Constants.UI_FONT_FAMILY;
 
 const NEUTRAL_BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON', fillUnderPointer: 'HUD_BUTTON_HOVER', border: null, text: 'HUD_TEXT' };
 const PRIMARY_BUTTON_LOOK: ButtonLook = { fill: 'HUD_BUTTON_PRIMARY', fillUnderPointer: 'HUD_BUTTON_PRIMARY_HOVER', border: null, text: 'HUD_TEXT' };
@@ -57,10 +57,10 @@ const DEFAULT_HUD_SKIN: HudSkin = {
     ['NEUTRAL', NEUTRAL_BUTTON_LOOK]
   ]),
   texts: new Map<TextLevel, TextLook>([
-    ['TITLE', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.GAME_RESULT_TITLE_FONT_SIZE, color: 'HUD_TEXT' }],
-    ['BODY', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.HUD_FONT_SIZE, color: 'HUD_TEXT' }],
-    ['LABEL', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.HUD_FONT_SIZE, color: 'HUD_SPECTATOR_TEXT' }],
-    ['NUMBERS', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.GAME_RESULT_DETAIL_FONT_SIZE, color: 'HUD_TEXT' }]
+    ['TITLE', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.TEXT_SIZE_TITLE, fontStyle: 'bold', color: 'HUD_TEXT' }],
+    ['BODY', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.TEXT_SIZE_BODY, color: 'HUD_TEXT' }],
+    ['LABEL', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.TEXT_SIZE_LABEL, color: 'HUD_SPECTATOR_TEXT' }],
+    ['NUMBERS', { fontFamily: DEFAULT_FONT_FAMILY, fontSize: Constants.TEXT_SIZE_NUMBERS, fontStyle: 'bold', color: 'HUD_TEXT' }]
   ]),
   accents: new Map<AccentRole, AccentLook>([
     ['LOCAL_TURN', { color: 'HUD_TEXT_LOCAL_TURN', alpha: 1 }],
