@@ -132,5 +132,16 @@ function withCombatant(game: GameDto, zone: number, position: PositionDto, comba
     return changed;
 }
 
+/** The state of a game after the player of a zone is eliminated, as the server would send it: a spectator with an empty zone (ELIM-3, ELIM-5, SPEC-3). */
+function withEliminatedPlayer(game: GameDto, zone: number): GameDto {
+    const changed = structuredClone(game);
+    const { owner, combatants } = changed.zones[zone];
+    owner.isAlive = false;
+    owner.isSpectator = true;
+    combatants.flat().forEach((slot) => delete slot.combatant);
+
+    return changed;
+}
+
 export type { PreparedGame };
-export { LOCAL_USER, createEquipment, createLoadingGame, createPreparedGame, createWarrior, withCombatant };
+export { LOCAL_USER, createEquipment, createLoadingGame, createPreparedGame, createWarrior, withCombatant, withEliminatedPlayer };

@@ -1,6 +1,6 @@
 import type { Area } from '@/support/board';
 import { frameOf, openBoard, openGame, sameFrame, waitForStillFrame } from '@/support/board';
-import { createPreparedGame } from '@/support/preparedGame';
+import { createPreparedGame, withEliminatedPlayer } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 const WHOLE_SCREEN: Area = { x: 0, y: 0, width: 1920, height: 1080 };
@@ -39,10 +39,7 @@ test.describe('labels around the zones', () => {
         await openBoard(page, backend, 3);
         const withBars = await frameOf(page, WHOLE_SCREEN);
 
-        const eliminated = structuredClone(prepared.game);
-        eliminated.zones[THIRD_ZONE].owner.isAlive = false;
-        eliminated.zones[THIRD_ZONE].owner.isSpectator = true;
-        eliminated.zones[THIRD_ZONE].combatants[LEADER_ROW][0].combatant = undefined;
+        const eliminated = withEliminatedPlayer(prepared.game, THIRD_ZONE);
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[THIRD_ZONE].owner });
         await waitForStillFrame(page);
 

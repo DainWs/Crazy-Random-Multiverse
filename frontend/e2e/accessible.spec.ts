@@ -2,10 +2,11 @@ import type { Page } from '@playwright/test';
 import type BackendDouble from '@/support/BackendDouble';
 import type { PreparedGame } from '@/support/preparedGame';
 import { EMPTY_TABLE, OWN_WARRIOR, waitForStillFrame } from '@/support/board';
-import { createPreparedGame } from '@/support/preparedGame';
+import { createPreparedGame, withEliminatedPlayer } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 const DRAG_STEPS = 12;
+const ELIMINATED_ZONE = 1;
 const OWN_ZONE_AREA = { x: 830, y: 590, width: 260, height: 360 };
 
 /** Opens the board with the accessible mode on (UI-31). */
@@ -28,8 +29,7 @@ test.describe('accessible mode', () => {
 
     test('draws the border of an eliminated zone', async ({ page, backend }) => {
         const prepared = createPreparedGame(3);
-        prepared.game.zones[1].owner.isAlive = false;
-        prepared.game.zones[1].owner.isSpectator = true;
+        prepared.game = withEliminatedPlayer(prepared.game, ELIMINATED_ZONE);
         await openAccessibleGame(page, backend, prepared);
 
         await expect(page).toHaveScreenshot('accessible-eliminated.png', { maxDiffPixels: 0 });

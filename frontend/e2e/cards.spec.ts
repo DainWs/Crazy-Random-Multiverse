@@ -2,7 +2,7 @@ import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
 import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openBoard, openGame, sameFrame, zoomIn } from '@/support/board';
-import { createEquipment, createPreparedGame, withCombatant } from '@/support/preparedGame';
+import { createEquipment, createPreparedGame, withCombatant, withEliminatedPlayer } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 const OWN_ZONE = 0;
@@ -76,9 +76,7 @@ test.describe('side panel of a card that disappears', () => {
         const noPanel = await frameOf(page, PANEL_CARD_AREA);
         await hover(page, HAND_CARD);
         expect(await sameFrame(page, await frameOf(page, PANEL_CARD_AREA), noPanel)).toBe(false);
-        const eliminated = structuredClone(prepared.game);
-        eliminated.zones[OWN_ZONE].owner.isAlive = false;
-        eliminated.zones[OWN_ZONE].owner.isSpectator = true;
+        const eliminated = withEliminatedPlayer(prepared.game, OWN_ZONE);
 
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[OWN_ZONE].owner });
 

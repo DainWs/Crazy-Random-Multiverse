@@ -3,7 +3,7 @@ import type { GameDto } from '@/api/dtos/GameDto';
 import type BackendDouble from '@/support/BackendDouble';
 import type { PreparedGame } from '@/support/preparedGame';
 import { ELIMINATION_DURATION_MS, TABLE_AREA, frameOf, openGame, waitForStillFrame } from '@/support/board';
-import { createPreparedGame, withCombatant } from '@/support/preparedGame';
+import { createPreparedGame, withCombatant, withEliminatedPlayer } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
 const OWN_ZONE = 0;
@@ -30,8 +30,7 @@ function createGameWithExposedLeader(): PreparedGame {
 
 /** The server removes the cards of the eliminated player and has no player with the turn (ELIM-3, CON-23). */
 function gameAfterLastAttack(game: GameDto): GameDto {
-    const ended = withCombatant(game, RIVAL_ZONE, RIVAL_LEADER_POSITION);
-    ended.zones[RIVAL_ZONE].owner.isAlive = false;
+    const ended = withEliminatedPlayer(game, RIVAL_ZONE);
     delete ended.playerWithTurn;
 
     return ended;
@@ -107,8 +106,7 @@ test.describe('elimination of a rival in a game of three', () => {
     test('keeps the game going and covers the zone of the eliminated rival', async ({ page, backend }) => {
         await openGame(page, backend, prepared);
         const before = await frameOf(page, TABLE_AREA);
-        const eliminated = structuredClone(prepared.game);
-        eliminated.zones[RIVAL_ZONE].owner.isAlive = false;
+        const eliminated = withEliminatedPlayer(prepared.game, RIVAL_ZONE);
 
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[RIVAL_ZONE].owner });
         await waitForStillFrame(page, before);
@@ -128,8 +126,7 @@ test.describe('elimination of a rival with the animations on', () => {
         backend.prepare(prepared);
         await page.goto('/');
         await backend.waitForBoardDrawn();
-        const eliminated = structuredClone(prepared.game);
-        eliminated.zones[RIVAL_ZONE].owner.isAlive = false;
+        const eliminated = withEliminatedPlayer(prepared.game, RIVAL_ZONE);
 
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[RIVAL_ZONE].owner });
         await page.waitForTimeout(ELIMINATION_DURATION_MS);
@@ -146,9 +143,7 @@ test.describe('spectator who was eliminated', () => {
 
     test('leaves the game after confirming and returns to the main menu', async ({ page, backend }) => {
         await openGame(page, backend, prepared);
-        const eliminated = structuredClone(prepared.game);
-        eliminated.zones[OWN_ZONE].owner.isAlive = false;
-        eliminated.zones[OWN_ZONE].owner.isSpectator = true;
+        const eliminated = withEliminatedPlayer(prepared.game, OWN_ZONE);
         backend.emitGameEvent('PLAYER_DIE', { game: eliminated, targetPlayer: eliminated.zones[OWN_ZONE].owner });
         await waitForStillFrame(page);
 
