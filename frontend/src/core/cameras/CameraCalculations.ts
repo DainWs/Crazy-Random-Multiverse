@@ -1,3 +1,4 @@
+import type { CameraFrame } from "@/core/cameras/BoardCameraStrategy";
 import { Point2D, Size2D } from "@/domain/Geometry";
 
 /**
@@ -104,5 +105,60 @@ function resolveCameraConfiguration(maxPlayersPerSide: number): CameraConfigurat
   return CAMERA_CONFIGURATIONS.get(maxPlayersPerSide) || DEFAULT_CAMERA_CONFIGURATION;
 }
 
-export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration };
-export { REFERENCE_SCREEN, BOARD_ORIGIN_HEIGHT_RATIO, calculateScreenFit, calculateHUDPosition, calculateScreenFixedTransform, calculateLogicalScroll, toLogicalScreen, calculateBoundsOfPoints, clampScrollToBounds, resolveCameraConfiguration, DEFAULT_CAMERA_CONFIGURATION, CAMERA_CONFIGURATIONS };
+/**
+ * Room the top-down camera keeps above and below the table (VIEW-57). `top` and `bottom` are in px of the window, which do not
+ * change with its size, like the hand at rest and the HUD. `labelDepth` is how far the labels of a zone can reach past its outer
+ * edge, in px of the reference screen, which grow and shrink with the window like the labels (VIEW-49).
+ */
+interface TopDownReserves {
+  top: number;
+  bottom: number;
+  labelDepth: number;
+}
+
+/** The table as the top-down camera draws it: `boardBounds` and `zoneEdgeMargin` in units of the world, `screen` in px of the canvas. */
+interface TopDownFraming {
+  screen: Size2D;
+  boardBounds: Bounds2D;
+  zoneEdgeMargin: number;
+  pixelRatio: number;
+  reserves: TopDownReserves;
+}
+
+/**
+ * Frames the whole table and the labels of its zones between the reserves, centered (VIEW-57). The table is square and the
+ * screen is wider than tall, so the height is what limits it. A label sticks out of the table when it reaches further than
+ * the margin between the zones and the edge, which grows with the zoom.
+ */
+function calculateTopDownFrame({ screen, boardBounds, zoneEdgeMargin, pixelRatio, reserves }: TopDownFraming): CameraFrame {
+  const labelReach = reserves.labelDepth * calculateScreenFit(screen);
+  const top = reserves.top * pixelRatio;
+  const bottom = reserves.bottom * pixelRatio;
+  const available = screen.height - top - bottom;
+  const tableHeight = boardBounds.bottom - boardBounds.top;
+
+  const zoomWithoutOverflow = available / tableHeight;
+  const labelsStickOut = labelReach > zoneEdgeMargin * zoomWithoutOverflow;
+  const zoom = labelsStickOut ? (available - 2 * labelReach) / (tableHeight - 2 * zoneEdgeMargin) : zoomWithoutOverflow;
+
+  // The middle of the room between the reserves is (top - bottom) / 2 px below the middle of the screen
+  const tableCenter = { x: (boardBounds.left + boardBounds.right) / 2, y: (boardBounds.top + boardBounds.bottom) / 2 };
+  return { zoom, center: { x: tableCenter.x, y: tableCenter.y - (top - bottom) / 2 / zoom } };
+}
+
+export type { Bounds2D, ScreenFixedTransform, CameraViewport, CameraConfiguration, TopDownReserves, TopDownFraming };
+export {
+  REFERENCE_SCREEN,
+  BOARD_ORIGIN_HEIGHT_RATIO,
+  calculateScreenFit,
+  calculateHUDPosition,
+  calculateScreenFixedTransform,
+  calculateLogicalScroll,
+  toLogicalScreen,
+  calculateBoundsOfPoints,
+  clampScrollToBounds,
+  resolveCameraConfiguration,
+  calculateTopDownFrame,
+  DEFAULT_CAMERA_CONFIGURATION,
+  CAMERA_CONFIGURATIONS
+};

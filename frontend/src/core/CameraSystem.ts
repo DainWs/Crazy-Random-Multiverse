@@ -6,6 +6,8 @@ import ProjectionSystem from "@/core/ProjectionSystem";
 import { dispatchBoardCameraStrategy } from "@/core/cameras/BoardCameraStrategyDispatcher";
 import { calculateBoundsOfPoints, calculateHUDPosition } from "@/core/cameras/CameraCalculations";
 import type { Bounds2D, CameraViewport } from "@/core/cameras/CameraCalculations";
+import type { BoardFraming } from "@/core/cameras/BoardCameraStrategy";
+import { calculateZoneEdgeMargin } from "@/game/zone/ZoneLayout";
 
 type Camera = Phaser.Cameras.Scene2D.Camera;
 
@@ -13,8 +15,7 @@ class CameraSystem {
     private gameScene: GameScene;
     private camera: Camera;
     private boardBounds?: Bounds2D;
-    private maxPlayersPerSide?: number;
-    private center: Point2D = { x: 0, y: 0 };
+    private board?: Omit<BoardFraming, 'screen'>;
 
     public initialize(gameScene: GameScene) {
         this.gameScene = gameScene;
@@ -28,22 +29,21 @@ class CameraSystem {
         // The table is drawn projected by the camera, so its corners are the projected ones
         const { tl, tr, bl, br } = ProjectionSystem.toCorners3D(battlefield.getCorners());
         this.boardBounds = calculateBoundsOfPoints([tl, tr, bl, br], boardOrigin);
-        this.maxPlayersPerSide = battlefield.getMaxPlayersPerSide();
-        this.center = { x: centerX, y: centerY };
+        this.board = {
+            boardBounds: this.boardBounds,
+            boardCenter: { x: centerX, y: centerY },
+            maxPlayersPerSide: battlefield.getMaxPlayersPerSide(),
+            zoneEdgeMargin: calculateZoneEdgeMargin(battlefield)
+        };
 
         this.fitToScreen();
     }
 
     /** Frames the board again for the current size of the screen, so it stays in view and centered (VIEW-24). */
     public fitToScreen() {
-        if (this.boardBounds && this.maxPlayersPerSide !== undefined) {
+        if (this.board) {
             const { width, height } = this.gameScene.scale;
-            const { zoom, center } = dispatchBoardCameraStrategy().frame({
-                screen: { width, height },
-                boardBounds: this.boardBounds,
-                boardCenter: this.center,
-                maxPlayersPerSide: this.maxPlayersPerSide
-            });
+            const { zoom, center } = dispatchBoardCameraStrategy().frame({ ...this.board, screen: { width, height } });
 
             this.camera.setZoom(zoom);
             this.camera.centerOn(center.x, center.y);

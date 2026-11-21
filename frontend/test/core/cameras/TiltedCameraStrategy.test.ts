@@ -8,7 +8,8 @@ const FRAMING: BoardFraming = {
     screen: REFERENCE_SCREEN,
     boardBounds: { left: 0, top: 0, right: 1920, bottom: 1080 },
     boardCenter: BOARD_CENTER,
-    maxPlayersPerSide: 2
+    maxPlayersPerSide: 2,
+    zoneEdgeMargin: 200
 };
 
 describe('TiltedCameraStrategy', () => {

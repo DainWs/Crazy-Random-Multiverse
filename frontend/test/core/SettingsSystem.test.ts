@@ -1,10 +1,19 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import SettingsSystem from '@/core/SettingsSystem';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import SettingsSystem, { BOARD_CAMERA_STORAGE_KEY, DEFAULT_BOARD_CAMERA } from '@/core/SettingsSystem';
+
+/** The choice is read when the module loads, so each test of the loading gets a fresh module. */
+async function loadSettings() {
+  vi.resetModules();
+  const module = await import('@/core/SettingsSystem');
+
+  return module.default;
+}
 
 // UI-33
 describe('SettingsSystem', () => {
   beforeEach(() => {
     SettingsSystem.closePanel();
+    window.localStorage.clear();
   });
 
   describe('the panel', () => {
@@ -24,6 +33,31 @@ describe('SettingsSystem', () => {
       SettingsSystem.togglePanel();
 
       expect([afterFirst, SettingsSystem.panelOpen.value]).toEqual([true, false]);
+    });
+  });
+
+  // VIEW-57
+  describe('the camera of the board', () => {
+    it('starts with the default camera when none was kept', async () => {
+      const settings = await loadSettings();
+
+      expect(settings.boardCamera.value).toBe(DEFAULT_BOARD_CAMERA);
+    });
+
+    it('reads a kept choice that is not a camera as the default one', async () => {
+      window.localStorage.setItem(BOARD_CAMERA_STORAGE_KEY, 'FISHEYE');
+
+      const settings = await loadSettings();
+
+      expect(settings.boardCamera.value).toBe(DEFAULT_BOARD_CAMERA);
+    });
+
+    it('keeps the chosen camera for the next visit', async () => {
+      SettingsSystem.setBoardCamera('TOP_DOWN');
+
+      const settings = await loadSettings();
+
+      expect(settings.boardCamera.value).toBe('TOP_DOWN');
     });
   });
 });

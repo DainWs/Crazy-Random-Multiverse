@@ -71,6 +71,12 @@ export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
 /** Distance in pixels from the edges of the screen to the turn indicator and the buttons of the game HUD (UI-3). */
 export const HUD_MARGIN = 24;
 
+/**
+ * Distance in px from the top or the bottom edge of the screen that no piece at a corner of the game HUD goes past: the settings
+ * button ends at 64 px, and the panel of the round and the buttons at about 62 px (VIEW-43, VIEW-44, UI-33).
+ */
+export const HUD_CORNER_PIECES_REACH = 72;
+
 /** The font of every text of the interface that is not on a card, and the one of the texts of the cards (VIEW-54). */
 export const UI_FONT_FAMILY = '"Atkinson Hyperlegible", sans-serif';
 export const CARD_FONT_FAMILY = 'Consolas, monospace';
@@ -337,6 +343,9 @@ export const ZONE_BAR_BORDER_WIDTH = 1;
 
 /** Units in px on the screen between the health bar of a leader and the label with the name of its zone (VIEW-49). */
 export const ZONE_NAME_GAP = 6;
+
+/** Tallest a line of a label of a zone can be, in px on the screen: the 18 px of its text level and the space of the line (VIEW-49, VIEW-55). */
+export const ZONE_NAME_LINE_HEIGHT = 24;
 
 /** What goes before the name of the player who plays next, and what ends a name that was cut (VIEW-51, VIEW-49). */
 export const ZONE_NEXT_MARK = '▶ ';

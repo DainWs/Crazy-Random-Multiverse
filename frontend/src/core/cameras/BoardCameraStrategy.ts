@@ -1,12 +1,16 @@
 import type { Point2D, Point3D, Size2D } from '@/domain/Geometry';
 import type { Bounds2D } from '@/core/cameras/CameraCalculations';
 
-/** What a camera needs to frame the board: the screen in the pixels of the canvas, and the board as it is drawn in the world. */
+/**
+ * What a camera needs to frame the board: the screen in the pixels of the canvas, the board as it is drawn in the world, and the
+ * margin between the edge of the table and the zones in board units.
+ */
 interface BoardFraming {
     screen: Size2D;
     boardBounds: Bounds2D;
     boardCenter: Point2D;
     maxPlayersPerSide: number;
+    zoneEdgeMargin: number;
 }
 
 /** The zoom of the camera and the point of the world at the center of the screen. */
