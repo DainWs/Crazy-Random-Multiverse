@@ -1,19 +1,21 @@
 import { Corners3D } from "@/domain/Geometry";
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
-import { ELIMINATED_VEIL_ALPHA, ELIMINATED_VEIL_BORDER_WIDTH, MARK_EDGE_WIDTH, SLOT_BORDER_WIDTH } from "@/core/Constants";
+import {
+  CROWN_RING_FRACTION,
+  ELIMINATED_VEIL_ALPHA,
+  ELIMINATED_VEIL_BORDER_WIDTH,
+  FORBIDDEN_ICON_RING_FRACTION,
+  MARK_EDGE_WIDTH,
+  SLOT_BORDER_ALPHA,
+  SLOT_BORDER_WIDTH,
+  SLOT_FILL_ALPHA
+} from "@/core/Constants";
 import EffectSettings from "@/core/EffectSettings";
 import { paletteFill } from "@/game/utils/Palette";
 import { crownPath, type MarkPath } from "@/game/zone/SlotMarkLayout";
 
 type Graphics = Phaser.GameObjects.Graphics;
 type Image = Phaser.GameObjects.Image;
-
-const BACKGROUND_ALPHA = 0.45;
-const BACKGROUND_BORDER_ALPHA = 0.8;
-/** Thickness of the gold ring of the crown disc, as a fraction of its radius. */
-const CROWN_RING_FRACTION = 0.08;
-/** Thickness of the red ring and bar of the crossed circle, as a fraction of its radius. */
-const FORBIDDEN_ICON_RING_FRACTION = 0.16;
 
 class ZoneSlotViewRenderer {
 
@@ -27,11 +29,11 @@ class ZoneSlotViewRenderer {
     corners: Corners3D,
     backgroundColor = paletteFill('SLOT_FILL'),
     borderColor = paletteFill('SLOT_BORDER'),
-    backgroundAlpha = BACKGROUND_ALPHA
+    backgroundAlpha = SLOT_FILL_ALPHA
   ) {
     graphics.clear();
     graphics.fillStyle(backgroundColor, backgroundAlpha);
-    graphics.lineStyle(SLOT_BORDER_WIDTH, borderColor, BACKGROUND_BORDER_ALPHA);
+    graphics.lineStyle(SLOT_BORDER_WIDTH, borderColor, SLOT_BORDER_ALPHA);
     graphics.beginPath();
     graphics.moveTo(corners.tl.x, corners.tl.y);
     graphics.lineTo(corners.tr.x, corners.tr.y);

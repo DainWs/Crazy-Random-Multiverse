@@ -1,12 +1,10 @@
 import ZoneSlotView from "@/game/zone/ZoneSlotView";
 import EffectSettings from "@/core/EffectSettings";
+import { SLOT_SOLID_FILL_ALPHA } from "@/core/Constants";
 import { paletteFill } from "@/game/utils/Palette";
 
 type ZoneSlotAnimation = 'highlight_as_source' | 'highlight_as_target' | 'unhighlight';
 type ZoneSlotAnimationProvider = (zoneSlot: ZoneSlotView) => void;
-
-/** The fill of a valid slot is opaque while the extra marks are on (VIEW-39). */
-const SOLID_FILL_ALPHA = 1;
 
 function noneAnimation() {};
 
@@ -17,7 +15,7 @@ function highlightAsSource(zoneSlot: ZoneSlotView): void {
 
 function highlightAsTarget(zoneSlot: ZoneSlotView): void {
   if (EffectSettings.extraMarksAreOn()) {
-    zoneSlot.setBackgroundColor(paletteFill('MARK_VALID'), undefined, SOLID_FILL_ALPHA);
+    zoneSlot.setBackgroundColor(paletteFill('MARK_VALID'), undefined, SLOT_SOLID_FILL_ALPHA);
   } else {
     zoneSlot.setBackgroundColor(paletteFill('SLOT_VALID_FILL'));
   }
