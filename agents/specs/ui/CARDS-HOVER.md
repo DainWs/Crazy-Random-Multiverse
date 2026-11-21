@@ -4,9 +4,11 @@ What the local player sees when the pointer is over a card: the enlargement, the
 
 - **VIEW-14** While the pointer is over a card:
   - **Enlargement.** The card grows from its center to 103.5% of its size in 150 ms, slowing down at the end, and goes back to its size in 150 ms, slowing down at the end, when the pointer leaves it. It stays below the lifts of `VIEW-4`, 106% and 112%, so it is not mistaken for them.
-  - **Side panel.** A panel on the right side of the screen, a quarter of its width and its full height, shows the card at a larger size, its name and its description, and for each piece of equipment its name and the values it adds or subtracts, positive in green and negative in red.
-    - It opens at once when the pointer enters a card: it slides 40 px from the right while it goes from transparent to opaque, in 250 ms, slowing down at the end. The 40 px are measured with the window at 1920 by 1080 and scale with the window (`VIEW-24`).
-    - When the pointer leaves the card, the panel waits 150 ms and then closes the opposite way, sliding 40 px to the right while it goes transparent, in 250 ms, speeding up.
+  - **Side panel.** A panel on one side of the screen, a quarter of its width and its full height, shows the card at a larger size, its name and its description, and for each piece of equipment its name and the values it adds or subtracts, positive in green and negative in red. The card and the texts of the panel scale with the window like the camera does (`VIEW-24`), without growing over their size at 1920 by 1080, so they fit its height at the smallest window.
+    - **Side.** It is on the right side, unless the card is in the right half of the screen, measured on the center of the card: then it is on the left side, so it never covers the card it shows. A card in the exact middle takes the right side. It is decided when the panel opens or shows another card, and the panel does not change side while it shows the same card.
+    - **Over the HUD.** The panel is over the pieces of the HUD that are drawn on the canvas, which are the panel of the round and the turn, the end turn and surrender buttons and the label of a spectator, so it covers them while it is open. The result, the button to leave and the confirmation dialog (`VIEW-23`, `VIEW-28`) are over the panel, and the settings button, which is part of the page and not of the canvas, stays over it too. Decided with the product owner on 2026-11-21.
+    - It opens at once when the pointer enters a card: it slides 40 px from its own side while it goes from transparent to opaque, in 250 ms, slowing down at the end. The 40 px are measured with the window at 1920 by 1080 and scale with the window (`VIEW-24`).
+    - When the pointer leaves the card, the panel waits 150 ms and then closes the opposite way, sliding 40 px towards its own side while it goes transparent, in 250 ms, speeding up.
     - If the pointer enters another card while the panel is open, waiting or closing, the panel does not close: it shows the new card at once, and is opaque and in its place at once.
     - It closes without the wait when the hovered card disappears, for example when its owner is eliminated (`ELIM-3`), and when a drag starts (`VIEW-32`).
     - **[Post-MVP]** A card back (`VIEW-3`) shows no panel, because the card is private (`HAND-3`).
@@ -19,6 +21,16 @@ What the local player sees when the pointer is over a card: the enlargement, the
 - Given the pointer over a card, with the side panel open
 - When it crosses the gap to the next card in less than 150 ms
 - Then the panel does not close: it shows the next card at once
+
+**A card in the right half**
+- Given a rival card in the zone of the right side, with the board zoomed so that the card is in the right half of the screen
+- When the pointer enters it
+- Then the panel opens on the left side, sliding from the left
+
+**The panel over the HUD**
+- Given the panel open
+- When the end turn button is under it
+- Then the panel covers the button
 
 **Leaving the cards**
 - Given the pointer over a card, with the side panel open
