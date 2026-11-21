@@ -2,7 +2,7 @@
 
 The minimum size of the texts of the interface on the screen (Phase 11.1). Decided by the product owner on 2026-11-19, after measuring the size of every text of the list.
 
-- **VIEW-41** The texts of the HUD (`UI-3`, `VIEW-28`), the notices (`VIEW-15`, and those of `UI-9`, `UI-10` and `UI-24`), the side panel (`VIEW-14`), the result (`VIEW-23`), the loading screen (`VIEW-29`) and the dialogs (`UI-15`) are 18 px or more on the screen, with the window at 1920 by 1080 and the zoom of the camera at 1 (`VIEW-24`). The HUD and the side panel keep their size on the screen at any zoom, so the minimum holds at any zoom. The texts of the cards on the board are not covered: see Phase 11.3 of `ROADMAP.md`. Nor are the floating texts of the values (`VIEW-6`).
+- **VIEW-41** The texts of the HUD (`UI-3`, `VIEW-28`), the notices (`VIEW-15`, and those of `UI-9`, `UI-10` and `UI-24`), the side panel (`VIEW-14`), the result (`VIEW-23`), the loading screen (`VIEW-29`), the dialogs (`UI-15`) and the help panel (`VIEW-58`) are 18 px or more on the screen, with the window at 1920 by 1080 and the zoom of the camera at 1 (`VIEW-24`). The HUD and the side panel keep their size on the screen at any zoom, so the minimum holds at any zoom. The texts of the cards on the board are not covered: see Phase 11.3 of `ROADMAP.md`. Nor are the floating texts of the values (`VIEW-6`).
 
 The sizes of every text are the four levels of `TYPOGRAPHY.md` (`VIEW-55`) since 2026-11-21, and all of them are 18 px or more.
 
