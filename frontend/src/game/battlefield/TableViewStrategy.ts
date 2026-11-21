@@ -2,7 +2,8 @@ import Battlefield from "@/domain/Battlefield";
 import BattlefieldSkin from "@/domain/BattlefieldSkin";
 import BattlefieldViewStrategy from "@/game/battlefield/BattlefieldViewStrategy";
 import ProjectionSystem from "@/core/ProjectionSystem";
-import { Corner, Corners, Point, Point2D } from "@/domain/Geometry";
+import { dispatchBoardCameraStrategy } from "@/core/cameras/BoardCameraStrategyDispatcher";
+import { Corner, Corners, Corners3D, Point, Point2D } from "@/domain/Geometry";
 import { paletteFill } from "@/game/utils/Palette";
 
 type Graphics = Phaser.GameObjects.Graphics
@@ -16,30 +17,34 @@ class TableViewStrategy implements BattlefieldViewStrategy {
     graphics.clear();
 
     const corners = ProjectionSystem.toCorners3D(battlefield.getCorners());
+    const showsDepth = dispatchBoardCameraStrategy().showsTableDepth;
 
-    // table thickness sides
     graphics.setAlpha(1);
-    graphics.fillStyle(paletteFill(battlefield.skin.backgroundColor));
-    graphics.lineStyle(2, paletteFill(battlefield.skin.borderColor));
-    this.renderSide(graphics, corners.tl, corners.bl, battlefield.skin.thickness);
-    this.renderSide(graphics, corners.tr, corners.br, battlefield.skin.thickness);
-    this.renderSide(graphics, corners.tl, corners.tr, battlefield.skin.thickness / 2);
-    this.renderSide(graphics, corners.bl, corners.br, battlefield.skin.thickness / 2);
+    if (showsDepth) {
+      this.renderBackDepth(graphics, corners, battlefield.skin);
+    }
 
-    // legs of the table
-    this.renderTableLeg(graphics, 'TL', corners.tl, battlefield.skin);
-    this.renderTableLeg(graphics, 'TR', corners.tr, battlefield.skin);
-
-    // table surface
     this.renderTableSurface(graphics, corners, battlefield.skin);
     this.renderGridLines(graphics, battlefield);
-
-    // table outline
     this.renderTableOutline(graphics, corners, battlefield.skin);
 
-    // legs of the table
-    this.renderTableLeg(graphics, 'BL', corners.bl, battlefield.skin);
-    this.renderTableLeg(graphics, 'BR', corners.br, battlefield.skin);
+    if (showsDepth) {
+      this.renderTableLeg(graphics, 'BL', corners.bl, battlefield.skin);
+      this.renderTableLeg(graphics, 'BR', corners.br, battlefield.skin);
+    }
+  }
+
+  /** The sides and the far legs, which the surface covers in part (VIEW-57). */
+  private renderBackDepth(graphics: Graphics, corners: Corners3D, skin: BattlefieldSkin) {
+    graphics.fillStyle(paletteFill(skin.backgroundColor));
+    graphics.lineStyle(2, paletteFill(skin.borderColor));
+    this.renderSide(graphics, corners.tl, corners.bl, skin.thickness);
+    this.renderSide(graphics, corners.tr, corners.br, skin.thickness);
+    this.renderSide(graphics, corners.tl, corners.tr, skin.thickness / 2);
+    this.renderSide(graphics, corners.bl, corners.br, skin.thickness / 2);
+
+    this.renderTableLeg(graphics, 'TL', corners.tl, skin);
+    this.renderTableLeg(graphics, 'TR', corners.tr, skin);
   }
 
   private renderTableSurface(graphics: Graphics, corners: Corners, skin: BattlefieldSkin) {

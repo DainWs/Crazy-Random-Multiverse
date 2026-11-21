@@ -1,7 +1,5 @@
 import { Point2D, Corners2D, Corners3D, Point3D } from "@/domain/Geometry";
-
-const FOCAL_LENGTH = 1800;
-const DEPTH_OFFSET = 7000;
+import { dispatchBoardCameraStrategy } from "@/core/cameras/BoardCameraStrategyDispatcher";
 
 
 function createCorners2D(width: number, height: number): Corners2D {
@@ -24,16 +22,9 @@ function toCorners3D(corners: Corners2D): Corners3D {
     };
 }
 
+/** Where a point of the board is drawn with the camera of the board (VIEW-57). */
 function toPoint3D(point: Point2D): Point3D {
-    const depth = DEPTH_OFFSET - point.y;
-    const scale = FOCAL_LENGTH / depth;
-
-    return {
-        x: point.x * scale,
-        y: point.y * scale,
-        z: depth,
-        scale: scale
-    };
+    return dispatchBoardCameraStrategy().project(point);
 }
 
 const ProjectionSystem = {
