@@ -11,6 +11,21 @@ describe('ZoneLabelLayout', () => {
   const BAR_END = Constants.ZONE_BAR_GAP + Constants.ZONE_BAR_THICKNESS;
   const NAME_START = BAR_END + Constants.ZONE_NAME_GAP;
 
+  describe('sideOf', () => {
+    it.each([
+      { side: 'BOTTOM', offset: { x: 0, y: 30 } },
+      { side: 'TOP', offset: { x: 0, y: -30 } },
+      { side: 'LEFT', offset: { x: -30, y: 0 } },
+      { side: 'RIGHT', offset: { x: 30, y: 0 } }
+    ])('is $side for the edge at $offset', ({ side, offset }) => {
+      expect(layout.sideOf(offset)).toBe(side);
+    });
+
+    it('is the vertical side when the edge is as far on one axis as on the other', () => {
+      expect(layout.sideOf({ x: 30, y: 30 })).toBe('BOTTOM');
+    });
+  });
+
   describe('boundsOf', () => {
     it('holds every point', () => {
       const bounds = layout.boundsOf([{ x: 10, y: 40 }, { x: -5, y: 20 }, { x: 30, y: 60 }]);

@@ -20,7 +20,7 @@ type FloatingText = {
  * They are placed in the world, not in the slot, because the slot is rotated with its zone and the text would turn upside down.
  */
 async function showFloatingTexts(scene: GameScene, slot: ZoneSlotView, texts: FloatingText[]): Promise<void> {
-  const unitsPerPixel = scene.cardValueUnitsPerPixel();
+  const unitsPerPixel = scene.screenUnitsPerPixel();
   const world = slot.getWorldTransformMatrix();
   const box = boxOfSlot(slot.corners, { x: world.tx, y: world.ty }, world.scaleX);
   const size = damageTextSize(Math.max(box.width, box.height) / unitsPerPixel, Constants.DAMAGE_TEXT_SIZE_FRACTION, Constants.DAMAGE_TEXT_MIN_SIZE);

@@ -1,6 +1,8 @@
-import type { Point2D, Size2D } from '@/domain/Geometry';
-import type { LabelSide } from '@/game/zone/CardValueLabelLayout';
+import type { Corners3D, Point2D, Size2D } from '@/domain/Geometry';
 import * as Constants from '@/core/Constants';
+
+/** The edge of a zone, as seen on the screen, that its labels are next to (VIEW-49). */
+type LabelSide = 'BOTTOM' | 'TOP' | 'LEFT' | 'RIGHT';
 
 /** The smallest rectangle that holds a zone, in the space of the board. */
 interface ZoneBounds {
@@ -26,6 +28,19 @@ interface ZoneTurnOrderEntry {
  * `unitsPerPixel` turns the pixels on the screen, which do not change with the zoom, into the units of the board.
  */
 class ZoneLabelLayout {
+  /** The bottom edge of a slot in the frame of its zone is the one between `bl` and `br`, so it faces away from the center of the table. */
+  public edgeOffset(corners: Pick<Corners3D, 'bl' | 'br'>): Point2D {
+    return { x: (corners.bl.x + corners.br.x) / 2, y: (corners.bl.y + corners.br.y) / 2 };
+  }
+
+  public sideOf(edgeOffset: Point2D): LabelSide {
+    if (Math.abs(edgeOffset.y) >= Math.abs(edgeOffset.x)) {
+      return edgeOffset.y >= 0 ? 'BOTTOM' : 'TOP';
+    }
+
+    return edgeOffset.x >= 0 ? 'RIGHT' : 'LEFT';
+  }
+
   public boundsOf(points: Point2D[]): ZoneBounds {
     const xs = points.map((point) => point.x);
     const ys = points.map((point) => point.y);
@@ -117,5 +132,5 @@ class ZoneLabelLayout {
   }
 }
 
-export type { Strip, ZoneBounds, ZoneTurnOrderEntry };
+export type { LabelSide, Strip, ZoneBounds, ZoneTurnOrderEntry };
 export default ZoneLabelLayout;

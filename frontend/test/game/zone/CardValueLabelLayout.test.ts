@@ -15,21 +15,6 @@ describe('CardValueLabelLayout', () => {
     RIGHT: { bl: corner(30, 20), br: corner(30, -20) }
   };
 
-  describe('sideOf', () => {
-    it.each([
-      { side: 'BOTTOM', offset: { x: 0, y: 30 } },
-      { side: 'TOP', offset: { x: 0, y: -30 } },
-      { side: 'LEFT', offset: { x: -30, y: 0 } },
-      { side: 'RIGHT', offset: { x: 30, y: 0 } }
-    ])('is $side for the edge at $offset', ({ side, offset }) => {
-      expect(layout.sideOf(offset)).toBe(side);
-    });
-
-    it('is the vertical side when the edge is as far on one axis as on the other', () => {
-      expect(layout.sideOf({ x: 30, y: 30 })).toBe('BOTTOM');
-    });
-  });
-
   describe('place', () => {
     it('puts the label below the card in the local zone', () => {
       const { side, position } = layout.place(SLOT_CENTER, cornersFacing.BOTTOM, LABEL_SIZE, 1);

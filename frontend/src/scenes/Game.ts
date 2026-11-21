@@ -224,7 +224,7 @@ class GameScene extends Scene {
         const zoneViews = ZoneViewFactory.createAllZoneViews(this, battlefield, playerWithTurn);
         ResourceSystem.trackBoard(zoneViews.flatMap((zoneView) => this.combatantsOf(zoneView)).map((combatant) => combatant.getImage()));
         for (const zoneView of zoneViews) {
-            zoneView.applyScale(this.cardValueUnitsPerPixel());
+            zoneView.applyScale(this.screenUnitsPerPixel());
             this.zones.push(zoneView);
             this.battlefieldContainer.add(zoneView);
             this.showCombatants(zoneView);
@@ -239,7 +239,7 @@ class GameScene extends Scene {
         this.zoneLabels?.destroy();
 
         const labels = new ZoneLabelsView(this, this.zones, this.shownPlayerWithTurn, !this.isLeaderIntroPending);
-        labels.applyScale(this.cardValueUnitsPerPixel());
+        labels.applyScale(this.screenUnitsPerPixel());
         this.battlefieldContainer.add(labels);
         this.zoneLabels = labels;
     }
@@ -255,13 +255,13 @@ class GameScene extends Scene {
         }
 
         const labels = new CardValueLabelsView(this, this.zones, values, this.isLeaderIntroPending);
-        labels.applyScale(this.cardValueUnitsPerPixel());
+        labels.applyScale(this.screenUnitsPerPixel());
         this.battlefieldContainer.add(labels);
         this.cardValueLabels = labels;
     }
 
-    /** A label is 18 px on the screen at the reference size, and the zoom of the camera shrinks or grows what it draws (VIEW-46, VIEW-24). */
-    public cardValueUnitsPerPixel(): number {
+    /** Units of the board for one px on the screen at the reference size: what keeps its size on the screen at any zoom is scaled by it (VIEW-24). */
+    public screenUnitsPerPixel(): number {
         return calculateScreenFit(this.scale) / this.cameraSystem.getCamera().zoom;
     }
 
@@ -318,13 +318,13 @@ class GameScene extends Scene {
     override update(time: number, delta: number): void {
         super.update(time, delta);
         this.handController.update();
-        this.updateCardValueLabels();
+        this.updateLabelScales();
         const canAct = this.cardController.canAct();
         this.hudView.refresh(canAct, canAct && StoreSystem.hasNothingLeftToDo());
     }
 
-    private updateCardValueLabels() {
-        const unitsPerPixel = this.cardValueUnitsPerPixel();
+    private updateLabelScales() {
+        const unitsPerPixel = this.screenUnitsPerPixel();
         if (this.cardValueLabels && this.cardValueLabels.getUnitsPerPixel() !== unitsPerPixel) {
             this.cardValueLabels.applyScale(unitsPerPixel);
         }

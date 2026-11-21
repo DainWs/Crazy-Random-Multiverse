@@ -1,8 +1,7 @@
 import type { Corners3D, Point2D, Size2D } from '@/domain/Geometry';
+import type { LabelSide } from '@/game/zone/ZoneLabelLayout';
 import { CARD_VALUE_LABEL_CARD_GAP } from '@/core/Constants';
-
-/** The edge of the card, as seen on the screen, that its label is next to (VIEW-47). */
-type LabelSide = 'BOTTOM' | 'TOP' | 'LEFT' | 'RIGHT';
+import ZoneLabelLayout from '@/game/zone/ZoneLabelLayout';
 
 interface LabelPlacement {
   side: LabelSide;
@@ -20,18 +19,7 @@ interface Centered {
  * where its center is, and in which order they are drawn.
  */
 class CardValueLabelLayout {
-  /** The bottom edge of a slot in the frame of its zone is the one between `bl` and `br`, so it faces away from the center of the table. */
-  public edgeOffset(corners: Pick<Corners3D, 'bl' | 'br'>): Point2D {
-    return { x: (corners.bl.x + corners.br.x) / 2, y: (corners.bl.y + corners.br.y) / 2 };
-  }
-
-  public sideOf(edgeOffset: Point2D): LabelSide {
-    if (Math.abs(edgeOffset.y) >= Math.abs(edgeOffset.x)) {
-      return edgeOffset.y >= 0 ? 'BOTTOM' : 'TOP';
-    }
-
-    return edgeOffset.x >= 0 ? 'RIGHT' : 'LEFT';
-  }
+  private readonly zoneLayout = new ZoneLabelLayout();
 
   /** `labelSize` is in px on the screen and `unitsPerPixel` turns it into the units of the space of `slotCenter`. */
   public place(
@@ -40,8 +28,8 @@ class CardValueLabelLayout {
     labelSize: Size2D,
     unitsPerPixel: number
   ): LabelPlacement {
-    const offset = this.edgeOffset(corners);
-    const side = this.sideOf(offset);
+    const offset = this.zoneLayout.edgeOffset(corners);
+    const side = this.zoneLayout.sideOf(offset);
     const edge = { x: slotCenter.x + offset.x, y: slotCenter.y + offset.y };
     const halfWidth = (labelSize.width / 2 + CARD_VALUE_LABEL_CARD_GAP) * unitsPerPixel;
     const halfHeight = (labelSize.height / 2 + CARD_VALUE_LABEL_CARD_GAP) * unitsPerPixel;
@@ -65,5 +53,5 @@ class CardValueLabelLayout {
   }
 }
 
-export type { LabelPlacement, LabelSide };
+export type { LabelPlacement };
 export default CardValueLabelLayout;

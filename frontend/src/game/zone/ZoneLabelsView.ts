@@ -1,7 +1,6 @@
 import type { PlayerCode } from '@/domain/Player';
 import type { Size2D } from '@/domain/Geometry';
-import type { Strip, ZoneBounds } from '@/game/zone/ZoneLabelLayout';
-import type { LabelSide } from '@/game/zone/CardValueLabelLayout';
+import type { LabelSide, Strip, ZoneBounds } from '@/game/zone/ZoneLabelLayout';
 import type { PaletteColor } from '@/game/utils/Palette';
 import type ZoneView from '@/game/zone/ZoneView';
 import Phaser from 'phaser';
@@ -10,7 +9,6 @@ import * as Constants from '@/core/Constants';
 import { getText } from '@/core/Texts';
 import { createPanel, createText } from '@/game/hud/HudPieces';
 import { paletteFill } from '@/game/utils/Palette';
-import CardValueLabelLayout from '@/game/zone/CardValueLabelLayout';
 import ZoneLabelLayout from '@/game/zone/ZoneLabelLayout';
 
 interface ZoneBar {
@@ -31,7 +29,6 @@ interface ZoneEntry {
 /** The name of each zone, the health bar of its leader and the mark of who plays next, around the zones of the board (VIEW-49, VIEW-50, VIEW-51). */
 class ZoneLabelsView extends Phaser.GameObjects.Container {
   private readonly layout = new ZoneLabelLayout();
-  private readonly cardLayout = new CardValueLabelLayout();
   private readonly entries: ZoneEntry[];
   private unitsPerPixel = 1;
 
@@ -75,7 +72,7 @@ class ZoneLabelsView extends Phaser.GameObjects.Container {
       return [tl, tr, bl, br].map((corner) => ({ x: zoneView.x + slotView.x + corner.x, y: zoneView.y + slotView.y + corner.y }));
     });
     const leaderSlot = zoneView.getSlots().flat().find((slotView) => slotView.zoneSlot.allowedCombatant === 'LEADER')!;
-    const side = this.cardLayout.sideOf(this.cardLayout.edgeOffset(leaderSlot.corners));
+    const side = this.layout.sideOf(this.layout.edgeOffset(leaderSlot.corners));
     const { label, size } = this.createName(zoneView, isNext);
     const entry: ZoneEntry = { bounds: this.layout.boundsOf(corners), side, name: label, nameSize: size };
 
