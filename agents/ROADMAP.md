@@ -22,7 +22,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Accepted risk: load without limit | A player can block the start of the game (`LOAD-3`) |
 | Accepted risk: wrong hand | The hand can stay wrong until the next `GAME_SYNC` (`CON-12`) |
 | Accepted risk: request without response | A request that reaches the server and is never answered has no client time limit, so the client waits until the page is reloaded (`UI-24`, `LOAD-7`) |
-| Settings screen | In the MVP with no options (`UI-33`), decided on 2026-11-20 in Phase 11.3: the card values outside the cards, its only section, were removed by the product owner on 2026-11-21, and the screen and its button stay. The graphics quality and reduced motion options stay Post-MVP (`UI-27`), and the MVP is built so that adding them only adds options to the screen, without changing the effects (`UI-30`) |
+| Settings screen | In the MVP with one option, the camera of the board (`UI-33`, `VIEW-57`), decided on 2026-11-20 in Phase 11.3 and changed on 2026-11-21: the card values outside the cards, its first section, were removed by the product owner, and the camera took their place. The graphics quality and reduced motion options stay Post-MVP (`UI-27`), and the MVP is built so that adding them only adds options to the screen, without changing the effects (`UI-30`) |
 | Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
 ## Phase 11.7 — UX/UI: learnability
@@ -30,6 +30,16 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 - [ ] Add a help button to the HUD that opens a panel over the board with a legend of the marks of the board: each one with its color, its second signal (Phase 11.1) and its meaning. The panel closes with the same button, with Escape and with a click outside it. Whether gameplay stays enabled while it is open is decided with the product owner. Write it in new `UI` and `VIEW` rules
 - [ ] Add to the panel of the previous bullet a summary of the rules, in a second section: the goal, the turn, placing a card, attacking, protection and elimination (`TURN-*`, `BOARD-*`, `PROT-*`, `ELIM-*`). The text is in Spanish, goes through the texts of `UI-2`, and is approved by the product owner. Write it in a new `UI` rule
 - [ ] Say in the side panel (`VIEW-14`) of an own card on the board, while the board being shown is the local player's turn, whether it can attack this turn, from `attackAvailable` (`CON-15`): a click on a card that cannot attack does nothing and says nothing (`UI-25`). The contract does not say why a card cannot attack, so the panel gives no reason. Write it in a new `VIEW` rule
+
+## Phase 11.8 — UX/UI: two cameras
+
+The board seen from above by default, and the tilted look of before as an option of the settings (`VIEW-57`, `UI-33`). Decided by the product owner on 2026-11-21, who asked for one interface with two implementations, so the change between them stays simple. It has two implementations from the start, so it is the case of `CODESTYLE.md` for an interface, like `BattlefieldViewStrategy`.
+
+- [ ] Put what differs between the cameras behind one strategy with two implementations, tilted and top-down, chosen by a dispatcher like that of `BattlefieldViewStrategy`: the projection of a point of the board (`ProjectionSystem`), the drawing of the table (`TableViewStrategy`), the framing of the camera (`resolveCameraConfiguration`) and whether a card is deformed to its slot (`VIEW-1`). The tilted implementation keeps the look of today, so this bullet changes no reference image
+- [ ] Add the top-down camera (`VIEW-57`): one scale for the whole board, the table as a rectangle with its border and without sides or legs, the cards flat and drawn without the Displacement filter and its buffer, and the whole table in view between the pieces of the HUD at every window from 1280 by 720 to 1920 by 1080 with 2 to 10 players (`VIEW-24`)
+- [ ] Draw the texts of a card of the board, with the top-down camera, with at least one pixel of the canvas for each pixel of the screen at any zoom, so zooming in makes the card sharper (`VIEW-57`)
+- [ ] Add the camera option to the settings screen, "Cenital" by default and kept in the browser, and apply a change at once, after the animations that are playing (`UI-33`, `VIEW-57`)
+- [ ] Move the points of the browser tests (`e2e/support/board.ts`) to the top-down camera, regenerate the reference images with the full suite, and keep one image of the tilted camera for 2, 6 and 10 players. A person approves the new images (`ROADMAP-TEST.md`, pending checks)
 
 ## Phase 12 — Menu, lobby, user
 
@@ -96,6 +106,16 @@ Not tied to a phase.
 - [x] State in `INTERFACE.md` that surrendering asks for confirmation (`ELIM-2`)
 - [x] State in `USER-4` that spaces are trimmed before validating the length, and in `USER-2` that the default name follows `USER-4`
 - [ ] Review the performance of the game: frame rate and frame time of the board with 10 players, with the animations of Phase 11.4 running, and the cost of the full-screen effects. Measure first and record what is found; the browser tests take screenshots of the whole page on every poll, which is also slow
+
+## Ideas
+
+Ideas the product owner chose on 2026-11-21 to make the values of the cards of the board easy to read, without floating information, from 50 proposals with an image each. They are not phases yet: each one needs its rule in `VIEW-SPECS.md` or `specs/ui/` before it is planned. The top-down camera (idea 01), chosen with them, is Phase 11.8.
+
+- **Health bar on the card** (idea 31). One bar along the bottom of every card of the board, as wide as the card, filled in green with the current health over the maximum (`CON-27`); what was lost is drawn dark. The bar has no armor part: the contract has no maximum armor, and the product owner chose not to add it. Decided on 2026-11-21.
+- **Bar only when wounded** (idea 32). A card that has not lost health has no bar, so the cards that were hit stand out on their own. With the previous idea, "wounded" is current health lower than the maximum. Decided on 2026-11-21.
+- **Numbers on the card.** The face of a card of the board shows its damage, large, and its armor; the health is the bar of idea 31. The exact health is read in the side panel (`VIEW-14`) and with the key of idea 42. Decided on 2026-11-21.
+- **Key of the values** (idea 42). While the player holds Alt down, every card of the board shows only its values: dark face, large damage and health, smaller armor. When it is released, the cards go back to their face. Decided on 2026-11-21. Known risk: on Windows, releasing Alt can take the focus to the menu of the browser, and the page cannot always prevent it.
+- **Health after the hit** (idea 49). With an attacker selected (`VIEW-4`) and the pointer over a valid target, the part of the target's bar that the attack would take is drawn striped in red. It follows the rules of combat: the attack takes armor or health, never both (`COMBAT-2` to `COMBAT-4`), so with armor of the type of the damage only the armor changes and the bar is not striped. The client computes it from the values it has, without changing the state (`UI-6`). **[OPEN]** Whether the keyboard (`UI-32`, `VIEW-42`) shows it too when it puts the focus on a target.
 
 ## Post-MVP
 
