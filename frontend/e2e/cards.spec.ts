@@ -33,8 +33,11 @@ test.describe('side panel of a combatant with equipment', () => {
     });
 });
 
-/** The card of the own warrior and the table to its left, where the pieces of equipment slide out. */
-const STACK_AREA: Area = { x: 640, y: 715, width: 280, height: 120 };
+/**
+ * The card of the own warrior with its frame and the table to its left, where the pieces of equipment slide out: measured with
+ * the top-down camera, the card goes from 848 to 912 by 724 to 824 at rest, and the pieces out reach 690.
+ */
+const STACK_AREA: Area = { x: 670, y: 705, width: 270, height: 140 };
 
 // VIEW-14, EQUIP-4
 test.describe('equipment stacked behind its combatant', () => {
