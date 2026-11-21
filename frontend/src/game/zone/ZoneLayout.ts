@@ -17,6 +17,13 @@ const MIN_NEIGHBOR_ZONES_GAP = 100;
 const MAX_ZONE_SCALE = 1.5;
 /** The scale of the zones is rounded down to a multiple of this, so a tiny gain does not change the layout. */
 const ZONE_SCALE_STEP = 0.05;
+/** Steps of the grid of the table between its edge and the outer edge of the zones. */
+const EDGE_MARGIN_GRID_STEPS = 2;
+
+/** Space between the edge of the table and the outer edge of the zones, in board units. */
+function calculateZoneEdgeMargin(battlefield: Battlefield): number {
+  return battlefield.skin.gridStep * EDGE_MARGIN_GRID_STEPS;
+}
 
 class ZoneLayout {
   private battlefield: Battlefield;
@@ -46,7 +53,7 @@ class ZoneLayout {
   }
 
   private calculateEdgeMargin(): number {
-    return this.battlefield.skin.gridStep * 2;
+    return calculateZoneEdgeMargin(this.battlefield);
   }
 
   private calculateZoneScale(): number {
@@ -164,4 +171,5 @@ class ZoneLayout {
   }
 }
 
+export { calculateZoneEdgeMargin };
 export default ZoneLayout;
