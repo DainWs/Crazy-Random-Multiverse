@@ -33,7 +33,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 11.8 — UX/UI: two cameras
 
-The board seen from above by default, and the tilted look of before as an option of the settings (`VIEW-57`, `UI-33`). Decided by the product owner on 2026-11-21, who asked for one interface with two implementations, so the change between them stays simple. It has two implementations from the start, so it is the case of `CODESTYLE.md` for an interface, like `BattlefieldViewStrategy`.
+The board seen from above by default, and the tilted look of before as an option of the settings (`VIEW-57`, `UI-33`). Decided by the product owner on 2026-11-21, who asked for one interface with two implementations, so the change between them stays simple. It has two implementations from the start, so it is the case of `CODESTYLE.md` for an interface, like `BattlefieldViewStrategy`. **[OPEN]** Whether it is done before Phase 11.7: the product owner decides at the start of the next session.
 
 - [ ] Put what differs between the cameras behind one strategy with two implementations, tilted and top-down, chosen by a dispatcher like that of `BattlefieldViewStrategy`: the projection of a point of the board (`ProjectionSystem`), the drawing of the table (`TableViewStrategy`), the framing of the camera (`resolveCameraConfiguration`) and whether a card is deformed to its slot (`VIEW-1`). The tilted implementation keeps the look of today, so this bullet changes no reference image
 - [ ] Add the top-down camera (`VIEW-57`): one scale for the whole board, the table as a rectangle with its border and without sides or legs, the cards flat and drawn without the Displacement filter and its buffer, and the whole table in view between the pieces of the HUD at every window from 1280 by 720 to 1920 by 1080 with 2 to 10 players (`VIEW-24`)
@@ -106,6 +106,7 @@ Not tied to a phase.
 - [x] State in `INTERFACE.md` that surrendering asks for confirmation (`ELIM-2`)
 - [x] State in `USER-4` that spaces are trimmed before validating the length, and in `USER-2` that the default name follows `USER-4`
 - [ ] Review the performance of the game: frame rate and frame time of the board with 10 players, with the animations of Phase 11.4 running, and the cost of the full-screen effects. Measure first and record what is found; the browser tests take screenshots of the whole page on every poll, which is also slow
+- [ ] Fix two browser tests that fail at `b46e9ea2`, before the removal of the card values, and fail the same after it (found on 2026-11-21; the full suite was not run after Phases 11.5 and 11.6). `layouts.spec.ts`, "shows the side panel of a card of the top side": an `expect(...).toBe(false)` receives `true`, probably because Phase 11.6 changed the side the panel opens on (`VIEW-14`). `zoneLabels.spec.ts`, "draws no health bar for the zone of an eliminated player": the image differs from `zone-labels-eliminated.png` in 5437 pixels, only in the end turn and surrender buttons (`VIEW-43`)
 
 ## Ideas
 
