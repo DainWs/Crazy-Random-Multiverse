@@ -11,7 +11,8 @@ const LEADER_ROW = 0;
 
 // VIEW-49, VIEW-50, VIEW-51: the labels of a board at rest are in the images of `layouts.spec.ts`
 test.describe('labels around the zones', () => {
-    test('fills the bar by the health of the leader and colors it by how much is left', async ({ page, backend }) => {
+    // VIEW-50: the fill is green at any share, so only its length tells how much is left
+    test('fills the bar by the health of the leader', async ({ page, backend }) => {
         const prepared = createPreparedGame(4);
         const healthByZone = [30, 20, 12, 3];
         prepared.game.zones.forEach((zone, index) => {
