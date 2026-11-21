@@ -11,19 +11,8 @@ test.describe('settings in the main menu', () => {
         await page.getByRole('button', { name: 'Ajustes' }).click();
     });
 
-    test('shows the three card values off the first time', async ({ page }) => {
-        await expect(page.getByRole('checkbox')).toHaveCount(3);
-        await expect(page.getByRole('checkbox', { checked: true })).toHaveCount(0);
-    });
-
-    test('keeps a card value that is on after reloading the page', async ({ page, backend }) => {
-        await page.getByRole('checkbox', { name: 'Vida' }).check();
-
-        await backend.reloadPage();
-        await page.getByRole('button', { name: 'Ajustes' }).click();
-
-        await expect(page.getByRole('checkbox', { name: 'Vida' })).toBeChecked();
-        await expect(page.getByRole('checkbox', { name: 'Daño' })).not.toBeChecked();
+    test('has no options', async ({ page }) => {
+        await expect(page.getByRole('dialog').getByRole('checkbox')).toHaveCount(0);
     });
 
     test('closes with its own button', async ({ page }) => {
@@ -65,20 +54,12 @@ test.describe('settings in the game', () => {
     });
 
     test('does not end the turn with Space while it is open', async ({ page, backend }) => {
-        await page.getByRole('checkbox', { name: 'Vida' }).focus();
+        await page.getByRole('heading', { name: 'Ajustes' }).click();
 
         await page.keyboard.press('Space');
         await page.waitForTimeout(ACTION_WAIT_MS);
 
         expect(backend.actions).toEqual([]);
-    });
-
-    test('turns a card value on with Space on its checkbox', async ({ page }) => {
-        await page.getByRole('checkbox', { name: 'Vida' }).focus();
-
-        await page.keyboard.press('Space');
-
-        await expect(page.getByRole('checkbox', { name: 'Vida' })).toBeChecked();
     });
 
     test('ends the turn with Space again once it is closed', async ({ page, backend }) => {

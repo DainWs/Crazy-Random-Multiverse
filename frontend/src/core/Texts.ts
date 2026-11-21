@@ -10,7 +10,6 @@ const TEXTS: Record<string, string> = {
   'ui.settings.open': 'Ajustes',
   'ui.settings.title': 'Ajustes',
   'ui.settings.close': 'Cerrar',
-  'ui.settings.card_values': 'Valores de la carta',
   'ui.party.members': 'Miembros',
   'ui.party.owner': 'Owner',
   'ui.party.code': 'Código',
