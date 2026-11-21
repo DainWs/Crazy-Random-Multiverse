@@ -20,9 +20,9 @@ const RIVAL_ZONE = 1;
 const SECOND_SLOT = { row: 1, column: 1 };
 const RIVAL_BACK_SLOT = { row: 1, column: 0 };
 const RIVAL_FRONT_SLOT = { row: 2, column: 0 };
-const RIVAL_FRONT_WARRIOR = { x: 1035, y: 302 };
+const RIVAL_FRONT_WARRIOR = { x: 1039, y: 420 };
 
-const BACK_ROW = { clip: { x: 820, y: 605, width: 290, height: 140 }, maxDiffPixels: 0 };
+const BACK_ROW = { clip: { x: 830, y: 710, width: 260, height: 130 }, maxDiffPixels: 0 };
 const REJECTION_MESSAGE_AREA = { x: 660, y: 40, width: 600, height: 40 };
 const NOT_YOUR_TURN_KEY = 'exception.player-action.allowed_only_on_turn';
 

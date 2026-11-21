@@ -7,7 +7,7 @@ type BoardCamera = 'TOP_DOWN' | 'TILTED';
 const BOARD_CAMERAS: readonly BoardCamera[] = ['TOP_DOWN', 'TILTED'];
 
 /** The camera of a player who never chose one, and of a choice kept that is not a camera (UI-33). */
-const DEFAULT_BOARD_CAMERA: BoardCamera = 'TILTED';
+const DEFAULT_BOARD_CAMERA: BoardCamera = 'TOP_DOWN';
 
 /** Where the browser keeps the camera: the preference stays on that device and is not sent anywhere (UI-27). */
 const BOARD_CAMERA_STORAGE_KEY = 'crm.settings.boardCamera';

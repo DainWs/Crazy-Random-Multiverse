@@ -55,6 +55,7 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 - **Symptom:** with software WebGL the browser tests measured 24.5 to 21 frames per second at 3 players, 24.25 to 19.5 at 5 and 23 to 15.5 at 10 after the cards were drawn in perspective (`VIEW-1`). On a desktop GPU 200 filtered cards kept 60 frames per second.
 - **Likely cause:** each card on the board has a Displacement filter on its inner container (`CardView.content`), so it is rendered to its own texture on every frame, and the cost grows with the cards on the table.
 - **Where to look:** `CardView.applyWarp` and `CardWarp.ts`. The filter goes on the inner container because a filter on a rotated container is drawn turned twice, and the container needs `setSize` or its output is drawn at the top left corner of the screen. Measure the frames per second at 3, 5 and 10 players with a `requestAnimationFrame` counter before adding another filter to the board.
+- **Since Phase 11.7:** only the tilted camera deforms the cards (`deformsCards` of `BoardCameraStrategy`, `VIEW-57`). The top-down camera, the default, draws them without the filter, so this cost is only paid by who chooses the tilted one.
 
 ## The hand does not open when the pointer comes back over the same card
 

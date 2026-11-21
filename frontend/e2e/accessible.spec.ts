@@ -1,14 +1,12 @@
 import type { Page } from '@playwright/test';
 import type BackendDouble from '@/support/BackendDouble';
 import type { PreparedGame } from '@/support/preparedGame';
-import { waitForStillFrame } from '@/support/board';
+import { EMPTY_TABLE, OWN_WARRIOR, waitForStillFrame } from '@/support/board';
 import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
-const OWN_WARRIOR = { x: 872, y: 670 };
-const EMPTY_TABLE = { x: 1250, y: 450 };
 const DRAG_STEPS = 12;
-const OWN_ZONE_AREA = { x: 800, y: 460, width: 320, height: 470 };
+const OWN_ZONE_AREA = { x: 830, y: 590, width: 260, height: 360 };
 
 /** Opens the board with the accessible mode on (UI-31). */
 async function openAccessibleGame(page: Page, backend: BackendDouble, prepared: PreparedGame): Promise<void> {

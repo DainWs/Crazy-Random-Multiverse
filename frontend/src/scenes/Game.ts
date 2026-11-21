@@ -22,6 +22,8 @@ import { createText } from '@/game/hud/HudPieces';
 import { paletteRgba } from '@/game/utils/Palette';
 import EffectSettings from '@/core/EffectSettings';
 import CameraSystem from '@/core/CameraSystem';
+import type { BoardCamera } from '@/core/SettingsSystem';
+import { watch } from 'vue';
 import SettingsSystem from '@/core/SettingsSystem';
 import { useBoardCamera } from '@/core/cameras/BoardCameraStrategyDispatcher';
 import BattlefieldView from '@/game/battlefield/BattlefieldView';
@@ -56,6 +58,8 @@ class GameScene extends Scene {
     private zoneLabels?: ZoneLabelsView;
     /** The turn of the board being shown, which the mark of who plays next follows (VIEW-51). */
     private shownPlayerWithTurn?: PlayerCode;
+    /** The board being shown, which can be behind the state while the animations of earlier events play (CON-12). */
+    private shownBattlefield?: Battlefield;
     public zones: ZoneView[];
 
     private readonly storeChangeHandlers: Record<GameChange, (event: GameChangeEvent) => void> = {
@@ -84,7 +88,7 @@ class GameScene extends Scene {
         if (EffectSettings.accessibleModeIsOn()) {
             this.cameras.main.setBackgroundColor(paletteRgba('SCREEN_VEIL', Constants.GAME_BACKGROUND_DIM_ALPHA));
         }
-        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2, this.battlefieldContainer);
+        this.setupBattlefieldCamera();
 
         this.handController.init();
     }
@@ -116,7 +120,26 @@ class GameScene extends Scene {
 
         const stopListening = StoreSystem.onChange((event) => this.storeChangeHandlers[event.change](event));
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
+        const stopWatchingCamera = watch(SettingsSystem.boardCamera, (camera) => this.queueBoardCamera(camera));
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopWatchingCamera);
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => AnimationSystem.clear());
+    }
+
+    /**
+     * A camera chosen in the settings waits for the animations that are playing, and then the board being shown is drawn again
+     * with it and framed again, which loses a pan or a zoom of the player (VIEW-57).
+     */
+    private queueBoardCamera(camera: BoardCamera) {
+        AnimationSystem.enqueue(async () => {
+            useBoardCamera(camera);
+            this.renderZones(this.shownBattlefield, this.shownPlayerWithTurn);
+            this.setupBattlefieldCamera();
+        });
+    }
+
+    private setupBattlefieldCamera() {
+        const { width, height } = REFERENCE_SCREEN;
+        this.cameraSystem.setupBattlefieldCamera(width / 2, height / 2, this.battlefieldContainer);
     }
 
     /** The hand, the HUD and the panel follow the screen on their own every frame, but the camera has to frame the board again (VIEW-24). */
@@ -209,6 +232,7 @@ class GameScene extends Scene {
         CardClickHandler.cancelTargeting();
         this.zones = [];
         this.zoneLabels = undefined;
+        this.shownBattlefield = battlefield;
         this.shownPlayerWithTurn = playerWithTurn;
         this.battlefieldContainer.removeAll(true);
 

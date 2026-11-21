@@ -34,7 +34,7 @@ test.describe('side panel of a combatant with equipment', () => {
 });
 
 /** The card of the own warrior and the table to its left, where the pieces of equipment slide out. */
-const STACK_AREA: Area = { x: 633, y: 610, width: 310, height: 130 };
+const STACK_AREA: Area = { x: 640, y: 715, width: 280, height: 120 };
 
 // VIEW-14, EQUIP-4
 test.describe('equipment stacked behind its combatant', () => {
@@ -94,8 +94,8 @@ test.describe('side panel of a card that disappears', () => {
     });
 });
 
-/** A warrior of the zone of the right side when the board is zoomed in with 10 players, which is under the right quarter of the screen. */
-const RIGHT_SIDE_WARRIOR = { x: 1560, y: 545 };
+/** A warrior of the zone of the right side when the board is zoomed in with 10 players, which is in the right half of the screen. */
+const RIGHT_SIDE_WARRIOR = { x: 1422, y: 583 };
 const MAX_ZOOM_STEPS = 2;
 const LEFT_PANEL_AREA: Area = { x: 0, y: 0, width: 480, height: 1080 };
 

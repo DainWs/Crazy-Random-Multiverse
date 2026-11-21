@@ -1,7 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import ProjectionSystem from '@/core/ProjectionSystem';
+import { useBoardCamera } from '@/core/cameras/BoardCameraStrategyDispatcher';
+import { DEFAULT_BOARD_CAMERA } from '@/core/SettingsSystem';
 
+// The projection is the one of the camera in use: these values are those of the tilted one (VIEW-57)
 describe('ProjectionSystem', () => {
+  beforeEach(() => {
+    useBoardCamera('TILTED');
+  });
+
+  afterEach(() => {
+    useBoardCamera(DEFAULT_BOARD_CAMERA);
+  });
+
   describe('toPoint3D', () => {
     it('projects the origin correctly', () => {
       const result = ProjectionSystem.toPoint3D({ x: 0, y: 0 });

@@ -1,4 +1,4 @@
-import { openGame } from '@/support/board';
+import { openGame, waitForStillFrame } from '@/support/board';
 import { createPreparedGame } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -11,8 +11,20 @@ test.describe('settings in the main menu', () => {
         await page.getByRole('button', { name: 'Ajustes' }).click();
     });
 
-    test('has no options', async ({ page }) => {
-        await expect(page.getByRole('dialog').getByRole('checkbox')).toHaveCount(0);
+    // VIEW-57
+    test('chooses the top-down camera the first time', async ({ page }) => {
+        await expect(page.getByRole('radio', { name: 'Cenital' })).toBeChecked();
+        await expect(page.getByRole('radio', { name: 'Inclinada' })).not.toBeChecked();
+    });
+
+    // VIEW-57
+    test('keeps the chosen camera after reloading the page', async ({ page, backend }) => {
+        await page.getByRole('radio', { name: 'Inclinada' }).check();
+
+        await backend.reloadPage();
+        await page.getByRole('button', { name: 'Ajustes' }).click();
+
+        await expect(page.getByRole('radio', { name: 'Inclinada' })).toBeChecked();
     });
 
     test('closes with its own button', async ({ page }) => {
@@ -60,6 +72,17 @@ test.describe('settings in the game', () => {
         await page.waitForTimeout(ACTION_WAIT_MS);
 
         expect(backend.actions).toEqual([]);
+    });
+
+    // VIEW-57
+    test('draws the board again with the camera chosen', async ({ page }) => {
+        const topDown = await page.screenshot();
+
+        await page.getByRole('radio', { name: 'Inclinada' }).check();
+        await page.keyboard.press('Escape');
+        await waitForStillFrame(page, topDown);
+
+        await expect(page).toHaveScreenshot('camera-changed-to-tilted.png', { maxDiffPixels: 0 });
     });
 
     test('ends the turn with Space again once it is closed', async ({ page, backend }) => {

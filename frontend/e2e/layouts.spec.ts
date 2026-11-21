@@ -1,14 +1,16 @@
 import type { Point } from '@/support/board';
 import { LEFT_TOOLTIP_AREA, TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard } from '@/support/board';
 import { expect, test } from '@/support/test';
+import { BOARD_CAMERA_STORAGE_KEY } from '@/core/SettingsSystem';
 
-/** Where the cards of the prepared game of ten players are drawn at its initial zoom. */
-const TEN_OWN_WARRIOR: Point = { x: 910, y: 782 };
-const TEN_TOP_RIVAL_WARRIOR: Point = { x: 988, y: 125 };
-const TEN_SIDE_RIVAL_WARRIOR: Point = { x: 665, y: 325 };
-const TEN_EMPTY_TABLE: Point = { x: 1250, y: 650 };
+/** Where the cards of the prepared game of ten players are drawn at its initial zoom, with the top-down camera. */
+const TEN_OWN_WARRIOR: Point = { x: 921, y: 861 };
+const TEN_TOP_RIVAL_WARRIOR: Point = { x: 998, y: 218 };
+const TEN_SIDE_RIVAL_WARRIOR: Point = { x: 638, y: 343 };
+const TEN_EMPTY_TABLE: Point = { x: 1100, y: 650 };
 
 const PLAYER_COUNTS = [2, 3, 4, 6, 10].map((playerCount) => ({ playerCount }));
+const TILTED_PLAYER_COUNTS = [2, 6, 10];
 
 // VIEW-2, VIEW-13
 test.describe('layouts of the table', () => {
@@ -17,6 +19,21 @@ test.describe('layouts of the table', () => {
             await openBoard(page, backend, playerCount);
 
             await expect(page).toHaveScreenshot(`layout-${playerCount}-players.png`, { maxDiffPixels: 0 });
+        });
+    }
+});
+
+// VIEW-57: the tilted camera is an option of the settings, so one image of it is kept for each size of the table
+test.describe('layouts of the table with the tilted camera', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.addInitScript((key) => window.localStorage.setItem(key, 'TILTED'), BOARD_CAMERA_STORAGE_KEY);
+    });
+
+    for (const playerCount of TILTED_PLAYER_COUNTS) {
+        test(`shows the tilted table of ${playerCount} players`, async ({ page, backend }) => {
+            await openBoard(page, backend, playerCount);
+
+            await expect(page).toHaveScreenshot(`layout-tilted-${playerCount}-players.png`, { maxDiffPixels: 0 });
         });
     }
 });
