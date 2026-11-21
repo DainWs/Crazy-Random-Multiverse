@@ -5,10 +5,10 @@ import {
     TABLE_AREA,
     VIEW_CENTER,
     WHEEL_UP_DELTA,
+    cardArea,
     darkShare,
     frameOf,
     hover,
-    isArrowRedBetween,
     openBoard,
     pan,
     waitForStillFrame,
@@ -75,8 +75,10 @@ test.describe('panning the camera', () => {
 
         // VIEW-19, VIEW-4
         test(`keeps the selection of an attacker while panning with the ${button} button`, async ({ page }) => {
+            const atRest = await frameOf(page, cardArea(OWN_WARRIOR));
             await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
             await hover(page, EMPTY_TABLE);
+            const selected = await frameOf(page, cardArea(OWN_WARRIOR));
 
             await page.mouse.down({ button });
             await page.mouse.move(EMPTY_TABLE.x + SHORT_PAN.x, EMPTY_TABLE.y, { steps: DRAG_STEPS });
@@ -84,7 +86,8 @@ test.describe('panning the camera', () => {
             await page.mouse.up({ button });
             await waitForStillFrame(page);
 
-            expect(await isArrowRedBetween(page, OWN_WARRIOR, EMPTY_TABLE)).toBe(true);
+            expect(selected.equals(atRest)).toBe(false);
+            expect((await frameOf(page, cardArea(OWN_WARRIOR))).equals(selected)).toBe(true);
         });
     }
 

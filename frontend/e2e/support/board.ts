@@ -21,7 +21,6 @@ const WHEEL_DOWN_DELTA = 100;
 const WHEEL_UP_DELTA = -100;
 const STILL_FRAME_TIMEOUT_MS = 10000;
 const DRAG_STEPS = 12;
-const ARROW_RED_MIN_VALUE = 180;
 
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
 const OWN_WARRIOR: Point = { x: 872, y: 670 };
@@ -145,40 +144,62 @@ async function dragTo(page: Page, from: Point, to: Point): Promise<void> {
     await waitForStillFrame(page);
 }
 
+const CARD_AREA_MARGIN = 70;
+
+/** The area of a card drawn around `center`, with room for its lift (VIEW-4). */
+function cardArea(center: Point): Area {
+    return {
+        x: center.x - CARD_AREA_MARGIN,
+        y: center.y - CARD_AREA_MARGIN,
+        width: CARD_AREA_MARGIN * 2,
+        height: CARD_AREA_MARGIN * 2
+    };
+}
+
 function frameOf(page: Page, clip: Area): Promise<Buffer> {
     return page.screenshot({ clip });
 }
 
-async function isArrowGreenBetween(page: Page, from: Point, to: Point): Promise<boolean> {
-    const [red, green, blue] = await readArrowMiddle(page, from, to);
+/** The frames of the attack (VIEW-4): the strong green and red that the dark table and the art of the cards seldom have. */
+type FrameColor = 'green' | 'red';
 
-    return green > red && green > blue;
+const FRAME_AREA_MARGIN = 80;
+const FRAME_MIN_PIXELS = 60;
+
+/** How many pixels around `center` have the color of a frame. */
+async function countFramePixels(page: Page, center: Point, color: FrameColor): Promise<number> {
+    const clip = { x: center.x - FRAME_AREA_MARGIN, y: center.y - FRAME_AREA_MARGIN, width: FRAME_AREA_MARGIN * 2, height: FRAME_AREA_MARGIN * 2 };
+    const area = await page.screenshot({ clip });
+
+    return page.evaluate(countPixels, { base64: area.toString('base64'), color });
 }
 
-/** The table is dark and reddish, so only the strong red of the arrow passes. */
-async function isArrowRedBetween(page: Page, from: Point, to: Point): Promise<boolean> {
-    const [red, green] = await readArrowMiddle(page, from, to);
-
-    return red > ARROW_RED_MIN_VALUE && green < red / 2;
+/** Whether a frame of `color` has appeared around `center` since `before`, which is what `countFramePixels` gave then. */
+async function hasFrameSince(page: Page, center: Point, color: FrameColor, before: number): Promise<boolean> {
+    return (await countFramePixels(page, center, color)) - before > FRAME_MIN_PIXELS;
 }
 
-/** The arrow is straight, so its middle is halfway between the attacker and the pointer. */
-async function readArrowMiddle(page: Page, from: Point, to: Point): Promise<number[]> {
-    const clip = { x: Math.round((from.x + to.x) / 2), y: Math.round((from.y + to.y) / 2), width: 1, height: 1 };
-    const pixel = await page.screenshot({ clip });
-
-    return page.evaluate(readPixel, pixel.toString('base64'));
-}
-
-async function readPixel(base64: string): Promise<number[]> {
+async function countPixels({ base64, color }: { base64: string; color: FrameColor }): Promise<number> {
+    const matches = {
+        green: (red: number, green: number, blue: number) => green > 150 && red < 100 && blue < 140,
+        red: (red: number, green: number, blue: number) => red > 200 && green < 110 && blue < 100
+    }[color];
     const image = new Image();
     image.src = `data:image/png;base64,${base64}`;
     await image.decode();
 
-    const context = new OffscreenCanvas(1, 1).getContext('2d')!;
+    const context = new OffscreenCanvas(image.width, image.height).getContext('2d')!;
     context.drawImage(image, 0, 0);
+    const { data } = context.getImageData(0, 0, image.width, image.height);
 
-    return Array.from(context.getImageData(0, 0, 1, 1).data);
+    let count = 0;
+    for (let index = 0; index < data.length; index += 4) {
+        if (matches(data[index], data[index + 1], data[index + 2])) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 function atZoom(point: Point, zoom: number): Point {
@@ -209,12 +230,13 @@ export {
     VIEW_CENTER,
     WHEEL_UP_DELTA,
     atZoom,
+    cardArea,
     darkShare,
     dragTo,
     frameOf,
     hover,
-    isArrowGreenBetween,
-    isArrowRedBetween,
+    countFramePixels,
+    hasFrameSince,
     openBoard,
     openGame,
     pan,

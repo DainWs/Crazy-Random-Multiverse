@@ -13,10 +13,11 @@ import {
     RIVAL_WARRIOR,
     SIDE_RIVAL_WARRIOR,
     TOOLTIP_AREA,
+    countFramePixels,
     dragTo,
     frameOf,
+    hasFrameSince,
     hover,
-    isArrowGreenBetween,
     openBoard,
     waitForStillFrame
 } from '@/support/board';
@@ -179,12 +180,13 @@ test.describe('game of two players', () => {
     });
 
     // VIEW-4, UI-5
-    test('draws a green arrow over a valid target', async ({ page }) => {
+    test('frames a valid target in green', async ({ page }) => {
+        const before = await countFramePixels(page, RIVAL_WARRIOR, 'green');
         await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
 
         await hover(page, RIVAL_WARRIOR);
 
-        expect(await isArrowGreenBetween(page, OWN_WARRIOR, RIVAL_WARRIOR)).toBe(true);
+        expect(await hasFrameSince(page, RIVAL_WARRIOR, 'green', before)).toBe(true);
     });
 
     // VIEW-4
@@ -228,11 +230,12 @@ test.describe('game of two players', () => {
     // COMBAT-11
     test('does not select an attacker that has attacked', async ({ page, backend }) => {
         await attackRival(page, backend, game);
+        const before = await countFramePixels(page, RIVAL_WARRIOR, 'green');
 
         await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
         await hover(page, RIVAL_WARRIOR);
 
-        expect(await isArrowGreenBetween(page, OWN_WARRIOR, RIVAL_WARRIOR)).toBe(false);
+        expect(await hasFrameSince(page, RIVAL_WARRIOR, 'green', before)).toBe(false);
     });
 });
 

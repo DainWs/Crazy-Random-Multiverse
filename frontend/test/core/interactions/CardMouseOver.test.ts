@@ -11,6 +11,15 @@ vi.mock('@/core/visual_effects/CardAnimator', () => ({
   }
 }));
 
+const mockAttackHandlesOver = vi.fn(() => false);
+const mockAttackHandlesOut = vi.fn(() => false);
+vi.mock('@/core/interactions/CardClickHandler', () => ({
+  default: {
+    onPointerOver: () => mockAttackHandlesOver(),
+    onPointerOut: () => mockAttackHandlesOut()
+  }
+}));
+
 describe('CardMouseOver', () => {
   let mockTooltipView: { show: ReturnType<typeof vi.fn>; hide: ReturnType<typeof vi.fn> };
   let mockScene: GameScene;
@@ -63,6 +72,17 @@ describe('CardMouseOver', () => {
       expect(CardAnimator.playTween).toHaveBeenCalledWith(card, 'hover');
       expect(mockTooltipView.show).toHaveBeenCalledWith(card);
     });
+
+    // VIEW-4
+    it('shows the tooltip but does not enlarge the card when the attack in course lifts it instead', () => {
+      mockAttackHandlesOver.mockReturnValueOnce(true);
+      const card = createMockCard(true);
+
+      CardMouseOver.onPointerOver(mockScene, card);
+
+      expect(CardAnimator.playTween).not.toHaveBeenCalled();
+      expect(mockTooltipView.show).toHaveBeenCalledWith(card);
+    });
   });
 
   describe('onPointerOut', () => {
@@ -74,6 +94,16 @@ describe('CardMouseOver', () => {
 
       expect(canvasStyle.cursor).toBe('default');
       expect(CardAnimator.playTween).toHaveBeenCalledWith(card, 'unhover');
+      expect(mockTooltipView.hide).toHaveBeenCalledTimes(1);
+    });
+
+    // VIEW-4
+    it('hides the tooltip but does not lower the card when the attack in course lowers it instead', () => {
+      mockAttackHandlesOut.mockReturnValueOnce(true);
+
+      CardMouseOver.onPointerOut(mockScene, createMockCard(true));
+
+      expect(CardAnimator.playTween).not.toHaveBeenCalled();
       expect(mockTooltipView.hide).toHaveBeenCalledTimes(1);
     });
   });

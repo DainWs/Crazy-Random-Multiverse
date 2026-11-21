@@ -188,14 +188,14 @@ class CardController {
     return new Action(gameCode, source, target);
   }
 
-  /** Nothing changes on screen until the server answers; the state changes with the events (ARCH-2, CON-19). */
-  public attackCardOnZoneSlot(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView) {
+  /** Nothing changes on screen until the server answers, except what `undoPreview` undoes if it rejects; the state changes with the events (ARCH-2, CON-19). */
+  public attackCardOnZoneSlot(fromZoneSlot: ZoneSlotView, toZoneSlot: ZoneSlotView, undoPreview?: UndoPreviewCallback) {
     if (!this.canAct() || !fromZoneSlot.canAttack(toZoneSlot)) {
       return false;
     }
 
     const action = this.createAttackAction(fromZoneSlot, toZoneSlot);
-    void this.send("ATTACK_ACTION", action);
+    void this.send("ATTACK_ACTION", action, undoPreview);
     return true;
   }
 

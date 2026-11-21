@@ -1,24 +1,30 @@
 import type Perspective from "@/game/perspectives/Perspective";
 import type ZoneSlotView from "@/game/zone/ZoneSlotView";
 import type { GameScene } from "@/scenes/Game";
+import type { LiftSize } from "@/game/zone/CardLift";
 import Phaser from "phaser";
-import { getTopGameObjectAtCursor } from "@/core/interactions/InteractiveObjectManager";
 import CardView from "@/game/cards/CardView";
-import AttackArrowLayout from "@/game/perspectives/AttackArrowLayout";
+import CardLift from "@/game/zone/CardLift";
+import StoreSystem from "@/core/StoreSystem";
 import * as Constants from "@/core/Constants";
-import { paletteFill } from "@/game/utils/Palette";
 
 const CANCEL_KEY_EVENT = "keydown-ESC";
 
-/** Draws an arrow from the attacking slot to the pointer, green over a target it can reach and red otherwise (VIEW-4). */
+const ATTACKER_LIFT: LiftSize = { scale: Constants.ATTACKER_LIFT_SCALE, shadowOffset: Constants.ATTACKER_SHADOW_OFFSET };
+const TARGET_LIFT: LiftSize = { scale: Constants.TARGET_LIFT_SCALE, shadowOffset: Constants.TARGET_SHADOW_OFFSET };
+
+type LiftedTarget = { slot: ZoneSlotView; lift: CardLift };
+
+/** The selected attacker is lifted, and so is the rival card under the pointer, framed green if it can be attacked and red if not (VIEW-4). */
 class AttackTargetingPerspective implements Perspective {
     public readonly sourceSlot: ZoneSlotView;
 
     private readonly scene: GameScene;
     private readonly onCancel: () => void;
-    private arrow: Phaser.GameObjects.Graphics | null = null;
+    private readonly sourceLift: CardLift;
+    private target?: LiftedTarget;
+    private committed = false;
 
-    private readonly handlePointerMove = (pointer: Phaser.Input.Pointer) => this.drawArrow(pointer);
     private readonly handlePointerDown = (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {
         if (pointer.button !== Constants.PRIMARY_BUTTON) return;
 
@@ -32,77 +38,83 @@ class AttackTargetingPerspective implements Perspective {
         this.scene = scene;
         this.sourceSlot = sourceSlot;
         this.onCancel = onCancel;
+        this.sourceLift = new CardLift(scene, sourceSlot, ATTACKER_LIFT);
     }
 
     public enter(): void {
-        this.highlightSlots();
-        this.arrow = this.scene.add.graphics();
-        this.arrow.setDepth(Constants.ATTACK_ARROW_DEPTH);
+        this.sourceLift.lift();
 
-        this.scene.input.on("pointermove", this.handlePointerMove);
         this.scene.input.on("pointerdown", this.handlePointerDown);
         this.scene.input.keyboard?.on(CANCEL_KEY_EVENT, this.handleCancelKey);
         this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleCancelKey);
-        this.drawArrow(this.scene.input.activePointer);
     }
 
     public exit(): void {
-        this.unhighlightSlots();
-        this.scene.input.off("pointermove", this.handlePointerMove);
+        this.stopListening();
+        this.sourceLift.lower();
+        this.target?.lift.lower();
+        this.target = undefined;
+        this.scene.restoreBoardOrder();
+    }
+
+    public isCommitted(): boolean {
+        return this.committed;
+    }
+
+    /** The attacker and the target stay lifted while the server answers; only `exit` lowers them (VIEW-4, UI-4). */
+    public commit(targetSlot: ZoneSlotView): void {
+        this.stopListening();
+        this.committed = true;
+
+        if (this.target?.slot !== targetSlot) {
+            this.liftTarget(targetSlot);
+        }
+    }
+
+    /** Whether the hover of the card in `slot` is the lift of the attack and not the enlargement of `VIEW-14`. */
+    public hover(slot: ZoneSlotView): boolean {
+        if (this.committed || slot === this.sourceSlot || this.isOwn(slot)) {
+            return this.isInvolved(slot);
+        }
+
+        this.liftTarget(slot);
+        return true;
+    }
+
+    public unhover(slot: ZoneSlotView): boolean {
+        if (this.committed || slot === this.sourceSlot || this.isOwn(slot)) {
+            return this.isInvolved(slot);
+        }
+
+        if (this.target?.slot === slot) {
+            this.target.lift.lower();
+            this.target = undefined;
+        }
+
+        return true;
+    }
+
+    private liftTarget(slot: ZoneSlotView): void {
+        this.target?.lift.lower();
+
+        const lift = new CardLift(this.scene, slot, TARGET_LIFT);
+        lift.lift();
+        lift.frame(this.sourceSlot.canAttack(slot));
+        this.target = { slot, lift };
+    }
+
+    private isOwn(slot: ZoneSlotView): boolean {
+        return slot.zone.isPlayerOwner(StoreSystem.getPlayer());
+    }
+
+    private isInvolved(slot: ZoneSlotView): boolean {
+        return slot === this.sourceSlot || slot === this.target?.slot;
+    }
+
+    private stopListening(): void {
         this.scene.input.off("pointerdown", this.handlePointerDown);
         this.scene.input.keyboard?.off(CANCEL_KEY_EVENT, this.handleCancelKey);
         this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.handleCancelKey);
-        this.arrow?.destroy();
-        this.arrow = null;
-    }
-
-    /** Marks the attacker and the cards it can attack (UI-5). */
-    private highlightSlots(): void {
-        this.sourceSlot.applyAnimation("highlight_as_source");
-        for (const slot of this.getSlots()) {
-            if (this.sourceSlot.canAttack(slot)) {
-                slot.applyAnimation("highlight_as_target");
-            }
-        }
-    }
-
-    private unhighlightSlots(): void {
-        for (const slot of [this.sourceSlot, ...this.getSlots()]) {
-            if (slot.active) {
-                slot.applyAnimation("unhighlight");
-            }
-        }
-    }
-
-    private getSlots(): ZoneSlotView[] {
-        return this.scene.zones.flatMap((zone) => zone.getSlots().flat());
-    }
-
-    /** The zones are drawn again when the state changes, which destroys the slot the arrow starts from. */
-    private drawArrow(pointer: Phaser.Input.Pointer): void {
-        if (!this.sourceSlot.active) {
-            this.onCancel();
-            return;
-        }
-
-        const origin = this.sourceSlot.getWorldTransformMatrix();
-        const hoveredSlot = getTopGameObjectAtCursor(this.scene, "ZoneSlotView") as ZoneSlotView | undefined;
-        const target = hoveredSlot && this.sourceSlot.canAttack(hoveredSlot) ? hoveredSlot : undefined;
-        const color = target ? paletteFill('MARK_VALID') : paletteFill('MARK_INVALID');
-
-        const layout = new AttackArrowLayout({ x: origin.tx, y: origin.ty });
-        const tip = layout.tip({ x: pointer.worldX, y: pointer.worldY }, target && this.targetOf(target));
-
-        this.arrow?.clear();
-        this.arrow?.lineStyle(Constants.ATTACK_ARROW_LINE_WIDTH, color);
-        this.arrow?.lineBetween(origin.tx, origin.ty, tip.x, tip.y);
-        this.arrow?.fillStyle(color);
-        this.arrow?.fillTriangle(...layout.head(tip));
-    }
-
-    private targetOf(slot: ZoneSlotView) {
-        const center = slot.getWorldTransformMatrix();
-        return { center: { x: center.tx, y: center.ty }, radius: AttackArrowLayout.targetRadius(slot.corners) };
     }
 }
 

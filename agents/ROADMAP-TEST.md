@@ -46,7 +46,7 @@ Started at: `e6be12f` · Finished at: `4fe6e29`
 Needs the tooling of T6.
 
 - [x] Dragging a warrior onto an occupied slot of its zone shows both cards swapped while the server answers, and both go back to their slots with the message when it rejects the move (`BOARD-7`, `UI-6`)
-- [x] While an attack is being aimed the arrow is red outside a valid target, and Escape or a click outside the cards cancels the selection (`VIEW-4`)
+- [x] While an attack is being aimed the attacker is lifted, and Escape or a click outside the cards cancels the selection (`VIEW-4`)
 - [x] Reference image approved by a person while an attack is being aimed: the attacker marked in red, the cards it can attack in green, and a card with its attack used or a protected card not marked (`UI-5`). The marks disappear when the attack is made or cancelled
 
 ## T5 — Elimination and game end
@@ -77,14 +77,14 @@ Done before Phase 7 of `ROADMAP.md`, so that the next phases have a safety net.
 
 **Visual regression:**
 - [x] Reference images approved by a person of the table, the board, the hand and the tooltip, with cards in the rival hands (`HAND-3`). `HAND-3` no longer shows them: the images that show the `Mano:` label of the rival zones are regenerated in Phase 10 of `ROADMAP.md`
-- [x] The board, the slots and the arrow keep their shape at zooms from 0.5 to 1.1 (`PHASER4-SPECS.md`)
+- [x] The board, the slots and the lifted cards of an attack keep their shape at zooms from 0.5 to 1.1 (`PHASER4-SPECS.md`)
 - [x] Cover the sharpness of the cards and texts, so that it can leave "Pending checks"
 
 **Smoke test:**
 - [x] Phaser starts with WebGL and reaches the main menu with no console errors other than the expected 400 of `/user` without a session
 - [x] Hovering a card of the hand expands the hand and shows the side panel, and leaving the card closes the panel (`VIEW-14`, `VIEW-16`)
 - [x] Dragging a warrior from the hand to a valid slot sends `PUT_ACTION` with the row of that slot (`CON-14`) and the board shows it, with `dragenter` and `drop` reaching the slot under the pointer
-- [x] Clicking an own card and moving over a valid target draws the green arrow and shows the target in the side panel (`VIEW-4`, `UI-5`)
+- [x] Clicking an own card and moving over a valid target lifts the target with the green frame and shows it in the side panel (`VIEW-4`, `UI-5`)
 - [x] Clicking the target attacks: its health goes down, and an attacker cannot attack again in the turn (`BOARD-9`)
 - [x] In a game of three players, hover, drag and drop and targets work on the rotated side zones (`VIEW-2`). A card can only be dropped on the zone of its owner, which is never rotated, so the drop on a rotated zone is checked to send no action
 
@@ -130,7 +130,7 @@ Automated tests for the checks that were done by hand in a real browser, with tw
 - [ ] A second game can be started from the same party, with the game scene starting again and no console errors from the first game (`UI-17`)
 
 **Visual regression:**
-- [ ] Reference images approved by a person of the attack arrow, the confirmation dialog and the result
+- [ ] Reference images approved by a person of the lifted cards of the attack, the confirmation dialog and the result
 
 **Reconnection and spectators:**
 - [ ] A reload or a lost connection with several cards in the hand, among them copies of the same card, restores the hand from `GAME_SYNC` without duplicating or losing cards (`CON-11`, `CON-13`, `HAND-4`)

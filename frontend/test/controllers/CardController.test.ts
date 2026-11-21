@@ -616,5 +616,25 @@ describe('CardController', () => {
 
       expect(onRejected).toHaveBeenCalledWith('exception.player-action.selected_target_is_protected');
     });
+
+    // VIEW-4
+    it('undoes the preview when the server rejects the attack', async () => {
+      const undoPreview = vi.fn();
+      sendPlayerAction.mockRejectedValue(new ApiException('exception.player-action.selected_target_is_protected'));
+      controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot), undoPreview);
+
+      await flushPromises();
+
+      expect(undoPreview).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the preview when the server accepts the attack', async () => {
+      const undoPreview = vi.fn();
+      controller.attackCardOnZoneSlot(asSlotView(fromSlot), asSlotView(targetSlot), undoPreview);
+
+      await flushPromises();
+
+      expect(undoPreview).not.toHaveBeenCalled();
+    });
   });
 });

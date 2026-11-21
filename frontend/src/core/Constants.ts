@@ -58,26 +58,29 @@ export const TURN_NOTICE_PADDING = { x: 28, y: 12 };
 /** Depth of the notice of a new round or turn: above the cards. */
 export const TURN_NOTICE_DEPTH = 20000;
 
-/** Thickness in pixels of the attack arrow line. */
-export const ATTACK_ARROW_LINE_WIDTH = 8;
+/** Size of the selected attacker while it is lifted, relative to its rest size (VIEW-4). */
+export const ATTACKER_LIFT_SCALE = 1.12;
 
-/** Length in pixels of each side of the attack arrow head. */
-export const ATTACK_ARROW_HEAD_LENGTH = 40;
+/** Offset down on the screen of the shadow of the lifted attacker, as a fraction of the height of the card (VIEW-4). */
+export const ATTACKER_SHADOW_OFFSET = 0.06;
 
-/** Angle in radians between the attack arrow line and each side of its head. */
-export const ATTACK_ARROW_HEAD_ANGLE = Math.PI / 7;
+/** Size of the rival card under the pointer while an attacker is selected, relative to its rest size (VIEW-4). */
+export const TARGET_LIFT_SCALE = 1.06;
 
-/** Distance in board-space units between the tip of the attack arrow and the card of the valid target it points at (UI-5). */
-export const ATTACK_ARROW_TARGET_GAP = 8;
+/** Offset down on the screen of the shadow of the lifted rival card, as a fraction of the height of the card (VIEW-4). */
+export const TARGET_SHADOW_OFFSET = 0.03;
+
+/** Opacity of the black shadow of a lifted card, between 0 and 1 (VIEW-4). */
+export const LIFT_SHADOW_ALPHA = 0.35;
+
+/** Diameter in board-space units of the crossed circle of a rival card that cannot be attacked, which is 32 px on the screen at 1920 by 1080 and zoom 1 (VIEW-4). */
+export const FORBIDDEN_ICON_DIAMETER = 32;
 
 /** Duration in milliseconds of one pulse of the frame of an own card that can attack now (VIEW-17). */
 export const SLOT_MARKER_READY_PULSE_PERIOD_MS = 1600;
 
 /** Lowest alpha of the pulse of the frame of an own card that can attack now, between 0 and 1 (VIEW-17). */
 export const SLOT_MARKER_READY_MIN_ALPHA = 0.5;
-
-/** Depth of the attack arrow, above the cards and the hand. */
-export const ATTACK_ARROW_DEPTH = 20000;
 
 
 /** Distance in pixels from the edges of the screen to the turn indicator and the buttons of the game HUD (UI-3). */

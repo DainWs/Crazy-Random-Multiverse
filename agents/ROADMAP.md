@@ -27,7 +27,9 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 
 ## Phase 11.4 — UX/UI: feedback and game feel
 
-- [ ] Implement the attack of `specs/ui/COMBAT-ATTACK.md` (`VIEW-4`), rewritten on 2026-11-14 together with `UI-5`, `UI-25` and `VIEW-17`, with the shadows and the size of the icon chosen on 2026-11-17. Remove the arrow, and regenerate the reference images of the arrow and of `attack-marks`. The product owner had chosen a small bounce for the lift, but the questionnaire did not offer them the option without it; the developer chose it without bounce (`VIEW-31`)
+Started at: e061b6f
+
+- [x] Implement the attack of `specs/ui/COMBAT-ATTACK.md` (`VIEW-4`), rewritten on 2026-11-14 together with `UI-5`, `UI-25` and `VIEW-17`, with the shadows and the size of the icon chosen on 2026-11-17. Remove the arrow, and regenerate the reference images of the arrow and of `attack-marks`. The product owner had chosen a small bounce for the lift, but the questionnaire did not offer them the option without it; the developer chose it without bounce (`VIEW-31`)
 - [ ] Implement the hit of `specs/ui/COMBAT-HIT.md` (`VIEW-5`), written on 2026-11-14, and the combat feedback of `specs/ui/COMBAT-VALUES.md` (`VIEW-6`) and `specs/ui/COMBAT-DEATH.md` (`VIEW-7`, `VIEW-18`, `VIEW-33`), with the death of a card and the death of a leader as two tiers above the hit. Check that no flash happens more than three times per second (WCAG 2.3.1)
 - [ ] Implement the reaction under the pointer of an own card that can attack of `specs/ui/CARDS-ACTIONABLE.md` (`VIEW-37`), written on 2026-11-14. The cards that can only be moved (`BOARD-7`) have none, because almost every warrior can be moved on the turn of its owner
 - [ ] Implement the start size of 150% of the placement of the leaders of `specs/ui/GAME-PLACEMENT.md` (`VIEW-12`) and the durations of the notices of `specs/ui/GAME-NOTICES.md` (`VIEW-15`), 250 ms in, 1000 ms still and 250 ms out, written on 2026-11-14, and their place, centered horizontally and vertically on the screen, chosen on 2026-11-17

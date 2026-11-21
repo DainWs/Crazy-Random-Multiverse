@@ -12,6 +12,7 @@ import AnimationSystem from '@/core/AnimationSystem';
 import StoreSystem from '@/core/StoreSystem';
 import ResourceSystem from '@/core/ResourceSystem';
 import ZoneView from '@/game/zone/ZoneView';
+import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import CardValueLabelsView from '@/game/zone/CardValueLabelsView';
 import ZoneLabelsView from '@/game/zone/ZoneLabelsView';
@@ -234,6 +235,36 @@ class GameScene extends Scene {
     /** A label is 18 px on the screen at the reference size, and the zoom of the camera shrinks or grows what it draws (VIEW-46, VIEW-24). */
     private cardValueUnitsPerPixel(): number {
         return calculateScreenFit(this.scale) / this.cameraSystem.getCamera().zoom;
+    }
+
+    /** Draws the slot above every other slot of the board, but under the labels, so its card is the one on top (VIEW-4). */
+    public raiseSlot(slot: ZoneSlotView) {
+        const zoneView = this.zones.find((zone) => zone.getSlots().flat().includes(slot));
+        if (!zoneView) {
+            return;
+        }
+
+        zoneView.raiseSlot(slot);
+        this.battlefieldContainer.bringToTop(zoneView);
+        this.keepLabelsOnTop();
+    }
+
+    /** Puts the slots and the zones back in the order they were drawn in (VIEW-4). */
+    public restoreBoardOrder() {
+        for (const zoneView of this.zones) {
+            zoneView.restoreSlotOrder();
+            this.battlefieldContainer.bringToTop(zoneView);
+        }
+
+        this.keepLabelsOnTop();
+    }
+
+    private keepLabelsOnTop() {
+        for (const labels of [this.cardValueLabels, this.zoneLabels]) {
+            if (labels) {
+                this.battlefieldContainer.bringToTop(labels);
+            }
+        }
     }
 
     private combatantsOf(zoneView: ZoneView) {

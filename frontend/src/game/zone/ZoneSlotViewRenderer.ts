@@ -12,6 +12,8 @@ const BACKGROUND_ALPHA = 0.45;
 const BACKGROUND_BORDER_ALPHA = 0.8;
 /** Thickness of the gold ring of the crown disc, as a fraction of its radius. */
 const CROWN_RING_FRACTION = 0.08;
+/** Thickness of the red ring and bar of the crossed circle, as a fraction of its radius. */
+const FORBIDDEN_ICON_RING_FRACTION = 0.16;
 
 class ZoneSlotViewRenderer {
 
@@ -121,6 +123,23 @@ class ZoneSlotViewRenderer {
 
     graphics.closePath();
     graphics.fillPath();
+  }
+
+  /** Draws the crossed circle of a card that cannot be attacked: a red ring and bar on a dark disc, centered on the origin (VIEW-4). */
+  public static renderForbiddenIcon(graphics: Graphics, radius: number) {
+    const red = paletteFill('MARK_INVALID');
+    const ringWidth = radius * FORBIDDEN_ICON_RING_FRACTION;
+    const barReach = radius * Math.SQRT1_2;
+
+    graphics.clear();
+    graphics.fillStyle(paletteFill('FORBIDDEN_ICON_DISC'), 1);
+    graphics.fillCircle(0, 0, radius);
+    graphics.lineStyle(ringWidth, red, 1);
+    graphics.strokeCircle(0, 0, radius - ringWidth / 2);
+    graphics.beginPath();
+    graphics.moveTo(-barReach, barReach);
+    graphics.lineTo(barReach, -barReach);
+    graphics.strokePath();
   }
 
   private static renderMark(mark: Image, zoneSlotView: ZoneSlotView) {

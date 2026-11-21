@@ -14,6 +14,8 @@ type PaletteColor =
   | 'MARK_READY'
   | 'MARK_TURN_GLOW'
   | 'TURN_CROWN_DISC'
+  | 'FORBIDDEN_ICON_DISC'
+  | 'LIFT_SHADOW'
   | 'MARK_EDGE'
   | 'OWN_ZONE_LINES'
   | 'SLOT_FILL'
@@ -85,6 +87,8 @@ const PALETTE = new Map<PaletteColor, number>([
   ['MARK_READY', 0x00e5ff],
   ['MARK_TURN_GLOW', 0xf1c40f],
   ['TURN_CROWN_DISC', 0x111111],
+  ['FORBIDDEN_ICON_DISC', 0x111111],
+  ['LIFT_SHADOW', 0x000000],
   ['MARK_EDGE', 0x000000],
   ['OWN_ZONE_LINES', 0x3d9bff],
   ['SLOT_FILL', 0xffffff],

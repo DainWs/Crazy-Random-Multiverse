@@ -1,5 +1,4 @@
-import type { Area, Point } from '@/support/board';
-import { INITIAL_ZOOM, OWN_WARRIOR, RIVAL_WARRIOR, SIDE_ZONE_AREA, TABLE_AREA, TOOLTIP_AREA, atZoom, openBoard, waitForStillFrame, zoomOut } from '@/support/board';
+import { INITIAL_ZOOM, OWN_WARRIOR, RIVAL_WARRIOR, SIDE_ZONE_AREA, TABLE_AREA, TOOLTIP_AREA, atZoom, cardArea, openBoard, waitForStillFrame, zoomOut } from '@/support/board';
 import { expect, test } from '@/support/test';
 
 /** The limits are the noise measured over five runs, which was zero in every area. */
@@ -8,7 +7,6 @@ const HAND = { clip: { x: 700, y: 1005, width: 520, height: 75 }, maxDiffPixels:
 const TOOLTIP = { clip: TOOLTIP_AREA, maxDiffPixels: 0 };
 const CARD_MAX_DIFF_PIXELS = 0;
 
-const CARD_AREA_MARGIN = 70;
 const SHARPNESS_THRESHOLD = 0.05;
 
 const ZOOM_LEVELS = [
@@ -16,15 +14,6 @@ const ZOOM_LEVELS = [
     { zoom: 0.8, wheelSteps: 2 },
     { zoom: 0.5, wheelSteps: 4 }
 ];
-
-function cardArea(center: Point): Area {
-    return {
-        x: center.x - CARD_AREA_MARGIN,
-        y: center.y - CARD_AREA_MARGIN,
-        width: CARD_AREA_MARGIN * 2,
-        height: CARD_AREA_MARGIN * 2
-    };
-}
 
 test.describe('board appearance', () => {
     test.beforeEach(async ({ page, backend }) => {
@@ -56,7 +45,7 @@ test.describe('board appearance', () => {
             await expect(page).toHaveScreenshot(`table-zoom-${zoom}.png`, TABLE);
         });
 
-        test(`keeps the attack arrow shape at zoom ${zoom}`, async ({ page }) => {
+        test(`keeps the shape of the lifted cards at zoom ${zoom}`, async ({ page }) => {
             const attacker = atZoom(OWN_WARRIOR, zoom);
             const target = atZoom(RIVAL_WARRIOR, zoom);
             await zoomOut(page, wheelSteps);
@@ -65,7 +54,7 @@ test.describe('board appearance', () => {
             await page.mouse.move(target.x, target.y);
             await waitForStillFrame(page);
 
-            await expect(page).toHaveScreenshot(`arrow-zoom-${zoom}.png`, TABLE);
+            await expect(page).toHaveScreenshot(`attack-zoom-${zoom}.png`, TABLE);
         });
 
         test(`keeps the card sharp at zoom ${zoom}`, async ({ page }) => {

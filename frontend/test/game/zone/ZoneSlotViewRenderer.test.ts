@@ -55,4 +55,15 @@ describe('ZoneSlotViewRenderer', () => {
       expect(graphics.lines[0][0]).toBeGreaterThan(graphics.lines[1][0]);
     });
   });
+
+  // VIEW-4
+  describe('renderForbiddenIcon', () => {
+    it('draws the red ring and bar of the crossed circle', () => {
+      const graphics = { ...fakeGraphics(), fillStyle: () => undefined, fillCircle: () => undefined, strokeCircle: () => undefined };
+
+      ZoneSlotViewRenderer.renderForbiddenIcon(graphics as never, 16);
+
+      expect(graphics.lines.map(([, color]) => color)).toEqual([0xe74c3c]);
+    });
+  });
 });

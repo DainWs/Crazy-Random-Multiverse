@@ -3,11 +3,12 @@ import {
     EMPTY_OWN_SLOT,
     EMPTY_TABLE,
     OWN_WARRIOR,
+    RIVAL_WARRIOR,
     TABLE_AREA,
+    cardArea,
     dragTo,
     frameOf,
     hover,
-    isArrowRedBetween,
     openBoard,
     openGame
 } from '@/support/board';
@@ -92,12 +93,13 @@ test.describe('aiming an attack', () => {
     });
 
     // VIEW-4
-    test('draws a red arrow outside a valid target', async ({ page }) => {
-        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
+    test('lifts the selected attacker', async ({ page }) => {
+        const atRest = await frameOf(page, cardArea(OWN_WARRIOR));
 
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
         await hover(page, EMPTY_TABLE);
 
-        expect(await isArrowRedBetween(page, OWN_WARRIOR, EMPTY_TABLE)).toBe(true);
+        expect((await frameOf(page, cardArea(OWN_WARRIOR))).equals(atRest)).toBe(false);
     });
 
     // VIEW-4, UI-5
@@ -131,24 +133,68 @@ test.describe('marks of an attack', () => {
         await hover(page, EMPTY_TABLE);
     });
 
-    // UI-5
-    test('marks the attacker and only the cards it can attack', async ({ page }) => {
-        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
-        await hover(page, EMPTY_TABLE);
-
-        await expect(page).toHaveScreenshot('attack-marks.png', { clip: TABLE_AREA, maxDiffPixels: 0 });
-    });
-
-    // UI-5
-    test('removes the marks when the attack is made', async ({ page, backend }) => {
-        const noMarks = await frameOf(page, TABLE_AREA);
+    // VIEW-4
+    test('lifts the attacker and the exposed rival under the pointer, framed in green', async ({ page }) => {
         await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
         await hover(page, RIVAL_FRONT_WARRIOR);
 
-        await page.mouse.click(RIVAL_FRONT_WARRIOR.x, RIVAL_FRONT_WARRIOR.y);
-        await expect.poll(() => backend.actions.length).toBe(1);
+        await expect(page).toHaveScreenshot('attack-valid-target.png', { clip: TABLE_AREA, maxDiffPixels: 0 });
+    });
+
+    // VIEW-4, PROT-1
+    test('lifts the protected rival under the pointer, framed in red with a crossed circle', async ({ page }) => {
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
+        await hover(page, RIVAL_WARRIOR);
+
+        await expect(page).toHaveScreenshot('attack-invalid-target.png', { clip: TABLE_AREA, maxDiffPixels: 0 });
+    });
+
+    // VIEW-4
+    test('frames only the rival card under the pointer', async ({ page }) => {
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
         await hover(page, EMPTY_TABLE);
 
-        expect((await frameOf(page, TABLE_AREA)).equals(noMarks)).toBe(true);
+        await expect(page).toHaveScreenshot('attack-selected.png', { clip: TABLE_AREA, maxDiffPixels: 0 });
+    });
+
+    // VIEW-4
+    test('lowers the cards when the pointer leaves the rival card', async ({ page }) => {
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
+        await hover(page, EMPTY_TABLE);
+        const aiming = await frameOf(page, TABLE_AREA);
+        await hover(page, RIVAL_FRONT_WARRIOR);
+
+        await hover(page, EMPTY_TABLE);
+
+        expect((await frameOf(page, TABLE_AREA)).equals(aiming)).toBe(true);
+    });
+
+    // VIEW-4
+    test('keeps the attack lifted while the server answers', async ({ page, backend }) => {
+        backend.holdActions();
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
+        await hover(page, RIVAL_FRONT_WARRIOR);
+        const lifted = await frameOf(page, TABLE_AREA);
+
+        await page.mouse.click(RIVAL_FRONT_WARRIOR.x, RIVAL_FRONT_WARRIOR.y);
+        await expect.poll(() => backend.actions.length).toBe(1);
+        await hover(page, RIVAL_FRONT_WARRIOR);
+
+        expect((await frameOf(page, TABLE_AREA)).equals(lifted)).toBe(true);
+    });
+
+    // VIEW-4, UI-6
+    test('lowers the attack when the server rejects it', async ({ page, backend }) => {
+        const atRest = await frameOf(page, cardArea(OWN_WARRIOR));
+        backend.holdActions();
+        await page.mouse.click(OWN_WARRIOR.x, OWN_WARRIOR.y);
+        await hover(page, RIVAL_FRONT_WARRIOR);
+        await page.mouse.click(RIVAL_FRONT_WARRIOR.x, RIVAL_FRONT_WARRIOR.y);
+        await expect.poll(() => backend.actions.length).toBe(1);
+
+        await backend.rejectHeldActions('exception.player-action.selected_target_is_protected');
+        await hover(page, EMPTY_TABLE);
+
+        await expect.poll(async () => (await frameOf(page, cardArea(OWN_WARRIOR))).equals(atRest)).toBe(true);
     });
 });

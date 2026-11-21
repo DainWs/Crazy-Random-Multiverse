@@ -37,6 +37,7 @@ class ZoneView extends Phaser.GameObjects.Container {
   private readonly options: AllZoneViewOptions;
   private readonly slots: ZoneSlotView[][];
   private readonly slotLayout: ZoneSlotLayout;
+  private slotsAreRaised = false;
 
   public readonly zone: Zone;
 
@@ -122,6 +123,24 @@ class ZoneView extends Phaser.GameObjects.Container {
 
     if (leaderSlot?.combatant && leaderSlotView) {
       leaderSlotView.showTurnGlow();
+    }
+  }
+
+  /** Draws the slot above the others of the zone, so its card, lifted or travelling, is not covered by theirs (VIEW-4, VIEW-5). */
+  public raiseSlot(slot: ZoneSlotView) {
+    this.slotsAreRaised = true;
+    this.bringToTop(slot);
+  }
+
+  /** Puts the slots back in the order they were created in. */
+  public restoreSlotOrder() {
+    if (!this.slotsAreRaised) {
+      return;
+    }
+
+    this.slotsAreRaised = false;
+    for (const slot of this.slots.flat()) {
+      this.bringToTop(slot);
     }
   }
 

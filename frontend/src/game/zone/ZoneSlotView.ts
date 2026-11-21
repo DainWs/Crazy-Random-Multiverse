@@ -10,10 +10,11 @@ import ZoneSlot from "@/domain/ZoneSlot";
 import { Corners3D, OrientedBoundingBox3D, Point3D, Rotation } from "@/domain/Geometry";
 import StoreSystem from "@/core/StoreSystem";
 import ZoneSlotViewRenderer from "@/game/zone/ZoneSlotViewRenderer";
-import zoneSlotCardHelper from "@/game/zone/ZoneSlotCardHelper";
+import zoneSlotCardHelper, { calculateCardCenter } from "@/game/zone/ZoneSlotCardHelper";
 import CombatantView from "@/game/cards/CombatantView";
 import {
   EXTRA_MARK_FRAME_WIDTH,
+  FORBIDDEN_ICON_DIAMETER,
   HIT_FLASH_DURATION_MS,
   HIT_FLASH_EASE,
   OWN_ZONE_LINE_WIDTH,
@@ -33,6 +34,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   private markerGraphics?: Phaser.GameObjects.Graphics;
   private readyGraphics?: Phaser.GameObjects.Graphics;
   private glowGraphics?: Phaser.GameObjects.Graphics;
+  private forbiddenGraphics?: Phaser.GameObjects.Graphics;
   private turnFramePulses = false;
   private cardView: CombatantView | null;
 
@@ -298,9 +300,30 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     this.readyGraphics?.setAlpha(readyMarkAlpha(this.scene.time.now));
   };
 
+  /** Shows or hides the frame of a card that can attack, while the card is lifted as the attacker (VIEW-4). */
+  public setReadyMarkVisible(visible: boolean) {
+    this.readyGraphics?.setVisible(visible);
+  }
+
+  /** The crossed circle in the middle of the card, over its frame, flat and horizontal on the screen like the crown (VIEW-4). */
+  public showForbiddenIcon() {
+    const world = this.getWorldTransformMatrix();
+    const center = calculateCardCenter(this.corners);
+
+    this.forbiddenGraphics ??= this.scene.add.graphics();
+    ZoneSlotViewRenderer.renderForbiddenIcon(this.forbiddenGraphics, FORBIDDEN_ICON_DIAMETER / 2);
+    this.forbiddenGraphics.setPosition(center.x, center.y);
+    this.forbiddenGraphics.setRotation(-world.rotation);
+    this.forbiddenGraphics.setScale(1 / world.scaleX);
+    this.add(this.forbiddenGraphics);
+    this.bringToTop(this.forbiddenGraphics);
+  }
+
   public hideMarker() {
     this.markerGraphics?.destroy();
     this.markerGraphics = undefined;
+    this.forbiddenGraphics?.destroy();
+    this.forbiddenGraphics = undefined;
   }
 
   public setBackgroundColor(color: number, borderColor?: number, alpha?: number): void {

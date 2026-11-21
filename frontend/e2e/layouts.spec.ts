@@ -1,5 +1,5 @@
 import type { Point } from '@/support/board';
-import { TOOLTIP_AREA, frameOf, hover, isArrowGreenBetween, openBoard } from '@/support/board';
+import { TOOLTIP_AREA, countFramePixels, frameOf, hasFrameSince, hover, openBoard } from '@/support/board';
 import { expect, test } from '@/support/test';
 
 /** Where the cards of the prepared game of ten players are drawn at its initial zoom. */
@@ -43,20 +43,22 @@ test.describe('game of ten players', () => {
         expect((await frameOf(page, TOOLTIP_AREA)).equals(noPanel)).toBe(false);
     });
 
-    test('draws a green arrow over a rival of the top side', async ({ page }) => {
+    test('frames in green a rival of the top side', async ({ page }) => {
+        const before = await countFramePixels(page, TEN_TOP_RIVAL_WARRIOR, 'green');
         await page.mouse.click(TEN_OWN_WARRIOR.x, TEN_OWN_WARRIOR.y);
 
         await hover(page, TEN_TOP_RIVAL_WARRIOR);
 
-        expect(await isArrowGreenBetween(page, TEN_OWN_WARRIOR, TEN_TOP_RIVAL_WARRIOR)).toBe(true);
+        expect(await hasFrameSince(page, TEN_TOP_RIVAL_WARRIOR, 'green', before)).toBe(true);
     });
 
-    test('draws a green arrow over a rival of a rotated zone', async ({ page }) => {
+    test('frames in green a rival of a rotated zone', async ({ page }) => {
+        const before = await countFramePixels(page, TEN_SIDE_RIVAL_WARRIOR, 'green');
         await page.mouse.click(TEN_OWN_WARRIOR.x, TEN_OWN_WARRIOR.y);
 
         await hover(page, TEN_SIDE_RIVAL_WARRIOR);
 
-        expect(await isArrowGreenBetween(page, TEN_OWN_WARRIOR, TEN_SIDE_RIVAL_WARRIOR)).toBe(true);
+        expect(await hasFrameSince(page, TEN_SIDE_RIVAL_WARRIOR, 'green', before)).toBe(true);
     });
 
     test('closes the side panel when leaving the card', async ({ page }) => {
