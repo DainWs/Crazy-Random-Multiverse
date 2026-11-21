@@ -4,7 +4,6 @@ import {
     OWN_WARRIOR,
     RIVAL_WARRIOR,
     TABLE_AREA,
-    VIEW_CENTER,
     WHEEL_UP_DELTA,
     darkShare,
     frameOf,
@@ -20,21 +19,27 @@ import { expect, test } from '@/support/test';
 const PAN_BUTTONS: PanButton[] = ['right', 'middle'];
 const SHORT_PAN: Point = { x: 120, y: 0 };
 
-/** Pans that stay inside the viewport and, repeated, go further than the table can be from the center of the screen at the maximum zoom. */
-const PAN_SEQUENCES: { delta: Point; repeats: number }[] = [
-    { delta: { x: -750, y: 0 }, repeats: 4 },
-    { delta: { x: 750, y: 0 }, repeats: 8 },
-    { delta: { x: 0, y: -500 }, repeats: 3 },
-    { delta: { x: 0, y: 500 }, repeats: 6 }
+/**
+ * Pans from one edge of the viewport towards the other, each one further than the pan can take the board. At the maximum zoom
+ * the table of two players is about 1240 px on each side, and the pan keeps the center of the screen inside it, so the board
+ * moves at most that far from one end to the other: one pan of 1800 px goes past it, and two of 960 px.
+ */
+const PAN_SEQUENCES: { from: Point; delta: Point; repeats: number }[] = [
+    { from: { x: 1860, y: 540 }, delta: { x: -1800, y: 0 }, repeats: 1 },
+    { from: { x: 60, y: 540 }, delta: { x: 1800, y: 0 }, repeats: 1 },
+    { from: { x: 960, y: 1000 }, delta: { x: 0, y: -960 }, repeats: 1 },
+    { from: { x: 960, y: 40 }, delta: { x: 0, y: 960 }, repeats: 2 }
 ];
 const MAX_ZOOM_STEPS = 2;
 const MIN_TABLE_SHARE = 0.05;
+/** Change of the dark share of the screen that is not a change of the zoom: a dragged card and its marks are a few small spots. */
+const TABLE_SHARE_NOISE = 0.01;
 const DRAG_STEPS = 12;
 const HUD_ZOOM_LEVELS = [
     { zoom: 0.8, wheelSteps: 2 },
     { zoom: 0.5, wheelSteps: 4 }
 ];
-const LONG_PAN_TEST_TIMEOUT_MS = 360000;
+const LONG_PAN_TEST_TIMEOUT_MS = 120000;
 
 const TURN_TEXT_AREA: Area = { x: 0, y: 0, width: 560, height: 80 };
 const BUTTONS_AREA: Area = { x: 1600, y: 930, width: 320, height: 150 };
@@ -100,8 +105,9 @@ test.describe('panning the camera', () => {
     });
 
     // VIEW-19
+    // A step of the wheel would grow the table by about 28% of its area, so its share of the screen tells the zoom apart from noise
     test('does not zoom with the wheel while a card is being dragged', async ({ page }) => {
-        const before = await frameOf(page, TABLE_AREA);
+        const before = await darkShare(page);
 
         await hover(page, OWN_WARRIOR);
         await page.mouse.down();
@@ -111,7 +117,7 @@ test.describe('panning the camera', () => {
         await page.mouse.up();
         await hover(page, EMPTY_TABLE);
 
-        expect((await frameOf(page, TABLE_AREA)).equals(before)).toBe(true);
+        expect(Math.abs((await darkShare(page)) - before)).toBeLessThan(TABLE_SHARE_NOISE);
     });
 
     // VIEW-19
@@ -119,9 +125,9 @@ test.describe('panning the camera', () => {
         test.setTimeout(LONG_PAN_TEST_TIMEOUT_MS);
         await zoomIn(page, MAX_ZOOM_STEPS);
 
-        for (const { delta, repeats } of PAN_SEQUENCES) {
+        for (const { from, delta, repeats } of PAN_SEQUENCES) {
             for (let repeat = 0; repeat < repeats; repeat += 1) {
-                await pan(page, 'right', VIEW_CENTER, delta);
+                await pan(page, 'right', from, delta);
             }
 
             expect(await darkShare(page)).toBeGreaterThan(MIN_TABLE_SHARE);
