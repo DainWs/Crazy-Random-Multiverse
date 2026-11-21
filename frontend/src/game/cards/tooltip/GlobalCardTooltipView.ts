@@ -7,8 +7,10 @@ import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 import { getText } from "@/core/Texts";
-import { RENDER_SCALE, TOOLTIP_CLOSE_WAIT_MS, TOOLTIP_SLIDE_DISTANCE } from "@/core/Constants";
-import { calculateScreenFit } from "@/core/cameras/CameraCalculations";
+import { RENDER_SCALE, TOOLTIP_CLOSE_WAIT_MS, TOOLTIP_DEPTH, TOOLTIP_SLIDE_DISTANCE } from "@/core/Constants";
+import { calculateScreenFit, toLogicalScreen } from "@/core/cameras/CameraCalculations";
+import TooltipLayout from "@/game/cards/tooltip/TooltipLayout";
+import type { TooltipSide } from "@/game/cards/tooltip/TooltipLayout";
 import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill, paletteText } from "@/game/utils/Palette";
 import { TEXT_SIZE_BODY, TEXT_SIZE_LABEL, TEXT_SIZE_NUMBERS, UI_FONT_FAMILY } from "@/core/Constants";
@@ -44,6 +46,10 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private descriptionText: Phaser.GameObjects.Text;
   private equipmentTexts: Phaser.GameObjects.Text[] = [];
 
+  private readonly layout = new TooltipLayout();
+  private side: TooltipSide = 'RIGHT';
+  /** How much the window is smaller than the reference screen, so the card and the texts of the panel fit its height (VIEW-24). */
+  private contentScale = 1;
   private currentWidth: number = 0;
   private currentHeight: number = 0;
 
@@ -57,7 +63,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   public constructor(gameScene: GameScene) {
     super(gameScene);
-    this.setDepth(1000);
+    this.setDepth(TOOLTIP_DEPTH);
     this.initialize();
   }
 
@@ -137,7 +143,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.background.setSize(this.currentWidth, this.currentHeight);
 
     const slide = (1 - this.opening.open) * TOOLTIP_SLIDE_DISTANCE * calculateScreenFit(this.scene.scale);
-    const x = screenWidth - (this.currentWidth * RENDER_SCALE) / 2 + slide;
+    const x = this.layout.centerX(this.side, screenWidth, this.currentWidth * RENDER_SCALE, slide);
     const y = screenHeight / 2;
     const position = cameraSystem.getHUDPosition(x, y);
     this.setPosition(position.x, position.y);
@@ -148,13 +154,17 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     const wasClosed = !this.visible;
     this.cancelClose();
     this.shownCardView = cardView;
+    this.side = this.layout.sideOf(this.screenShareOf(cardView));
+    this.contentScale = Math.min(1, calculateScreenFit(toLogicalScreen(this.scene.scale, RENDER_SCALE)));
+    this.cardContainer.setScale(this.contentScale);
+    this.descriptionContainer.setScale(this.contentScale);
     this.updateBounds();
 
     this.buildCardVisual(cardView);
     this.buildDescription(cardView);
 
     this.cardContainer.setPosition(0, -this.currentHeight * 0.2);
-    this.descriptionContainer.setPosition(0, this.cardContainer.y + (HEIGHT / 2) + PADDING * 2);
+    this.descriptionContainer.setPosition(0, this.cardContainer.y + ((HEIGHT / 2) + PADDING * 2) * this.contentScale);
 
     this.setVisible(true);
     if (wasClosed) {
@@ -164,6 +174,13 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
       this.scene.tweens.killTweensOf(this.opening);
       this.setOpen(1);
     }
+  }
+
+  /** Where the card is on the screen, from its left edge (0) to its right edge (1) (VIEW-14). */
+  private screenShareOf(cardView: CardView): number {
+    const view = (this.scene as GameScene).cameraSystem.getCamera().worldView;
+
+    return (cardView.getWorldTransformMatrix().tx - view.x) / view.width;
   }
 
   /** The pointer left the card: the panel waits, and closes unless the pointer enters another card meanwhile (VIEW-14). */
@@ -264,7 +281,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private buildDescription({ card }: CardView) {
     this.nameText.setText(getText(card.name));
     this.descriptionText.setText(getText(card.description));
-    this.descriptionText.setWordWrapWidth(this.currentWidth - PADDING * 4);
+    this.descriptionText.setWordWrapWidth((this.currentWidth - PADDING * 4) / this.contentScale);
 
     this.alignDescriptionText(card);
   }

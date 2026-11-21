@@ -1,7 +1,7 @@
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
-import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openGame } from '@/support/board';
+import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openBoard, openGame, zoomIn } from '@/support/board';
 import { createEquipment, createPreparedGame, withCombatant } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 
@@ -92,4 +92,19 @@ test.describe('side panel of a card that disappears', () => {
 
         await expect.poll(async () => (await frameOf(page, PANEL_CARD_AREA)).equals(noPanel)).toBe(true);
     });
+});
+
+/** A warrior of the zone of the right side when the board is zoomed in with 10 players, which is under the right quarter of the screen. */
+const RIGHT_SIDE_WARRIOR = { x: 1560, y: 545 };
+const MAX_ZOOM_STEPS = 2;
+const LEFT_PANEL_AREA: Area = { x: 0, y: 0, width: 480, height: 1080 };
+
+// VIEW-14
+test('opens the side panel on the left for a card in the right half of the screen', async ({ page, backend }) => {
+    await openBoard(page, backend, 10);
+    await zoomIn(page, MAX_ZOOM_STEPS);
+
+    await hover(page, RIGHT_SIDE_WARRIOR);
+
+    await expect(page).toHaveScreenshot('panel-left.png', { clip: LEFT_PANEL_AREA, maxDiffPixels: 0 });
 });

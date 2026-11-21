@@ -275,6 +275,9 @@ export const LOAD_PANEL_OFFSET_Y = 40;
 /** Milliseconds the side panel waits after the pointer leaves a card before it closes (VIEW-14). */
 export const TOOLTIP_CLOSE_WAIT_MS = 150;
 
+/** The side panel is over the HUD (VIEW-14), and under the result, the button to leave and the confirmation dialog. */
+export const TOOLTIP_DEPTH = HUD_DEPTH + 1;
+
 /** Pixels the side panel slides while it opens or closes, with the window at 1920 by 1080 (VIEW-14). */
 export const TOOLTIP_SLIDE_DISTANCE = 40;
 
