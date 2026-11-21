@@ -1,19 +1,15 @@
-import type { Point2D } from "@/domain/Geometry";
 import type CardView from "@/game/cards/CardView";
 import type HandView from "@/game/hand/HandView";
 import CardAnimator from "@/core/visual_effects/CardAnimator";
-import { MOVE_TO_DURATION } from "@/core/visual_effects/CardTweens";
 import type { MotionSpeed } from "@/core/visual_effects/Motion";
-import { playMotion } from "@/core/visual_effects/Motion";
+import { durationOf, playMotion } from "@/core/visual_effects/Motion";
+import { HAND_ARRIVAL_STAGGER_MS, HAND_ARRIVAL_DEPTH_BOOST } from "@/core/Constants";
 
 type OnCompleteCallback = () => void;
 const NoneCallback = () => { };
 
-/** Time the hand takes to sink while a card is dragged, in ms. Not in the scale of `VIEW-30`: Phase 11.4 changes it to 150 (`VIEW-32`). */
-const HAND_HIDE_DURATION = 100;
-
-/** Ease of the hand rising and sinking. Not one of the four curves: Phase 11.4 changes it (`VIEW-31`). */
-const HAND_EXPANSION_EASE = { ease: 'Cubic.easeOut' };
+/** The hand sinks below the bottom edge while a card is dragged in the fast duration of the scale (VIEW-32). */
+const HAND_HIDE_DURATION: MotionSpeed = 'FAST';
 
 class HandAnimator {
 
@@ -24,27 +20,32 @@ class HandAnimator {
       targets: handView,
       to: { hiddenRatio: targetHiddenRatio },
       duration,
-      curve: HAND_EXPANSION_EASE,
+      curve: 'ENTER',
       kind: 'ESSENTIAL'
     });
   }
 
 
-  public animateIncomingCards(fromPoint: Point2D, handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
+  /**
+   * Each card slides in from `fromX`, outside the left edge of the screen, at the height of its slot and above the cards of the hand,
+   * 150 ms after the previous one (VIEW-8).
+   */
+  public animateIncomingCards(fromX: number, handCards: CardView[], incomingCards: CardView[], onComplete: OnCompleteCallback = NoneCallback) {
     this.setInteractiveForCardViews(handCards, false);
 
-    const tweenDelay = 200;
-    for (let i = 0; i < incomingCards.length; i++) {
-      const cardView = incomingCards[i];
+    incomingCards.forEach((cardView, index) => {
       const originalPosition = cardView.getOriginalPosition();
-      cardView.setPosition(fromPoint.x, fromPoint.y);
-      CardAnimator.playTween(cardView, 'move_to_hand', originalPosition.x, originalPosition.y, tweenDelay * i);
-    }
+      cardView.setPosition(fromX, originalPosition.y);
+      cardView.setDepth(cardView.getOriginalDepth() + HAND_ARRIVAL_DEPTH_BOOST);
+      void CardAnimator.playTween(cardView, 'move_to_hand', originalPosition.x, originalPosition.y, HAND_ARRIVAL_STAGGER_MS * index)
+        .then(() => cardView.resetDepth());
+    });
 
+    const lastArrivalEnds = durationOf('MEDIUM') + HAND_ARRIVAL_STAGGER_MS * Math.max(incomingCards.length - 1, 0);
     setTimeout(() => {
       this.setInteractiveForCardViews(handCards, true);
       onComplete();
-    }, MOVE_TO_DURATION + (incomingCards.length * tweenDelay));
+    }, lastArrivalEnds);
   }
 
   private setInteractiveForCardViews(cardViews: CardView[], isInteractive: boolean) {

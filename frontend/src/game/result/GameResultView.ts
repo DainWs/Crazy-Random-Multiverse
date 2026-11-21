@@ -11,6 +11,7 @@ import { accentColor, createPanel, createText } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { calculateScreenFixedTransform, toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import { paletteFill } from '@/game/utils/Palette';
+import { playMotion } from '@/core/visual_effects/Motion';
 
 /** Shows over the board whether the local player won or lost, who won and the seconds left until the party (WIN-4). */
 class GameResultView {
@@ -22,7 +23,8 @@ class GameResultView {
     private readonly title: Phaser.GameObjects.Text;
     private readonly winner: Phaser.GameObjects.Text;
     private readonly countdown: Phaser.GameObjects.Text;
-    private readonly tick: Phaser.Time.TimerEvent;
+    private tick?: Phaser.Time.TimerEvent;
+    private readonly panelGroup: Array<Phaser.GameObjects.Rectangle | Phaser.GameObjects.Text>;
     private screenWidth: number;
     private screenHeight: number;
     private remainingSeconds = Constants.GAME_RESULT_COUNTDOWN_SECONDS;
@@ -48,7 +50,11 @@ class GameResultView {
         this.winner = this.createLine(positions.winner, 'NUMBERS');
         this.countdown = this.createLine(positions.countdown, 'NUMBERS');
 
-        this.container = scene.add.container(0, 0, [this.veilShape, this.panelShape, this.title, this.winner, this.countdown]);
+        this.veilShape.setAlpha(0);
+        this.panelGroup = [this.panelShape, this.title, this.winner, this.countdown];
+        this.panelGroup.forEach((piece) => piece.setAlpha(0));
+
+        this.container = scene.add.container(0, 0, [this.veilShape, ...this.panelGroup]);
         this.container.setScrollFactor(0);
         this.container.setDepth(Constants.GAME_RESULT_DEPTH);
 
@@ -60,7 +66,17 @@ class GameResultView {
         sceneEvents.on('prerender', this.applyZoom, this);
         this.stopListening = () => sceneEvents.off('prerender', this.applyZoom, this);
 
-        this.tick = scene.time.addEvent({ delay: Constants.GAME_RESULT_TICK_MS, loop: true, callback: this.onTick.bind(this) });
+        void this.fadeIn();
+    }
+
+    /** The veil fades in over the board, then the panel with its texts, and the countdown starts when the panel is in (VIEW-23). */
+    private async fadeIn() {
+        await playMotion(this.scene, { targets: this.veilShape, to: { alpha: 1 }, duration: Constants.GAME_RESULT_VEIL_FADE_MS, curve: 'ENTER', kind: 'NON_ESSENTIAL' });
+        await playMotion(this.scene, { targets: this.panelGroup, to: { alpha: 1 }, duration: 'SLOW', curve: 'ENTER', kind: 'NON_ESSENTIAL' });
+
+        if (this.container.active) {
+            this.tick = this.scene.time.addEvent({ delay: Constants.GAME_RESULT_TICK_MS, loop: true, callback: this.onTick.bind(this) });
+        }
     }
 
     /** The winner arrives in an event after the end of the game, so the result can be drawn again. */
@@ -111,7 +127,7 @@ class GameResultView {
 
     public destroy() {
         this.stopListening();
-        this.tick.remove();
+        this.tick?.remove();
         this.container.destroy();
     }
 

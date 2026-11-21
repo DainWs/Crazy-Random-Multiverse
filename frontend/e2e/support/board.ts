@@ -19,8 +19,12 @@ const VIEW_CENTER: Point = { x: 960, y: 540 };
 const INITIAL_ZOOM = 1.1;
 const WHEEL_DOWN_DELTA = 100;
 const WHEEL_UP_DELTA = -100;
-const STILL_FRAME_TIMEOUT_MS = 10000;
+const STILL_FRAME_TIMEOUT_MS = 20000;
 const DRAG_STEPS = 12;
+const STILL_FRAMES_REQUIRED = 2;
+
+/** The side panel waits 150 ms and then takes 250 ms to close (VIEW-14), and the frames of that wait are equal. */
+const TOOLTIP_CLOSE_MS = 450;
 
 /** Where the cards of the prepared game of two players are drawn at the initial zoom. */
 const OWN_WARRIOR: Point = { x: 872, y: 670 };
@@ -56,14 +60,15 @@ async function openGame(page: Page, backend: BackendDouble, prepared: PreparedGa
 /** The canvas has no DOM to wait on, so two equal frames in a row mean that the animations have ended. */
 async function waitForStillFrame(page: Page, differentFrom?: Buffer): Promise<void> {
     let previous: Buffer | undefined;
+    let equalFrames = 0;
 
     await expect
         .poll(
             async () => {
                 const frame = await page.screenshot();
-                const isStill = previous?.equals(frame) === true && differentFrom?.equals(frame) !== true;
+                equalFrames = previous?.equals(frame) === true ? equalFrames + 1 : 0;
                 previous = frame;
-                return isStill;
+                return equalFrames >= STILL_FRAMES_REQUIRED && differentFrom?.equals(frame) !== true;
             },
             { timeout: STILL_FRAME_TIMEOUT_MS }
         )
@@ -132,6 +137,7 @@ async function measureDarkShare(base64: string): Promise<number> {
 
 async function hover(page: Page, point: Point): Promise<void> {
     await page.mouse.move(point.x, point.y);
+    await page.waitForTimeout(TOOLTIP_CLOSE_MS);
     await waitForStillFrame(page);
 }
 

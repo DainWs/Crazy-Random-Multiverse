@@ -7,7 +7,7 @@ type CardAnimationApplier = ( scene: GameScene, card: CardView) => void;
 function noneAnimation() {}
 
 function startDragAnimation(scene: GameScene, cardView: CardView): void {
-  scene.getCardTooltipView().hide();
+  scene.getCardTooltipView().close();
   cardView.setScale(1);
   cardView.setDepth(9000);
   cardView.setAlpha(1);

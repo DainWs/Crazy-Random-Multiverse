@@ -2,7 +2,7 @@ import type { GameScene } from "@/scenes/Game";
 import type CardView from "@/game/cards/CardView";
 import type { SpaceBetweenCardOptions } from "@/game/hand/HandLayoutHelper";
 import Phaser from "phaser";
-import { CARD_HEIGHT } from "@/game/cards/CardDimensions";
+import { CARD_WIDTH } from "@/game/cards/CardDimensions";
 import InteractiveObjectManager from "@/core/interactions/InteractiveObjectManager";
 import HandInteractionManager from "@/game/hand/HandInteractionManager";
 import HandLayoutHelper from "@/game/hand/HandLayoutHelper";
@@ -99,14 +99,11 @@ class HandView extends Phaser.GameObjects.Container {
       this.addAt(incomingCard, newIndex);
     }
 
-    // From TOP of camera
-    const fromPoint = {
-      x: 0,
-      y: -(this.y + this.height + CARD_HEIGHT)
-    };
+    // Outside the left edge of the screen, in the space of the hand
+    const fromX = -(this.x / this.scaleX) - CARD_WIDTH;
 
     const onCompleteAnimation = () => this.updateCards();
-    this.animator.animateIncomingCards(fromPoint, this.cards, incomingCards, onCompleteAnimation);
+    this.animator.animateIncomingCards(fromX, this.cards, incomingCards, onCompleteAnimation);
   }
 
   /** Puts the cards in their slots without animating them: they were not received now (VIEW-8). */

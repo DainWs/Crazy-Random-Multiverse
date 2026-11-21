@@ -7,18 +7,6 @@ type CardTweenProvider = (card: CardView, args: unknown[]) => Motion;
 /** How much a card under the pointer grows, relative to its own scale. */
 const HOVER_SCALE = 1.035;
 
-/** Duration in ms of a card that arrives in the hand. Not in the scale of `VIEW-30`: Phase 11.4 changes it (`VIEW-8`). */
-const MOVE_TO_DURATION = 500;
-
-/** Wait in ms after a card has arrived in the hand, before the tween ends. Phase 11.4 changes it (`VIEW-8`). */
-const MOVE_TO_COMPLETE_DELAY = 100;
-
-/** Duration in ms of the preview of a card in a slot. Not in the scale of `VIEW-30`: Phase 11.4 changes it to 150 (`VIEW-32`). */
-const PREVIEW_IN_ZONE_SLOT_DURATION = 200;
-
-/** Ease of the cards that slide inside the hand and the stacks. Not one of the four curves: Phase 11.4 changes it (`VIEW-31`). */
-const SLIDE_EASE = { ease: 'Power1' };
-
 const NONE_EASE = { ease: 'Linear' };
 
 function noneTween(card: CardView): Motion {
@@ -64,7 +52,7 @@ function slideToTween(card: CardView, [x, y]: unknown[]): Motion {
     targets: card,
     to: { x, y },
     duration: 'MEDIUM',
-    curve: SLIDE_EASE,
+    curve: 'ENTER',
     kind: 'ESSENTIAL'
   };
 }
@@ -74,8 +62,7 @@ function moveToTween(card: CardView, [x, y, delay]: unknown[]): Motion {
     targets: card,
     to: { x, y },
     delay: delay as number,
-    duration: MOVE_TO_DURATION,
-    completeDelay: MOVE_TO_COMPLETE_DELAY,
+    duration: 'MEDIUM',
     curve: 'ENTER',
     kind: 'ESSENTIAL'
   };
@@ -89,12 +76,11 @@ function previewInZoneSlotTween(card: CardView, [x, y, scale, rotation]: unknown
   return {
     targets: card,
     to: { x, y, scaleX: targetScale.x, scaleY: targetScale.y, angle: rotation },
-    duration: PREVIEW_IN_ZONE_SLOT_DURATION,
+    duration: 'FAST',
     curve: 'ENTER',
     kind: 'ESSENTIAL'
   };
 }
 
-export { MOVE_TO_DURATION, PREVIEW_IN_ZONE_SLOT_DURATION };
 export { noneTween,  hoverTween, unhoverTween, slideToTween, moveToTween, previewInZoneSlotTween };
 export type { CardTween, CardTweenProvider };

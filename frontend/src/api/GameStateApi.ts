@@ -5,6 +5,7 @@ import type { PlayerCode } from '@/domain/Player';
 import { toCard, toCardCode } from '@/api/dtos/CardDto';
 import { toCombatResult } from '@/api/dtos/CombatResultDto';
 import { toGameSnapshot } from '@/api/dtos/GameDto';
+import { toPlacement } from '@/api/dtos/PlacementDto';
 import { toPlayer } from '@/api/dtos/PlayerDto';
 import GameEventQueue from '@/api/GameEventQueue';
 import socketEventHandler from '@/api/SocketEventHandler';
@@ -29,7 +30,8 @@ function applyEvent(event: EventDto) {
   const localPlayerCode = StoreSystem.getUser().code;
   const snapshot = toGameSnapshot(event.details.game, localPlayerCode);
   const combat = event.code === 'PLAYER_ATTACK_CARD' ? toCombatResult(event.details, snapshot.playerZone.slots.length) : undefined;
-  StoreSystem.applyGame(snapshot, combat);
+  const placement = toPlacement(event.code, event.details, snapshot.playerZone.slots.length);
+  StoreSystem.applyGame(snapshot, combat, placement);
   applyHand(event, localPlayerCode);
   applyResult(event);
 }

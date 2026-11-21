@@ -13,6 +13,7 @@ import StoreSystem from '@/core/StoreSystem';
 import ResourceSystem from '@/core/ResourceSystem';
 import ZoneView from '@/game/zone/ZoneView';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
+import type { Placement, SlotRef } from '@/domain/Placement';
 import ZoneViewFactory from '@/game/zone/ZoneViewFactory';
 import CardValueLabelsView from '@/game/zone/CardValueLabelsView';
 import ZoneLabelsView from '@/game/zone/ZoneLabelsView';
@@ -29,6 +30,7 @@ import GameResultView from '@/game/result/GameResultView';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import { playCombat } from '@/core/visual_effects/CombatAnimations';
 import { describeElimination, findNewlyEliminated, playElimination } from '@/core/visual_effects/Elimination';
+import { playPlacement } from '@/core/visual_effects/Placement';
 import { findLeaders, hideLeaders, playLeaderIntro } from '@/core/visual_effects/LeaderIntro';
 import type { BoardTurn } from '@/core/visual_effects/TurnNotices';
 import { describeNotices, playNotice } from '@/core/visual_effects/TurnNotices';
@@ -89,7 +91,7 @@ class GameScene extends Scene {
     }
 
     public create() {
-        playLoadTransition(this);
+        AnimationSystem.enqueue(() => playLoadTransition(this));
         this.input.dragDistanceThreshold = Constants.DRAG_DISTANCE_THRESHOLD;
         this.input.dragTimeThreshold = Constants.DRAG_TIME_THRESHOLD;
         this.input.setPollAlways();
@@ -160,12 +162,12 @@ class GameScene extends Scene {
     }
 
     /** The board of an event is drawn when the animations of the earlier events end, so each state is shown in order (CON-12, UI-4). */
-    private queueZones({ snapshot, combat }: GameChangeEvent) {
+    private queueZones({ snapshot, combat, placement }: GameChangeEvent) {
         if (combat) {
             AnimationSystem.enqueue(() => playCombat(this, combat));
         }
 
-        AnimationSystem.enqueue(() => this.renderAndAnnounceEliminations(snapshot.battlefield, snapshot.playerWithTurn));
+        AnimationSystem.enqueue(() => this.drawBoardOfEvent(snapshot.battlefield, snapshot.playerWithTurn, placement));
 
         const next = { round: snapshot.round, playerWithTurn: snapshot.playerWithTurn };
         const players = snapshot.zones.map((zone) => zone.owner);
@@ -176,10 +178,18 @@ class GameScene extends Scene {
     }
 
 
-    /** A zone eliminated by this board fades in its dark red when it is drawn, and its notice follows unless it ended the game (VIEW-11). */
-    private async renderAndAnnounceEliminations(battlefield: Battlefield, playerWithTurn: PlayerCode | undefined) {
+    /**
+     * Draws the board of an event. The cards it put in their slots settle (VIEW-35, VIEW-36), a zone it eliminated fades in its dark red,
+     * and its notice follows unless it ended the game (VIEW-11).
+     */
+    private async drawBoardOfEvent(battlefield: Battlefield, playerWithTurn: PlayerCode | undefined, placement: Placement | undefined) {
         const aliveBefore = this.zones.filter((zoneView) => zoneView.zone.owner.isAlive).map((zoneView) => zoneView.zone.owner.code);
+        const equippedBefore = placement?.equipped && this.combatantOf(placement.equipped);
         this.renderZones(battlefield, playerWithTurn);
+
+        if (placement) {
+            await playPlacement(this, placement, equippedBefore);
+        }
 
         const eliminated = findNewlyEliminated(aliveBefore, this.zones);
         if (eliminated.length === 0) {
@@ -253,6 +263,13 @@ class GameScene extends Scene {
     /** A label is 18 px on the screen at the reference size, and the zoom of the camera shrinks or grows what it draws (VIEW-46, VIEW-24). */
     public cardValueUnitsPerPixel(): number {
         return calculateScreenFit(this.scale) / this.cameraSystem.getCamera().zoom;
+    }
+
+    /** The combatant a slot of the board being shown holds, as the state describes it. */
+    private combatantOf(ref: SlotRef) {
+        const zoneView = this.zones.find((zone) => zone.zone.owner.code === ref.player);
+
+        return zoneView?.getSlotAt(ref.position)?.zoneSlot.combatant ?? undefined;
     }
 
     /** Draws the slot above every other slot of the board, but under the labels, so its card is the one on top (VIEW-4). */

@@ -7,7 +7,9 @@ import Phaser from "phaser";
 import { CARD_WIDTH, CARD_HEIGHT } from "@/game/cards/CardDimensions";
 import { createCardArtwork } from "@/game/cards/CardArtwork";
 import { getText } from "@/core/Texts";
-import { RENDER_SCALE } from "@/core/Constants";
+import { RENDER_SCALE, TOOLTIP_CLOSE_WAIT_MS, TOOLTIP_SLIDE_DISTANCE } from "@/core/Constants";
+import { calculateScreenFit } from "@/core/cameras/CameraCalculations";
+import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill, paletteText } from "@/game/utils/Palette";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
 
@@ -46,6 +48,11 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   /** The card the panel shows. Its pointer-out never fires if it is destroyed under the pointer (VIEW-14). */
   private shownCardView?: CardView;
+
+  /** How open the panel is, from 0 (closed, transparent and 40 px to the right) to 1 (opaque and in its place) (VIEW-14). */
+  private readonly opening = { open: 0 };
+  private closing = false;
+  private closeTimer?: Phaser.Time.TimerEvent;
 
   public constructor(gameScene: GameScene) {
     super(gameScene);
@@ -101,8 +108,8 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private initSyncEvent() {
     this.scene.events.on('prerender', () => {
-      if (this.visible && this.isShownCardGone()) {
-        this.hide();
+      if (this.visible && !this.closing && this.isShownCardGone()) {
+        this.close();
       }
 
       if (this.visible) {
@@ -127,13 +134,17 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
     this.background.setSize(this.currentWidth, this.currentHeight);
 
-    const x = screenWidth - (this.currentWidth * RENDER_SCALE) / 2;
+    const slide = (1 - this.opening.open) * TOOLTIP_SLIDE_DISTANCE * calculateScreenFit(this.scene.scale);
+    const x = screenWidth - (this.currentWidth * RENDER_SCALE) / 2 + slide;
     const y = screenHeight / 2;
     const position = cameraSystem.getHUDPosition(x, y);
     this.setPosition(position.x, position.y);
   }
 
+  /** It opens sliding from the right while it fades in; if it is already open, waiting or closing, it shows the card at once and stays in its place (VIEW-14). */
   public show(cardView: CardView) {
+    const wasClosed = !this.visible;
+    this.cancelClose();
     this.shownCardView = cardView;
     this.updateBounds();
 
@@ -144,9 +155,69 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.descriptionContainer.setPosition(0, this.cardContainer.y + (HEIGHT / 2) + PADDING * 2);
 
     this.setVisible(true);
+    if (wasClosed) {
+      this.setOpen(0);
+      this.animateOpen(1);
+    } else {
+      this.scene.tweens.killTweensOf(this.opening);
+      this.setOpen(1);
+    }
   }
 
+  /** The pointer left the card: the panel waits, and closes unless the pointer enters another card meanwhile (VIEW-14). */
   public hide() {
+    if (!this.visible || this.closing) {
+      return;
+    }
+
+    this.closeTimer?.remove();
+    this.closeTimer = this.scene.time.delayedCall(TOOLTIP_CLOSE_WAIT_MS, () => this.close());
+  }
+
+  /** The panel closes without waiting, sliding to the right while it fades out (VIEW-14). */
+  public close() {
+    this.closeTimer?.remove();
+    if (!this.visible || this.closing) {
+      return;
+    }
+
+    this.closing = true;
+    this.animateOpen(0);
+  }
+
+  private cancelClose() {
+    this.closeTimer?.remove();
+    this.closeTimer = undefined;
+    if (this.closing) {
+      this.closing = false;
+      this.scene.tweens.killTweensOf(this.opening);
+    }
+  }
+
+  /** Opens (1) slowing down at the end, or closes (0) speeding up, in 250 ms; the panel is removed when it ends closed (VIEW-14). */
+  private animateOpen(target: 0 | 1) {
+    void playMotion(this.scene, {
+      targets: this.opening,
+      to: { open: target },
+      duration: 'MEDIUM',
+      curve: target === 1 ? 'ENTER' : 'LEAVE',
+      kind: 'ESSENTIAL',
+      onUpdate: () => this.setOpen(this.opening.open)
+    }).then(() => {
+      if (this.closing && this.opening.open === 0) {
+        this.finishClosing();
+      }
+    });
+  }
+
+  private setOpen(open: number) {
+    this.opening.open = open;
+    this.setAlpha(open);
+    this.updateBounds();
+  }
+
+  private finishClosing() {
+    this.closing = false;
     this.shownCardView = undefined;
     this.setVisible(false);
     this.cardContainer.removeAll(true);

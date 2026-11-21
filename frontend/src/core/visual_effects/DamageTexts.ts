@@ -1,18 +1,11 @@
 import type { CombatResult } from '@/domain/CombatResult';
 import type { ArmorType } from '@/domain/Statistics';
-import type { DamageIcon } from '@/game/cards/DamageIcons';
-import type { PaletteColor } from '@/game/utils/Palette';
-
-type DamageText = {
-  text: string;
-  icon: DamageIcon | null;
-  color: PaletteColor;
-};
+import type { FloatingText } from '@/core/visual_effects/FloatingTexts';
 
 const MINUS_SIGN = '−';
 
 /** The floating text of an attack: what the target lost, or a plain 0 when it lost nothing (VIEW-6, CON-21). */
-function toDamageText(combat: CombatResult, armorType: ArmorType | undefined): DamageText {
+function toDamageText(combat: CombatResult, armorType: ArmorType | undefined): FloatingText {
   if (combat.healthDamage > 0) {
     return { text: `${MINUS_SIGN}${combat.healthDamage}`, icon: 'HEART', color: 'HIT_FLASH' };
   }
@@ -26,5 +19,4 @@ function toDamageText(combat: CombatResult, armorType: ArmorType | undefined): D
   return { text: '0', icon: null, color: 'NOTICE_TEXT' };
 }
 
-export type { DamageText };
 export { toDamageText };

@@ -149,7 +149,16 @@ describe('GameHudView', () => {
       },
       events: {
         on: (_event: string, listener: () => void) => { prerender = listener; },
+        once: () => {},
         off: () => { prerender = undefined; }
+      },
+      tweens: {
+        killTweensOf: () => {},
+        add: (config: { targets: { value: number }; value: number; onUpdate?: () => void; onComplete: () => void }) => {
+          config.targets.value = config.value;
+          config.onUpdate?.();
+          config.onComplete();
+        }
       },
       add: {
         text: (x: number, y: number, text: string) => {

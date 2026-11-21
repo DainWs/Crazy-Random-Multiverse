@@ -7,7 +7,7 @@ import SettingsSystem from '@/core/SettingsSystem';
 import StoreSystem from '@/core/StoreSystem';
 import { getText } from '@/core/Texts';
 import type { ButtonRole } from '@/game/hud/HudSkin';
-import { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText } from '@/game/hud/HudPieces';
+import { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText, underPointerShare } from '@/game/hud/HudPieces';
 import * as Constants from '@/core/Constants';
 import { toLogicalScreen } from '@/core/cameras/CameraCalculations';
 import { paletteFill, paletteText } from '@/game/utils/Palette';
@@ -208,7 +208,7 @@ class GameHudView {
         }
 
         this.endTurnPulsing = pulses;
-        if (this.endTurnHovered) {
+        if (this.endTurnHovered || underPointerShare(this.passTurnButton) > 0) {
             return;
         }
 

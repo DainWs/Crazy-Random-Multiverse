@@ -4,7 +4,7 @@ import type { DamageIcon } from '@/game/cards/DamageIcons';
 
 // VIEW-6
 describe('damageIconOutline', () => {
-  const icons: DamageIcon[] = ['HEART', 'SHIELD', 'MAGIC_SHIELD'];
+  const icons: DamageIcon[] = ['HEART', 'SHIELD', 'MAGIC_SHIELD', 'SWORD'];
 
   it.each(icons)('keeps the %s inside a square as tall as the text', (icon) => {
     const points = damageIconOutline(icon, 40);

@@ -5,6 +5,8 @@ import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
 
 type Listener = () => void;
 
+type TweenConfig = { targets: object; value: number; duration: number; ease: string; onUpdate?: () => void; onComplete: () => void };
+
 class FakeText {
   public background = '';
   public padding: unknown;
@@ -30,13 +32,25 @@ class FakeRectangle {
 // FX-17
 describe('HudPieces', () => {
   let scene: Phaser.Scene;
+  let tweens: TweenConfig[];
+
+  /** A tween that ends at once at its final value, so what it leaves is what the button shows when the change is over. */
+  const endAtOnce = (config: TweenConfig) => {
+    tweens.push(config);
+    (config.targets as { value: number }).value = config.value;
+    config.onUpdate?.();
+    config.onComplete();
+  };
 
   beforeEach(() => {
+    tweens = [];
     scene = {
       add: {
         text: (x: number, y: number, text: string, style: Record<string, string>) => new FakeText(x, y, text, style),
         rectangle: (...args: ConstructorParameters<typeof FakeRectangle>) => new FakeRectangle(...args)
-      }
+      },
+      events: { once: vi.fn(), off: vi.fn() },
+      tweens: { add: endAtOnce, killTweensOf: vi.fn() }
     } as unknown as Phaser.Scene;
     vi.clearAllMocks();
   });
@@ -85,6 +99,42 @@ describe('HudPieces', () => {
       button.listeners.get('pointerout')!();
 
       expect([underPointer, button.background]).toEqual(['#46627f', '#34495e']);
+    });
+
+    // VIEW-28
+    it('changes the fill under the pointer in 150 ms, slowing down at the end', () => {
+      const button = createButton(scene, 'NEUTRAL', 'No') as unknown as FakeText;
+
+      button.listeners.get('pointerover')!();
+
+      expect(tweens[0]).toMatchObject({ value: 1, duration: 150, ease: 'Power1' });
+    });
+
+    // VIEW-28
+    it('goes back in 150 ms when the pointer leaves', () => {
+      const button = createButton(scene, 'NEUTRAL', 'No') as unknown as FakeText;
+      button.listeners.get('pointerover')!();
+
+      button.listeners.get('pointerout')!();
+
+      expect(tweens[1]).toMatchObject({ value: 0, duration: 150, ease: 'Power1' });
+    });
+
+    // VIEW-28
+    it('goes back from the fill it has reached when the pointer leaves before the change ends', () => {
+      const button = createButton(scene, 'NEUTRAL', 'No') as unknown as FakeText;
+      scene.tweens.add = vi.fn((config: TweenConfig) => {
+        tweens.push(config);
+        (config.targets as { value: number }).value = 0.5;
+        config.onUpdate?.();
+      }) as never;
+
+      button.listeners.get('pointerover')!();
+      const halfWay = button.background;
+      button.listeners.get('pointerout')!();
+
+      expect([halfWay, scene.tweens.killTweensOf]).toEqual(['#3d566f', expect.anything()]);
+      expect(scene.tweens.killTweensOf).toHaveBeenCalledTimes(2);
     });
 
     it('takes the look of the role from the skin it is given', () => {

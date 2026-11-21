@@ -113,6 +113,9 @@ export const GAME_RESULT_DETAIL_FONT_SIZE = '28px';
 /** Vertical distance in pixels between two lines of the result. */
 export const GAME_RESULT_LINE_GAP = 48;
 
+/** Milliseconds the veil of the result takes to fade in over the board; an exception to the scale of `VIEW-30` (VIEW-23). */
+export const GAME_RESULT_VEIL_FADE_MS = 800;
+
 /** Alpha of the veil that covers the board while the result is shown (WIN-4). */
 export const GAME_RESULT_VEIL_ALPHA = 0.7;
 
@@ -173,6 +176,21 @@ export const DAMAGE_TEXT_OUTLINE_FRACTION = 0.15;
 
 /** Space between the icon and the number of the floating text, as a fraction of the height of the text. */
 export const DAMAGE_TEXT_ICON_GAP_FRACTION = 0.25;
+
+/** Milliseconds between the start of the arrival of a dealt card and the start of the next one (VIEW-8). */
+export const HAND_ARRIVAL_STAGGER_MS = 150;
+
+/** Depth added to a card that arrives in the hand, so it is drawn above every other card of the hand (VIEW-8). */
+export const HAND_ARRIVAL_DEPTH_BOOST = 1000;
+
+/** Space between two stacked floating texts, as a fraction of the height of the text (VIEW-36). */
+export const FLOATING_TEXT_STACK_GAP_FRACTION = 0.1;
+
+/** Milliseconds the new piece of equipment stays slid out beside its card before it slides back (VIEW-36). */
+export const EQUIPMENT_SHOWN_MS = 400;
+
+/** How much a card that enters a slot from an event starts at, relative to its size, and settles from (VIEW-35). */
+export const SETTLE_START_SCALE = 1.06;
 
 /** Depth of the floating text with the damage: above the cards and below the messages about rejected actions. */
 export const DAMAGE_TEXT_DEPTH = 14000;
@@ -258,11 +276,11 @@ export const LOAD_RETRY_OFFSET_Y = 104;
 /** How far down from the center of the window the panel of the loading screen sits, so it holds the bar, the text and the button (VIEW-29). */
 export const LOAD_PANEL_OFFSET_Y = 40;
 
-/** Duration in milliseconds of the board fading in over the loading screen, which fades out at the same time (VIEW-29). */
-export const LOAD_TRANSITION_MS = 400;
+/** Milliseconds the side panel waits after the pointer leaves a card before it closes (VIEW-14). */
+export const TOOLTIP_CLOSE_WAIT_MS = 150;
 
-/** Ease of the fades from the loading screen to the board. Not one of the four curves of `VIEW-31`: Phase 11.4 changes it. */
-export const LOAD_TRANSITION_EASE = { ease: 'Linear' };
+/** Pixels the side panel slides while it opens or closes, with the window at 1920 by 1080 (VIEW-14). */
+export const TOOLTIP_SLIDE_DISTANCE = 40;
 
 /** Key of the scene of the loading screen. */
 export const LOAD_SCENE_KEY = 'GameLoad';

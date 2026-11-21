@@ -112,6 +112,27 @@ describe('GameStateApi', () => {
 
       expect(received).toHaveBeenCalledWith(expect.objectContaining({ combat: undefined }));
     });
+
+    // VIEW-35
+    it('sends the slots of the cards a PLAYER_MOVE_CARD moved', () => {
+      const received = vi.fn();
+      const stopListening = StoreSystem.onChange(received);
+
+      listener(createEvent(1, 'PLAYER_MOVE_CARD', attackDetails()));
+      stopListening();
+
+      expect(received).toHaveBeenCalledWith(expect.objectContaining({ placement: { settled: [expect.anything(), expect.anything()] } }));
+    });
+
+    it('sends no placement with an event that places nothing', () => {
+      const received = vi.fn();
+      const stopListening = StoreSystem.onChange(received);
+
+      listener(createEvent(1, 'TURN_CHANGE', attackDetails()));
+      stopListening();
+
+      expect(received).toHaveBeenCalledWith(expect.objectContaining({ placement: undefined }));
+    });
   });
 
   describe('game end', () => {

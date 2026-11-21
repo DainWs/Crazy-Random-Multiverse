@@ -180,6 +180,19 @@ function paletteRgba(color: PaletteColor, alpha: number): string {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
+/** The color `from` as `#rrggbb` mixed with the color `to`: `share` is 0 for `from` and 1 for `to`. */
+function paletteMixed(from: PaletteColor, to: PaletteColor, share: number): string {
+  const start = paletteFill(from);
+  const end = paletteFill(to);
+  const mixChannel = (shift: number) => {
+    const channel = (value: number) => (value >> shift) & RGB_CHANNEL_MASK;
+
+    return Math.round(channel(start) * (1 - share) + channel(end) * share);
+  };
+
+  return `#${[16, 8, 0].map((shift) => mixChannel(shift).toString(16).padStart(2, '0')).join('')}`;
+}
+
 /** The color as `#rrggbb` mixed with white: `whiteShare` is 0 for the color itself and 1 for white. */
 function paletteMixedWithWhite(color: PaletteColor, whiteShare: number): string {
   const value = paletteFill(color);
@@ -189,4 +202,4 @@ function paletteMixedWithWhite(color: PaletteColor, whiteShare: number): string 
 }
 
 export type { PaletteColor };
-export { paletteFill, paletteMixedWithWhite, paletteRgba, paletteText, ACCESSIBLE_PALETTE, PALETTE };
+export { paletteFill, paletteMixed, paletteMixedWithWhite, paletteRgba, paletteText, ACCESSIBLE_PALETTE, PALETTE };

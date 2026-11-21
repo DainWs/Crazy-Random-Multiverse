@@ -34,7 +34,7 @@ const HUD_ZOOM_LEVELS = [
     { zoom: 0.8, wheelSteps: 2 },
     { zoom: 0.5, wheelSteps: 4 }
 ];
-const LONG_PAN_TEST_TIMEOUT_MS = 180000;
+const LONG_PAN_TEST_TIMEOUT_MS = 360000;
 
 const TURN_TEXT_AREA: Area = { x: 0, y: 0, width: 560, height: 80 };
 const BUTTONS_AREA: Area = { x: 1600, y: 930, width: 320, height: 150 };

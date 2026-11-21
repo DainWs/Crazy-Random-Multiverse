@@ -6,8 +6,6 @@ import {
   slideToTween,
   moveToTween,
   previewInZoneSlotTween,
-  MOVE_TO_DURATION,
-  PREVIEW_IN_ZONE_SLOT_DURATION
 } from '@/core/visual_effects/CardTweens';
 import type CardView from '@/game/cards/CardView';
 
@@ -75,7 +73,7 @@ describe('CardTweens', () => {
       expect(tween.to.x).toBe(100);
       expect(tween.to.y).toBe(250);
       expect(tween.duration).toBe('MEDIUM');
-      expect(tween.curve).toEqual({ ease: 'Power1' });
+      expect(tween.curve).toBe('ENTER');
     });
   });
 
@@ -88,8 +86,8 @@ describe('CardTweens', () => {
       expect(tween.to.x).toBe(300);
       expect(tween.to.y).toBe(400);
       expect(tween.delay).toBe(50);
-      expect(tween.duration).toBe(MOVE_TO_DURATION);
-      expect(tween.completeDelay).toBe(100);
+      expect(tween.duration).toBe('MEDIUM');
+      expect(tween.curve).toBe('ENTER');
     });
   });
 
@@ -104,7 +102,7 @@ describe('CardTweens', () => {
       expect(tween.to.scaleX).toBe(0.6);
       expect(tween.to.scaleY).toBe(0.6);
       expect(tween.to.angle).toBe(15);
-      expect(tween.duration).toBe(PREVIEW_IN_ZONE_SLOT_DURATION);
+      expect(tween.duration).toBe('FAST');
     });
 
     it('handles scale object with x and y dimensions', () => {

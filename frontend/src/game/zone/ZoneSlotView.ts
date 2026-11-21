@@ -298,7 +298,8 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
   }
 
   private pulseReadyMark = () => {
-    this.readyGraphics?.setAlpha(this.readyMarkIsHeld ? 1 : readyMarkAlpha(this.scene.time.now));
+    const steady = this.readyMarkIsHeld || EffectSettings.pulsesAreStill();
+    this.readyGraphics?.setAlpha(steady ? 1 : readyMarkAlpha(this.scene.time.now));
   };
 
   /** Whether the frame of a card that can attack is drawn (VIEW-17). */

@@ -2,18 +2,18 @@ import type { CombatResult } from '@/domain/CombatResult';
 import type { PlayerCode } from '@/domain/Player';
 import type { ZonePosition } from '@/domain/Position';
 import type { ArmorType, StatisticType } from '@/domain/Statistics';
-import { valueAfterDamage, withValue } from '@/domain/Statistics';
-import type { CardStatisticView } from '@/game/cards/components/CardStatisticView';
+import { valueAfterDamage } from '@/domain/Statistics';
 import type CombatantView from '@/game/cards/CombatantView';
 import type ZoneSlotView from '@/game/zone/ZoneSlotView';
 import type { GameScene } from '@/scenes/Game';
-import { boxOfSlot, damageTextSize, lungeVector, shakeOffset, toSlotSpace } from '@/game/cards/CombatLayout';
-import { damageIconOutline } from '@/game/cards/DamageIcons';
+import { boxOfSlot, lungeVector, shakeOffset, toSlotSpace } from '@/game/cards/CombatLayout';
 import { toDamageText } from '@/core/visual_effects/DamageTexts';
+import { showFloatingTexts } from '@/core/visual_effects/FloatingTexts';
+import { countStatistic } from '@/core/visual_effects/StatisticCount';
 import { playMotion, waitFor } from '@/core/visual_effects/Motion';
 import CardClickHandler from '@/core/interactions/CardClickHandler';
 import * as Constants from '@/core/Constants';
-import { paletteFill, paletteText } from '@/game/utils/Palette';
+import { paletteFill } from '@/game/utils/Palette';
 
 /** The shake goes back and forth by nature, so it is the one motion that moves at a constant pace (VIEW-31). */
 const SHAKE_EASE = { ease: 'Linear' };
@@ -165,90 +165,21 @@ async function die(scene: GameScene, view: CombatantView, isLeader: boolean): Pr
   });
 }
 
-/** The statistic counts from its value to the one after the damage; the board drawn next already has that value (VIEW-6). */
+/** The statistic counts from its value to the one after the damage (VIEW-6). */
 function countDown(scene: GameScene, view: CombatantView, type: StatisticType, damage: number): Promise<void> {
-  const statisticView = view.getByName(type) as CardStatisticView | null;
   const statistic = view.combatant.getStatistic(type);
-  if (!statisticView || !statistic || damage <= 0) {
+  if (!statistic || damage <= 0) {
     return Promise.resolve();
   }
 
-  const equipmentValue = view.combatant.getEquipmentValue(type);
-  const counter = { value: statistic.value };
-  const showCounter = () => statisticView.update(withValue(statistic, Math.round(counter.value)), equipmentValue);
-
-  return playMotion(scene, {
-    targets: counter,
-    to: { value: valueAfterDamage(statistic, damage) },
-    duration: 'SLOW',
-    curve: 'ENTER',
-    kind: 'ESSENTIAL',
-    onUpdate: showCounter
-  });
+  return countStatistic(scene, view, type, statistic.value, valueAfterDamage(statistic, damage));
 }
 
-/**
- * What the target lost rises from its top edge and fades out. It is placed in the world, not in the slot, because the slot is
- * rotated with its zone and the text would turn upside down (VIEW-6).
- */
-async function showDamageText(scene: GameScene, slot: ZoneSlotView, target: CombatantView | null, combat: CombatResult): Promise<void> {
-  const content = toDamageText(combat, target?.combatant.getStatistic('Armor')?.valueType as ArmorType | undefined);
-  const unitsPerPixel = scene.cardValueUnitsPerPixel();
-  const world = slot.getWorldTransformMatrix();
-  const box = boxOfSlot(slot.corners, { x: world.tx, y: world.ty }, world.scaleX);
-  const size = damageTextSize(Math.max(box.width, box.height) / unitsPerPixel, Constants.DAMAGE_TEXT_SIZE_FRACTION, Constants.DAMAGE_TEXT_MIN_SIZE);
+/** What the target lost rises from its top edge and fades out (VIEW-6). */
+function showDamageText(scene: GameScene, slot: ZoneSlotView, target: CombatantView | null, combat: CombatResult): Promise<void> {
+  const armorType = target?.combatant.getStatistic('Armor')?.valueType as ArmorType | undefined;
 
-  const label = createDamageLabel(scene, content, size);
-  label.setScale(unitsPerPixel);
-  label.setPosition(box.center.x, box.center.y - box.height / 2);
-  label.setDepth(Constants.DAMAGE_TEXT_DEPTH);
-
-  await playMotion(scene, {
-    targets: label,
-    to: { y: label.y - Constants.DAMAGE_TEXT_RISE * unitsPerPixel },
-    duration: 'SLOW',
-    curve: 'ENTER',
-    kind: 'ESSENTIAL'
-  });
-  await playMotion(scene, { targets: label, to: { alpha: 0 }, duration: 'MEDIUM', curve: 'LEAVE', kind: 'ESSENTIAL' });
-
-  label.destroy();
-}
-
-/** The icon and the number side by side, `size` pixels tall, with the bottom edge and the middle of the whole at the origin. */
-function createDamageLabel(scene: GameScene, content: ReturnType<typeof toDamageText>, size: number): Phaser.GameObjects.Container {
-  const outline = size * Constants.DAMAGE_TEXT_OUTLINE_FRACTION;
-  const text = scene.add.text(0, 0, content.text, {
-    fontSize: `${size}px`,
-    color: paletteText(content.color),
-    stroke: paletteText('TEXT_OUTLINE'),
-    strokeThickness: outline
-  });
-  text.setOrigin(0, 1);
-
-  const iconWidth = content.icon ? size + size * Constants.DAMAGE_TEXT_ICON_GAP_FRACTION : 0;
-  const left = -(iconWidth + text.width) / 2;
-  text.setX(left + iconWidth);
-
-  const label = scene.add.container(0, 0, [text]);
-  if (content.icon) {
-    const icon = scene.add.graphics();
-    const points = damageIconOutline(content.icon, size);
-    icon.fillStyle(paletteFill(content.color), 1);
-    icon.lineStyle(outline, paletteFill('TEXT_OUTLINE'), 1);
-    icon.beginPath();
-    icon.moveTo(points[0].x, points[0].y);
-    for (const point of points.slice(1)) {
-      icon.lineTo(point.x, point.y);
-    }
-    icon.closePath();
-    icon.fillPath();
-    icon.strokePath();
-    icon.setPosition(left + size / 2, -size / 2);
-    label.add(icon);
-  }
-
-  return label;
+  return showFloatingTexts(scene, slot, [toDamageText(combat, armorType)]);
 }
 
 export { playCombat };

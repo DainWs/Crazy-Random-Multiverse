@@ -2,7 +2,9 @@ import type { CardAudioType, CombatantCard } from "@/domain/Card";
 import type { CardRender } from "@/game/cards/renders/CombatantRender";
 import combatantRender from "@/game/cards/renders/CombatantRender";
 import CardView from "@/game/cards/CardView";
-import stackLayoutHelper from "@/game/cards/CardStackLayoutHelper";
+import stackLayoutHelper, { calculateOffset, calculateRevealedOffset } from "@/game/cards/CardStackLayoutHelper";
+import CardAnimator from "@/core/visual_effects/CardAnimator";
+import { waitFor } from "@/core/visual_effects/Motion";
 import type { CardQuad } from "@/game/cards/CardWarp";
 
 class CombatantView extends CardView {
@@ -53,6 +55,22 @@ class CombatantView extends CardView {
   public override clearWarp() {
     super.clearWarp();
     this.stackedCards.forEach((piece) => piece.clearWarp());
+  }
+
+  /** The newest piece slides out to the place it takes under the pointer, stays there and slides back behind the card (VIEW-36). */
+  public async showLatestPiece(scene: Phaser.Scene, shownMs: number): Promise<void> {
+    const index = this.stackedCards.length;
+    const piece = this.stackedCards[index - 1];
+    if (!piece) {
+      return;
+    }
+
+    const [shownX, shownY] = calculateRevealedOffset(this.width, index);
+    const [restX, restY] = calculateOffset(index);
+
+    await CardAnimator.playTween(piece, 'horizontal_slide', shownX, shownY);
+    await waitFor(scene, shownMs, 'ESSENTIAL');
+    await CardAnimator.playTween(piece, 'horizontal_slide', restX, restY);
   }
 
   private revealStackedCards() {

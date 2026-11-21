@@ -1,8 +1,9 @@
-import type { AccentRole, ButtonRole, HudSkin, PanelRole, TextLevel } from '@/game/hud/HudSkin';
+import type { AccentRole, ButtonLook, ButtonRole, HudSkin, PanelRole, TextLevel } from '@/game/hud/HudSkin';
 import type { PaletteColor } from '@/game/utils/Palette';
 import * as Constants from '@/core/Constants';
 import { DEFAULT_HUD_SKIN } from '@/game/hud/HudSkin';
-import { paletteFill, paletteMixedWithWhite, paletteText } from '@/game/utils/Palette';
+import { paletteFill, paletteMixed, paletteMixedWithWhite, paletteText } from '@/game/utils/Palette';
+import { playMotion } from '@/core/visual_effects/Motion';
 
 /** What a view changes of a text of a level: the size and the color of the few that do not follow the level yet. */
 type TextOverrides = {
@@ -34,10 +35,39 @@ function createButton(scene: Phaser.Scene, role: ButtonRole, label: string, skin
   button.setBackgroundColor(paletteText(look.fill));
   button.setPadding(Constants.HUD_BUTTON_PADDING);
   button.setInteractive({ useHandCursor: true });
-  button.on('pointerover', () => button.setBackgroundColor(paletteText(look.fillUnderPointer)));
-  button.on('pointerout', () => button.setBackgroundColor(paletteText(look.fill)));
+  const underPointer = { value: 0 };
+  underPointerShares.set(button, underPointer);
+  button.on('pointerover', () => changeUnderPointer(scene, button, underPointer, 1, look));
+  button.on('pointerout', () => changeUnderPointer(scene, button, underPointer, 0, look));
 
   return button;
+}
+
+/** How much of the way from the fill to the fill under the pointer a button has gone: 0 at rest, 1 under the pointer. */
+const underPointerShares = new WeakMap<Phaser.GameObjects.Text, { value: number }>();
+
+function underPointerShare(button: Phaser.GameObjects.Text): number {
+  return underPointerShares.get(button)?.value ?? 0;
+}
+
+/** The background goes to the one under the pointer, or back, in 150 ms, from the one it has reached (VIEW-28). */
+function changeUnderPointer(
+  scene: Phaser.Scene,
+  button: Phaser.GameObjects.Text,
+  share: { value: number },
+  target: number,
+  look: ButtonLook
+) {
+  scene.tweens.killTweensOf(share);
+
+  void playMotion(scene, {
+    targets: share,
+    to: { value: target },
+    duration: 'FAST',
+    curve: 'ENTER',
+    kind: 'NON_ESSENTIAL',
+    onUpdate: () => button.setBackgroundColor(paletteMixed(look.fill, look.fillUnderPointer, share.value))
+  });
 }
 
 /** The fill of a button of the skin as `#rrggbb`, mixed with white by `whiteShare` (0 to 1), for what pulses over it. */
@@ -83,4 +113,4 @@ function accentAlpha(role: AccentRole, skin: HudSkin = DEFAULT_HUD_SKIN): number
 }
 
 export type { TextOverrides };
-export { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText, panelBackground };
+export { accentAlpha, accentColor, buttonFill, createButton, createFocusFrame, createPanel, createText, panelBackground, underPointerShare };
