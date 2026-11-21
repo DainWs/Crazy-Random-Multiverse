@@ -25,13 +25,6 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 | Settings screen | In the MVP only with the card values section (`UI-33`), decided on 2026-11-20 in Phase 11.3. The graphics quality and reduced motion options stay Post-MVP (`UI-27`), and the MVP is built so that adding them only adds options to the screen, without changing the effects (`UI-30`) |
 | Accepted risk: waiting player removed | The session of a waiting player can expire before that of the blocking one, so the waiting player is eliminated instead, during the turn (`TURN-4`) or the load (`LOAD-3`) |
 
-## Phase 11.6 — UX/UI: layout
-
-- [ ] Write in `VIEW-24` the smallest supported window, decided with the product owner (1280 by 720 is proposed), and keep the HUD, the hand and the board from overlapping at any size from it up to 1920 by 1080. The reference image of `resize.spec.ts` at 1100 by 620 shows the end turn button over the edge of the table; whether that size has to work depends on the minimum chosen
-- [ ] Decide with the product owner, and write in `VIEW-14`, whether the side panel ends above the HUD buttons or covers them while it is open: today the buttons are drawn over the panel
-- [ ] Check whether the side panel (`VIEW-14`) covers the hovered card when it is in the zone of a rival on the right side (`VIEW-13`). If it does, write in `VIEW-14` that the panel is shown on the left side of the screen when the hovered card is in the right half of the screen, and implement it
-- [ ] Check, at the smallest window of the first bullet and with 10 players, whether the expanded hand covers a slot of the own zone (`VIEW-16`). Record the result in this bullet, and if it does, fix it
-
 ## Phase 11.7 — UX/UI: learnability
 
 - [ ] Add a help button to the HUD that opens a panel over the board with a legend of the marks of the board: each one with its color, its second signal (Phase 11.1) and its meaning. The panel closes with the same button, with Escape and with a click outside it. Whether gameplay stays enabled while it is open is decided with the product owner. Write it in new `UI` and `VIEW` rules
