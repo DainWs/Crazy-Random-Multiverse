@@ -52,6 +52,25 @@ const TEXTS: Record<string, string> = {
   'ui.help.mark.eliminated.color': 'rojo oscuro',
   'ui.help.mark.eliminated.meaning': 'La zona de un jugador eliminado.',
   'ui.help.mark.eliminated.signal': 'la etiqueta «Eliminado»',
+  'ui.help.rules': 'Reglas',
+  'ui.help.rules.goal.title': 'Objetivo.',
+  'ui.help.rules.goal.text':
+    'Cada jugador tiene un líder a la vista de todos. Elimina a los líderes rivales antes de que eliminen al tuyo: gana el último jugador vivo.',
+  'ui.help.rules.turn.title': 'El turno.',
+  'ui.help.rules.turn.text':
+    'Se juega por turnos, en un orden sorteado al empezar que no cambia. En tu turno puedes colocar, mover, equipar y atacar, sin límite de tiempo, y lo terminas con «Terminar turno». Al empezar cada ronda, todos reciben cartas nuevas.',
+  'ui.help.rules.placing.title': 'Colocar una carta.',
+  'ui.help.rules.placing.text':
+    'Arrastra un guerrero de tu mano a un hueco libre de tu zona. La fila de atrás se llena antes que la de delante. Un guerrero recién colocado ataca a partir de tu siguiente turno. Durante tu turno puedes mover o intercambiar tus guerreros dentro de tu zona, pero el líder no se mueve. Para equipar una carta tuya del tablero, arrastra el equipo sobre ella.',
+  'ui.help.rules.attacking.title': 'Atacar.',
+  'ui.help.rules.attacking.text':
+    'Haz clic en una carta tuya con marco cian y después en una carta rival que se pueda atacar. Cada carta ataca una vez por turno.',
+  'ui.help.rules.protection.title': 'Protección.',
+  'ui.help.rules.protection.text':
+    'Mientras la fila delantera de una zona tenga cartas, su fila trasera no puede ser atacada. Mientras el líder tenga guerreros delante, ni puede ser atacado ni puede atacar.',
+  'ui.help.rules.elimination.title': 'Eliminación.',
+  'ui.help.rules.elimination.text':
+    'Un jugador queda eliminado cuando muere su líder o cuando se rinde, cosa que solo puede hacer en su turno. Sus cartas salen del tablero y pasa a ver la partida como espectador.',
   'ui.party.members': 'Miembros',
   'ui.party.owner': 'Owner',
   'ui.party.code': 'Código',

@@ -20,6 +20,16 @@ const LEGEND_TEXT_KEYS = new Map<LegendMark, string>([
     ['ELIMINATED', 'ui.help.mark.eliminated']
 ]);
 
+/** The paragraphs of the rules, in their order (UI-35). */
+const RULE_TEXT_KEYS: readonly string[] = [
+    'ui.help.rules.goal',
+    'ui.help.rules.turn',
+    'ui.help.rules.placing',
+    'ui.help.rules.attacking',
+    'ui.help.rules.protection',
+    'ui.help.rules.elimination'
+];
+
 const helpOpen = SettingsSystem.helpOpen;
 const trapFocus = createFocusTrapRef();
 const frame = sampleFrame();
@@ -89,6 +99,12 @@ onUnmounted(() => {
                         </li>
                     </ul>
                 </section>
+                <section aria-labelledby="help-rules">
+                    <h3 id="help-rules">{{ getText('ui.help.rules') }}</h3>
+                    <p v-for="ruleKey in RULE_TEXT_KEYS" :key="ruleKey" class="help-rules__paragraph">
+                        <strong>{{ getText(`${ruleKey}.title`) }}</strong> {{ getText(`${ruleKey}.text`) }}
+                    </p>
+                </section>
             </div>
             <button type="button" class="help-panel__close" @click="SettingsSystem.closeHelp()">
                 {{ getText('ui.help.close') }}
@@ -156,6 +172,10 @@ onUnmounted(() => {
 
 .help-legend__texts p {
     margin: 0;
+}
+
+.help-rules__paragraph {
+    margin: 0 0 12px;
 }
 
 .help-legend__name {

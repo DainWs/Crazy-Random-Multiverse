@@ -6,6 +6,7 @@ import { expect, test } from '@/support/test';
 
 const ACTION_WAIT_MS = 1000;
 const LEGEND_ROWS = 8;
+const RULE_PARAGRAPHS = 6;
 
 /** Opens the board with the extra signals of the marks on (UI-31). */
 async function openGameWithExtraMarks(page: Page, backend: BackendDouble): Promise<void> {
@@ -93,6 +94,28 @@ test.describe('help in the game', () => {
 
     test('draws the legend in the base game', async ({ page }) => {
         await expect(page.getByRole('dialog')).toHaveScreenshot('help-legend.png', { maxDiffPixels: 0 });
+    });
+
+    // UI-35
+    test('shows the six paragraphs of the rules', async ({ page }) => {
+        await expect(page.getByRole('region', { name: 'Reglas' }).getByRole('paragraph')).toHaveCount(RULE_PARAGRAPHS);
+    });
+
+    // UI-35
+    test('starts the rules with the goal', async ({ page }) => {
+        const goal = page.getByRole('region', { name: 'Reglas' }).getByRole('paragraph').first();
+
+        await expect(goal).toHaveText(
+            'Objetivo. Cada jugador tiene un líder a la vista de todos. ' +
+                'Elimina a los líderes rivales antes de que eliminen al tuyo: gana el último jugador vivo.'
+        );
+    });
+
+    // UI-35, VIEW-58
+    test('draws the rules at the end of the panel', async ({ page }) => {
+        await page.getByRole('region', { name: 'Reglas' }).getByRole('paragraph').last().scrollIntoViewIfNeeded();
+
+        await expect(page.getByRole('dialog')).toHaveScreenshot('help-rules.png', { maxDiffPixels: 0 });
     });
 });
 

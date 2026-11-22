@@ -30,7 +30,7 @@ Phased work plan. One phase per session. Mark bullets `- [x]` in the same commit
 Started at: `d7db554a`
 
 - [x] Add a help button to the HUD that opens a panel over the board with a legend of the marks of the board: each one with its color, its second signal (Phase 11.1) and its meaning. The panel closes with the same button, with Escape and with a click outside it. Gameplay is disabled while it is open, decided by the product owner on 2026-11-22, and the legend draws the second signals only while they are on (`UI-34`, `VIEW-58`)
-- [ ] Add to the panel of the previous bullet a summary of the rules, in a second section: the goal, the turn, placing a card, attacking, protection and elimination (`TURN-*`, `BOARD-*`, `PROT-*`, `ELIM-*`). The text is in Spanish, goes through the texts of `UI-2`, and was approved by the product owner on 2026-11-22 (`UI-35`)
+- [x] Add to the panel of the previous bullet a summary of the rules, in a second section: the goal, the turn, placing a card, attacking, protection and elimination (`TURN-*`, `BOARD-*`, `PROT-*`, `ELIM-*`). The text is in Spanish, goes through the texts of `UI-2`, and was approved by the product owner on 2026-11-22 (`UI-35`)
 - [ ] Say in the side panel (`VIEW-14`) of an own card on the board, while the board being shown is the local player's turn, that it can attack this turn, from `attackAvailable` (`CON-15`): a card that cannot attack says nothing, as its click (`UI-25`), by decision of the product owner on 2026-11-22. The contract does not say why a card cannot attack, so the panel gives no reason (`VIEW-59`)
 
 ## Phase 12 — Menu, lobby, user
