@@ -15,6 +15,7 @@ import { playMotion } from "@/core/visual_effects/Motion";
 import { paletteFill, paletteText } from "@/game/utils/Palette";
 import { TEXT_SIZE_BODY, TEXT_SIZE_LABEL, TEXT_SIZE_NUMBERS, UI_FONT_FAMILY } from "@/core/Constants";
 import { equipmentValueLines } from "@/game/cards/EquipmentValueLines";
+import ZoneSlotView from "@/game/zone/ZoneSlotView";
 
 const SCALE_FACTOR = 1.6;
 const WIDTH = CARD_WIDTH * SCALE_FACTOR;
@@ -34,6 +35,13 @@ const NAME_SHADOW: Phaser.Types.GameObjects.Text.TextShadow = {
   fill: true 
 };
 
+/** An own card of the board that can attack on the turn of the board shown, the same condition as its cyan frame (VIEW-59). */
+function canAttackThisTurn(cardView: CardView): boolean {
+  const slot = cardView.parentContainer;
+
+  return slot instanceof ZoneSlotView && slot.holdsCardThatCanAttack();
+}
+
 class GlobalCardTooltipView extends Phaser.GameObjects.Container implements CardTooltip {
   public static readonly SCALE_FACTOR = SCALE_FACTOR;
   public static readonly WIDTH = WIDTH;
@@ -43,6 +51,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private descriptionContainer: Phaser.GameObjects.Container;
   private cardContainer: Phaser.GameObjects.Container;
   private nameText: Phaser.GameObjects.Text;
+  private canAttackText: Phaser.GameObjects.Text;
   private descriptionText: Phaser.GameObjects.Text;
   private equipmentTexts: Phaser.GameObjects.Text[] = [];
 
@@ -95,10 +104,13 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.nameText = this.createText(TEXT_SIZE_BODY, paletteText('TOOLTIP_NAME'), 'bold', NAME_SHADOW);
     this.nameText.setStroke(paletteText('TEXT_OUTLINE'), 5);
 
+    this.canAttackText = this.createText(TEXT_SIZE_LABEL, paletteText('TOOLTIP_CAN_ATTACK'), 'normal');
+    this.canAttackText.setText(getText('ui.card.can_attack'));
+
     this.descriptionText = this.createText(TEXT_SIZE_LABEL, paletteText('TOOLTIP_DESCRIPTION'), 'normal');
     this.descriptionText.setLineSpacing(6);
 
-    this.descriptionContainer.add([this.nameText, this.descriptionText]);
+    this.descriptionContainer.add([this.nameText, this.canAttackText, this.descriptionText]);
   }
 
   private createText(fontSize: string, color: string, fontStyle: string, shadow?: Phaser.Types.GameObjects.Text.TextShadow) {
@@ -278,8 +290,11 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     return cardView.cardRender.render(cardView.scene, cardView, WIDTH, HEIGHT);
   }
 
-  private buildDescription({ card }: CardView) {
+  private buildDescription(cardView: CardView) {
+    const { card } = cardView;
+
     this.nameText.setText(getText(card.name));
+    this.canAttackText.setVisible(canAttackThisTurn(cardView));
     this.descriptionText.setText(getText(card.description));
     this.descriptionText.setWordWrapWidth((this.currentWidth - PADDING * 4) / this.contentScale);
 
@@ -288,7 +303,9 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private alignDescriptionText(card: Card) {
     this.nameText.setPosition(0, 0);
-    this.descriptionText.setPosition(0, this.nameText.y + this.nameText.height + PADDING * 1.5);
+    this.canAttackText.setPosition(0, this.nameText.y + this.nameText.height + PADDING / 2);
+    const textAbove = this.canAttackText.visible ? this.canAttackText : this.nameText;
+    this.descriptionText.setPosition(0, textAbove.y + textAbove.height + PADDING * 1.5);
 
     this.clearEquipmentTexts();
 

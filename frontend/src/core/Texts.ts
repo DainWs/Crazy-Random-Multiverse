@@ -87,6 +87,7 @@ const TEXTS: Record<string, string> = {
   'ui.game_load.failed': 'No se ha podido cargar la partida',
   'ui.game_load.retry': 'Reintentar',
   'ui.card.equipment': 'Equipo:',
+  'ui.card.can_attack': 'Puede atacar este turno',
   'ui.card.damage': 'Daño',
   'ui.card.armor': 'Armadura',
   'ui.card.health': 'Vida',

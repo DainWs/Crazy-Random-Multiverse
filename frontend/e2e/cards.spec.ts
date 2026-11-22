@@ -33,6 +33,32 @@ test.describe('side panel of a combatant with equipment', () => {
     });
 });
 
+function withOwnWarriorThatCannotAttack(prepared: PreparedGame): PreparedGame {
+    const warrior = prepared.game.zones[OWN_ZONE].combatants[WARRIOR_POSITION.row][WARRIOR_POSITION.column].combatant!;
+    const resting = { ...warrior, attackAvailable: false };
+
+    return { ...prepared, game: withCombatant(prepared.game, OWN_ZONE, WARRIOR_POSITION, resting) };
+}
+
+// VIEW-59
+test.describe('side panel of an own card on the turn of the local player', () => {
+    test('says that the card can attack this turn', async ({ page, backend }) => {
+        await openGame(page, backend, createPreparedGame(2));
+
+        await hover(page, OWN_WARRIOR);
+
+        await expect(page).toHaveScreenshot('panel-can-attack.png', { clip: TOOLTIP_AREA, maxDiffPixels: 0 });
+    });
+
+    test('says nothing for a card that cannot attack', async ({ page, backend }) => {
+        await openGame(page, backend, withOwnWarriorThatCannotAttack(createPreparedGame(2)));
+
+        await hover(page, OWN_WARRIOR);
+
+        await expect(page).toHaveScreenshot('panel-cannot-attack.png', { clip: TOOLTIP_AREA, maxDiffPixels: 0 });
+    });
+});
+
 /**
  * The card of the own warrior with its frame and the table to its left, where the pieces of equipment slide out: measured with
  * the top-down camera, the card goes from 848 to 912 by 724 to 824 at rest, and the pieces out reach 690.

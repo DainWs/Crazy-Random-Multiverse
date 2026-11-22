@@ -2,6 +2,7 @@ import 'phaser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import GlobalCardTooltipView from '@/game/cards/tooltip/GlobalCardTooltipView';
 import { TOOLTIP_CLOSE_WAIT_MS } from '@/core/Constants';
+import ZoneSlotView from '@/game/zone/ZoneSlotView';
 
 type Timer = { remove: ReturnType<typeof vi.fn> };
 type Tween = { targets: { open: number }; open: number; duration: number; ease: string; onUpdate: () => void; onComplete: () => void };
@@ -122,5 +123,81 @@ describe('GlobalCardTooltipView open and close', () => {
     call('setOpen', 0.25);
 
     expect(tooltip.setAlpha).toHaveBeenCalledWith(0.25);
+  });
+});
+
+type FakeText = { visible: boolean; y: number; height: number };
+
+function createFakeText(): FakeText {
+  return {
+    visible: true,
+    y: 0,
+    height: 20,
+    setText: vi.fn(),
+    setWordWrapWidth: vi.fn(),
+    setVisible: vi.fn(function (this: FakeText, visible: boolean) { this.visible = visible; }),
+    setPosition: vi.fn(function (this: FakeText, _x: number, y: number) { this.y = y; })
+  } as FakeText;
+}
+
+/** A slot of the board; `ready` says whether it drew the cyan frame of its card on this board (VIEW-17). */
+function createSlot(ready: boolean): ZoneSlotView {
+  const slot = Object.create(ZoneSlotView.prototype) as ZoneSlotView;
+  Object.assign(slot, { readyGraphics: ready ? {} : undefined });
+
+  return slot;
+}
+
+// VIEW-59
+describe('GlobalCardTooltipView attack line', () => {
+  let tooltip: Record<string, unknown> & { canAttackText: FakeText };
+
+  const describeCard = (parentContainer: unknown) => {
+    const cardView = { card: { name: 'card.warrior.0.name', description: 'card.warrior.0.description', equipment: [] }, parentContainer };
+    panel.buildDescription.call(tooltip, cardView);
+  };
+
+  beforeEach(() => {
+    tooltip = {
+      nameText: createFakeText(),
+      canAttackText: createFakeText(),
+      descriptionText: createFakeText(),
+      equipmentTexts: [],
+      currentWidth: 480,
+      contentScale: 1
+    } as unknown as Record<string, unknown> & { canAttackText: FakeText };
+    for (const name of ['alignDescriptionText', 'clearEquipmentTexts']) {
+      tooltip[name] = (...args: unknown[]) => panel[name].call(tooltip, ...args);
+    }
+  });
+
+  it('shows the line for a card whose slot has the cyan frame', () => {
+    describeCard(createSlot(true));
+
+    expect(tooltip.canAttackText.visible).toBe(true);
+  });
+
+  it('hides the line for a card of the board that cannot attack', () => {
+    describeCard(createSlot(false));
+
+    expect(tooltip.canAttackText.visible).toBe(false);
+  });
+
+  it('hides the line for a card of the hand', () => {
+    describeCard(undefined);
+
+    expect(tooltip.canAttackText.visible).toBe(false);
+  });
+
+  it('puts the description right below the name without the line', () => {
+    describeCard(createSlot(false));
+
+    expect((tooltip.descriptionText as FakeText).y).toBe(50);
+  });
+
+  it('puts the description below the line when it is shown', () => {
+    describeCard(createSlot(true));
+
+    expect((tooltip.descriptionText as FakeText).y).toBe(80);
   });
 });
