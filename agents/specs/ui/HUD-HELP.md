@@ -19,7 +19,7 @@ The look of the help button and of its panel (`UI-34`), with the legend of the m
     | Target that cannot be attacked (`VIEW-4`) | Objetivo no válido | rojo | Con un atacante elegido, no puedes atacar esta carta: está protegida o es un líder con guerreros delante. | círculo tachado |
     | Eliminated zone (`VIEW-11`) | Eliminado | rojo oscuro | La zona de un jugador eliminado. | la etiqueta «Eliminado» |
 
-  - **Samples.** Each sample is an empty slot of the board, drawn flat and scaled so it is 60 px wide, every part of it keeping its share of the slot. It is drawn as the board draws that mark at that moment, with the colors of the mode (`UI-31`, `VIEW-40`) and with the second signal only while the extra signals are on (`VIEW-39`):
+  - **Samples.** Each sample is an empty slot of the board, drawn flat and scaled so it is 60 px wide, every part of it keeping its share of the slot except these, which would not be seen at that size: the border of the slot, the frames and the border of the veil are 2 px thick, the near black edge of the accessible mode is 1 px on each side, the disc of the crown is 22 px wide and the crossed circle 20 px. It is drawn as the board draws that mark at that moment, with the colors of the mode (`UI-31`, `VIEW-40`) and with the second signal only while the extra signals are on (`VIEW-39`):
     - **Tu zona.** The tint of the own zone, with the diagonal lines.
     - **Puede atacar.** The neutral slot with the cyan frame, or with the L's.
     - **Turno.** The neutral slot with the gold frame, and with the crown.
@@ -29,7 +29,7 @@ The look of the help button and of its panel (`UI-34`), with the legend of the m
     - **Objetivo no válido.** The neutral slot with the red frame and the crossed circle, also with the extra signals off, as on the board.
     - **Eliminado.** The veil of an eliminated zone, without the label.
 
-    The samples do not pulse and have no card.
+    The samples do not pulse, and have no card and no icon of the slot.
   - **Effects** (`UI-26`). The button and the panel have no animation: the panel appears and disappears at once.
 
 ## Scenarios

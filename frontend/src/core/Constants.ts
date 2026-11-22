@@ -329,6 +329,21 @@ export const SLOT_BORDER_ALPHA = 0.8;
 /** Opacity of the fill of a valid slot while the extra marks are on, between 0 and 1 (VIEW-39). */
 export const SLOT_SOLID_FILL_ALPHA = 1;
 
+/** Width in pixels of the slot of each sample of the legend of the help panel (VIEW-58). */
+export const HELP_SAMPLE_WIDTH = 60;
+
+/** Width in pixels of the border of the slot, the frames and the border of the veil in a sample of the legend, so they are seen at its size (VIEW-58). */
+export const HELP_SAMPLE_FRAME_WIDTH = 2;
+
+/** Width in pixels of the near black edge on each side of a mark in a sample of the legend, in the accessible mode (VIEW-58). */
+export const HELP_SAMPLE_EDGE_WIDTH = 1;
+
+/** Diameter in pixels of the disc of the crown in a sample of the legend (VIEW-58). */
+export const HELP_SAMPLE_CROWN_DIAMETER = 22;
+
+/** Diameter in pixels of the crossed circle in a sample of the legend (VIEW-58). */
+export const HELP_SAMPLE_FORBIDDEN_ICON_DIAMETER = 20;
+
 /** Width in board-space units of the frame of the button of the confirmation dialog that has the keyboard focus (VIEW-42). */
 export const FOCUS_FRAME_WIDTH = 3;
 

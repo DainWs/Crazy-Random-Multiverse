@@ -35,12 +35,18 @@ function saveBoardCamera(camera: BoardCamera) {
   }
 }
 
+/** The panels opened from the buttons of the top right corner; they are never open at once (UI-33, UI-34). */
+type CornerPanel = 'SETTINGS' | 'HELP';
+
 const currentBoardCamera = shallowRef<BoardCamera>(loadBoardCamera());
-const currentPanelOpen = shallowRef(false);
+const currentOpenPanel = shallowRef<CornerPanel | undefined>(undefined);
 
 /** Read-only views for Vue components; computed does not wrap the value in a proxy. */
 const boardCamera = computed(() => currentBoardCamera.value);
-const panelOpen = computed(() => currentPanelOpen.value);
+const panelOpen = computed(() => currentOpenPanel.value === 'SETTINGS');
+const helpOpen = computed(() => currentOpenPanel.value === 'HELP');
+/** Either panel disables gameplay while it is open (UI-4). */
+const anyPanelOpen = computed(() => currentOpenPanel.value !== undefined);
 
 function setBoardCamera(camera: BoardCamera) {
   currentBoardCamera.value = camera;
@@ -48,25 +54,48 @@ function setBoardCamera(camera: BoardCamera) {
 }
 
 function openPanel() {
-  currentPanelOpen.value = true;
+  currentOpenPanel.value = 'SETTINGS';
 }
 
 function closePanel() {
-  currentPanelOpen.value = false;
+  closeCornerPanel('SETTINGS');
 }
 
 function togglePanel() {
-  currentPanelOpen.value = !currentPanelOpen.value;
+  toggleCornerPanel('SETTINGS');
 }
 
-/** The settings of the player (UI-33): preferences of this browser, not game state nor part of the contract. */
+function closeHelp() {
+  closeCornerPanel('HELP');
+}
+
+function toggleHelp() {
+  toggleCornerPanel('HELP');
+}
+
+function closeCornerPanel(panel: CornerPanel) {
+  if (currentOpenPanel.value === panel) {
+    currentOpenPanel.value = undefined;
+  }
+}
+
+function toggleCornerPanel(panel: CornerPanel) {
+  currentOpenPanel.value = currentOpenPanel.value === panel ? undefined : panel;
+}
+
+/** The settings of the player (UI-33), preferences of this browser and not game state nor part of the contract, and the panels
+ * of the corner buttons (UI-33, UI-34). */
 const SettingsSystem = {
   boardCamera,
   panelOpen,
+  helpOpen,
+  anyPanelOpen,
   setBoardCamera,
   openPanel,
   closePanel,
-  togglePanel
+  togglePanel,
+  closeHelp,
+  toggleHelp
 };
 
 export type { BoardCamera };

@@ -36,6 +36,60 @@ describe('SettingsSystem', () => {
     });
   });
 
+  // UI-34
+  describe('the help panel', () => {
+    beforeEach(() => {
+      SettingsSystem.closeHelp();
+    });
+
+    it('toggles', () => {
+      SettingsSystem.toggleHelp();
+      const afterFirst = SettingsSystem.helpOpen.value;
+
+      SettingsSystem.toggleHelp();
+
+      expect([afterFirst, SettingsSystem.helpOpen.value]).toEqual([true, false]);
+    });
+
+    it('closes the settings when it opens', () => {
+      SettingsSystem.openPanel();
+
+      SettingsSystem.toggleHelp();
+
+      expect([SettingsSystem.panelOpen.value, SettingsSystem.helpOpen.value]).toEqual([false, true]);
+    });
+
+    it('closes when the settings open', () => {
+      SettingsSystem.toggleHelp();
+
+      SettingsSystem.togglePanel();
+
+      expect([SettingsSystem.panelOpen.value, SettingsSystem.helpOpen.value]).toEqual([true, false]);
+    });
+
+    it('keeps the settings open when the help is closed', () => {
+      SettingsSystem.openPanel();
+
+      SettingsSystem.closeHelp();
+
+      expect(SettingsSystem.panelOpen.value).toBe(true);
+    });
+
+    // UI-4
+    it.each([
+      { open: 'settings', toggle: () => SettingsSystem.togglePanel(), expected: true },
+      { open: 'help', toggle: () => SettingsSystem.toggleHelp(), expected: true }
+    ])('counts the $open panel as a panel open', ({ toggle, expected }) => {
+      toggle();
+
+      expect(SettingsSystem.anyPanelOpen.value).toBe(expected);
+    });
+
+    it('counts no panel open when both are closed', () => {
+      expect(SettingsSystem.anyPanelOpen.value).toBe(false);
+    });
+  });
+
   // VIEW-57
   describe('the camera of the board', () => {
     it('starts with the default camera when none was kept', async () => {

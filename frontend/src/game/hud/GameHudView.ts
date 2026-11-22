@@ -264,7 +264,7 @@ class GameHudView {
             return;
         }
 
-        if (event.code !== Constants.END_TURN_KEY_CODE || SettingsSystem.panelOpen.value) {
+        if (event.code !== Constants.END_TURN_KEY_CODE || SettingsSystem.anyPanelOpen.value) {
             return;
         }
 

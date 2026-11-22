@@ -13,6 +13,8 @@ import PartyView from '@/views/PartyView.vue';
 import ConnectionNotice from '@/views/ConnectionNotice.vue';
 import SettingsButton from '@/views/SettingsButton.vue';
 import SettingsPanel from '@/views/SettingsPanel.vue';
+import HelpButton from '@/views/HelpButton.vue';
+import HelpPanel from '@/views/HelpPanel.vue';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -56,6 +58,10 @@ defineExpose({ scene, game });
     <template v-if="screen === 'MAIN_MENU' || screen === 'GAME'">
         <SettingsPanel />
         <SettingsButton />
+    </template>
+    <template v-if="screen === 'GAME'">
+        <HelpPanel />
+        <HelpButton />
     </template>
 </template>
 
