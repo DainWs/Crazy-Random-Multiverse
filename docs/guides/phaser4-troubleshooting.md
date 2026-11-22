@@ -59,7 +59,7 @@ Known effects of Phaser 4 on this project, as symptom, likely cause and where to
 
 ## The hand does not open when the pointer comes back over the same card
 
-- **Symptom:** the first time the pointer enters the hand from outside the window it opens, but when it goes out and comes back slowly, over the same card, it stays closed. A quick entry works because it lands on another card (`VIEW-16`).
+- **Symptom:** the first time the pointer enters the hand from outside the window it opens, but when it goes out and comes back slowly, over the same card, it stays closed. A quick entry works because it lands on another card (`VIEW-66`).
 - **Likely cause:** leaving the game sends no `pointerout`, and `InputPlugin` keeps the card in its list of hovered objects, so it sends no `pointerover` when the pointer comes back to it. Making the card interactive again on `gameout` does not help: Phaser sends the `pointerover` at once, while the listeners are off.
 - **Where to look:** `HandView.restCards` remembers the card the pointer left over and `HandView.enableCardListeners`, called on `gameover`, makes it interactive again.
 

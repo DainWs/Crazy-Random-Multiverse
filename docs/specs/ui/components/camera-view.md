@@ -33,3 +33,7 @@ How the board is seen: from straight above or tilted, as before 2026-11-21. Deci
 - Given an attack being animated
 - When the player chooses the other camera
 - Then the attack ends with the camera it started with, and then the board is drawn with the new one
+
+## Effects
+
+None in `docs/specs/ui/effects/`.

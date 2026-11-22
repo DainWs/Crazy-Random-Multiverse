@@ -32,3 +32,7 @@ The look of the menu button and of the menu of the game screen (`UI-36`). The pa
 - Given the menu open
 - When the player clicks "Ajustes"
 - Then the menu closes and the settings screen opens
+
+## Effects
+
+None in `docs/specs/ui/effects/`. The blink of the selected option and the choice are still part of `VIEW-60`, until they are split.

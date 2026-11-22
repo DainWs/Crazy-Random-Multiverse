@@ -20,3 +20,9 @@ What every player sees when the turn or the round changes. The durations and cur
 - Given the last turn of a round
 - When the round and the turn change together
 - Then "Ronda N" is announced, and then the turn
+
+## Effects
+
+- `docs/specs/ui/effects/game-elimination.md` — the notice of an eliminated player, shown at the place of the notices (`VIEW-11`).
+
+The fades of the turn and round notices are still part of `VIEW-15`, until they are split.

@@ -1,6 +1,6 @@
 # Motion base
 
-Shared rules of every animation of the interface. The rule of each animation, in its own file of this folder, follows them unless it says otherwise. The files of this folder describe what is seen and how it behaves, never how it is built.
+Shared rules of every animation of the interface. The rule of each animation, in its own file of `docs/specs/ui/`, follows them unless it says otherwise. The files of `docs/specs/ui/` describe what is seen and how it behaves, never how it is built.
 
 - **VIEW-30** Every animation lasts one of three durations, or is a sequence of them, with the waits between them given by its rule:
   - Fast, 150 ms: the reactions to the pointer and to a click, such as lifting a card.

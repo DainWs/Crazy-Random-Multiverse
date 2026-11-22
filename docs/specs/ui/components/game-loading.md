@@ -25,3 +25,7 @@ What a player sees while the game loads (`UI-12`, `UI-22`) and when the board re
 - Given the loading screen shown
 - When the window changes size
 - Then the panel, the bar, the texts and the retry button stay centered on the window
+
+## Effects
+
+None in `docs/specs/ui/effects/`. The fades of the change to the board are still part of `VIEW-29`, until they are split.

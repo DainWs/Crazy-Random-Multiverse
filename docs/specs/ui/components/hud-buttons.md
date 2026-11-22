@@ -3,7 +3,7 @@
 The buttons of the HUD and of the confirmation dialog (`UI-3`, `UI-15`), and what a spectator sees next to the button to leave (`UI-8`). The durations and curves are in `docs/specs/ui/motion-base.md`. Decided with the product owner on 2026-11-15, from the videos `hud-hover-instantaneo.mp4` and `hud-hover-transicion-150ms.mp4`.
 
 - **VIEW-28** A spectator or eliminated player (`UI-8`) sees, besides the button to leave, a label "Estás observando la partida" in grey just above it, so it is clear they are watching and cannot act. The confirmation dialog has a border of the color of the buttons.
-  - **Pointer over a button.** The buttons of the HUD, the same ones of the confirmation dialog, change their background when the pointer is over them. When the pointer enters a button, its background changes to the one of the pointer in 150 ms, slowing down at the end; when it leaves, it goes back in 150 ms, slowing down at the end, as the enlargement of `VIEW-14` (`VIEW-30`, `VIEW-31`). A pointer that leaves before the change ends goes back from the background reached.
+  - **Pointer over a button.** The buttons of the HUD, the same ones of the confirmation dialog, change their background when the pointer is over them. When the pointer enters a button, its background changes to the one of the pointer in 150 ms, slowing down at the end; when it leaves, it goes back in 150 ms, slowing down at the end, as the enlargement of `VIEW-63` (`VIEW-30`, `VIEW-31`). A pointer that leaves before the change ends goes back from the background reached.
   - On the end turn button, the background goes back to the one of its pulse (`VIEW-38`).
 - **VIEW-42** The button of the confirmation dialog that has the keyboard focus (`UI-32`) is surrounded by a white frame, 3 board units thick and 4 units away from the button, drawn over the panel of the dialog. It is a different mark from the background under the pointer (`VIEW-28`): the two can be seen at once on different buttons or on the same one. The frame appears and moves at once, with no animation. It is essential (`UI-26`): it shows which button Enter presses. **[Post-MVP]** It has no low quality version (`UI-28`) and no reduced motion version, as it does not move smoothly.
 - **VIEW-43** The end turn button is the primary action and the surrender button the destructive one, so they look different and are far from each other. Decided with the product owner on 2026-11-19.
@@ -31,3 +31,9 @@ The buttons of the HUD and of the confirmation dialog (`UI-3`, `UI-15`), and wha
 - Given an eliminated player
 - When the HUD is drawn
 - Then they see the button to leave and, just above it, "Estás observando la partida" in grey
+
+## Effects
+
+- `docs/specs/ui/effects/game-pulses.md` — the pulse of the end turn button (`VIEW-38`).
+
+The change of the buttons under the pointer is still part of this file, until it is split.

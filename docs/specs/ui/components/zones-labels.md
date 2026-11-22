@@ -22,3 +22,7 @@ What is drawn around each zone of the board so that it is told apart from the ot
 - Given a name wider than 120 px at 18 px
 - When the label is drawn
 - Then the name ends with "…" and the label is not wider than 120 px
+
+## Effects
+
+None in `docs/specs/ui/effects/`.

@@ -42,3 +42,7 @@ The look of the help panel (`UI-34`), opened from the game menu (`docs/specs/ui/
 - Given the page opened with `extraMarks=1`
 - When the player opens the help panel
 - Then the sample of "Puede atacar" shows the cyan L's, the one of "Turno" the crown, and each row has its line "Señal"
+
+## Effects
+
+None in `docs/specs/ui/effects/`.

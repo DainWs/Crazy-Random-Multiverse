@@ -32,3 +32,7 @@ What every player sees when the game ends (`WIN-1`, `WIN-4`, `GAME_END`). The du
 - Given the result appearing
 - When the `party:info` that unlocks the party arrives
 - Then the client goes to the party at once
+
+## Effects
+
+None in `docs/specs/ui/effects/`. The veil, the fade and the count of the result are still part of `VIEW-23`, until they are split.
