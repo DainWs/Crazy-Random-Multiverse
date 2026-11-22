@@ -1,9 +1,8 @@
 # HUD: help panel
 
-The look of the help button and of its panel (`UI-34`), with the legend of the marks of the board and the summary of the rules (`UI-35`). The marks are those of `MARKS-PAIRS.md`, and their colors those of `PALETTE.md`. Decided with the product owner on 2026-11-22.
+The look of the help panel (`UI-34`), opened from the game menu (`HUD-MENU.md`), with the legend of the marks of the board and the summary of the rules (`UI-35`). The marks are those of `MARKS-PAIRS.md`, and their colors those of `PALETTE.md`. Decided with the product owner on 2026-11-22.
 
-- **VIEW-58** The help button, the panel and its legend:
-  - **Button.** 48 by 48 px, 16 px from the top edge of the screen and 12 px to the left of the settings button (`UI-33`), with its look: background `#34495e`, `#46627f` under the pointer and while the panel is open, a border of `#34495e` 2 px thick and corners rounded 8 px. It shows a white "?" in bold, 32 px tall.
+- **VIEW-58** The help panel and its legend. On 2026-11-22 the product owner removed the help button from the game screen: the panel is opened from the menu (`UI-36`, `VIEW-60`).
   - **Panel.** A black veil at 70% opacity covers the window, as with the settings screen, and the panel is centered over it. The panel is 720 px wide and at most 90% of the height of the window, with the fill `#1b2631`, a border of `#34495e` 2 px thick, corners rounded 8 px and a padding of 24 px at the top and the bottom and 32 px at the sides. From the top it has the title "Ayuda", the section "Marcas del tablero", the section "Reglas" (`UI-35`) and the button "Cerrar". The title and the button stay in place, and the two sections scroll between them when they do not fit.
   - **Texts.** The title and the names of the sections are at the body level of `VIEW-55`, in bold, and the texts of the legend and of the rules at the label level, in white. The titles of the paragraphs of the rules and the names of the marks are in bold. The button "Cerrar" has the look of the buttons of the confirmation dialog (`VIEW-43`, `VIEW-28`), its text at the body level.
   - **Legend.** One row for each mark, in this order, with its sample on the left and, on the right, the name of the mark in bold, the line "Color: <color>" and its meaning. With the extra signals on (`UI-31`), the row also has the line "Señal: <signal>".
@@ -30,7 +29,7 @@ The look of the help button and of its panel (`UI-34`), with the legend of the m
     - **Eliminado.** The veil of an eliminated zone, without the label.
 
     The samples do not pulse, and have no card and no icon of the slot.
-  - **Effects** (`UI-26`). The button and the panel have no animation: the panel appears and disappears at once.
+  - **Effects** (`UI-26`). The panel has no animation: the panel appears and disappears at once.
 
 ## Scenarios
 

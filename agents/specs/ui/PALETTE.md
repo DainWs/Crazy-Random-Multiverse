@@ -27,7 +27,7 @@ The colors of the interface (Phase 11.5): what each one means, so the player lea
 | White | `#ffffff` | Text and frames over a dark background | Texts of the HUD, notices, dialogs, result, loading screen, side panel and help panel (`VIEW-58`); floating "0" (`VIEW-6`); the frame of the keyboard focus (`VIEW-42`) |
 | Light grey | `#bdc3c7` | Secondary text | Label of a spectator (`VIEW-28`), names of the equipment in the side panel (`VIEW-14`) |
 | Panel | `#1b2631` | Panels and dialogs | Result, round and turn panel, dialogs, loading screen, help panel (`VIEW-58`) |
-| Chrome | `#34495e`, `#46627f` under the pointer | Borders and resting buttons | Border of the panels, buttons of the HUD and of the dialogs (`VIEW-28`), the help button (`VIEW-58`) |
+| Chrome | `#34495e`, `#46627f` under the pointer | Borders and resting buttons | Border of the panels, buttons of the HUD and of the dialogs (`VIEW-28`), the menu button (`VIEW-60`) |
 | Black | `#000000` | What is behind: shadows, veils, outlines and the edge of the marks | Veils of the screen (`VIEW-11`, `VIEW-23`), shadows (`VIEW-4`), outline of the texts over the board, fill of the side panel, near black edge of the frames (`VIEW-40`) |
 | Backing | `#111111` | The disc under an icon and the back of a bar | Disc of the crown and of the crossed circle, back of the health bar (`VIEW-39`, `VIEW-4`, `VIEW-50`) |
 | Neutral slot | `#ffffff` fill and `#4488cc` border | A slot with no mark | Slots of the rivals (`VIEW-27`) |
