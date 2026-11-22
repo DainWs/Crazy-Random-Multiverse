@@ -387,3 +387,12 @@ The board seen from above by default, and the tilted look of before as an option
 - [x] Fix the two browser tests that fail since before the removal of the card values, before the images are regenerated, so the regeneration starts from a green suite. `layouts.spec.ts`, "shows the side panel of a card of the top side": an `expect(...).toBe(false)` receives `true`, probably because Phase 11.6 changed the side the panel opens on (`VIEW-14`). `zoneLabels.spec.ts`, "draws no health bar for the zone of an eliminated player": the image differs from `zone-labels-eliminated.png` in 5437 pixels, only in the end turn and surrender buttons (`VIEW-43`)
 - [x] Add the camera option to the settings screen, "Cenital" by default and kept in the browser, and apply a change at once, after the animations that are playing (`UI-33`, `VIEW-57`)
 - [x] Move the points of the browser tests (`e2e/support/board.ts`) to the top-down camera, regenerate the reference images with the full suite, and keep one image of the tilted camera for 2, 6 and 10 players. A person approves the new images (`docs/roadmap/roadmap-test.md`, pending checks)
+
+## Phase 11.8 — UX/UI: learnability
+
+Started at: `d7db554a` · Finished at: `b80972b2`
+Review 1: approved with observations at `6ca93f2a`
+
+- [x] Add a help button to the HUD that opens a panel over the board with a legend of the marks of the board: each one with its color, its second signal (Phase 11.1) and its meaning. The panel closes with the same button, with Escape and with a click outside it. Gameplay is disabled while it is open, decided by the product owner on 2026-11-22, and the legend draws the second signals only while they are on (`UI-34`, `VIEW-58`). The button was replaced by the option "Ayuda" of the game menu on 2026-11-22 (`UI-36`, Phase 12)
+- [x] Add to the panel of the previous bullet a summary of the rules, in a second section: the goal, the turn, placing a card, attacking, protection and elimination (`TURN-*`, `BOARD-*`, `PROT-*`, `ELIM-*`). The text is in Spanish, goes through the texts of `UI-2`, and was approved by the product owner on 2026-11-22 (`UI-35`)
+- [x] Say in the side panel (`VIEW-14`) of an own card on the board, while the board being shown is the local player's turn, that it can attack this turn, from `attackAvailable` (`CON-15`): a card that cannot attack says nothing, as its click (`UI-25`), by decision of the product owner on 2026-11-22. The contract does not say why a card cannot attack, so the panel gives no reason (`VIEW-59`)
