@@ -20,7 +20,7 @@ class CombatantView extends CardView {
 
   // Stacking logic
 
-  /** Puts the pieces of equipment behind the card, the first one nearest, and slides them out while hovering (VIEW-14). */
+  /** Puts the pieces of equipment behind the card, the first one nearest, and slides them out while hovering (VIEW-65). */
   public stackEquipment(pieces: CardView[]) {
     for (const piece of pieces) {
       this.stackPiece(piece);

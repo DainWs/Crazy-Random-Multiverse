@@ -78,7 +78,7 @@ class AttackTargetingPerspective implements Perspective {
         this.target = undefined;
     }
 
-    /** Whether the hover of the card in `slot` is the lift of the attack and not the enlargement of `VIEW-14`. */
+    /** Whether the hover of the card in `slot` is the lift of the attack and not the enlargement of `VIEW-63`. */
     public hover(slot: ZoneSlotView): boolean {
         if (this.committed || slot === this.sourceSlot || this.isOwn(slot)) {
             return this.isInvolved(slot);

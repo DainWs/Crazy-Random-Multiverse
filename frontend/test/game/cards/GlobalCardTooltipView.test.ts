@@ -10,7 +10,7 @@ type Tween = { targets: { open: number }; open: number; duration: number; ease: 
 /** Runs the methods of the panel that open and close it, over the pieces they read, without building a Phaser container. */
 const panel = GlobalCardTooltipView.prototype as unknown as Record<string, (...args: unknown[]) => unknown>;
 
-// VIEW-14
+// VIEW-14, VIEW-64
 describe('GlobalCardTooltipView open and close', () => {
   let tooltip: Record<string, unknown> & { opening: { open: number }; closing: boolean; visible: boolean };
   let timers: Array<{ delay: number; callback: () => void; timer: Timer }>;

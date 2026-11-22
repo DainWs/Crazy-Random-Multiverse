@@ -62,10 +62,10 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
   private currentWidth: number = 0;
   private currentHeight: number = 0;
 
-  /** The card the panel shows. Its pointer-out never fires if it is destroyed under the pointer (VIEW-14). */
+  /** The card the panel shows. Its pointer-out never fires if it is destroyed under the pointer (VIEW-64). */
   private shownCardView?: CardView;
 
-  /** How open the panel is, from 0 (closed, transparent and 40 px to the right) to 1 (opaque and in its place) (VIEW-14). */
+  /** How open the panel is, from 0 (closed, transparent and 40 px to the right) to 1 (opaque and in its place) (VIEW-64). */
   private readonly opening = { open: 0 };
   private closing = false;
   private closeTimer?: Phaser.Time.TimerEvent;
@@ -161,7 +161,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.setPosition(position.x, position.y);
   }
 
-  /** It opens sliding from the right while it fades in; if it is already open, waiting or closing, it shows the card at once and stays in its place (VIEW-14). */
+  /** It opens sliding from the right while it fades in; if it is already open, waiting or closing, it shows the card at once and stays in its place (VIEW-64). */
   public show(cardView: CardView) {
     const wasClosed = !this.visible;
     this.cancelClose();
@@ -195,7 +195,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     return (cardView.getWorldTransformMatrix().tx - view.x) / view.width;
   }
 
-  /** The pointer left the card: the panel waits, and closes unless the pointer enters another card meanwhile (VIEW-14). */
+  /** The pointer left the card: the panel waits, and closes unless the pointer enters another card meanwhile (VIEW-64). */
   public hide() {
     if (!this.visible || this.closing) {
       return;
@@ -205,7 +205,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     this.closeTimer = this.scene.time.delayedCall(TOOLTIP_CLOSE_WAIT_MS, () => this.close());
   }
 
-  /** The panel closes without waiting, sliding to the right while it fades out (VIEW-14). */
+  /** The panel closes without waiting, sliding to the right while it fades out (VIEW-64). */
   public close() {
     this.closeTimer?.remove();
     if (!this.visible || this.closing) {
@@ -225,7 +225,7 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
     }
   }
 
-  /** Opens (1) slowing down at the end, or closes (0) speeding up, in 250 ms; the panel is removed when it ends closed (VIEW-14). */
+  /** Opens (1) slowing down at the end, or closes (0) speeding up, in 250 ms; the panel is removed when it ends closed (VIEW-64). */
   private animateOpen(target: 0 | 1) {
     void playMotion(this.scene, {
       targets: this.opening,

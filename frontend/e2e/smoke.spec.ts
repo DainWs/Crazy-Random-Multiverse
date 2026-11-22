@@ -119,7 +119,7 @@ test.describe('game of two players', () => {
         await openBoard(page, backend);
     });
 
-    // VIEW-14
+    // VIEW-66
     test('expands the hand on hover', async ({ page }) => {
         const closedHand = await frameOf(page, EXPANDED_HAND_AREA);
 
@@ -128,7 +128,7 @@ test.describe('game of two players', () => {
         expect(await sameFrame(page, await frameOf(page, EXPANDED_HAND_AREA), closedHand)).toBe(false);
     });
 
-    // VIEW-14
+    // VIEW-14, VIEW-64
     test('shows the side panel on hover', async ({ page }) => {
         const noPanel = await frameOf(page, TOOLTIP_AREA);
 
@@ -137,7 +137,7 @@ test.describe('game of two players', () => {
         expect(await sameFrame(page, await frameOf(page, TOOLTIP_AREA), noPanel)).toBe(false);
     });
 
-    // VIEW-14
+    // VIEW-14, VIEW-64
     test('closes the side panel when leaving the card', async ({ page }) => {
         const noPanel = await frameOf(page, TOOLTIP_AREA);
         await hover(page, HAND_CARD);

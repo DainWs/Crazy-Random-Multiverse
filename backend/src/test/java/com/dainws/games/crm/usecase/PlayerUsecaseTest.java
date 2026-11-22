@@ -210,7 +210,7 @@ class PlayerUsecaseTest {
 		assertTrue(facade.getPerformedActions().isEmpty());
 	}
 
-	// BACKEND-CODESTYLE 16: one writer at a time per game
+	// docs/constitution.md, section 9: one writer at a time per game
 	@Test
 	void testGivenAction_whenPerformAction_thenItRunsWithTheGameLocked() {
 		GameCode gameCode = this.registerGame();

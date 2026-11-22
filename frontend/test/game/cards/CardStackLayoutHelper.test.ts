@@ -4,7 +4,7 @@ import {
   calculateOffset as calculateStackedCardOffset
 } from '@/game/cards/CardStackLayoutHelper';
 
-// VIEW-14
+// VIEW-65
 describe('CardStackLayoutHelper', () => {
   describe('calculateStackedCardOffset', () => {
     it('shows the strip of the first piece to the left of the card', () => {

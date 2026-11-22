@@ -180,7 +180,7 @@ class HandView extends Phaser.GameObjects.Container {
     }
   }
 
-  /** The pointer left the game without a `pointerout` reaching the card, so it is sent by hand and the hand is lowered (VIEW-16). */
+  /** The pointer left the game without a `pointerout` reaching the card, so it is sent by hand and the hand is lowered (VIEW-66). */
   public restCards() {
     if (!this.cardListenersEnabled) return;
     const hoveredCard = this.cards[this.hoverIndex];
@@ -222,7 +222,7 @@ class HandView extends Phaser.GameObjects.Container {
 
   /**
    * Phaser keeps as hovered the card the pointer left the game over, and sends no `pointerover` when it comes back to it,
-   * so it is made interactive again once the listeners are on (VIEW-16).
+   * so it is made interactive again once the listeners are on (VIEW-66).
    */
   public enableCardListeners() {
     this.cardListenersEnabled = true;

@@ -25,7 +25,7 @@ const DRAG_STEPS = 12;
 /** Equal frames in a row after the first: with every effect ending at once (`instantMotion`), a change lasts one frame. */
 const STILL_FRAMES_REQUIRED = 1;
 
-/** The side panel waits 150 ms and then takes 250 ms to close (VIEW-14), and the frames of that wait are equal. */
+/** The side panel waits 150 ms and then takes 250 ms to close (VIEW-64), and the frames of that wait are equal. */
 const TOOLTIP_CLOSE_MS = 450;
 
 /** The veil, the wait and the notice of an elimination last 4200 ms (VIEW-11). The wait before the notice has equal frames. */

@@ -27,7 +27,7 @@ const createCardView = (scene: Phaser.Scene, card: Card): CardView => {
   return view;
 }
 
-/** A combatant with every piece of its equipment stacked behind it (VIEW-14). */
+/** A combatant with every piece of its equipment stacked behind it (VIEW-65). */
 const createCombatantView = (scene: Phaser.Scene, combatant: CombatantCard): CombatantView => {
   const view = createCardView(scene, combatant) as CombatantView;
   const pieceViews: CardView[] = combatant.equipment.map((piece) => createCardView(scene, piece));

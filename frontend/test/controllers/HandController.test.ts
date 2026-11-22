@@ -50,7 +50,7 @@ describe('HandController', () => {
   });
 
   describe('onGameOut', () => {
-    // VIEW-16
+    // VIEW-66
     it('lowers the hand before disabling its card listeners', () => {
       const calls: string[] = [];
       const handView = {

@@ -43,7 +43,7 @@ class PlayerUsecaseConcurrencyTest {
 		this.executor.shutdownNow();
 	}
 
-	// BACKEND-CODESTYLE 16: one writer at a time per game
+	// docs/constitution.md, section 9: one writer at a time per game
 	@Test
 	@Timeout(30)
 	void testGivenSeveralThreadsActing_whenPerformAction_thenOnlyOneActionRunsAtATime() throws Exception {

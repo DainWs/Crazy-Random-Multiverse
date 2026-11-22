@@ -33,7 +33,7 @@ class GameLifeCycleConcurrencyTest {
 		this.executor.shutdownNow();
 	}
 
-	// BACKEND-CODESTYLE 16: the games of different parties are created at the same time
+	// docs/constitution.md, section 9: the games of different parties are created at the same time
 	@Test
 	@Timeout(30)
 	void testGivenSeveralGamesAtOnce_whenRegister_thenNoGameIsLost() throws Exception {

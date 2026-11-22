@@ -107,7 +107,7 @@ describe('HandView', () => {
       };
     };
 
-    // VIEW-16
+    // VIEW-16, VIEW-66
     it('lowers the hand to its resting position', () => {
       const hand = createHand(true);
 
@@ -116,7 +116,7 @@ describe('HandView', () => {
       expect(hand.animator.animateHandExpansion).toHaveBeenCalledWith(hand, 0.75);
     });
 
-    // VIEW-14, VIEW-16
+    // VIEW-63, VIEW-66
     it('sends the pointerout to the hovered card so that it goes back to its size', () => {
       const hovered = { emit: vi.fn() };
       const hand = createHand(true, [{}, hovered]);
@@ -138,7 +138,7 @@ describe('HandView', () => {
   describe('enableCardListeners', () => {
     const createCard = (inputEnabled: boolean) => ({ input: { enabled: inputEnabled }, disableInteractive: vi.fn(), setInteractive: vi.fn() });
 
-    // VIEW-16
+    // VIEW-66
     it('makes interactive again the card the pointer left the game over, so that it sends its pointerover', () => {
       const card = createCard(true);
       const hand = { cardListenersEnabled: false, cardLeftHovered: card };

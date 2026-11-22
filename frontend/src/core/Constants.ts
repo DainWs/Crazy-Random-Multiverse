@@ -278,13 +278,13 @@ export const LOAD_RETRY_OFFSET_Y = 104;
 /** How far down from the center of the window the panel of the loading screen sits, so it holds the bar, the text and the button (VIEW-29). */
 export const LOAD_PANEL_OFFSET_Y = 40;
 
-/** Milliseconds the side panel waits after the pointer leaves a card before it closes (VIEW-14). */
+/** Milliseconds the side panel waits after the pointer leaves a card before it closes (VIEW-64). */
 export const TOOLTIP_CLOSE_WAIT_MS = 150;
 
 /** The side panel is over the HUD (VIEW-14), and under the result, the button to leave and the confirmation dialog. */
 export const TOOLTIP_DEPTH = HUD_DEPTH + 1;
 
-/** Pixels the side panel slides while it opens or closes, with the window at 1920 by 1080 (VIEW-14). */
+/** Pixels the side panel slides while it opens or closes, with the window at 1920 by 1080 (VIEW-64). */
 export const TOOLTIP_SLIDE_DISTANCE = 40;
 
 /** Key of the scene of the loading screen. */

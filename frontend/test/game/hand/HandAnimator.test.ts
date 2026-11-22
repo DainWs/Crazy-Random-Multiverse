@@ -74,7 +74,7 @@ describe('HandAnimator', () => {
   });
 
   describe('animateHandExpansion', () => {
-    // VIEW-16
+    // VIEW-66
     it('tweens the hidden ratio of the hand', () => {
       animator.animateHandExpansion(handView, 0.75, 250);
 
@@ -83,7 +83,7 @@ describe('HandAnimator', () => {
       );
     });
 
-    // VIEW-16
+    // VIEW-66
     it('starts a second tween while the first one is running', () => {
       animator.animateHandExpansion(handView, 0);
       animator.animateHandExpansion(handView, 0.75);

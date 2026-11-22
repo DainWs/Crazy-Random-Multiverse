@@ -62,7 +62,7 @@ public class PlayerUsecase {
 			throw NotFoundException.playerNotFound();
 		}
 
-		// One writer at a time per game (BACKEND-CODESTYLE, section 16)
+		// One writer at a time per game (docs/constitution.md, section 9)
 		synchronized (game) {
 			return this.actionResolver.get(actionDto.getType())
 					.apply(actionDto);

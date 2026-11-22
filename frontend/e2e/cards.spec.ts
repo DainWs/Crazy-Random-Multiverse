@@ -65,7 +65,7 @@ test.describe('side panel of an own card on the turn of the local player', () =>
  */
 const STACK_AREA: Area = { x: 670, y: 705, width: 270, height: 140 };
 
-// VIEW-14, EQUIP-4
+// VIEW-65, EQUIP-4
 test.describe('equipment stacked behind its combatant', () => {
     const pieces = [createEquipment('30', PISTOL), createEquipment('31', SHIELD)];
 
@@ -97,7 +97,7 @@ test.describe('equipment card', () => {
     });
 });
 
-// VIEW-14, ELIM-3
+// VIEW-14, VIEW-64, ELIM-3
 test.describe('side panel of a card that disappears', () => {
     test('closes when the hand of the hovered card is emptied', async ({ page, backend }) => {
         const prepared = createPreparedGame(2);

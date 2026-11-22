@@ -19,7 +19,7 @@ const onPointerUp = (scene: GameScene, card: CardView, pointer: Phaser.Input.Poi
   }
 }
 
-/** Whether the pointer entering `card` is handled by the attack in course, so the card does not get its enlargement too (VIEW-4, VIEW-14). */
+/** Whether the pointer entering `card` is handled by the attack in course, so the card does not get its enlargement too (VIEW-4, VIEW-63). */
 const onPointerOver = (card: CardView): boolean => {
   const slot = card.parentContainer;
 
