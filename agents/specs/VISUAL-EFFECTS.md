@@ -32,7 +32,7 @@ Effects and skins that go beyond the base appearance of `VIEW-SPECS.md`. Proposa
 
   **[OPEN]** Whether the cards, the icons of the statistics and the mark of the slots (`CON-30`) become elements with skins of their own.
 
-  The options of the game menu (`UI-36`, `VIEW-60`) are not part of the HUD skin: they are text with an arrow and an underline, and look the same with every skin. The button that opens the menu is a button of the HUD like the others, so it follows the skin. Decided by the product owner on 2026-11-22.
+  The skin of the HUD also covers the result, the loading screen and the notices of the session and the connection, which are not part of the HUD of `VIEW-62` but are drawn with the same pieces (`FX-17`). The options of the game menu (`UI-36`, `VIEW-60`) are not part of the HUD skin: they are text with an arrow and an underline, and look the same with every skin. The button that opens the menu is a button of the HUD like the others, so it follows the skin. Decided by the product owner on 2026-11-22.
 - **FX-17** **[Post-MVP]** A skin of the HUD defines a set of base pieces, and every part of the HUD of `FX-10` is drawn with them, so a part added later takes the look of every skin without changing them:
   - Two panels: the one of the HUD, and the one of the notices and the result.
   - Three buttons, each one with its look under the pointer: the primary action, the destructive action and the neutral one.
