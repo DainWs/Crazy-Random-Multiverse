@@ -82,7 +82,7 @@ A battlefield folder has:
 
 ## Code
 
-Reference only: it is not production code, it does not follow the guides of `docs/guides/` and it is not compiled from here. It was written against commit `4b3ca73` of the frontend. A battlefield with many shapes is slow to draw, and the game draws the battlefield again with every board; a version for production draws it once.
+Reference only: it is not production code, it does not follow the conventions of `.claude/skills/frontend-conventions/` and it is not compiled from here. It was written against commit `4b3ca73` of the frontend. A battlefield with many shapes is slow to draw, and the game draws the battlefield again with every board; a version for production draws it once.
 
 `prototype/` has the code shared by every skin:
 

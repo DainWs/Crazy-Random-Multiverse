@@ -8,31 +8,33 @@ The game is a strategic showdown in which each player receives a random leader c
 
 Monorepo with two applications:
 
-- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`, see `docs/guides/backend-tests.md`, section 14).
+- `backend/` — Java 17, Spring Boot 3.1, Socket.IO (`netty-socketio`). Authority over the game state. In-memory state. Tests: `mvn test` (the `*IntegrationTest` ones with `mvn verify -P integration-tests`, see `.claude/skills/backend-conventions/backend-tests.md`, section 14).
 - `frontend/` — TypeScript, Vue 3, Phaser 4, Vite. View of the server state. Tests: `npm run test:run`; browser tests: `npm run test:e2e`; lint: `npm run lint`.
 
 ## Reference documentation
 
+`docs/index.md` is the only index of the documentation: where each thing is and who writes it, which file holds each rule, and the list of the ideas. Paths are always written from the root of the repository.
+
 **Always** read these files before writing code:
 
-- `docs/specs/readme.md` — functional specification and index of `docs/specs/`. Source of truth for behavior.
+- `docs/constitution.md` — the absolute rules of the project: authority of the backend, architecture, no magic values, errors, security, concurrency, tests, banned anti-patterns and the definition of done.
+- `docs/specs/readme.md` — conventions of the specification, architecture constraints and MVP scope. The specification is the source of truth for behavior.
 - `docs/specs/contract.md` — the backend ↔ frontend contract.
-- The files holding the rules cited by the bullets of the phase, and the files of the rules those rules cite directly. For a bullet that cites no rule, the file of its area. `docs/specs/readme.md` has the index of prefixes.
-- `docs/roadmap/roadmap.md` — phased work plan and table of already-closed decisions.
+- The files holding the rules cited by the bullets of the phase, and the files of the rules those rules cite directly. For a bullet that cites no rule, the file of its area. `docs/index.md` says which file holds each rule.
+- `docs/roadmap/roadmap.md` — phased work plan.
+- `docs/roadmap/decisions.md` — the decisions already closed.
 
 Read these only when the task needs them:
 
 - `docs/roadmap/roadmap-archive.md` — the closed phases of the roadmap. When the history of a closed phase is needed.
 - `docs/roadmap/roadmap-test.md` — the equivalent of the roadmap for tests: cross-cutting tests, visual regression and pending checks. When working on a test phase or recording something that could not be verified.
-- `docs/specs/ui/readme.md` and `docs/specs/ui/` — appearance of the interface; the `VIEW` rules are split between them. When the task changes how the interface looks, animates or sounds.
+- `docs/specs/ui/` — appearance of the interface: `effects/` for what happens after an action or an event, `components/` for each piece of the screen, the shared bases in its root, and in `docs/specs/ui/readme.md` the `VIEW` rules not moved yet to a file of their own. A component lists the effects it plays (`docs/index.md`, Appearance). When the task changes how the interface looks, animates or sounds.
+- `docs/ideas/` — proposals not planned yet, with their status. When the task is about an idea, or a phase is planned from one. An idea is never a rule: what it says is built only once it is written in `docs/specs/`.
 - `docs/guides/phaser4-troubleshooting.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look. When working on Phaser views or when something in the view looks or behaves wrong.
-- `docs/guides/codestyle.md` — general conventions and architecture. When writing code in either application. They are not suggestions.
-- `docs/guides/backend-codestyle.md` — mandatory conventions for the backend. When writing backend code. They are not suggestions.
-- `docs/guides/frontend-codestyle.md` — mandatory conventions for the frontend. When writing frontend code. They are not suggestions.
-- `docs/guides/backend-tests.md` — mandatory conventions for the backend tests. When writing backend tests. They are not suggestions.
-- `docs/guides/frontend-tests.md` — mandatory conventions for the frontend tests. When writing frontend tests. They are not suggestions.
 
-If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the guides, the golden rule of `docs/guides/codestyle.md` applies instead.
+Before writing, changing or reviewing code or tests, load the skill of the application: `backend-conventions` for `backend/` and `frontend-conventions` for `frontend/` (`.claude/skills/`), with the mandatory conventions of the application and of its tests. A task that touches both loads both. They are not suggestions.
+
+If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the conventions, the golden rule of `docs/constitution.md`, section 1, applies instead.
 
 The PlantUML diagrams in `docs/diagrams/` (domain model, class diagrams, use cases) may be consulted at any time. They are only edited when user allow to do it.
 
@@ -56,11 +58,7 @@ Your job is to **write the code and its tests**. Execution against real systems 
 
 ### Tests do not touch infrastructure
 
-- Unit tests do not use the network, real ports, or disk outside `tmp`.
-- Integration tests use local doubles (in-memory repositories, test populators, simulated `fetch` and socket). Never a real service.
-- Browser tests only reach the local Vite server. REST and the socket are local doubles at the network boundary.
-- Fakes before mocks.
-- Test style guides: `docs/guides/backend-tests.md` and `docs/guides/frontend-tests.md`.
+The rules are in `docs/constitution.md`, section 11.
 
 ## Workflow
 
@@ -75,6 +73,8 @@ Work on **one roadmap phase per session**. Do not start the next one.
 7. When the phase is finished, close it in one last commit: write `Finished at: <short hash>`, the `HEAD` before that commit (the last commit of the phase), and move a closed phase of `docs/roadmap/roadmap.md` to `docs/roadmap/roadmap-archive.md`. A test phase of `docs/roadmap/roadmap-test.md` stays in its file. Then summarize what was done.
 
 When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
+
+When asked to add an idea, or a proposal comes up that nobody has decided, record it with `/add-idea` instead of the roadmap. Its status changes only by decision of the product owner, in the same commit that applies it: `accepted` once chosen, with its rules listed when they are written; `done` in the closing commit of the phase that builds it; `discarded` with the reason. Update its row of the Ideas section of `docs/index.md` in that commit.
 
 Whenever something could not be verified (a check that needs a person, a real browser, a running server or anything outside the agent environment), record it as a `- [ ]` bullet in the "Pending checks" section of `docs/roadmap/roadmap-test.md`, saying what to check and why it could not be done.
 
@@ -100,15 +100,16 @@ Whenever something could not be verified (a check that needs a person, a real br
 ## Ask before doing anything if
 
 - You are going to add a new dependency.
-- You are going to create an abstraction, interface or layer that is not in `docs/guides/codestyle.md`.
-- You are going to change something in the roadmap's table of closed decisions.
+- You are going to create an abstraction, interface or layer that `docs/constitution.md`, section 4, does not allow.
+- You are going to change something in `docs/constitution.md`.
+- You are going to change something in `docs/roadmap/decisions.md`.
 - A roadmap bullet is ambiguous or depends on a measurement that does not exist yet.
 
 When a decision is the user's to make, ask it with a questionnaire (the `AskUserQuestion` tool, with options and a recommended one first), not with open questions in the chat text. The questionnaire does not replace the report: first give all the relevant information (findings, context, trade-offs, the plan), then show the questionnaire.
 
 ## Style reminder
 
-The rules most often broken:
+The rules most often broken, all of them in `docs/constitution.md` (sections 2, 5 and 3):
 
 1. **KISS above all.** Interfaces with a single implementation: no. "Future-proofing" layers: no.
 2. **No magic values.** Every literal with meaning is an enum, a constant or configuration.

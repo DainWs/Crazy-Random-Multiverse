@@ -1,8 +1,8 @@
-# Frontend Test Style Guide
+# Frontend test conventions
 
-Mandatory conventions for the tests in `frontend/`. Complements `docs/guides/codestyle.md` (section 9) and `docs/guides/frontend-codestyle.md`.
+Mandatory conventions for the tests in `frontend/`, part of the `frontend-conventions` skill, with its `.claude/skills/frontend-conventions/SKILL.md`. The absolute rules of the tests are in `docs/constitution.md`, sections 10 and 11, which win over this file.
 
-The existing tests already mostly follow this guide. Where the existing code departs from it, the golden rule of `docs/guides/codestyle.md` applies.
+The existing tests already mostly follow these conventions. Where the existing code departs from them, the golden rule applies (`docs/constitution.md`, section 1).
 
 ---
 
@@ -22,7 +22,7 @@ The existing tests already mostly follow this guide. Where the existing code dep
 - Tests live in `frontend/test/`, mirroring the structure of `src/`, with the `.test.ts` suffix: `src/core/StoreSystem.ts` → `test/core/StoreSystem.test.ts`.
 - One test file per unit under test. Mapper-style tests that cover several small functions of a layer may share a file (`test/api/ApiMappers.test.ts`).
 - Imports use the `@/` alias, like production code. Relative paths are forbidden.
-- Type-only imports use `import type` and go first, as in `docs/guides/frontend-codestyle.md` section 4.
+- Type-only imports use `import type` and go first, as in `.claude/skills/frontend-conventions/SKILL.md`, section 4.
 
 ---
 
@@ -136,7 +136,7 @@ it('sends POST request to the leave endpoint', async () => {
 
 ## 9. Fakes, stubs and mocks
 
-General rules in `docs/guides/codestyle.md`, section 9: fakes before mocks.
+The rule, fakes before mocks, is in `docs/constitution.md`, section 11.
 
 ### Order of preference
 
@@ -204,7 +204,7 @@ Playwright tests of what Vitest cannot reach: a real `Phaser.Game` with WebGL, t
 - They live in `frontend/e2e/` with the `.spec.ts` suffix. Run with `npm run test:e2e`, and `npm run test:e2e:update` to regenerate the reference images. `npm run test:run` does not run them.
 - `test.describe` and `test` take the place of `describe` and `it`. Names follow section 3. `test` and `expect` come from `@/support/test`, whose automatic fixture installs the double. The `@/` alias also resolves `e2e/`.
 - Playwright starts Vite on a local port. Everything else is a double at the network boundary: `page.route` for REST and the resources, and `page.routeWebSocket` for the socket. A request the double does not expect fails the test.
-- Nothing that exists only for the tests goes in `src/`. The canvas has no DOM, so a position on it is a named constant for the fixed viewport, and the result is asserted on what reaches the double or on a screenshot.
+- Nothing that exists only for the tests goes in `src/` (`docs/constitution.md`, section 11). The canvas has no DOM, so a position on it is a named constant for the fixed viewport, and the result is asserted on what reaches the double or on a screenshot.
 - The render settings live only in `playwright.config.ts`, no test depends on the operating system, the reference images are stored per platform, and the version of `@playwright/test` is exact.
 - Every effect ends at once in the browser tests: the option `instantMotion` of `@/support/test`, on by default, makes `EffectSettings` play no effect, so an animation leaves its final state and the wait of an effect is skipped. A test that looks at an animation on its way, such as the placement of the leaders or the pulses, turns it off with `test.use({ instantMotion: false })`. It only works in development.
 - The reference images are not committed: each developer generates them on their own machine with `npm run test:e2e:update`, rendered with its GPU, and looks at them before trusting them (`docs/roadmap/roadmap-test.md`, "How the view is tested"). After a change of the view on purpose, they are generated again. CI/CD does not run the browser tests. Each area of the screen has its own limit of different pixels, measured from the noise of several runs.

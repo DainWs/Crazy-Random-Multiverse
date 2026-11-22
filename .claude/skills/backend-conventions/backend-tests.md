@@ -1,8 +1,8 @@
-# Java Test Style Guide
+# Backend test conventions
 
-Mandatory conventions for the tests in `backend/`. Complements `docs/guides/codestyle.md` (section 9) and `docs/guides/backend-codestyle.md`.
+Mandatory conventions for the tests in `backend/`, part of the `backend-conventions` skill, with its `.claude/skills/backend-conventions/SKILL.md`. The absolute rules of the tests are in `docs/constitution.md`, sections 10 and 11, which win over this file.
 
-The existing tests already mostly follow this guide. Where the existing code departs from it, it is noted, and the golden rule of `docs/guides/codestyle.md` applies.
+The existing tests already mostly follow these conventions. Where the existing code departs from them, it is noted, and the golden rule applies (`docs/constitution.md`, section 1).
 
 ---
 
@@ -56,9 +56,9 @@ Only helper methods and constants may be `private`. The class, instance fields, 
 ## 4. Setup
 
 - Common data are fields without an access modifier and are initialized in `@BeforeEach`.
-- Deterministic data. `LocalDate.now()`, `Instant.now()` and `Thread.sleep()` are forbidden. For dates, `LocalDate.of(year, month, day)`.
-- **Randomness**: tests do not use random values, except to generate identifiers. The existing builders use `Math.random()` for codes and values (`CardBuilder`, `PlayerBuilder`, `WarriorBuilder`); new builders set deterministic defaults and only generate identifiers randomly. **A value the test asserts is set explicitly**, never left to chance. A test cannot pass or fail depending on the draw.
-- **Time**: the `Clock` is injected (a fixed `Clock.fixed(...)`), see `docs/guides/backend-codestyle.md`, section 17.
+- Deterministic data (`docs/constitution.md`, section 10). For dates, `LocalDate.of(year, month, day)`.
+- **Randomness**: tests do not use random values, except to generate identifiers. The existing builders use `Math.random()` for codes and values (`CardBuilder`, `PlayerBuilder`, `WarriorBuilder`); new builders set deterministic defaults and only generate identifiers randomly. A value the test asserts is set explicitly (`docs/constitution.md`, section 10).
+- **Time**: the `Clock` is injected (a fixed `Clock.fixed(...)`), see `docs/constitution.md`, section 10.
 - **Disk**: a test that needs files uses `@TempDir`.
 - For dealing, the fixed test strategies are used (`MemoryDeckPopulator`, `DummyGameStrategy`), not real randomness.
 - If a test needs a different initial state, it creates or replaces it inside the test itself.
@@ -149,7 +149,7 @@ void testGivenContext_whenPerform_thenPutCardInCoordinate() {
 
 ### Test builders
 
-When a domain object needs a lot of setup and is repeated across several test classes, a builder is created in the test tree, in `src/test/.../domain/builder` with the others (`docs/guides/backend-codestyle.md`, section 14). Existing builders are **extended** before creating others. A new builder follows the same pattern: chainable `with*` / `use*` methods and a `build()` that returns a valid object by default.
+When a domain object needs a lot of setup and is repeated across several test classes, a builder is created in the test tree, in `src/test/.../domain/builder` with the others. Existing builders are **extended** before creating others. A new builder follows the same pattern: chainable `with*` / `use*` methods and a `build()` that returns a valid object by default.
 
 ```java
 Warrior warrior = new WarriorBuilder() //
@@ -168,21 +168,21 @@ If a DTO or event mapping is tested against a sample JSON, the file lives in `sr
 
 ## 9. Fakes and mocks
 
-General rules in `docs/guides/codestyle.md`, section 9.
+The rule, fakes before mocks, is in `docs/constitution.md`, section 11.
 
 ### Fakes
 
-- Own classes are always replaced by a hand-written fake.
-- A new fake carries no fixed prefix: its name says what it does, like any other class (`RecordingCommunicationClient`). The existing `Dummy*` fakes keep their names and are reused (`docs/guides/codestyle.md`, section 9).
+- Own classes are always replaced by a hand-written fake. The existing fakes and monitors are `DummyGameStrategy`, `DummyPlayer`, `DummyZone`, `EventMonitor` and `MonitoredAction`: use them before resorting to Mockito.
+- A new fake carries no fixed prefix: its name says what it does, like any other class (`RecordingCommunicationClient`). The existing `Dummy*` fakes keep their names and are reused (`docs/constitution.md`, section 11).
 - The fake lives in the test tree, in the same package as the class it replaces, so other tests can reuse it.
-- It is injected through the constructor or with the collaborator's public setter (see `docs/guides/backend-codestyle.md`, section 3).
+- It is injected through the constructor or with the collaborator's public setter (see `.claude/skills/backend-conventions/SKILL.md`, section 3).
 - Domain ports (`EventPublisher`, etc.) are replaced by their fake or by the in-memory implementation.
 
 ### Mockito
 
 - It is **not used today** in the project and new code does not need it for own classes either.
 - It is only allowed for classes from external libraries that cannot easily be instantiated or faked, and `@MockBean` in integration. Ask for confirmation before using it for the first time.
-- `verify()` is forbidden in new code: the test checks the result, not the calls.
+- `verify()` is not used in new code: the test checks the result, not the calls (`docs/constitution.md`, section 11).
 
 ### Endpoint tests
 
@@ -195,7 +195,7 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 - **One behavior per test.** If a scenario has several independent results, it is split into several tests, each with its own *Given-When-Then* name.
 - `assertAll()` is allowed only to check several facets of the same result (the fields of a mapped DTO, the components of a value object). It is not used to mix behaviors.
 - `assertEquals(expected, actual)`, with the expected value explicit.
-- A rejected action is checked on its result, `assertFalse(action.perform(context).isSuccessful())`, and its `ExceptionCode` in another test. A misused model throws (`docs/guides/backend-codestyle.md`, section 8), and that is checked with `assertThrows` and the concrete class: `assertThrows(IllegalStateException.class, () -> ...)`.
+- A rejected action is checked on its result, `assertFalse(action.perform(context).isSuccessful())`, and its `ExceptionCode` in another test. A misused model throws (`.claude/skills/backend-conventions/SKILL.md`, section 8), and that is checked with `assertThrows` and the concrete class: `assertThrows(IllegalStateException.class, () -> ...)`.
 - An `assertFalse(action.perform(context).isSuccessful())` counts as one assertion.
 - The public contract is tested, not internal details.
 - After an operation that modifies the object, the resulting state is checked.
@@ -228,14 +228,14 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 - A test that covers a rule cites its identifier in a comment above the test: `// COMBAT-4`.
 - Game rules that make sense are tested, not merely that a method runs.
 - For aggregation methods, cases with several operations are included.
-- No game rule that the code or the requirements do not back is assumed. If information is missing to write the test, ask.
+- No game rule is assumed: if information is missing to write the test, ask (`docs/constitution.md`, section 6).
 
 ---
 
 ## 14. Integration tests
 
 - `DisconnectedPlayerIntegrationTest` is the one that runs. It wires the real services by hand with in-memory repositories, because a Spring context would open the Socket.IO port. `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run.
-- They use local doubles, never real services (see `CLAUDE.md`).
+- They use local doubles, never real services (`docs/constitution.md`, section 11).
 - Named `*IntegrationTest`; they do not run with `mvn test`. They are launched with `mvn verify -P integration-tests`, the command of the backend job of `.github/workflows/maven.yml`. That the job runs `DisconnectedPlayerIntegrationTest` on GitHub is not checked yet (`docs/roadmap/roadmap-test.md`, Pending checks).
 - An integration test builds its data with the domain and the services themselves, and replaces the clients, the scheduler and the publisher with fakes (`RecordingUserClient`, `ManualTaskScheduler`, `SynchronousEventPublisher`) and the clock with a fixed `Clock`, as `DisconnectedPlayerIntegrationTest` does.
 - The Spring test infrastructure (`application-test.properties`, `PersistenceTestConfiguration`, `PartyPopulator`, `UserPopulator`, `GameEventWatcher`, `GameEventDebuger`) is not used by any test: those classes are only referenced among themselves (`docs/roadmap/roadmap.md`, Pending tasks). New tests do not use it. So the test populators that `CLAUDE.md` allows as doubles are the deck ones (`MemoryDeckPopulator`, section 4).
@@ -245,7 +245,7 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 
 ## 15. Concurrency tests
 
-- The in-memory repositories and the per-game serialization (`docs/guides/backend-codestyle.md`, section 16) have tests that run several threads against the same object (an `ExecutorService` plus a `CountDownLatch` to start them together) and check the final state.
+- The in-memory repositories and the per-game serialization (`docs/constitution.md`, section 9) have tests that run several threads against the same object (an `ExecutorService` plus a `CountDownLatch` to start them together) and check the final state.
 - They carry `@Timeout` and never use `Thread.sleep()`.
 - They check invariants (no lost update, no duplicate), not the order of the threads.
 
@@ -253,7 +253,7 @@ Controllers are tested with `MockMvc` in standalone mode: `MockMvcBuilders.stand
 
 ## 16. Known departures in the existing code
 
-They are listed so they are not copied. The golden rule of `docs/guides/codestyle.md` says when they are fixed.
+They are listed so they are not copied. The golden rule (`docs/constitution.md`, section 1) says when they are fixed.
 
 - `GameBehaviorIntegrationTest` is abstract and has no subclass, so it does not run (`docs/roadmap/roadmap.md`, Pending tasks).
 - `GameBehaviorIntegrationTest` may depend on chance: that pattern is not copied into unit tests.
