@@ -32,7 +32,7 @@ Read these only when the task needs them:
 - `docs/ideas/` — proposals not planned yet, with their status. When the task is about an idea, or a phase is planned from one. An idea is never a rule: what it says is built only once it is written in `docs/specs/`.
 - `docs/guides/phaser4-troubleshooting.md` — known effects of Phaser 4 on the view: symptom, likely cause and where to look. When working on Phaser views or when something in the view looks or behaves wrong.
 
-Before writing, changing or reviewing code or tests, load the skill of the application: `backend-conventions` for `backend/` and `frontend-conventions` for `frontend/` (`.claude/skills/`), with the mandatory conventions of the application and of its tests. A task that touches both loads both. They are not suggestions.
+Before writing, changing or reviewing code or tests, load the skill of the application: `backend-conventions` for `backend/` and `frontend-conventions` for `frontend/` (`.claude/skills/`), with the mandatory conventions of the application and of its tests. A task that touches both loads both. They are not suggestions: `.claude/hooks/conventions-loaded.mjs` blocks a change to `backend/` or `frontend/` until the session has loaded the skill of that application, and a change to a test until it has also read the tests file of the skill.
 
 If anything you are about to do contradicts those documents, stop and ask. For code that does not comply with the conventions, the golden rule of `docs/constitution.md`, section 1, applies instead.
 
@@ -56,6 +56,8 @@ Starting the backend or the frontend locally to see a change is only done by a p
 
 Your job is to **write the code and its tests**. Execution against real systems is done by a person.
 
+The hooks of `.claude/settings.json` enforce it as well: `.claude/hooks/no-external.mjs` blocks SSH, SCP, downloads, the git commands that talk to a remote and reading local credentials, and `.claude/hooks/sensitive-files.mjs` blocks writing credentials, keys and lockfiles. Before a commit with code, `.claude/hooks/precommit-checks.mjs` type-checks and lints the frontend files of the commit and compiles the backend. A blocked command is not worked around: ask the person.
+
 ### Tests do not touch infrastructure
 
 The rules are in `docs/constitution.md`, section 11.
@@ -69,8 +71,15 @@ Work on **one roadmap phase per session**. Do not start the next one.
 3. Before the first change, record in the phase the commit it starts from (the current `HEAD`): `Started at: <short hash>`.
 4. Implement bullet by bullet.
 5. Write the tests in the same commit as the code they test.
-6. Record progress in the roadmap of the phase by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
-7. When the phase is finished, close it in one last commit: write `Finished at: <short hash>`, the `HEAD` before that commit (the last commit of the phase), and move a closed phase of `docs/roadmap/roadmap.md` to `docs/roadmap/roadmap-archive.md`. A test phase of `docs/roadmap/roadmap-test.md` stays in its file. Then summarize what was done.
+6. Before marking a bullet, run its integration and paste the real output in the chat (the last lines when it is long), not a summary:
+   - The tests of the files touched or affected: `mvn test -Dtest=<classes>` in `backend/`, `npx vitest run <files>` in `frontend/`. Check that the number of test files run matches the ones passed: a misspelled path runs fewer and stays green.
+   - In `frontend/`, `npx --no vue-tsc --noEmit` and `npx eslint <files touched>`, without `--fix`.
+   - `npm run test:e2e` when the bullet changes what the browser shows.
+
+   **Ceiling of 2 fix cycles per bullet**: the first attempt and at most 2 more. If it is still red after them, stop and escalate to the person with the evidence (the command, its real output and what was expected) and a proposal: split the bullet, change the approach or record the rest as a pending task.
+7. Record progress in the roadmap of the phase by changing `- [ ]` to `- [x]` on each completed bullet, in the same commit as the work that completes it.
+8. When every bullet is done, review the phase with `/reviewer <phase>`. It is closed only with `VERDICT: approved`, or `approved with observations` once the person accepts or the work fixes each observation. At most 2 rounds end in `changes requested`; at the third, the review stops and escalates.
+9. When the phase is finished, close it in one last commit: write `Finished at: <short hash>`, the `HEAD` before that commit (the last commit of the phase), and move a closed phase of `docs/roadmap/roadmap.md` to `docs/roadmap/roadmap-archive.md`. A test phase of `docs/roadmap/roadmap-test.md` stays in its file. Then summarize what was done.
 
 When asked to add a pending task to the roadmap, put it in the "Pending tasks" section by default. If the task is essential to complete a specific phase, put it in that phase instead.
 

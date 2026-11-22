@@ -18,6 +18,8 @@ The only index of the documentation: where each thing is, when to read it and wh
 | What can never be broken in the code? | `docs/constitution.md` |
 | Which system of the frontend creates each part of the interface? | `.claude/skills/frontend-conventions/SKILL.md`, section 11 |
 | How is the code written and tested? | The skill of the application: `.claude/skills/backend-conventions/SKILL.md` or `.claude/skills/frontend-conventions/SKILL.md`, and the tests file next to it |
+| How is a phase reviewed before closing it? | `.claude/skills/reviewer/SKILL.md` (`/reviewer`), with its auditors in `.claude/agents/` |
+| What do the hooks block, and why? | `.claude/settings.json` and the header of each file of `.claude/hooks/` |
 | Something in the Phaser view looks or behaves wrong | `docs/guides/phaser4-troubleshooting.md` |
 | How is the domain modeled? | `docs/diagrams/` (PlantUML) |
 | What were the skins proposed? | `docs/skins/` — reference material, not rules |
@@ -34,6 +36,9 @@ The only index of the documentation: where each thing is, when to read it and wh
 | `docs/guides/` | Known effects of Phaser 4 on the view (`docs/guides/phaser4-troubleshooting.md`) | When one is found |
 | `.claude/skills/backend-conventions/` | The conventions of the code of `backend/` in `SKILL.md`, and of its tests in `backend-tests.md`. Mandatory, under `docs/constitution.md` | When a convention changes |
 | `.claude/skills/frontend-conventions/` | The conventions of the code of `frontend/` in `SKILL.md`, and of its tests in `frontend-tests.md`. Mandatory, under `docs/constitution.md` | When a convention changes |
+| `.claude/skills/reviewer/` | The review of a phase: auditors, rule → test table, integration and `VERDICT` | When the review changes |
+| `.claude/agents/` | The read-only auditors of `/reviewer`: `spec-drift-checker` and `constitution-auditor` | With `/reviewer` |
+| `.claude/hooks/` | The hooks that `.claude/settings.json` runs: no network or remote access, no credentials, the conventions loaded, the checks before a commit | When a restriction of `CLAUDE.md` changes |
 | `docs/diagrams/` | Domain model, class diagrams and use cases | Only when the user allows it |
 | `docs/skins/` | Skin proposals with their captures and prototype code | By hand |
 
