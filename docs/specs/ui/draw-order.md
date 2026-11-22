@@ -1,6 +1,6 @@
 # Draw order
 
-What is drawn over what in the game screen and over it. Each layer is drawn over the ones under it. Proposed on 2026-11-22 from what was drawn that day; the changes below were decided by the product owner on 2026-11-22. How it is built is in `.claude/skills/frontend-conventions/SKILL.md`, section 11.
+What is drawn over what in the game screen and over it. Each layer is drawn over the ones under it. Decided by the product owner on 2026-11-22, from what was drawn that day and with the two changes below. How it is built is in `.claude/skills/frontend-conventions/SKILL.md`, section 11.
 
 - **VIEW-68** The parts of the interface are drawn in this order, from the top down:
 
