@@ -1,7 +1,19 @@
 import type { CardDto } from '@/api/dtos/CardDto';
 import type { Area } from '@/support/board';
 import type { PreparedGame } from '@/support/preparedGame';
-import { EMPTY_TABLE, HAND_CARD, OWN_WARRIOR, SOLE_HAND_CARD, TOOLTIP_AREA, frameOf, hover, openBoard, openGame, sameFrame, zoomIn } from '@/support/board';
+import {
+  EMPTY_TABLE,
+  HAND_CARD,
+  OWN_WARRIOR,
+  SOLE_HAND_CARD,
+  TOOLTIP_AREA,
+  frameOf,
+  hover,
+  openBoard,
+  openGame,
+  sameFrame,
+  zoomIn
+} from '@/support/board';
 import { createEquipment, createPreparedGame, withCombatant, withEliminatedPlayer } from '@/support/preparedGame';
 import { expect, test } from '@/support/test';
 

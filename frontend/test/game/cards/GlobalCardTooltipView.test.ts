@@ -5,7 +5,14 @@ import { TOOLTIP_CLOSE_WAIT_MS } from '@/core/Constants';
 import ZoneSlotView from '@/game/zone/ZoneSlotView';
 
 type Timer = { remove: ReturnType<typeof vi.fn> };
-type Tween = { targets: { open: number }; open: number; duration: number; ease: string; onUpdate: () => void; onComplete: () => void };
+type Tween = {
+    targets: { open: number };
+    open: number;
+    duration: number;
+    ease: string;
+    onUpdate: () => void;
+    onComplete: () => void;
+};
 
 /** Runs the methods of the panel that open and close it, over the pieces they read, without building a Phaser container. */
 const panel = GlobalCardTooltipView.prototype as unknown as Record<string, (...args: unknown[]) => unknown>;
@@ -116,7 +123,7 @@ describe('GlobalCardTooltipView open and close', () => {
 
     call('cancelClose');
 
-    expect([tooltip.closing, (tooltip.scene as { tweens: { killTweensOf: unknown } }).tweens.killTweensOf]).toEqual([false, expect.anything()]);
+    expect(tooltip.closing).toBe(false);
   });
 
   it('is transparent in proportion to how closed it is', () => {
@@ -140,10 +147,10 @@ function createFakeText(): FakeText {
   } as FakeText;
 }
 
-/** A slot of the board; `ready` says whether it drew the cyan frame of its card on this board (VIEW-17). */
+/** A slot of the board; `ready` says whether its card can attack on the turn shown (VIEW-17). */
 function createSlot(ready: boolean): ZoneSlotView {
   const slot = Object.create(ZoneSlotView.prototype) as ZoneSlotView;
-  Object.assign(slot, { readyGraphics: ready ? {} : undefined });
+  Object.assign(slot, { holdsCardThatCanAttack: () => ready });
 
   return slot;
 }
@@ -153,7 +160,8 @@ describe('GlobalCardTooltipView attack line', () => {
   let tooltip: Record<string, unknown> & { canAttackText: FakeText };
 
   const describeCard = (parentContainer: unknown) => {
-    const cardView = { card: { name: 'card.warrior.0.name', description: 'card.warrior.0.description', equipment: [] }, parentContainer };
+    const card = { name: 'card.warrior.0.name', description: 'card.warrior.0.description', equipment: [] };
+    const cardView = { card, parentContainer };
     panel.buildDescription.call(tooltip, cardView);
   };
 

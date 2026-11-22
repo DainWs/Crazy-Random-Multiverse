@@ -77,12 +77,12 @@ describe('SettingsSystem', () => {
 
     // UI-4
     it.each([
-      { open: 'settings', toggle: () => SettingsSystem.togglePanel(), expected: true },
-      { open: 'help', toggle: () => SettingsSystem.toggleHelp(), expected: true }
-    ])('counts the $open panel as a panel open', ({ toggle, expected }) => {
+      { open: 'settings', toggle: () => SettingsSystem.togglePanel() },
+      { open: 'help', toggle: () => SettingsSystem.toggleHelp() }
+    ])('counts the $open panel as a panel open', ({ toggle }) => {
       toggle();
 
-      expect(SettingsSystem.anyPanelOpen.value).toBe(expected);
+      expect(SettingsSystem.anyPanelOpen.value).toBe(true);
     });
 
     it('counts no panel open when both are closed', () => {

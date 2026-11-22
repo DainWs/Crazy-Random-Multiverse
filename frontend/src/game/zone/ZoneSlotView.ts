@@ -307,7 +307,7 @@ class ZoneSlotView extends Phaser.GameObjects.Container implements CombatantView
     return this.readyGraphics?.visible === true;
   }
 
-  /** Whether the card here can attack on the turn of the board shown, also while its frame is hidden under the lift (VIEW-17, VIEW-59). */
+  /** Whether the card here can attack on the turn of the board shown, also while its frame is hidden (VIEW-17, VIEW-59). */
   public holdsCardThatCanAttack(): boolean {
     return this.readyGraphics !== undefined;
   }

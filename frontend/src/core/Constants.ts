@@ -332,7 +332,7 @@ export const SLOT_SOLID_FILL_ALPHA = 1;
 /** Width in pixels of the slot of each sample of the legend of the help panel (VIEW-58). */
 export const HELP_SAMPLE_WIDTH = 60;
 
-/** Width in pixels of the border of the slot, the frames and the border of the veil in a sample of the legend, so they are seen at its size (VIEW-58). */
+/** Width in pixels of the border of the slot, the frames and the border of the veil in a sample of the legend (VIEW-58). */
 export const HELP_SAMPLE_FRAME_WIDTH = 2;
 
 /** Width in pixels of the near black edge on each side of a mark in a sample of the legend, in the accessible mode (VIEW-58). */

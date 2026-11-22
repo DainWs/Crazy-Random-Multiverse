@@ -85,7 +85,7 @@ function sampleFrame(): SampleFrame {
     };
 }
 
-/** The sample of a mark, as the board draws it now: with the colors of the mode and the second signal only while it is on (VIEW-58). */
+/** The sample of a mark as the board draws it now: with the colors of the mode, and the second signal only while on (VIEW-58). */
 function sampleShapes(mark: LegendMark): SampleShape[] {
     return SAMPLES.get(mark)!();
 }

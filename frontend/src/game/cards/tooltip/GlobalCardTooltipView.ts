@@ -25,6 +25,10 @@ const SIDEBAR_WIDTH_RATIO = 0.25;
 const SHADOW_OFFSET = 15;
 const SHADOW_ALPHA = 0.8;
 const PADDING = 20;
+/** Space in px between the name of a card and the line that says it can attack (VIEW-59). */
+const ATTACK_LINE_GAP = PADDING / 2;
+/** Space in px between the last line of the heading and the description of a card (VIEW-59). */
+const DESCRIPTION_GAP = PADDING * 1.5;
 
 
 const NAME_SHADOW: Phaser.Types.GameObjects.Text.TextShadow = { 
@@ -303,9 +307,9 @@ class GlobalCardTooltipView extends Phaser.GameObjects.Container implements Card
 
   private alignDescriptionText(card: Card) {
     this.nameText.setPosition(0, 0);
-    this.canAttackText.setPosition(0, this.nameText.y + this.nameText.height + PADDING / 2);
+    this.canAttackText.setPosition(0, this.nameText.y + this.nameText.height + ATTACK_LINE_GAP);
     const textAbove = this.canAttackText.visible ? this.canAttackText : this.nameText;
-    this.descriptionText.setPosition(0, textAbove.y + textAbove.height + PADDING * 1.5);
+    this.descriptionText.setPosition(0, textAbove.y + textAbove.height + DESCRIPTION_GAP);
 
     this.clearEquipmentTexts();
 

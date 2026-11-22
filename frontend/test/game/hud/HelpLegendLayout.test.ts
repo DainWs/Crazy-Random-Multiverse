@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import type { SampleShape } from '@/game/hud/HelpLegendLayout';
 import { LEGEND_MARKS, sampleFrame, sampleShapes, svgPoints } from '@/game/hud/HelpLegendLayout';
 
 function openPageWith(search: string) {
@@ -7,6 +8,18 @@ function openPageWith(search: string) {
 
 function kindsOf(mark: Parameters<typeof sampleShapes>[0]) {
   return sampleShapes(mark).map((shape) => shape.kind);
+}
+
+function polygon(shape: SampleShape) {
+  return shape as Extract<SampleShape, { kind: 'POLYGON' }>;
+}
+
+function lines(shape: SampleShape) {
+  return shape as Extract<SampleShape, { kind: 'LINES' }>;
+}
+
+function circle(shape: SampleShape) {
+  return shape as Extract<SampleShape, { kind: 'CIRCLE' }>;
 }
 
 /** The slot of the board is 200 units wide, and the one of a sample 60 px. */
@@ -29,6 +42,12 @@ describe('HelpLegendLayout', () => {
       'INVALID_TARGET',
       'ELIMINATED'
     ]);
+  });
+
+  it('draws a sample for every mark', () => {
+    const sampleCounts = LEGEND_MARKS.map((mark) => sampleShapes(mark).length > 0);
+
+    expect(sampleCounts).toEqual(LEGEND_MARKS.map(() => true));
   });
 
   describe('sampleFrame', () => {
@@ -60,13 +79,15 @@ describe('HelpLegendLayout', () => {
     it('draws the frames 2 px wide', () => {
       const [, frame] = sampleShapes('VALID_TARGET');
 
-      expect(frame.kind === 'POLYGON' && frame.strokeWidth * PIXELS_PER_UNIT).toBeCloseTo(2);
+      expect(polygon(frame).strokeWidth * PIXELS_PER_UNIT).toBeCloseTo(2);
     });
 
     it('draws the crossed circle 20 px wide', () => {
       const [, , disc] = sampleShapes('INVALID_TARGET');
 
-      expect(disc.kind === 'CIRCLE' && (disc.radius + disc.strokeWidth / 2) * 2 * PIXELS_PER_UNIT).toBeCloseTo(20);
+      const { radius, strokeWidth } = circle(disc);
+
+      expect((radius + strokeWidth / 2) * 2 * PIXELS_PER_UNIT).toBeCloseTo(20);
     });
 
     it('draws the turn without the crown', () => {
@@ -98,9 +119,9 @@ describe('HelpLegendLayout', () => {
     it('draws the nine lines of the own zone', () => {
       openPageWith('?extraMarks=1');
 
-      const [, lines] = sampleShapes('OWN_ZONE');
+      const [, ownLines] = sampleShapes('OWN_ZONE');
 
-      expect(lines.kind === 'LINES' && lines.paths).toHaveLength(9);
+      expect(lines(ownLines).paths).toHaveLength(9);
     });
 
     it('draws the four L\'s of a card that can attack', () => {
@@ -108,7 +129,7 @@ describe('HelpLegendLayout', () => {
 
       const [, corners] = sampleShapes('READY');
 
-      expect(corners.kind === 'LINES' && corners.paths).toHaveLength(4);
+      expect(lines(corners).paths).toHaveLength(4);
     });
 
     it('draws the crown of the turn on its disc', () => {
@@ -130,7 +151,7 @@ describe('HelpLegendLayout', () => {
 
       const [, dashes] = sampleShapes('SOURCE');
 
-      expect(dashes.kind === 'LINES' && dashes.paths).toHaveLength(24);
+      expect(lines(dashes).paths).toHaveLength(24);
     });
   });
 
@@ -140,9 +161,9 @@ describe('HelpLegendLayout', () => {
 
       const [, edge, frame] = sampleShapes('VALID_TARGET');
 
-      const widths = [edge, frame].map((shape) => (shape.kind === 'POLYGON' ? shape.strokeWidth * PIXELS_PER_UNIT : 0));
+      const widths = [edge, frame].map((shape) => Math.round(polygon(shape).strokeWidth * PIXELS_PER_UNIT));
 
-      expect(widths.map((width) => Math.round(width))).toEqual([4, 2]);
+      expect(widths).toEqual([4, 2]);
     });
 
     it('tints the own zone with the accessible blue', () => {
