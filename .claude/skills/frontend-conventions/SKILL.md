@@ -230,11 +230,11 @@ In `.claude/skills/frontend-conventions/frontend-tests.md`. The absolute rules o
 
 ## 11. Interface hierarchy
 
-Which part of the interface belongs to which, and which system of the frontend creates it. Written on 2026-11-22 as a draft for the review of the product owner, as `agents/INTERFACE-HIERARCHY.md`, and moved here before that review. What each part looks like is in `docs/specs/ui/`, and what is drawn over what in `docs/specs/ui/draw-order.md` (`VIEW-68`).
+Which part of the interface belongs to which, and which system of the frontend creates it. Reviewed and decided by the product owner on 2026-11-22. What each part looks like is in `docs/specs/ui/`, and what is drawn over what in `docs/specs/ui/draw-order.md` (`VIEW-68`).
 
 ### Tree
 
-Every part of the interface has one place in this tree, and a part that is added is placed here. The tree says what a part belongs to and who creates it, not where it is drawn or what is drawn over it: the marks of the board belong to the HUD, are created by `HudSystem` and are drawn on the slots (`VIEW-24`). The animations, the sounds and the effects are not parts of the tree (`FX-22`).
+Every part of the interface has one place in this tree, and a part that is added is placed here. The tree says what a part belongs to and who creates it, not where it is drawn or what is drawn over it: the marks of the board belong to the HUD, are created by `HudSystem` and are drawn on the slots (`VIEW-24`). The animations, the sounds and the effects are not parts of the tree (`FX-22`). A part marked as single exists only once on the screen (see "Creating"). Decided by the product owner on 2026-11-22.
 
 The two elements with skins (`FX-10`) hang from the system that creates their parts: the battlefield from `ScenerySystem` and the HUD from `HudSystem`. The rest of the game screen is created by its own views, with no skin, and nothing drawn by Vue has a skin: with a skin chosen, the HUD changes and the panels of Vue keep their look, a limitation accepted by the product owner on 2026-11-22 (`FX-10`).
 
@@ -254,17 +254,18 @@ Interface
         │   └── Battlefield (FX-10)
         │       ├── Surroundings: what is seen around the table
         │       ├── Effect layer behind the table, with no skin (FX-23)
-        │       ├── Table: its surface, its edge and its grid (VIEW-26)
+        │       ├── Darkening of the accessible mode, with no skin (VIEW-45)
+        │       ├── Table: its surface, its edge and its grid (VIEW-26), and its sides and legs (VIEW-57)
         │       └── Effect layer over the table, with no skin (FX-23)
         ├── HudSystem ── HudSkin
         │   ├── HUD (VIEW-62)
         │   │   ├── Buttons
         │   │   │   ├── End turn and surrender (VIEW-43)
         │   │   │   ├── Leave, of a spectator (UI-8)
-        │   │   │   └── Game menu (VIEW-60)
-        │   │   ├── Label of a spectator (VIEW-28)
-        │   │   ├── Round and turn (VIEW-44)
-        │   │   ├── Side panel of a card (VIEW-14)
+        │   │   │   └── Game menu (VIEW-60), single
+        │   │   ├── Label of a spectator (VIEW-28), single
+        │   │   ├── Round and turn (VIEW-44), single
+        │   │   ├── Side panel of a card (VIEW-14), single
         │   │   ├── Notices of turn, round and elimination (VIEW-15, VIEW-11)
         │   │   ├── Message of a rejected action (UI-6)
         │   │   ├── Confirmation dialog (UI-15)
@@ -291,11 +292,13 @@ Interface
             └── Cards
 ```
 
-**[OPEN]** Who draws the loading screen (`VIEW-29`), which the pending task about `GameLoad.ts` of `docs/roadmap/roadmap.md` finds out, and the darkening of the background of the accessible mode (`VIEW-45`). Each one goes in the tree when it is known. Whether the cards become an element with skins of its own is open in `FX-10`.
+The darkening of the accessible mode (`VIEW-45`) is drawn by `ScenerySystem` with no skin, because the accessible mode does not change the base look (`UI-31`). Decided by the product owner on 2026-11-22.
+
+**[OPEN]** Who draws the loading screen (`VIEW-29`), which the pending task about `GameLoad.ts` of `docs/roadmap/roadmap.md` finds out. It goes in the tree when it is known; until then `GameLoad` creates its texts with a style of its own, outside `HudSystem`, because it is not part of the HUD (`VIEW-62`). Whether the cards become an element with skins of its own is open in `FX-10`.
 
 ### Layers
 
-What is drawn over what is `VIEW-68` (`docs/specs/ui/draw-order.md`). Each of its layers has a name, instead of the depths spread over `core/Constants.ts`: making it is a pending task of `docs/roadmap/roadmap.md`, which checks first what the `Layer` of Phaser 4 allows with containers (`docs/guides/phaser4-troubleshooting.md`).
+What is drawn over what is `VIEW-68` (`docs/specs/ui/draw-order.md`). Each of its layers has a name, instead of the depths spread over `core/Constants.ts`: making it is a pending task of `docs/roadmap/roadmap.md`, which checks first what the `Layer` of Phaser 4 allows with containers (`docs/guides/phaser4-troubleshooting.md`). Decided by the product owner on 2026-11-22.
 
 - **Today.** The button to leave and the confirmation dialog are drawn over the result (`LEAVE_BUTTON_DEPTH`, `CONFIRM_DIALOG_DEPTH`); the notices and the message of a rejected action (`TURN_NOTICE_DEPTH`, `REJECTION_MESSAGE_DEPTH`) are over the confirmation dialog; and each card of the hand takes its depth in `HandView`. `VIEW-68` changes the three.
 - **`hide()` stays.** The order of the layers puts the result over the HUD, but `VIEW-23` asks that the HUD is not drawn at all, not that it is under the veil.
@@ -308,51 +311,61 @@ What is drawn over what is `VIEW-68` (`docs/specs/ui/draw-order.md`). Each of it
 core
 ├── HudSystem ── HudSkin
 │   ├── createButton / createPanel / createText / createFocusFrame / createMark(scene, options)
-│   │     → a SkinnedPart of the HUD or of the result
+│   │     → a SkinnedPart of the HUD
+│   ├── getTurnPanel / getMenuButton / getSpectatorLabel / getCardSidePanel(scene)
+│   │     → the single part, created on the first call
+│   ├── createResult(scene)  → the panel of the result and its texts
+│   ├── accentColor / accentAlpha / buttonFill / panelBackground  → values of the active skin
 │   ├── hide() / show()  → the parts of the HUD, not those of the result
 │   └── setSkin(skin)  → restyles every part it created
 └── ScenerySystem ── BattlefieldSkin
-    ├── createBattlefield(scene, options)  → the SkinnedPart of each part of the battlefield, and its two effect layers
+    ├── createBattlefield(scene, options)  → the SkinnedPart of each part of the battlefield, the darkening and the two effect layers
     ├── effectLayer(place) / battlefieldArea()  → where an effect of the battlefield draws, and inside what
     └── setSkin(skin)  → restyles every part it created
 ```
 
-- **Creating.** One method for each kind of piece, never one for each part: what tells one part from another of the same kind goes in the options the method receives, so a new part does not add a method. A button to leave is `createButton(scene, { text: getText('ui.game.leave'), role: 'NEUTRAL' })`, not `createLeaveButton(scene)`, and its text comes from `core/Texts.ts`, as every text. The method receives the scene, because the system exists before any scene, and returns the container of a `SkinnedPart`.
-  - For the HUD: `createButton`, `createPanel`, `createText`, `createFocusFrame` and `createMark`. `createMark` receives which mark of the legend of `VIEW-58` it is, as a key of a literal union (section 4), and the corners of its slot: `ZoneSlotView` asks `HudSystem.createMark(this.scene, { mark: 'ATTACK_NOT_ALLOWED', corners: this.corners })` and keeps the mark as a child.
+- **Creating.** One method for each kind of piece, never one for each part: what tells one part from another of the same kind goes in the options the method receives, so a new part does not add a method. A button to leave is `createButton(scene, { text: getText('ui.game.leave'), role: 'NEUTRAL' })`, not `createLeaveButton(scene)`, and its text comes from `core/Texts.ts`, as every text. The method receives the scene, because the system exists before any scene, and returns a `SkinnedPart`.
+  - For the HUD: `createButton`, `createPanel`, `createText`, `createFocusFrame` and `createMark`. `createMark` receives which mark of the legend of `VIEW-58` it is, as a key of a literal union (section 4): `ZoneSlotView` asks `HudSystem.createMark(this.scene, { mark: 'ATTACK_NOT_ALLOWED' })`, gives it the corners of its slot and keeps the mark as a child.
   - For the battlefield: `createBattlefield(scene, { battlefield })`, whose mode picks how it is drawn.
+  - **Single parts.** A part that exists only once on the screen has a method of its own, which creates it on the first call and returns the same instance on the next ones: `getTurnPanel` (`VIEW-44`), `getMenuButton` (`VIEW-60`), `getSpectatorLabel` (`VIEW-28`) and `getCardSidePanel` (`VIEW-14`). They are the only parts with a method of their own, besides the result (`createResult`, see `HudSystem`).
+  - **Values of the skin.** `accentColor`, `accentAlpha`, `buttonFill` and `panelBackground` give a value of the active skin to a view that needs it, read at every call, so a view never keeps one.
+  - **[OPEN]** Which piece of `FX-17` draws the health bar of a leader (`VIEW-50`), the veil of the confirmation dialog, the veil of the result and the background and the shadow of the side panel of a card, which have none today. Until it is decided they keep the colors of `Palette`, and a skin does not change them.
 
-  The view adds the container as its child, places it with its `XLayout`, and decides when it is seen.
-- **What a system receives.** The shape of the part, from the view, and it draws only inside it (`FX-18`). It does not place, does not animate and does not know the game state.
-- **Keeping the parts.** Each system keeps the `SkinnedPart`s it created and forgets one when it is destroyed (the `DESTROY` event): the board is drawn again on every change (`GameScene.renderZones`), and its marks and its table with it. A part taken out of its view without being destroyed would be kept forever, so a test draws the board several times and checks that the system keeps as many parts as one drawing creates.
+  Decided by the product owner on 2026-11-22.
+- **Placing and sizing.** A view asks the system for a part; the system creates it, or takes the single one, and gives it back. The view then places and sizes it with the methods of the part, when its kind allows it: every part has a position; a panel and a focus frame, a width and a height; a mark, the corners of its slot; a text and a button take their size from their text. The view can change them at any time, as the panel of the turn when its text changes, and the part is drawn again inside them. They are methods of the part, with no interface of TypeScript: one becomes an interface when two implementations of it exist (`docs/constitution.md`, section 4). The system draws only inside the size of the part (`FX-18`), does not place, does not animate and does not know the game state. The second signal of a mark (`VIEW-39`) is not of the skin (`FX-10`) nor of the game state: `HudSystem` reads it from `EffectSettings`, which reads it once when the page loads (`UI-31`). Decided by the product owner on 2026-11-22.
+- **Keeping the parts.** Each system keeps the `SkinnedPart`s it created and forgets one when it is destroyed (the `DESTROY` event): the board is drawn again on every change (`GameScene.renderZones`), and its marks and its table with it. A part taken out of its view without being destroyed would be kept forever, so a test draws the board several times and checks that the system keeps as many parts as one drawing creates. A single part is forgotten the same way, and the next call creates it again: a scene that restarts destroys every object, so the system never returns a part of a scene that no longer exists. Decided by the product owner on 2026-11-22.
 - **`setSkin(skin)`.** Every part kept takes the style of the new skin, so no view takes part. The skin only gives the style of a part: its colors, alphas, fonts, frames and thicknesses, and the look of each mark, which is a style too. What a part shows is of the view, which changes it on the part at any time: the text of a button or of the turn panel, the fill of a health bar, the corners of the slot of a mark. So a new style never brings back an old text or an old shape. Decided by the product owner on 2026-11-22.
-- **Animations.** The view animates its part: the pulse of the end turn button (`VIEW-38`) and of the frame of a card that can attack (`VIEW-17`) stay in their views (`FX-22`).
+- **Animations.** The view animates its part: the pulse of the end turn button (`VIEW-38`) and of the frame of a card that can attack (`VIEW-17`) stay in their views (`FX-22`). An animation that changes a color of the part, such as the pulse of the end turn button or the change of a button under the pointer, reads the color from the active skin, by the role of the part, at every step, and never keeps one from when it started: after a `setSkin` it takes the colors of the new skin. Decided by the product owner on 2026-11-22.
 
 #### `SkinnedPart`
 
-One part drawn with a skin. A concrete class, generic over the type of the skin, used by composition from both systems, with no interface and no inheritance (`docs/constitution.md`, section 4).
+One part drawn with a skin. A concrete class, generic over the type of the skin, used by composition from both systems, with no interface and no inheritance (`docs/constitution.md`, section 4). Decided by the product owner on 2026-11-22.
 
-- **Two layers.** It has a container of the view, whose place, visibility, alpha and tweens are of the view. Inside, the layer it draws, which only the `SkinnedPart` touches. So showing the HUD again does not show a mark that the view had hidden, such as the frame of a card lifted as the attacker (`VIEW-4`).
-- **Style.** It keeps the function that gives the style of the skin to its layer. `restyle(skin)` calls it again with the new skin over what the layer shows at that moment: a text keeps its text and takes the font and the color of the skin, and a mark is drawn again over the corners it has, with the look of the skin.
-- **Hidden.** `setHidden(hidden)` hides or shows its layer, and disables or enables the input of every interactive object in it, so a hidden button cannot be clicked.
+- **Two layers.** It has a container of the view, whose place, visibility, alpha and tweens are of the view. Inside, the layer it draws, which only the `SkinnedPart` touches. So showing the HUD again does not show a mark that the view had hidden, such as the frame of a card lifted as the attacker (`VIEW-4`). A container has no origin, and its scroll factor only reaches its children with `updateChildren`, which the input of a button fixed on the screen needs: what building it finds goes in `docs/guides/phaser4-troubleshooting.md`.
+- **Role.** The view never gives a part a color: it gives it a role of the skin, that is a level of text, an accent (`LOCAL_TURN`, `POSITIVE`, `NEGATIVE`, `DISABLED`) or a kind of button, and changes it at any time. The text of the turn takes `LOCAL_TURN` on the turn of the local player, and the title of the result `POSITIVE` or `NEGATIVE`.
+- **Style.** It keeps the function that gives the style of the skin to its layer, and its role. `restyle(skin)` calls it again with the new skin, the role it has and what the layer shows at that moment: a text keeps its text and its role and takes the font and the color of the skin for that role, and a mark is drawn again over the corners it has, with the look of the skin. So a new skin never takes away the color of the turn.
+- **Hidden.** `hide()` and `show()` hide or show its layer. They do not touch the input: Phaser 4 does not send the pointer to a hidden object nor to the children of a hidden container (`InputManager.inputCandidate`), so a hidden button cannot be clicked. The keyboard handlers of a view are not covered by it, which is why the result closes the confirmation dialog (`VIEW-23`).
 
 #### `HudSystem`
 
-- **The HUD and the result.** It keeps the parts of the HUD apart from those of the result, which is drawn with the same pieces (`FX-10`) but is not part of the HUD: `setSkin` restyles both, and `hide()` and `show()` only touch the parts of the HUD.
-- **`hide()` and `show()`.** Every part of the HUD is hidden or shown at once, and a part of the HUD created while it is hidden is created hidden. The result calls `hide()` when its veil starts (`VIEW-23`). `GameScene` calls `show()` when it is created, so the HUD hidden by the result of a game is not hidden in the next one.
+- **The HUD and the result.** The result is drawn with the same pieces (`FX-10`) but is not part of the HUD, so it has a method of its own, `createResult(scene)`, which returns the panel of the result and its texts as `SkinnedPart`s and keeps them apart from those of the HUD: `setSkin` restyles both, and `hide()` and `show()` only touch the parts of the HUD.
+- **`hide()` and `show()`.** Every part of the HUD is hidden or shown at once, and a part of the HUD created while it is hidden is created hidden. The result calls `hide()` when its veil starts (`VIEW-23`), and the confirmation dialog closes then without being answered, so no hidden part listens to the keyboard. `GameScene` calls `show()` when it is created, so the HUD hidden by the result of a game is not hidden in the next one.
+
+Decided by the product owner on 2026-11-22.
 
 #### `ScenerySystem`
 
-- **Its parts.** The parts of the battlefield of `FX-10`: the surface under the zones, its edge, its grid and what is seen around it. The zones, the slots and the cards are not its parts, since the battlefield does not change them (`FX-10`).
-- **Mode and skin.** The mode of the board picks how the battlefield is drawn, with `BattlefieldViewStrategy` and its dispatcher (section 3), and the skin only gives its values. The mode is `battlefieldType`, which stays in `domain/Battlefield` with the value it has today, while the skin leaves the domain: it is a preference of the player, not game state (`FX-12`).
+- **Its parts.** The parts of the battlefield of `FX-10`: the surface under the zones, its edge, its grid, its sides and its legs (`VIEW-57`), and what is seen around it. The zones, the slots and the cards are not its parts, since the battlefield does not change them (`FX-10`).
+- **The surroundings.** Today what is seen around the table is the background image of the page (the `background-image` of `html` and `body` in `App.vue`), which the menus share. `createBattlefield` draws it in Phaser, so a skin of the battlefield changes it and the menus keep the background of the page.
+- **The darkening of the accessible mode** (`VIEW-45`). `createBattlefield` draws it, with no skin, between the effect layer behind the table and the table (`VIEW-68`). Today it is the background color of the camera (`GameScene.init`), under the whole canvas, which the surroundings would cover once Phaser draws them.
+- **Mode and skin.** The mode of the board picks how the battlefield is drawn, with `BattlefieldViewStrategy` and its dispatcher (section 3), and the skin only gives its values. The mode is `battlefieldType`, which today is in `domain/BattlefieldSkin` (`battlefield.skin.battlefieldType`) and moves to `domain/Battlefield` with the value it has today, while the skin leaves the domain: it is a preference of the player, not game state (`FX-12`).
 - **No `hide()` nor `show()`**: no rule hides the battlefield, and the result leaves it under its veil (`VIEW-23`).
 
-#### Strategy of a skin
-
-Until Phase 15 both systems draw every piece from the data of the skin, with no interface: `docs/constitution.md`, section 4, asks for an interface only with two implementations that exist today. The drawing by the code a skin carries for a piece (`FX-18`) becomes a strategy in Phase 15, with the first skin that needs it (`docs/skins/huds/fantasy/` for the HUD, the scenes of `docs/skins/battlefields/` for the battlefield). Decided by the product owner on 2026-11-22.
+Decided by the product owner on 2026-11-22.
 
 ### Effects over a skinned element
 
-An effect changes how an element is seen for a while, without changing its skin nor its layout (`FX-10`, `FX-15`): it is drawn over the parts of the element by the effects of `core/visual_effects/`, and the system of the element only gives it the place to draw.
+An effect changes how an element is seen for a while, without changing its skin nor its layout (`FX-10`, `FX-15`): it is drawn over the parts of the element by the effects of `core/visual_effects/`, and the system of the element only gives it the place to draw. Decided by the product owner on 2026-11-22.
 
 ```
 Event confirmed by the server (CON-17)
@@ -364,7 +377,7 @@ Event confirmed by the server (CON-17)
             └── draws, plays, and empties the layer
 ```
 
-- **The two effect layers of the battlefield.** `createBattlefield` creates, besides the surroundings and the table, two empty layers with no skin: one behind the table and over its surroundings, and one over the table and under the zones. An effect says in its data which one it draws in, and asks for it with `effectLayer('BEHIND_TABLE')` or `effectLayer('OVER_TABLE')`. `ScenerySystem` keeps both with the battlefield shown and creates them again with it (`GameScene.renderZones`). It never draws in them: only the effects do, so the zones, the slots and the cards stay over every effect of the battlefield (`FX-23`).
+- **The two effect layers of the battlefield.** `createBattlefield` creates, besides the surroundings, the darkening and the table, two empty layers with no skin: one behind the table and over its surroundings, and one over the table and under the zones. An effect says in its data which one it draws in, and asks for it with `effectLayer('BEHIND_TABLE')` or `effectLayer('OVER_TABLE')`. `ScenerySystem` creates both once for each scene and keeps them when the board is drawn again (`GameScene.renderZones`): they are taken out of what is destroyed and put back at their place in the new board, so an effect goes on while the next events play (`FX-23`). It never draws in them: only the effects do, so the zones, the slots and the cards stay over every effect of the battlefield (`FX-23`).
 - **The darkening of the accessible mode** (`VIEW-45`) is over the layer behind the table, so an effect there is darkened as the surroundings are, and the board keeps standing out over it.
 - **The skin stays under the effect.** The parts of the element are not changed, and a `setSkin` during an effect restyles them under it. When the effect ends, its layer is empty and the element shows its skin again, with nothing to restore.
 - **The effect is data.** Which effect plays is found from the card (`FX-22`), then from its rarity (`FX-1`), with no branch in the code of each card (`FX-3`). An effect of a new kind adds its code once to `core/visual_effects/`, and any card or rarity uses it by data.
@@ -373,4 +386,4 @@ Event confirmed by the server (CON-17)
 
 ### Migration
 
-The steps from the code of today to these systems are pending tasks of `docs/roadmap/roadmap.md`, in order, read on 2026-11-22.
+The steps from the code of today to these systems are pending tasks of `docs/roadmap/roadmap.md`, in order. Decided by the product owner on 2026-11-22.
