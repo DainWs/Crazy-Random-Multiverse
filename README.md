@@ -12,7 +12,7 @@ We knew you would ask this, so we will answer you, currently the game that you f
 
 ### How can I understand the code structure of the project?
 
-That's easy my dear developer, you can find all domain models, class diagrams or other type of diagrams in [docs/development](docs/development/) 😜
+That's easy my dear developer, you can find all domain models, class diagrams or other type of diagrams in [docs/diagrams](docs/diagrams/) 😜
 
 Take a good look and enjoy it. 🌹
 
@@ -39,7 +39,7 @@ Sorry, this is not implemented yet 😥
 
 ## Requirements
 
-You can find the functional specification [here](agents/SPECS.md), and the original requirements, kept as background, [here](docs/Requirements.md)
+You can find the functional specification [here](docs/specs/readme.md), and the original requirements, kept as background, [here](docs/requirements.md)
 
 ## Features
 

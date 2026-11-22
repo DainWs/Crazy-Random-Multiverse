@@ -252,7 +252,7 @@ class GameHudView {
     }
 
     /** The keys of the HUD: Space ends the turn, and the dialog takes every key while it is open (UI-32). Phaser can deliver
-     * the same event of the browser more than once, so each one is handled once (`PHASER4-SPECS.md`). */
+     * the same event of the browser more than once, so each one is handled once (`docs/guides/phaser4-troubleshooting.md`). */
     private onKeyDown(event: KeyboardEvent) {
         if (this.handledKeys.has(event)) {
             return;

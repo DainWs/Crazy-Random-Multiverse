@@ -25,7 +25,7 @@ export default defineConfig({
                 viewport: VIEWPORT,
                 deviceScaleFactor: 1,
                 launchOptions: {
-                    // The GPU of the developer's machine, so the reference images are their own and not committed (ROADMAP-TEST.md)
+                    // The GPU of the developer's machine, so the reference images are their own and not committed (`docs/roadmap/roadmap-test.md`)
                     args: ['--use-angle=default', '--enable-gpu', '--ignore-gpu-blocklist']
                 }
             }
