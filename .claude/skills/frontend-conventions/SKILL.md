@@ -298,7 +298,7 @@ The darkening of the accessible mode (`VIEW-45`) is drawn by `ScenerySystem` wit
 
 ### Layers
 
-What is drawn over what is `VIEW-68` (`docs/specs/ui/draw-order.md`). Each of its layers has a name, instead of the depths spread over `core/Constants.ts`: making it is a pending task of `docs/roadmap/roadmap.md`, which checks first what the `Layer` of Phaser 4 allows with containers (`docs/guides/phaser4-troubleshooting.md`). Decided by the product owner on 2026-11-22.
+What is drawn over what is `VIEW-68` (`docs/specs/ui/draw-order.md`). Each of its layers has a name, instead of the depths spread over `core/Constants.ts`: making it is Phase 11.9 of `docs/roadmap/roadmap.md`, which checks first what the `Layer` of Phaser 4 allows with containers (`docs/guides/phaser4-troubleshooting.md`). Decided by the product owner on 2026-11-22.
 
 - **Today.** The button to leave and the confirmation dialog are drawn over the result (`LEAVE_BUTTON_DEPTH`, `CONFIRM_DIALOG_DEPTH`); the notices and the message of a rejected action (`TURN_NOTICE_DEPTH`, `REJECTION_MESSAGE_DEPTH`) are over the confirmation dialog; and each card of the hand takes its depth in `HandView`. `VIEW-68` changes the three.
 - **`hide()` stays.** The order of the layers puts the result over the HUD, but `VIEW-23` asks that the HUD is not drawn at all, not that it is under the veil.
@@ -377,7 +377,7 @@ Event confirmed by the server (CON-17)
             └── draws, plays, and empties the layer
 ```
 
-- **The two effect layers of the battlefield.** `createBattlefield` creates, besides the surroundings, the darkening and the table, two empty layers with no skin: one behind the table and over its surroundings, and one over the table and under the zones. An effect says in its data which one it draws in, and asks for it with `effectLayer('BEHIND_TABLE')` or `effectLayer('OVER_TABLE')`. `ScenerySystem` creates both once for each scene and keeps them when the board is drawn again (`GameScene.renderZones`): they are taken out of what is destroyed and put back at their place in the new board, so an effect goes on while the next events play (`FX-23`). It never draws in them: only the effects do, so the zones, the slots and the cards stay over every effect of the battlefield (`FX-23`).
+- **The two effect layers of the battlefield.** `createBattlefield` creates, besides the surroundings, the darkening and the table, two empty layers with no skin: one behind the table and over its surroundings, and one over the table and under the zones. An effect says in its data which one it draws in, and asks for it with `effectLayer('BEHIND_TABLE')` or `effectLayer('OVER_TABLE')`. `ScenerySystem` creates both once for each scene and keeps them when the board is drawn again (`GameScene.renderZones`): they are taken out of what is destroyed and put back at their place in the new board, so an effect goes on while the next events play (`FX-23`). It never draws in them: only the effects do, so the zones, the slots and the cards stay over every effect of the battlefield (`FX-23`). They are created with the first effect of the battlefield, which is Post-MVP (`FX-23`), and not before: until then `createBattlefield` draws only the surroundings, the darkening and the table. Decided by the product owner on 2026-11-22.
 - **The darkening of the accessible mode** (`VIEW-45`) is over the layer behind the table, so an effect there is darkened as the surroundings are, and the board keeps standing out over it.
 - **The skin stays under the effect.** The parts of the element are not changed, and a `setSkin` during an effect restyles them under it. When the effect ends, its layer is empty and the element shows its skin again, with nothing to restore.
 - **The effect is data.** Which effect plays is found from the card (`FX-22`), then from its rarity (`FX-1`), with no branch in the code of each card (`FX-3`). An effect of a new kind adds its code once to `core/visual_effects/`, and any card or rarity uses it by data.
@@ -386,4 +386,4 @@ Event confirmed by the server (CON-17)
 
 ### Migration
 
-The steps from the code of today to these systems are pending tasks of `docs/roadmap/roadmap.md`, in order. Decided by the product owner on 2026-11-22.
+The steps from the code of today to these systems are Phase 11.9 of `docs/roadmap/roadmap.md`, in order. Decided by the product owner on 2026-11-22.
