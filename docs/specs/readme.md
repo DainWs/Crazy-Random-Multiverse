@@ -12,20 +12,7 @@ Functional specification of Crazy Random Multiverse. Source of truth for behavio
 
 ## Sections
 
-| File | Content | Prefixes |
-|---|---|---|
-| `docs/specs/readme.md` (this file) | Architecture constraints, MVP scope and non-functional requirements | `ARCH`, `SCOPE`, `NFR` |
-| `docs/specs/contract.md` | Backend ↔ frontend contract and its catalogs | `CON` |
-| `docs/specs/game-flow.md` | Setup, turns, rounds, deck and hand | `SETUP`, `TURN`, `ROUND`, `DECK`, `HAND` |
-| `docs/specs/board.md` | Zones, placement, movement and protection | `BOARD`, `PROT` |
-| `docs/specs/cards.md` | Card types, statistics, equipment and base content | `CARD`, `EQUIP` |
-| `docs/specs/combat.md` | Damage resolution | `COMBAT` |
-| `docs/specs/game-end.md` | Elimination, absence, winning and spectators | `ELIM`, `ABSENT`, `WIN`, `SPEC` |
-| `docs/specs/lobby.md` | Users, parties and game loading | `USER`, `PARTY`, `LOAD` |
-| `docs/specs/interface.md` | Interface behavior | `UI` |
-| `docs/specs/visual-effects.md` | Effects by rarity (heartbeat, border glow) and interface skins, all Post-MVP or open | `FX` |
-| `docs/specs/post-mvp.md` | Teams, spells and variants | `TEAM`, `SPELL`, `VAR` |
-| `docs/specs/ui/readme.md` and `docs/specs/ui/` | Interface appearance, separate from behavior. `docs/specs/ui/` has one file per effect, named `category-effect.md`, plus `docs/specs/ui/motion-base.md` with the shared durations and curves; its files describe what is seen and never how it is built. The rules of `docs/specs/ui/readme.md` move there as they are reviewed, keeping their identifiers | `VIEW` |
+The index of every file of `docs/specs/`, with the prefixes and the rules it holds, is the Specification section of `docs/index.md`.
 
 ## Overview
 
